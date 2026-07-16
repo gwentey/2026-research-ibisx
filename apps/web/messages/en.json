@@ -401,5 +401,44 @@
       "humanReview": "Needs human review",
       "backToDataset": "Back to dataset"
     }
+  },
+  "scoring": {
+    "title": "Multi-criteria scoring",
+    "subtitle": "Weight your priorities: ranking and decomposition are computed server-side — the browser never recomputes a score.",
+    "weightsTitle": "Weights",
+    "profiles": "Preset profiles",
+    "profile": {
+      "academic_research": "Academic research",
+      "industrial_application": "Industrial application",
+      "rapid_prototyping": "Rapid prototyping",
+      "custom": "Custom"
+    },
+    "reset": "Reset",
+    "effective": "effective",
+    "criteria": {
+      "ethical_score": "Ethical score",
+      "technical_score": "Technical score",
+      "popularity_score": "Popularity",
+      "anonymization": "Anonymization",
+      "transparency": "Transparency",
+      "informed_consent": "Informed consent",
+      "documentation": "Documentation",
+      "data_quality": "Data quality",
+      "instances_count": "Row count",
+      "features_count": "Feature count",
+      "year": "Recency",
+      "sample_balance": "Class balance"
+    },
+    "resultsTitle": "Ranking",
+    "resultsCount": "{count, plural, =0 {No dataset scored} one {# dataset scored} other {# datasets scored}}",
+    "rank": "Rank",
+    "score": "Score",
+    "decomposition": "Score decomposition",
+    "viewList": "List",
+    "viewHeatmap": "Heatmap",
+    "heatmapHint": "Datasets × criteria — click a header to sort, a row to open the dataset.",
+    "scoreSelection": "Score this selection",
+    "empty": "No dataset to score — adjust the catalog filters.",
+    "loading": "Computing ranking…"
   }
 }

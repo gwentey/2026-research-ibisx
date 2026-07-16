@@ -2,7 +2,7 @@
 
 import { type Client, type ClientMeta, formDataBodySerializer, type Options as Options2, type RequestResult, type TDataShape } from './client';
 import { client } from './client.gen';
-import type { AnalyzeUploadData, AnalyzeUploadErrors, AnalyzeUploadResponses, ChangePasswordData, ChangePasswordErrors, ChangePasswordResponses, CompleteOnboardingData, CompleteOnboardingErrors, CompleteOnboardingResponses, CreateDatasetData, CreateDatasetErrors, CreateDatasetResponses, DeleteAccountData, DeleteAccountErrors, DeleteAccountResponses, DeleteDatasetData, DeleteDatasetErrors, DeleteDatasetResponses, DownloadDatasetFileData, DownloadDatasetFileErrors, DownloadDatasetFileResponses, ForgotPasswordData, ForgotPasswordErrors, ForgotPasswordResponses, GetCatalogStatsData, GetCatalogStatsResponses, GetDatasetCompletionData, GetDatasetCompletionErrors, GetDatasetCompletionResponses, GetDatasetData, GetDatasetErrors, GetDatasetFacetsData, GetDatasetFacetsResponses, GetDatasetResponses, GetHealthData, GetHealthResponses, GetJobData, GetJobErrors, GetJobResponses, GetMeData, GetMeResponses, GetMyAvatarData, GetMyAvatarResponses, GetSimilarDatasetsData, GetSimilarDatasetsErrors, GetSimilarDatasetsResponses, GetWorkerHealthData, GetWorkerHealthResponses, GoogleAuthorizeData, GoogleAuthorizeResponses, GoogleExchangeData, GoogleExchangeErrors, GoogleExchangeResponses, ListDatasetFilesData, ListDatasetFilesErrors, ListDatasetFilesResponses, ListDatasetsData, ListDatasetsErrors, ListDatasetsResponses, LoginData, LoginErrors, LoginResponses, LogoutData, LogoutResponses, PreviewDatasetData, PreviewDatasetErrors, PreviewDatasetResponses, RefreshTokenData, RefreshTokenResponses, RegisterData, RegisterErrors, RegisterResponses, RequestAiGuideData, RequestAiGuideErrors, RequestAiGuideResponses, ResetPasswordData, ResetPasswordErrors, ResetPasswordResponses, StartSmokeJobData, StartSmokeJobResponses, StreamJobEventsData, StreamJobEventsErrors, StreamJobEventsResponses, UpdateDatasetData, UpdateDatasetErrors, UpdateDatasetResponses, UpdateMeData, UpdateMeErrors, UpdateMeResponses, UploadAvatarData, UploadAvatarErrors, UploadAvatarResponses } from './types.gen';
+import type { AnalyzeUploadData, AnalyzeUploadErrors, AnalyzeUploadResponses, ChangePasswordData, ChangePasswordErrors, ChangePasswordResponses, CompleteOnboardingData, CompleteOnboardingErrors, CompleteOnboardingResponses, CreateDatasetData, CreateDatasetErrors, CreateDatasetResponses, DeleteAccountData, DeleteAccountErrors, DeleteAccountResponses, DeleteDatasetData, DeleteDatasetErrors, DeleteDatasetResponses, DownloadDatasetFileData, DownloadDatasetFileErrors, DownloadDatasetFileResponses, ForgotPasswordData, ForgotPasswordErrors, ForgotPasswordResponses, GetCatalogStatsData, GetCatalogStatsResponses, GetDatasetCompletionData, GetDatasetCompletionErrors, GetDatasetCompletionResponses, GetDatasetData, GetDatasetErrors, GetDatasetFacetsData, GetDatasetFacetsResponses, GetDatasetResponses, GetHealthData, GetHealthResponses, GetJobData, GetJobErrors, GetJobResponses, GetMeData, GetMeResponses, GetMyAvatarData, GetMyAvatarResponses, GetScoringProfilesData, GetScoringProfilesResponses, GetSimilarDatasetsData, GetSimilarDatasetsErrors, GetSimilarDatasetsResponses, GetWorkerHealthData, GetWorkerHealthResponses, GoogleAuthorizeData, GoogleAuthorizeResponses, GoogleExchangeData, GoogleExchangeErrors, GoogleExchangeResponses, ListDatasetFilesData, ListDatasetFilesErrors, ListDatasetFilesResponses, ListDatasetsData, ListDatasetsErrors, ListDatasetsResponses, LoginData, LoginErrors, LoginResponses, LogoutData, LogoutResponses, PreviewDatasetData, PreviewDatasetErrors, PreviewDatasetResponses, RefreshTokenData, RefreshTokenResponses, RegisterData, RegisterErrors, RegisterResponses, RequestAiGuideData, RequestAiGuideErrors, RequestAiGuideResponses, ResetPasswordData, ResetPasswordErrors, ResetPasswordResponses, ScoreDatasetsData, ScoreDatasetsErrors, ScoreDatasetsResponses, StartSmokeJobData, StartSmokeJobResponses, StreamJobEventsData, StreamJobEventsErrors, StreamJobEventsResponses, UpdateDatasetData, UpdateDatasetErrors, UpdateDatasetResponses, UpdateMeData, UpdateMeErrors, UpdateMeResponses, UploadAvatarData, UploadAvatarErrors, UploadAvatarResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean, TResponse = unknown> = Options2<TData, ThrowOnError, TResponse> & {
     /**
@@ -142,6 +142,22 @@ export const analyzeUpload = <ThrowOnError extends boolean = false>(options: Opt
 });
 
 /**
+ * Score Datasets
+ *
+ * Score de pertinence pondéré + décomposition des 12 critères (CDC §6.3).
+ *
+ * Le backend est l'UNIQUE endroit où ces scores sont calculés (P3).
+ */
+export const scoreDatasets = <ThrowOnError extends boolean = false>(options: Options<ScoreDatasetsData, ThrowOnError>): RequestResult<ScoreDatasetsResponses, ScoreDatasetsErrors, ThrowOnError> => (options.client ?? client).post<ScoreDatasetsResponses, ScoreDatasetsErrors, ThrowOnError>({
+    url: '/api/v1/datasets/score',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
  * Get Stats
  */
 export const getCatalogStats = <ThrowOnError extends boolean = false>(options?: Options<GetCatalogStatsData, ThrowOnError>): RequestResult<GetCatalogStatsResponses, unknown, ThrowOnError> => (options?.client ?? client).get<GetCatalogStatsResponses, unknown, ThrowOnError>({ url: '/api/v1/datasets/stats', ...options });
@@ -239,6 +255,13 @@ export const getJob = <ThrowOnError extends boolean = false>(options: Options<Ge
  * Se termine de lui-même quand le job atteint un statut terminal.
  */
 export const streamJobEvents = <ThrowOnError extends boolean = false>(options: Options<StreamJobEventsData, ThrowOnError>): RequestResult<StreamJobEventsResponses, StreamJobEventsErrors, ThrowOnError> => (options.client ?? client).get<StreamJobEventsResponses, StreamJobEventsErrors, ThrowOnError>({ url: '/api/v1/jobs/{job_id}/events', ...options });
+
+/**
+ * Get Profiles
+ *
+ * Profils de pondération prédéfinis (CDC §6.4) + poids par défaut.
+ */
+export const getScoringProfiles = <ThrowOnError extends boolean = false>(options?: Options<GetScoringProfilesData, ThrowOnError>): RequestResult<GetScoringProfilesResponses, unknown, ThrowOnError> => (options?.client ?? client).get<GetScoringProfilesResponses, unknown, ThrowOnError>({ url: '/api/v1/score/profiles', ...options });
 
 /**
  * Get Me

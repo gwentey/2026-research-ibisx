@@ -253,6 +253,27 @@
         "title": "CompletionStatus",
         "type": "object"
       },
+      "CriterionWeight": {
+        "additionalProperties": false,
+        "properties": {
+          "criterion_name": {
+            "title": "Criterion Name",
+            "type": "string"
+          },
+          "weight": {
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Weight",
+            "type": "number"
+          }
+        },
+        "required": [
+          "criterion_name",
+          "weight"
+        ],
+        "title": "CriterionWeight",
+        "type": "object"
+      },
       "DatasetCard": {
         "description": "Résumé pour les cartes/tableau du catalogue.",
         "properties": {
@@ -905,6 +926,344 @@
           "citations_max"
         ],
         "title": "DatasetFacets",
+        "type": "object"
+      },
+      "DatasetFilters": {
+        "additionalProperties": false,
+        "description": "Filtres du catalogue — tous appliqués côté backend (CDC §5.3).",
+        "properties": {
+          "accountability_defined": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Accountability Defined"
+          },
+          "anonymization_applied": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Anonymization Applied"
+          },
+          "anonymized": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Anonymized"
+          },
+          "citations_max": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Citations Max"
+          },
+          "citations_min": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Citations Min"
+          },
+          "data_quality_documented": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Data Quality Documented"
+          },
+          "domains": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Domains"
+          },
+          "equity_non_discrimination": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Equity Non Discrimination"
+          },
+          "ethical_score_min": {
+            "anyOf": [
+              {
+                "maximum": 100.0,
+                "minimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ethical Score Min"
+          },
+          "features_max": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Features Max"
+          },
+          "features_min": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Features Min"
+          },
+          "has_missing_values": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Has Missing Values"
+          },
+          "informed_consent": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Informed Consent"
+          },
+          "instances_max": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Instances Max"
+          },
+          "instances_min": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Instances Min"
+          },
+          "public": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Public"
+          },
+          "purpose_limitation_respected": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Purpose Limitation Respected"
+          },
+          "q": {
+            "anyOf": [
+              {
+                "maxLength": 200,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Q"
+          },
+          "record_keeping_policy_exists": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Record Keeping Policy Exists"
+          },
+          "representativity_level": {
+            "anyOf": [
+              {
+                "enum": [
+                  "high",
+                  "medium",
+                  "low"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Representativity Level"
+          },
+          "security_measures_in_place": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Security Measures In Place"
+          },
+          "split": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Split"
+          },
+          "tasks": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tasks"
+          },
+          "temporal": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Temporal"
+          },
+          "transparency": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Transparency"
+          },
+          "user_control": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "User Control"
+          },
+          "year_max": {
+            "anyOf": [
+              {
+                "maximum": 2100.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Year Max"
+          },
+          "year_min": {
+            "anyOf": [
+              {
+                "minimum": 1900.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Year Min"
+          }
+        },
+        "title": "DatasetFilters",
         "type": "object"
       },
       "DatasetMetadataUpdate": {
@@ -1975,6 +2334,38 @@
         "title": "ProfileUpdateRequest",
         "type": "object"
       },
+      "ProfilesResponse": {
+        "properties": {
+          "criteria": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Criteria",
+            "type": "array"
+          },
+          "default_weights": {
+            "additionalProperties": {
+              "type": "number"
+            },
+            "title": "Default Weights",
+            "type": "object"
+          },
+          "profiles": {
+            "items": {
+              "$ref": "#/components/schemas/ScoringProfile"
+            },
+            "title": "Profiles",
+            "type": "array"
+          }
+        },
+        "required": [
+          "profiles",
+          "default_weights",
+          "criteria"
+        ],
+        "title": "ProfilesResponse",
+        "type": "object"
+      },
       "RegisterRequest": {
         "additionalProperties": false,
         "properties": {
@@ -2017,6 +2408,113 @@
           "new_password"
         ],
         "title": "ResetPasswordRequest",
+        "type": "object"
+      },
+      "ScoreRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "filters": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DatasetFilters"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "weights": {
+            "items": {
+              "$ref": "#/components/schemas/CriterionWeight"
+            },
+            "title": "Weights",
+            "type": "array"
+          }
+        },
+        "title": "ScoreRequest",
+        "type": "object"
+      },
+      "ScoreResponse": {
+        "properties": {
+          "criteria": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Criteria",
+            "type": "array"
+          },
+          "effective_weights": {
+            "additionalProperties": {
+              "type": "number"
+            },
+            "title": "Effective Weights",
+            "type": "object"
+          },
+          "results": {
+            "items": {
+              "$ref": "#/components/schemas/ScoredDataset"
+            },
+            "title": "Results",
+            "type": "array"
+          }
+        },
+        "required": [
+          "results",
+          "effective_weights",
+          "criteria"
+        ],
+        "title": "ScoreResponse",
+        "type": "object"
+      },
+      "ScoredDataset": {
+        "properties": {
+          "criterion_scores": {
+            "additionalProperties": {
+              "type": "number"
+            },
+            "title": "Criterion Scores",
+            "type": "object"
+          },
+          "dataset": {
+            "$ref": "#/components/schemas/DatasetCard"
+          },
+          "rank": {
+            "title": "Rank",
+            "type": "integer"
+          },
+          "score": {
+            "title": "Score",
+            "type": "number"
+          }
+        },
+        "required": [
+          "dataset",
+          "score",
+          "rank",
+          "criterion_scores"
+        ],
+        "title": "ScoredDataset",
+        "type": "object"
+      },
+      "ScoringProfile": {
+        "properties": {
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "weights": {
+            "additionalProperties": {
+              "type": "number"
+            },
+            "title": "Weights",
+            "type": "object"
+          }
+        },
+        "required": [
+          "name",
+          "weights"
+        ],
+        "title": "ScoringProfile",
         "type": "object"
       },
       "SimilarDataset": {
@@ -3298,6 +3796,48 @@
         ]
       }
     },
+    "/api/v1/datasets/score": {
+      "post": {
+        "description": "Score de pertinence pondéré + décomposition des 12 critères (CDC §6.3).\n\nLe backend est l'UNIQUE endroit où ces scores sont calculés (P3).",
+        "operationId": "scoreDatasets",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ScoreRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScoreResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Score Datasets",
+        "tags": [
+          "scoring"
+        ]
+      }
+    },
     "/api/v1/datasets/stats": {
       "get": {
         "operationId": "getCatalogStats",
@@ -3896,6 +4436,28 @@
         "summary": "Stream Job Events",
         "tags": [
           "jobs"
+        ]
+      }
+    },
+    "/api/v1/score/profiles": {
+      "get": {
+        "description": "Profils de pondération prédéfinis (CDC §6.4) + poids par défaut.",
+        "operationId": "getScoringProfiles",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProfilesResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Get Profiles",
+        "tags": [
+          "scoring"
         ]
       }
     },

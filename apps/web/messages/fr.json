@@ -401,5 +401,44 @@
       "humanReview": "À valider par un humain",
       "backToDataset": "Retour au dataset"
     }
+  },
+  "scoring": {
+    "title": "Scoring multi-critères",
+    "subtitle": "Pondérez vos priorités : le classement et la décomposition sont calculés côté serveur — le navigateur ne recalcule jamais un score.",
+    "weightsTitle": "Pondérations",
+    "profiles": "Profils prédéfinis",
+    "profile": {
+      "academic_research": "Recherche académique",
+      "industrial_application": "Application industrielle",
+      "rapid_prototyping": "Prototypage rapide",
+      "custom": "Personnalisé"
+    },
+    "reset": "Réinitialiser",
+    "effective": "effectif",
+    "criteria": {
+      "ethical_score": "Score éthique",
+      "technical_score": "Score technique",
+      "popularity_score": "Popularité",
+      "anonymization": "Anonymisation",
+      "transparency": "Transparence",
+      "informed_consent": "Consentement éclairé",
+      "documentation": "Documentation",
+      "data_quality": "Qualité des données",
+      "instances_count": "Nombre de lignes",
+      "features_count": "Nombre de variables",
+      "year": "Fraîcheur",
+      "sample_balance": "Équilibre des classes"
+    },
+    "resultsTitle": "Classement",
+    "resultsCount": "{count, plural, =0 {Aucun dataset scoré} one {# dataset scoré} other {# datasets scorés}}",
+    "rank": "Rang",
+    "score": "Score",
+    "decomposition": "Décomposition du score",
+    "viewList": "Liste",
+    "viewHeatmap": "Heatmap",
+    "heatmapHint": "Datasets × critères — cliquez un en-tête pour trier, une ligne pour ouvrir le dataset.",
+    "scoreSelection": "Scorer cette sélection",
+    "empty": "Aucun dataset à scorer — ajustez les filtres du catalogue.",
+    "loading": "Calcul du classement…"
   }
 }

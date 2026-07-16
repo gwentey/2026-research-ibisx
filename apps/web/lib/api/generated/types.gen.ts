@@ -171,6 +171,20 @@ export type CompletionStatus = {
 };
 
 /**
+ * CriterionWeight
+ */
+export type CriterionWeight = {
+    /**
+     * Criterion Name
+     */
+    criterion_name: string;
+    /**
+     * Weight
+     */
+    weight: number;
+};
+
+/**
  * DatasetCard
  *
  * Résumé pour les cartes/tableau du catalogue.
@@ -456,6 +470,126 @@ export type DatasetFacets = {
      * Year Min
      */
     year_min: number;
+};
+
+/**
+ * DatasetFilters
+ *
+ * Filtres du catalogue — tous appliqués côté backend (CDC §5.3).
+ */
+export type DatasetFilters = {
+    /**
+     * Accountability Defined
+     */
+    accountability_defined?: boolean | null;
+    /**
+     * Anonymization Applied
+     */
+    anonymization_applied?: boolean | null;
+    /**
+     * Anonymized
+     */
+    anonymized?: boolean | null;
+    /**
+     * Citations Max
+     */
+    citations_max?: number | null;
+    /**
+     * Citations Min
+     */
+    citations_min?: number | null;
+    /**
+     * Data Quality Documented
+     */
+    data_quality_documented?: boolean | null;
+    /**
+     * Domains
+     */
+    domains?: Array<string> | null;
+    /**
+     * Equity Non Discrimination
+     */
+    equity_non_discrimination?: boolean | null;
+    /**
+     * Ethical Score Min
+     */
+    ethical_score_min?: number | null;
+    /**
+     * Features Max
+     */
+    features_max?: number | null;
+    /**
+     * Features Min
+     */
+    features_min?: number | null;
+    /**
+     * Has Missing Values
+     */
+    has_missing_values?: boolean | null;
+    /**
+     * Informed Consent
+     */
+    informed_consent?: boolean | null;
+    /**
+     * Instances Max
+     */
+    instances_max?: number | null;
+    /**
+     * Instances Min
+     */
+    instances_min?: number | null;
+    /**
+     * Public
+     */
+    public?: boolean | null;
+    /**
+     * Purpose Limitation Respected
+     */
+    purpose_limitation_respected?: boolean | null;
+    /**
+     * Q
+     */
+    q?: string | null;
+    /**
+     * Record Keeping Policy Exists
+     */
+    record_keeping_policy_exists?: boolean | null;
+    /**
+     * Representativity Level
+     */
+    representativity_level?: 'high' | 'medium' | 'low' | null;
+    /**
+     * Security Measures In Place
+     */
+    security_measures_in_place?: boolean | null;
+    /**
+     * Split
+     */
+    split?: boolean | null;
+    /**
+     * Tasks
+     */
+    tasks?: Array<string> | null;
+    /**
+     * Temporal
+     */
+    temporal?: boolean | null;
+    /**
+     * Transparency
+     */
+    transparency?: boolean | null;
+    /**
+     * User Control
+     */
+    user_control?: boolean | null;
+    /**
+     * Year Max
+     */
+    year_max?: number | null;
+    /**
+     * Year Min
+     */
+    year_min?: number | null;
 };
 
 /**
@@ -983,6 +1117,26 @@ export type ProfileUpdateRequest = {
 };
 
 /**
+ * ProfilesResponse
+ */
+export type ProfilesResponse = {
+    /**
+     * Criteria
+     */
+    criteria: Array<string>;
+    /**
+     * Default Weights
+     */
+    default_weights: {
+        [key: string]: number;
+    };
+    /**
+     * Profiles
+     */
+    profiles: Array<ScoringProfile>;
+};
+
+/**
  * RegisterRequest
  */
 export type RegisterRequest = {
@@ -1008,6 +1162,74 @@ export type ResetPasswordRequest = {
      * Token
      */
     token: string;
+};
+
+/**
+ * ScoreRequest
+ */
+export type ScoreRequest = {
+    filters?: DatasetFilters | null;
+    /**
+     * Weights
+     */
+    weights?: Array<CriterionWeight>;
+};
+
+/**
+ * ScoreResponse
+ */
+export type ScoreResponse = {
+    /**
+     * Criteria
+     */
+    criteria: Array<string>;
+    /**
+     * Effective Weights
+     */
+    effective_weights: {
+        [key: string]: number;
+    };
+    /**
+     * Results
+     */
+    results: Array<ScoredDataset>;
+};
+
+/**
+ * ScoredDataset
+ */
+export type ScoredDataset = {
+    /**
+     * Criterion Scores
+     */
+    criterion_scores: {
+        [key: string]: number;
+    };
+    dataset: DatasetCard;
+    /**
+     * Rank
+     */
+    rank: number;
+    /**
+     * Score
+     */
+    score: number;
+};
+
+/**
+ * ScoringProfile
+ */
+export type ScoringProfile = {
+    /**
+     * Name
+     */
+    name: string;
+    /**
+     * Weights
+     */
+    weights: {
+        [key: string]: number;
+    };
 };
 
 /**
@@ -1612,6 +1834,31 @@ export type AnalyzeUploadResponses = {
 
 export type AnalyzeUploadResponse = AnalyzeUploadResponses[keyof AnalyzeUploadResponses];
 
+export type ScoreDatasetsData = {
+    body: ScoreRequest;
+    path?: never;
+    query?: never;
+    url: '/api/v1/datasets/score';
+};
+
+export type ScoreDatasetsErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type ScoreDatasetsError = ScoreDatasetsErrors[keyof ScoreDatasetsErrors];
+
+export type ScoreDatasetsResponses = {
+    /**
+     * Successful Response
+     */
+    200: ScoreResponse;
+};
+
+export type ScoreDatasetsResponse = ScoreDatasetsResponses[keyof ScoreDatasetsResponses];
+
 export type GetCatalogStatsData = {
     body?: never;
     path?: never;
@@ -2019,6 +2266,22 @@ export type StreamJobEventsResponses = {
      */
     200: unknown;
 };
+
+export type GetScoringProfilesData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/v1/score/profiles';
+};
+
+export type GetScoringProfilesResponses = {
+    /**
+     * Successful Response
+     */
+    200: ProfilesResponse;
+};
+
+export type GetScoringProfilesResponse = GetScoringProfilesResponses[keyof GetScoringProfilesResponses];
 
 export type GetMeData = {
     body?: never;

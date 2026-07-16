@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { LayoutGridIcon, PlusIcon, SearchIcon, TableIcon, XIcon } from "lucide-react";
+import { GaugeIcon, LayoutGridIcon, PlusIcon, SearchIcon, TableIcon, XIcon } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -35,7 +36,9 @@ import { useAuthStore } from "@/lib/auth/store";
 
 export default function DatasetsPage() {
   const t = useTranslations("datasets");
+  const tScoring = useTranslations("scoring");
   const tCommon = useTranslations("common");
+  const router = useRouter();
   const catalog = useCatalog();
   const [facets, setFacets] = useState<DatasetFacets | null>(null);
   const [view, setView] = useState<"grid" | "table">("grid");
@@ -56,14 +59,28 @@ export default function DatasetsPage() {
           <h1 className="text-2xl font-semibold tracking-tight">{t("title")}</h1>
           <p className="text-muted-foreground mt-1 text-sm">{t("subtitle")}</p>
         </div>
-        {canUpload ? (
-          <Button asChild>
-            <Link href="/datasets/upload">
-              <PlusIcon />
-              {t("upload")}
-            </Link>
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            onClick={() => {
+              sessionStorage.setItem(
+                "ibis:score:filters",
+                JSON.stringify({ ...catalog.filters, q: catalog.search || undefined })
+              );
+              router.push("/datasets/score");
+            }}>
+            <GaugeIcon />
+            {tScoring("scoreSelection")}
           </Button>
-        ) : null}
+          {canUpload ? (
+            <Button asChild>
+              <Link href="/datasets/upload">
+                <PlusIcon />
+                {t("upload")}
+              </Link>
+            </Button>
+          ) : null}
+        </div>
       </div>
 
       <div className="flex flex-wrap items-center gap-2">
