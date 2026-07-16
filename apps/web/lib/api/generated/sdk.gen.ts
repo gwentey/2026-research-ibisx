@@ -2,7 +2,7 @@
 
 import { type Client, type ClientMeta, formDataBodySerializer, type Options as Options2, type RequestResult, type TDataShape } from './client';
 import { client } from './client.gen';
-import type { AnalyzeUploadData, AnalyzeUploadErrors, AnalyzeUploadResponses, ChangePasswordData, ChangePasswordErrors, ChangePasswordResponses, CompleteOnboardingData, CompleteOnboardingErrors, CompleteOnboardingResponses, CreateDatasetData, CreateDatasetErrors, CreateDatasetResponses, CreateProjectData, CreateProjectErrors, CreateProjectResponses, DeleteAccountData, DeleteAccountErrors, DeleteAccountResponses, DeleteDatasetData, DeleteDatasetErrors, DeleteDatasetResponses, DeleteProjectData, DeleteProjectErrors, DeleteProjectResponses, DownloadDatasetFileData, DownloadDatasetFileErrors, DownloadDatasetFileResponses, ForgotPasswordData, ForgotPasswordErrors, ForgotPasswordResponses, GetCatalogStatsData, GetCatalogStatsResponses, GetDatasetCompletionData, GetDatasetCompletionErrors, GetDatasetCompletionResponses, GetDatasetData, GetDatasetErrors, GetDatasetFacetsData, GetDatasetFacetsResponses, GetDatasetResponses, GetHealthData, GetHealthResponses, GetJobData, GetJobErrors, GetJobResponses, GetMeData, GetMeResponses, GetMyAvatarData, GetMyAvatarResponses, GetProjectData, GetProjectErrors, GetProjectRecommendationsData, GetProjectRecommendationsErrors, GetProjectRecommendationsResponses, GetProjectResponses, GetScoringProfilesData, GetScoringProfilesResponses, GetSimilarDatasetsData, GetSimilarDatasetsErrors, GetSimilarDatasetsResponses, GetWorkerHealthData, GetWorkerHealthResponses, GoogleAuthorizeData, GoogleAuthorizeResponses, GoogleExchangeData, GoogleExchangeErrors, GoogleExchangeResponses, ListDatasetFilesData, ListDatasetFilesErrors, ListDatasetFilesResponses, ListDatasetsData, ListDatasetsErrors, ListDatasetsResponses, ListProjectsData, ListProjectsErrors, ListProjectsResponses, LoginData, LoginErrors, LoginResponses, LogoutData, LogoutResponses, PreviewDatasetData, PreviewDatasetErrors, PreviewDatasetResponses, RefreshTokenData, RefreshTokenResponses, RegisterData, RegisterErrors, RegisterResponses, RequestAiGuideData, RequestAiGuideErrors, RequestAiGuideResponses, ResetPasswordData, ResetPasswordErrors, ResetPasswordResponses, ScoreDatasetsData, ScoreDatasetsErrors, ScoreDatasetsResponses, StartSmokeJobData, StartSmokeJobResponses, StreamJobEventsData, StreamJobEventsErrors, StreamJobEventsResponses, UpdateDatasetData, UpdateDatasetErrors, UpdateDatasetResponses, UpdateMeData, UpdateMeErrors, UpdateMeResponses, UpdateProjectData, UpdateProjectErrors, UpdateProjectResponses, UploadAvatarData, UploadAvatarErrors, UploadAvatarResponses } from './types.gen';
+import type { AnalyzeUploadData, AnalyzeUploadErrors, AnalyzeUploadResponses, CancelExperimentData, CancelExperimentErrors, CancelExperimentResponses, ChangePasswordData, ChangePasswordErrors, ChangePasswordResponses, CompareExperimentsData, CompareExperimentsErrors, CompareExperimentsResponses, CompleteOnboardingData, CompleteOnboardingErrors, CompleteOnboardingResponses, CreateDatasetData, CreateDatasetErrors, CreateDatasetResponses, CreateProjectData, CreateProjectErrors, CreateProjectResponses, DeleteAccountData, DeleteAccountErrors, DeleteAccountResponses, DeleteDatasetData, DeleteDatasetErrors, DeleteDatasetResponses, DeleteExperimentData, DeleteExperimentErrors, DeleteExperimentResponses, DeleteProjectData, DeleteProjectErrors, DeleteProjectResponses, DownloadDatasetFileData, DownloadDatasetFileErrors, DownloadDatasetFileResponses, DownloadModelData, DownloadModelErrors, DownloadModelResponses, ForgotPasswordData, ForgotPasswordErrors, ForgotPasswordResponses, GetCatalogStatsData, GetCatalogStatsResponses, GetDatasetCompletionData, GetDatasetCompletionErrors, GetDatasetCompletionResponses, GetDatasetData, GetDatasetErrors, GetDatasetFacetsData, GetDatasetFacetsResponses, GetDatasetResponses, GetDraftData, GetDraftErrors, GetDraftResponses, GetExperimentData, GetExperimentErrors, GetExperimentLogsData, GetExperimentLogsErrors, GetExperimentLogsResponses, GetExperimentResponses, GetExperimentResultsData, GetExperimentResultsErrors, GetExperimentResultsResponses, GetHealthData, GetHealthResponses, GetJobData, GetJobErrors, GetJobResponses, GetMeData, GetMeResponses, GetMyAvatarData, GetMyAvatarResponses, GetProjectData, GetProjectErrors, GetProjectRecommendationsData, GetProjectRecommendationsErrors, GetProjectRecommendationsResponses, GetProjectResponses, GetQualityAnalysisData, GetQualityAnalysisErrors, GetQualityAnalysisResponses, GetScoringProfilesData, GetScoringProfilesResponses, GetSimilarDatasetsData, GetSimilarDatasetsErrors, GetSimilarDatasetsResponses, GetWorkerHealthData, GetWorkerHealthResponses, GoogleAuthorizeData, GoogleAuthorizeResponses, GoogleExchangeData, GoogleExchangeErrors, GoogleExchangeResponses, ListAlgorithmsData, ListAlgorithmsResponses, ListDatasetFilesData, ListDatasetFilesErrors, ListDatasetFilesResponses, ListDatasetsData, ListDatasetsErrors, ListDatasetsResponses, ListProjectExperimentsData, ListProjectExperimentsErrors, ListProjectExperimentsResponses, ListProjectsData, ListProjectsErrors, ListProjectsResponses, LoginData, LoginErrors, LoginResponses, LogoutData, LogoutResponses, PreviewDatasetData, PreviewDatasetErrors, PreviewDatasetResponses, RefreshTokenData, RefreshTokenResponses, RegisterData, RegisterErrors, RegisterResponses, RequestAiGuideData, RequestAiGuideErrors, RequestAiGuideResponses, ResetPasswordData, ResetPasswordErrors, ResetPasswordResponses, ScoreDatasetsData, ScoreDatasetsErrors, ScoreDatasetsResponses, StartExperimentData, StartExperimentErrors, StartExperimentResponses, StartSmokeJobData, StartSmokeJobResponses, StreamJobEventsData, StreamJobEventsErrors, StreamJobEventsResponses, UpdateDatasetData, UpdateDatasetErrors, UpdateDatasetResponses, UpdateMeData, UpdateMeErrors, UpdateMeResponses, UpdateProjectData, UpdateProjectErrors, UpdateProjectResponses, UploadAvatarData, UploadAvatarErrors, UploadAvatarResponses, UpsertDraftData, UpsertDraftErrors, UpsertDraftResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean, TResponse = unknown> = Options2<TData, ThrowOnError, TResponse> & {
     /**
@@ -17,6 +17,13 @@ export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends 
      */
     meta?: keyof ClientMeta extends never ? Record<string, unknown> : ClientMeta;
 };
+
+/**
+ * List Algorithms
+ *
+ * Cartes d'algorithmes + schémas d'hyperparamètres (source du formulaire, CDC §8.2 É6-7).
+ */
+export const listAlgorithms = <ThrowOnError extends boolean = false>(options?: Options<ListAlgorithmsData, ThrowOnError>): RequestResult<ListAlgorithmsResponses, unknown, ThrowOnError> => (options?.client ?? client).get<ListAlgorithmsResponses, unknown, ThrowOnError>({ url: '/api/v1/algorithms', ...options });
 
 /**
  * Forgot Password
@@ -216,9 +223,95 @@ export const downloadDatasetFile = <ThrowOnError extends boolean = false>(option
 export const previewDataset = <ThrowOnError extends boolean = false>(options: Options<PreviewDatasetData, ThrowOnError>): RequestResult<PreviewDatasetResponses, PreviewDatasetErrors, ThrowOnError> => (options.client ?? client).get<PreviewDatasetResponses, PreviewDatasetErrors, ThrowOnError>({ url: '/api/v1/datasets/{dataset_id}/preview', ...options });
 
 /**
+ * Get Quality Analysis
+ *
+ * Analyse de qualité serveur, cache 7 j invalidable (CDC §8.2 É3).
+ */
+export const getQualityAnalysis = <ThrowOnError extends boolean = false>(options: Options<GetQualityAnalysisData, ThrowOnError>): RequestResult<GetQualityAnalysisResponses, GetQualityAnalysisErrors, ThrowOnError> => (options.client ?? client).get<GetQualityAnalysisResponses, GetQualityAnalysisErrors, ThrowOnError>({ url: '/api/v1/datasets/{dataset_id}/quality-analysis', ...options });
+
+/**
  * Get Similar
  */
 export const getSimilarDatasets = <ThrowOnError extends boolean = false>(options: Options<GetSimilarDatasetsData, ThrowOnError>): RequestResult<GetSimilarDatasetsResponses, GetSimilarDatasetsErrors, ThrowOnError> => (options.client ?? client).get<GetSimilarDatasetsResponses, GetSimilarDatasetsErrors, ThrowOnError>({ url: '/api/v1/datasets/{dataset_id}/similar', ...options });
+
+/**
+ * Start Experiment
+ *
+ * Lancement : validation registre + quotas + débit 1 crédit → file `training`.
+ */
+export const startExperiment = <ThrowOnError extends boolean = false>(options: Options<StartExperimentData, ThrowOnError>): RequestResult<StartExperimentResponses, StartExperimentErrors, ThrowOnError> => (options.client ?? client).post<StartExperimentResponses, StartExperimentErrors, ThrowOnError>({
+    url: '/api/v1/experiments',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Compare Experiments
+ *
+ * Benchmarking (CDC §7.2) : métriques alignées côte à côte.
+ */
+export const compareExperiments = <ThrowOnError extends boolean = false>(options: Options<CompareExperimentsData, ThrowOnError>): RequestResult<CompareExperimentsResponses, CompareExperimentsErrors, ThrowOnError> => (options.client ?? client).post<CompareExperimentsResponses, CompareExperimentsErrors, ThrowOnError>({
+    url: '/api/v1/experiments/compare',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Get Draft
+ */
+export const getDraft = <ThrowOnError extends boolean = false>(options: Options<GetDraftData, ThrowOnError>): RequestResult<GetDraftResponses, GetDraftErrors, ThrowOnError> => (options.client ?? client).get<GetDraftResponses, GetDraftErrors, ThrowOnError>({ url: '/api/v1/experiments/draft', ...options });
+
+/**
+ * Upsert Draft
+ *
+ * Brouillon persisté à chaque étape validée → reprise du wizard (P5).
+ */
+export const upsertDraft = <ThrowOnError extends boolean = false>(options: Options<UpsertDraftData, ThrowOnError>): RequestResult<UpsertDraftResponses, UpsertDraftErrors, ThrowOnError> => (options.client ?? client).put<UpsertDraftResponses, UpsertDraftErrors, ThrowOnError>({
+    url: '/api/v1/experiments/draft',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Delete Experiment
+ */
+export const deleteExperiment = <ThrowOnError extends boolean = false>(options: Options<DeleteExperimentData, ThrowOnError>): RequestResult<DeleteExperimentResponses, DeleteExperimentErrors, ThrowOnError> => (options.client ?? client).delete<DeleteExperimentResponses, DeleteExperimentErrors, ThrowOnError>({ url: '/api/v1/experiments/{experiment_id}', ...options });
+
+/**
+ * Get Experiment
+ */
+export const getExperiment = <ThrowOnError extends boolean = false>(options: Options<GetExperimentData, ThrowOnError>): RequestResult<GetExperimentResponses, GetExperimentErrors, ThrowOnError> => (options.client ?? client).get<GetExperimentResponses, GetExperimentErrors, ThrowOnError>({ url: '/api/v1/experiments/{experiment_id}', ...options });
+
+/**
+ * Cancel Experiment
+ */
+export const cancelExperiment = <ThrowOnError extends boolean = false>(options: Options<CancelExperimentData, ThrowOnError>): RequestResult<CancelExperimentResponses, CancelExperimentErrors, ThrowOnError> => (options.client ?? client).post<CancelExperimentResponses, CancelExperimentErrors, ThrowOnError>({ url: '/api/v1/experiments/{experiment_id}/cancel', ...options });
+
+/**
+ * Download Model
+ *
+ * Artefact .joblib {model, preprocessing_pipeline, feature_names, training_config}.
+ */
+export const downloadModel = <ThrowOnError extends boolean = false>(options: Options<DownloadModelData, ThrowOnError>): RequestResult<DownloadModelResponses, DownloadModelErrors, ThrowOnError> => (options.client ?? client).get<DownloadModelResponses, DownloadModelErrors, ThrowOnError>({ url: '/api/v1/experiments/{experiment_id}/download-model', ...options });
+
+/**
+ * Get Logs
+ */
+export const getExperimentLogs = <ThrowOnError extends boolean = false>(options: Options<GetExperimentLogsData, ThrowOnError>): RequestResult<GetExperimentLogsResponses, GetExperimentLogsErrors, ThrowOnError> => (options.client ?? client).get<GetExperimentLogsResponses, GetExperimentLogsErrors, ThrowOnError>({ url: '/api/v1/experiments/{experiment_id}/logs', ...options });
+
+/**
+ * Get Results
+ */
+export const getExperimentResults = <ThrowOnError extends boolean = false>(options: Options<GetExperimentResultsData, ThrowOnError>): RequestResult<GetExperimentResultsResponses, GetExperimentResultsErrors, ThrowOnError> => (options.client ?? client).get<GetExperimentResultsResponses, GetExperimentResultsErrors, ThrowOnError>({ url: '/api/v1/experiments/{experiment_id}/results', ...options });
 
 /**
  * Get Health
@@ -294,6 +387,11 @@ export const updateProject = <ThrowOnError extends boolean = false>(options: Opt
         ...options.headers
     }
 });
+
+/**
+ * List Project Experiments
+ */
+export const listProjectExperiments = <ThrowOnError extends boolean = false>(options: Options<ListProjectExperimentsData, ThrowOnError>): RequestResult<ListProjectExperimentsResponses, ListProjectExperimentsErrors, ThrowOnError> => (options.client ?? client).get<ListProjectExperimentsResponses, ListProjectExperimentsErrors, ThrowOnError>({ url: '/api/v1/projects/{project_id}/experiments', ...options });
 
 /**
  * Get Recommendations

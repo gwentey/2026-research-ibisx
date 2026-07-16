@@ -131,6 +131,72 @@ export type ColumnRead = {
 };
 
 /**
+ * ColumnStrategy
+ */
+export type ColumnStrategy = {
+    /**
+     * Constant Value
+     */
+    constant_value?: string | number | null;
+    /**
+     * Strategy
+     */
+    strategy: 'mean' | 'median' | 'most_frequent' | 'constant' | 'knn' | 'iterative' | 'drop_rows' | 'drop_column';
+};
+
+/**
+ * CompareRequest
+ */
+export type CompareRequest = {
+    /**
+     * Experiment Ids
+     */
+    experiment_ids: Array<string>;
+};
+
+/**
+ * CompareResponse
+ */
+export type CompareResponse = {
+    /**
+     * Metric Keys
+     */
+    metric_keys: Array<string>;
+    /**
+     * Rows
+     */
+    rows: Array<CompareRow>;
+};
+
+/**
+ * CompareRow
+ */
+export type CompareRow = {
+    /**
+     * Algorithm
+     */
+    algorithm: string;
+    /**
+     * Dataset Name
+     */
+    dataset_name: string;
+    /**
+     * Experiment Id
+     */
+    experiment_id: string;
+    /**
+     * Metrics
+     */
+    metrics: {
+        [key: string]: unknown;
+    };
+    /**
+     * Task Type
+     */
+    task_type: string;
+};
+
+/**
  * CompletionSection
  */
 export type CompletionSection = {
@@ -807,9 +873,322 @@ export type DatasetPreview = {
 };
 
 /**
+ * DraftUpsert
+ */
+export type DraftUpsert = {
+    /**
+     * Dataset Id
+     */
+    dataset_id: string;
+    /**
+     * Project Id
+     */
+    project_id: string;
+    /**
+     * State
+     */
+    state: {
+        [key: string]: unknown;
+    };
+};
+
+/**
  * EducationLevel
  */
 export type EducationLevel = 'lycee' | 'licence' | 'master' | 'doctorat' | 'autre';
+
+/**
+ * ExperimentCreate
+ */
+export type ExperimentCreate = {
+    /**
+     * Algorithm
+     */
+    algorithm: string;
+    /**
+     * Dataset Id
+     */
+    dataset_id: string;
+    /**
+     * Hyperparameters
+     */
+    hyperparameters?: {
+        [key: string]: unknown;
+    };
+    preprocessing: PreprocessingConfig;
+    /**
+     * Project Id
+     */
+    project_id: string;
+};
+
+/**
+ * ExperimentRead
+ */
+export type ExperimentRead = {
+    /**
+     * Algorithm
+     */
+    algorithm: string | null;
+    /**
+     * Created At
+     */
+    created_at: string;
+    /**
+     * Dataset Id
+     */
+    dataset_id: string;
+    /**
+     * Draft State
+     */
+    draft_state: {
+        [key: string]: unknown;
+    } | null;
+    /**
+     * Duration Seconds
+     */
+    duration_seconds: number | null;
+    /**
+     * Error Code
+     */
+    error_code: string | null;
+    /**
+     * Error Message
+     */
+    error_message: string | null;
+    /**
+     * Finished At
+     */
+    finished_at: string | null;
+    /**
+     * Hyperparameters
+     */
+    hyperparameters: {
+        [key: string]: unknown;
+    };
+    /**
+     * Id
+     */
+    id: string;
+    /**
+     * Job Id
+     */
+    job_id: string | null;
+    /**
+     * Preprocessing Config
+     */
+    preprocessing_config: {
+        [key: string]: unknown;
+    };
+    /**
+     * Progress
+     */
+    progress: number;
+    /**
+     * Project Id
+     */
+    project_id: string;
+    /**
+     * Started At
+     */
+    started_at: string | null;
+    /**
+     * Status
+     */
+    status: string;
+    /**
+     * Updated At
+     */
+    updated_at: string;
+};
+
+/**
+ * ExperimentResults
+ */
+export type ExperimentResults = {
+    /**
+     * Algorithm
+     */
+    algorithm: string;
+    /**
+     * Applied Preprocessing
+     */
+    applied_preprocessing: {
+        [key: string]: unknown;
+    };
+    /**
+     * Class Names
+     */
+    class_names: Array<string> | null;
+    /**
+     * Composite
+     */
+    composite: {
+        [key: string]: unknown;
+    };
+    /**
+     * Feature Importance
+     */
+    feature_importance: Array<{
+        [key: string]: unknown;
+    }>;
+    /**
+     * Id
+     */
+    id: string;
+    /**
+     * Metrics
+     */
+    metrics: {
+        [key: string]: unknown;
+    };
+    /**
+     * Status
+     */
+    status: string;
+    /**
+     * Task Type
+     */
+    task_type: string;
+    /**
+     * Viz Data
+     */
+    viz_data: {
+        [key: string]: unknown;
+    };
+};
+
+/**
+ * ExperimentSummary
+ *
+ * Ligne de l'onglet Expériences du projet (benchmarking, CDC §7.2).
+ */
+export type ExperimentSummary = {
+    /**
+     * Algorithm
+     */
+    algorithm: string | null;
+    /**
+     * Created At
+     */
+    created_at: string;
+    /**
+     * Dataset Id
+     */
+    dataset_id: string;
+    /**
+     * Dataset Name
+     */
+    dataset_name: string;
+    /**
+     * Duration Seconds
+     */
+    duration_seconds: number | null;
+    /**
+     * Id
+     */
+    id: string;
+    /**
+     * Primary Metric Name
+     */
+    primary_metric_name: string | null;
+    /**
+     * Primary Metric Value
+     */
+    primary_metric_value: number | null;
+    /**
+     * Progress
+     */
+    progress: number;
+    /**
+     * Status
+     */
+    status: string;
+};
+
+/**
+ * ExperimentWithQueue
+ */
+export type ExperimentWithQueue = {
+    /**
+     * Algorithm
+     */
+    algorithm: string | null;
+    /**
+     * Created At
+     */
+    created_at: string;
+    /**
+     * Dataset Id
+     */
+    dataset_id: string;
+    /**
+     * Draft State
+     */
+    draft_state: {
+        [key: string]: unknown;
+    } | null;
+    /**
+     * Duration Seconds
+     */
+    duration_seconds: number | null;
+    /**
+     * Error Code
+     */
+    error_code: string | null;
+    /**
+     * Error Message
+     */
+    error_message: string | null;
+    /**
+     * Finished At
+     */
+    finished_at: string | null;
+    /**
+     * Hyperparameters
+     */
+    hyperparameters: {
+        [key: string]: unknown;
+    };
+    /**
+     * Id
+     */
+    id: string;
+    /**
+     * Job Id
+     */
+    job_id: string | null;
+    /**
+     * Preprocessing Config
+     */
+    preprocessing_config: {
+        [key: string]: unknown;
+    };
+    /**
+     * Progress
+     */
+    progress: number;
+    /**
+     * Project Id
+     */
+    project_id: string;
+    /**
+     * Queue Position
+     */
+    queue_position?: number | null;
+    /**
+     * Started At
+     */
+    started_at: string | null;
+    /**
+     * Status
+     */
+    status: string;
+    /**
+     * Updated At
+     */
+    updated_at: string;
+};
 
 /**
  * FacetValue
@@ -1022,6 +1401,24 @@ export type JobRead = {
 export type JobStatus = 'pending' | 'running' | 'completed' | 'failed' | 'cancelled';
 
 /**
+ * LogLine
+ */
+export type LogLine = {
+    /**
+     * Level
+     */
+    level: string;
+    /**
+     * Message
+     */
+    message: string;
+    /**
+     * Ts
+     */
+    ts: string;
+};
+
+/**
  * LoginRequest
  */
 export type LoginRequest = {
@@ -1062,6 +1459,53 @@ export type PasswordChangeRequest = {
      * New Password
      */
     new_password: string;
+};
+
+/**
+ * PreprocessingConfig
+ *
+ * Contrat v2 strict (`extra=forbid`) — validé à la création de l'expérience.
+ */
+export type PreprocessingConfig = {
+    /**
+     * Column Strategies
+     */
+    column_strategies?: {
+        [key: string]: ColumnStrategy;
+    };
+    /**
+     * Default Categorical Strategy
+     */
+    default_categorical_strategy?: 'most_frequent';
+    /**
+     * Default Numeric Strategy
+     */
+    default_numeric_strategy?: 'mean' | 'median';
+    /**
+     * Drop Columns
+     */
+    drop_columns?: Array<string>;
+    /**
+     * Encoding
+     */
+    encoding?: 'onehot' | 'ordinal';
+    /**
+     * Random State
+     */
+    random_state?: 42;
+    scaling?: ScalingConfig;
+    /**
+     * Target Column
+     */
+    target_column: string;
+    /**
+     * Task Type
+     */
+    task_type: 'classification' | 'regression';
+    /**
+     * Test Size
+     */
+    test_size?: number;
 };
 
 /**
@@ -1251,6 +1695,20 @@ export type ResetPasswordRequest = {
      * Token
      */
     token: string;
+};
+
+/**
+ * ScalingConfig
+ */
+export type ScalingConfig = {
+    /**
+     * Enabled
+     */
+    enabled?: boolean;
+    /**
+     * Method
+     */
+    method?: 'standard' | 'minmax' | 'robust';
 };
 
 /**
@@ -1529,6 +1987,26 @@ export type WorkerHealthReport = {
  * XaiAudience
  */
 export type XaiAudience = 'novice' | 'intermediate' | 'expert';
+
+export type ListAlgorithmsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/v1/algorithms';
+};
+
+export type ListAlgorithmsResponses = {
+    /**
+     * Response Listalgorithms
+     *
+     * Successful Response
+     */
+    200: Array<{
+        [key: string]: unknown;
+    }>;
+};
+
+export type ListAlgorithmsResponse = ListAlgorithmsResponses[keyof ListAlgorithmsResponses];
 
 export type ForgotPasswordData = {
     body: ForgotPasswordRequest;
@@ -2218,6 +2696,45 @@ export type PreviewDatasetResponses = {
 
 export type PreviewDatasetResponse = PreviewDatasetResponses[keyof PreviewDatasetResponses];
 
+export type GetQualityAnalysisData = {
+    body?: never;
+    path: {
+        /**
+         * Dataset Id
+         */
+        dataset_id: string;
+    };
+    query?: {
+        /**
+         * Force
+         */
+        force?: boolean;
+    };
+    url: '/api/v1/datasets/{dataset_id}/quality-analysis';
+};
+
+export type GetQualityAnalysisErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type GetQualityAnalysisError = GetQualityAnalysisErrors[keyof GetQualityAnalysisErrors];
+
+export type GetQualityAnalysisResponses = {
+    /**
+     * Response Getqualityanalysis
+     *
+     * Successful Response
+     */
+    200: {
+        [key: string]: unknown;
+    };
+};
+
+export type GetQualityAnalysisResponse = GetQualityAnalysisResponses[keyof GetQualityAnalysisResponses];
+
 export type GetSimilarDatasetsData = {
     body?: never;
     path: {
@@ -2249,6 +2766,297 @@ export type GetSimilarDatasetsResponses = {
 };
 
 export type GetSimilarDatasetsResponse = GetSimilarDatasetsResponses[keyof GetSimilarDatasetsResponses];
+
+export type StartExperimentData = {
+    body: ExperimentCreate;
+    path?: never;
+    query?: never;
+    url: '/api/v1/experiments';
+};
+
+export type StartExperimentErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type StartExperimentError = StartExperimentErrors[keyof StartExperimentErrors];
+
+export type StartExperimentResponses = {
+    /**
+     * Successful Response
+     */
+    201: ExperimentRead;
+};
+
+export type StartExperimentResponse = StartExperimentResponses[keyof StartExperimentResponses];
+
+export type CompareExperimentsData = {
+    body: CompareRequest;
+    path?: never;
+    query?: never;
+    url: '/api/v1/experiments/compare';
+};
+
+export type CompareExperimentsErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type CompareExperimentsError = CompareExperimentsErrors[keyof CompareExperimentsErrors];
+
+export type CompareExperimentsResponses = {
+    /**
+     * Successful Response
+     */
+    200: CompareResponse;
+};
+
+export type CompareExperimentsResponse = CompareExperimentsResponses[keyof CompareExperimentsResponses];
+
+export type GetDraftData = {
+    body?: never;
+    path?: never;
+    query: {
+        /**
+         * Project Id
+         */
+        project_id: string;
+        /**
+         * Dataset Id
+         */
+        dataset_id: string;
+    };
+    url: '/api/v1/experiments/draft';
+};
+
+export type GetDraftErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type GetDraftError = GetDraftErrors[keyof GetDraftErrors];
+
+export type GetDraftResponses = {
+    /**
+     * Response Getdraft
+     *
+     * Successful Response
+     */
+    200: ExperimentRead | null;
+};
+
+export type GetDraftResponse = GetDraftResponses[keyof GetDraftResponses];
+
+export type UpsertDraftData = {
+    body: DraftUpsert;
+    path?: never;
+    query?: never;
+    url: '/api/v1/experiments/draft';
+};
+
+export type UpsertDraftErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type UpsertDraftError = UpsertDraftErrors[keyof UpsertDraftErrors];
+
+export type UpsertDraftResponses = {
+    /**
+     * Successful Response
+     */
+    200: ExperimentRead;
+};
+
+export type UpsertDraftResponse = UpsertDraftResponses[keyof UpsertDraftResponses];
+
+export type DeleteExperimentData = {
+    body?: never;
+    path: {
+        /**
+         * Experiment Id
+         */
+        experiment_id: string;
+    };
+    query?: never;
+    url: '/api/v1/experiments/{experiment_id}';
+};
+
+export type DeleteExperimentErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type DeleteExperimentError = DeleteExperimentErrors[keyof DeleteExperimentErrors];
+
+export type DeleteExperimentResponses = {
+    /**
+     * Successful Response
+     */
+    204: void;
+};
+
+export type DeleteExperimentResponse = DeleteExperimentResponses[keyof DeleteExperimentResponses];
+
+export type GetExperimentData = {
+    body?: never;
+    path: {
+        /**
+         * Experiment Id
+         */
+        experiment_id: string;
+    };
+    query?: never;
+    url: '/api/v1/experiments/{experiment_id}';
+};
+
+export type GetExperimentErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type GetExperimentError = GetExperimentErrors[keyof GetExperimentErrors];
+
+export type GetExperimentResponses = {
+    /**
+     * Successful Response
+     */
+    200: ExperimentWithQueue;
+};
+
+export type GetExperimentResponse = GetExperimentResponses[keyof GetExperimentResponses];
+
+export type CancelExperimentData = {
+    body?: never;
+    path: {
+        /**
+         * Experiment Id
+         */
+        experiment_id: string;
+    };
+    query?: never;
+    url: '/api/v1/experiments/{experiment_id}/cancel';
+};
+
+export type CancelExperimentErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type CancelExperimentError = CancelExperimentErrors[keyof CancelExperimentErrors];
+
+export type CancelExperimentResponses = {
+    /**
+     * Successful Response
+     */
+    200: ExperimentRead;
+};
+
+export type CancelExperimentResponse = CancelExperimentResponses[keyof CancelExperimentResponses];
+
+export type DownloadModelData = {
+    body?: never;
+    path: {
+        /**
+         * Experiment Id
+         */
+        experiment_id: string;
+    };
+    query?: never;
+    url: '/api/v1/experiments/{experiment_id}/download-model';
+};
+
+export type DownloadModelErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type DownloadModelError = DownloadModelErrors[keyof DownloadModelErrors];
+
+export type DownloadModelResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
+
+export type GetExperimentLogsData = {
+    body?: never;
+    path: {
+        /**
+         * Experiment Id
+         */
+        experiment_id: string;
+    };
+    query?: never;
+    url: '/api/v1/experiments/{experiment_id}/logs';
+};
+
+export type GetExperimentLogsErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type GetExperimentLogsError = GetExperimentLogsErrors[keyof GetExperimentLogsErrors];
+
+export type GetExperimentLogsResponses = {
+    /**
+     * Response Getexperimentlogs
+     *
+     * Successful Response
+     */
+    200: Array<LogLine>;
+};
+
+export type GetExperimentLogsResponse = GetExperimentLogsResponses[keyof GetExperimentLogsResponses];
+
+export type GetExperimentResultsData = {
+    body?: never;
+    path: {
+        /**
+         * Experiment Id
+         */
+        experiment_id: string;
+    };
+    query?: never;
+    url: '/api/v1/experiments/{experiment_id}/results';
+};
+
+export type GetExperimentResultsErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type GetExperimentResultsError = GetExperimentResultsErrors[keyof GetExperimentResultsErrors];
+
+export type GetExperimentResultsResponses = {
+    /**
+     * Successful Response
+     */
+    200: ExperimentResults;
+};
+
+export type GetExperimentResultsResponse = GetExperimentResultsResponses[keyof GetExperimentResultsResponses];
 
 export type GetHealthData = {
     body?: never;
@@ -2508,6 +3316,38 @@ export type UpdateProjectResponses = {
 };
 
 export type UpdateProjectResponse = UpdateProjectResponses[keyof UpdateProjectResponses];
+
+export type ListProjectExperimentsData = {
+    body?: never;
+    path: {
+        /**
+         * Project Id
+         */
+        project_id: string;
+    };
+    query?: never;
+    url: '/api/v1/projects/{project_id}/experiments';
+};
+
+export type ListProjectExperimentsErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type ListProjectExperimentsError = ListProjectExperimentsErrors[keyof ListProjectExperimentsErrors];
+
+export type ListProjectExperimentsResponses = {
+    /**
+     * Response Listprojectexperiments
+     *
+     * Successful Response
+     */
+    200: Array<ExperimentSummary>;
+};
+
+export type ListProjectExperimentsResponse = ListProjectExperimentsResponses[keyof ListProjectExperimentsResponses];
 
 export type GetProjectRecommendationsData = {
     body?: never;

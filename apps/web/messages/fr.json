@@ -439,7 +439,8 @@
     "heatmapHint": "Datasets × critères — cliquez un en-tête pour trier, une ligne pour ouvrir le dataset.",
     "scoreSelection": "Scorer cette sélection",
     "empty": "Aucun dataset à scorer — ajustez les filtres du catalogue.",
-    "loading": "Calcul du classement…"
+    "loading": "Calcul du classement…",
+    "train": "Lancer un entraînement"
   },
   "projects": {
     "title": "Projets",
@@ -499,5 +500,256 @@
       "training": "Entraînement",
       "explanation": "Explication"
     }
+  },
+  "wizard": {
+    "title": "Entraînement guidé",
+    "missingContext": "Le wizard s'ouvre depuis un projet : choisissez un dataset recommandé puis « Lancer un entraînement ».",
+    "backToProject": "Retour au projet",
+    "draftSaved": "Brouillon enregistré",
+    "draftResumed": "Brouillon repris — vous pouvez continuer où vous en étiez.",
+    "steps": {
+      "1": "Aperçu du dataset",
+      "2": "Objectif de prédiction",
+      "3": "Nettoyage des données",
+      "4": "Division des données",
+      "5": "Préparation finale",
+      "6": "Choix de l'algorithme",
+      "7": "Hyperparamètres",
+      "8": "Entraînement",
+      "9": "Résultats"
+    },
+    "next": "Étape suivante",
+    "back": "Étape précédente",
+    "step1": {
+      "understand": "Comprendre : qu'est-ce qu'un dataset ?",
+      "understandBody": "Un dataset est un tableau, comme dans un tableur : chaque ligne est un exemple (un élève, une fleur, un passager…) et chaque colonne une information mesurée. Le modèle va apprendre des régularités dans ces lignes pour prédire une colonne cible.",
+      "rows": "lignes",
+      "cols": "colonnes",
+      "quality": "Score de qualité",
+      "qualityHint": "100 − pénalités (manquants, valeurs aberrantes) — calculé sur le fichier complet.",
+      "preview": "Aperçu (10 premières lignes)",
+      "confirm": "J'ai compris, commencer"
+    },
+    "step2": {
+      "targetLabel": "Colonne cible (ce que le modèle doit prédire)",
+      "targetPlaceholder": "Choisir une colonne…",
+      "suggested": "Suggestion",
+      "taskLabel": "Type de tâche",
+      "classification": "Classification",
+      "classificationHint": "Prédire une catégorie (ex. setosa / versicolor / virginica).",
+      "regression": "Régression",
+      "regressionHint": "Prédire un nombre (ex. une note de 0 à 20).",
+      "aiTitle": "Assistance",
+      "aiApply": "Appliquer la recommandation",
+      "aiReco": "Recommandation : {task}. {reason}",
+      "reasonCategorical": "La cible « {column} » contient {count} valeurs distinctes de type texte/catégorie : une classification est adaptée.",
+      "reasonNumeric": "La cible « {column} » est numérique continue ({count} valeurs distinctes) : une régression est adaptée.",
+      "blockTitle": "Incohérence détectée",
+      "blockBody": "La cible « {column} » est catégorielle : une régression est impossible. Choisissez la classification, ou une autre cible numérique.",
+      "understand": "Comprendre : classification ou régression ?",
+      "understandBody": "Classification = prédire une étiquette parmi des catégories. Régression = prédire une valeur numérique continue. Le choix dépend de la colonne cible."
+    },
+    "step3": {
+      "intro": "Colonnes à traiter : choisissez une stratégie pour chaque colonne ayant des valeurs manquantes. Ce qui est configuré ici sera RÉELLEMENT appliqué par l'entraînement.",
+      "cleanTitle": "0 colonne à nettoyer 🎉",
+      "cleanBody": "Vos données sont excellentes — aucun traitement inutile ne sera appliqué (le sur-traitement dégrade les modèles).",
+      "column": "Colonne",
+      "type": "Type",
+      "missing": "Manquants",
+      "distribution": "Distribution",
+      "strategy": "Stratégie",
+      "applyReco": "Appliquer les recommandations",
+      "recommended": "recommandé",
+      "strategies": {
+        "mean": "Moyenne",
+        "median": "Médiane",
+        "most_frequent": "Valeur la plus fréquente",
+        "constant": "Constante",
+        "knn": "KNN (voisins)",
+        "iterative": "Itérative",
+        "drop_rows": "Supprimer les lignes",
+        "drop_column": "Supprimer la colonne"
+      },
+      "distributions": {
+        "normal": "normale",
+        "symmetric": "symétrique",
+        "right_skewed": "asymétrique droite",
+        "left_skewed": "asymétrique gauche",
+        "categorical": "catégorielle",
+        "unknown": "inconnue"
+      },
+      "blockOver30": "Ces colonnes dépassent 30 % de manquants et exigent une stratégie explicite : {columns}",
+      "targetMissing": "La cible « {column} » a {count} valeurs manquantes : ces lignes seront supprimées à l'entraînement (affiché dans le récapitulatif).",
+      "outliers": "{count} valeurs aberrantes ({pct}%)"
+    },
+    "step4": {
+      "testSize": "Part réservée au test : {pct}%",
+      "trainRows": "{count} lignes d'entraînement",
+      "testRows": "{count} lignes de test",
+      "stratified": "Stratification automatique en classification : chaque classe garde la même proportion dans le train et le test.",
+      "seed": "random_state = 42 (fixé — reproductibilité garantie : deux exécutions identiques donnent les mêmes résultats)",
+      "understand": "Comprendre : pourquoi séparer train/test ?",
+      "understandBody": "Le modèle apprend sur le train puis est évalué sur le test, des données qu'il n'a JAMAIS vues. C'est le seul moyen honnête de mesurer sa capacité à généraliser."
+    },
+    "step5": {
+      "scaling": "Normalisation des variables numériques",
+      "scalingHint": "Ex. [10, 20, 30] → [−1, 0, +1] : toutes les variables parlent la même « langue » d'échelle.",
+      "methods": {
+        "standard": "Standard (μ=0, σ=1) — recommandé",
+        "minmax": "Min-Max (0 à 1)",
+        "robust": "Robuste (résiste aux valeurs aberrantes)"
+      },
+      "robustReco": "Des valeurs aberrantes ont été détectées à l'étape 3 : la méthode robuste est recommandée.",
+      "encoding": "Encodage des variables catégorielles",
+      "encodings": {
+        "onehot": "One-hot (une colonne par catégorie) — recommandé",
+        "ordinal": "Ordinal (un entier par catégorie)"
+      },
+      "applied": "Cette configuration est réellement transmise et appliquée à l'entraînement."
+    },
+    "step6": {
+      "badges": {
+        "recommended": "Recommandé",
+        "max_explainability": "Explicabilité maximale"
+      },
+      "names": {
+        "decision_tree": "Arbre de décision",
+        "random_forest": "Forêt aléatoire"
+      },
+      "descriptions": {
+        "decision_tree": "Une suite de questions si/alors lisibles. Interprétable à 100 %, rapide, idéal pour comprendre les décisions — peut manquer de précision sur des données complexes.",
+        "random_forest": "Des centaines d'arbres qui votent. Robuste et performant (score OOB en bonus) — un peu moins lisible qu'un arbre seul."
+      },
+      "aiReco": "Recommandation : {algo}. {reason}",
+      "reasonSmall": "Dataset compact ({rows} lignes) : un arbre de décision restera lisible et suffisant.",
+      "reasonLarge": "{rows} lignes et {cols} variables : la forêt aléatoire encaissera mieux la complexité."
+    },
+    "step7": {
+      "presets": {
+        "balanced": "Équilibré",
+        "high_precision": "Haute précision",
+        "fast": "Rapide",
+        "custom": "Personnalisé"
+      },
+      "hints": {
+        "max_depth": "Profondeur maximale : élevée = plus précis mais risque de surapprentissage.",
+        "min_samples_split": "Minimum d'exemples pour diviser un nœud : élevé = arbre plus simple.",
+        "min_samples_leaf": "Minimum d'exemples par feuille : élevé = plus robuste au bruit.",
+        "n_estimators": "Nombre d'arbres : plus = plus stable mais plus lent.",
+        "criterion": "Mesure de pureté des divisions (gini/entropy).",
+        "bootstrap": "Échantillonnage avec remise (active le score OOB)."
+      }
+    },
+    "step8": {
+      "recap": "Récapitulatif complet",
+      "dataset": "Dataset",
+      "target": "Cible",
+      "task": "Tâche",
+      "cleaning": "Nettoyage",
+      "cleaningValue": "{count} stratégies personnalisées",
+      "split": "Division",
+      "prep": "Préparation",
+      "algo": "Algorithme",
+      "cost": "Coût : 1 crédit (solde actuel : {credits})",
+      "confirm": "Je confirme le lancement de cet entraînement",
+      "launch": "Lancer l'entraînement",
+      "launching": "Lancement…",
+      "queued": "En file d'attente (position {position})",
+      "console": "Console d'entraînement",
+      "cancel": "Annuler l'entraînement",
+      "cancelled": "Entraînement annulé.",
+      "failed": "Échec : {message}",
+      "seeResults": "Voir les résultats"
+    },
+    "errors": {
+      "MAX_CONCURRENT_TRAININGS": "Vous avez déjà 3 entraînements en cours — attendez la fin de l'un d'eux.",
+      "MAX_DAILY_TRAININGS": "Limite quotidienne d'entraînements atteinte.",
+      "INSUFFICIENT_CREDITS": "Crédits insuffisants : demandez une recharge à un administrateur."
+    }
+  },
+  "experiments": {
+    "resultsTitle": "Résultats de l'expérience",
+    "tabPerformance": "Performance",
+    "tabXai": "Explicabilité",
+    "xaiSoon": "L'explicabilité (SHAP/LIME, KPI de fiabilité, chat) arrive au prochain jalon.",
+    "composite": {
+      "excellent": "Excellent",
+      "good": "Bon",
+      "fair": "Correct",
+      "needs_improvement": "À améliorer",
+      "method": "Méthode : {method}"
+    },
+    "metrics": {
+      "accuracy": "Exactitude",
+      "precision": "Précision",
+      "recall": "Rappel",
+      "f1_score": "F1 (pondéré)",
+      "precision_macro": "Précision macro",
+      "recall_macro": "Rappel macro",
+      "f1_macro": "F1-Macro",
+      "roc_auc": "ROC AUC",
+      "pr_auc": "PR AUC",
+      "oob_score": "Score OOB",
+      "mae": "MAE",
+      "mse": "MSE",
+      "rmse": "RMSE",
+      "r2": "R²",
+      "primary": "métrique principale"
+    },
+    "metricHints": {
+      "f1_macro": "Moyenne non pondérée du F1 entre classes — plus représentative en multiclasse.",
+      "accuracy": "Part de prédictions correctes.",
+      "roc_auc": "Capacité à séparer les classes (1 = parfait, 0,5 = hasard).",
+      "oob_score": "Évaluation gratuite sur les échantillons non tirés (forêt).",
+      "mae": "Erreur absolue moyenne, dans l'unité de la cible.",
+      "r2": "Part de variance expliquée (1 = parfait)."
+    },
+    "charts": {
+      "confusion": "Matrice de confusion",
+      "roc": "Courbe ROC",
+      "pr": "Courbe précision-rappel",
+      "importance": "Importance des variables (modèle)",
+      "importanceHint": "Importance NATIVE du modèle (Gini) — ce n'est pas du SHAP.",
+      "tree": "Arbre de décision",
+      "treeNote": "{note} — profondeur affichée ≤ {depth}",
+      "predVsActual": "Prédictions vs réelles",
+      "residuals": "Résidus",
+      "residualsHist": "Distribution des résidus",
+      "predicted": "prédit",
+      "actual": "réel",
+      "samples": "exemples"
+    },
+    "appliedTitle": "Transformations réellement appliquées",
+    "appliedBadge": "applied: true",
+    "actions": {
+      "download": "Télécharger le modèle (.joblib)",
+      "rerun": "Relancer avec ajustements",
+      "newExperiment": "Nouvelle expérience",
+      "toXai": "Aller à l'explicabilité"
+    },
+    "logs": "Journal d'entraînement",
+    "table": {
+      "dataset": "Dataset",
+      "algorithm": "Algorithme",
+      "status": "Statut",
+      "score": "Score principal",
+      "duration": "Durée",
+      "date": "Date",
+      "actions": "Actions",
+      "view": "Voir",
+      "delete": "Supprimer",
+      "compare": "Comparer ({count})",
+      "selectHint": "Sélectionnez 2 à 8 expériences terminées pour les comparer."
+    },
+    "status": {
+      "draft": "Brouillon",
+      "pending": "En attente",
+      "running": "En cours",
+      "completed": "Terminée",
+      "failed": "Échouée",
+      "cancelled": "Annulée"
+    },
+    "compareTitle": "Comparaison d'expériences",
+    "compareEmpty": "Sélectionnez au moins 2 expériences terminées."
   }
 }

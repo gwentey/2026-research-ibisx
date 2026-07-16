@@ -16,10 +16,12 @@ import { scoreColorClass } from "@/lib/datasets/constants";
 /** Liste classée (CDC §6.4) : rang, score % coloré, tooltip de décomposition. */
 export function ResultsList({
   results,
-  criteria
+  criteria,
+  renderAction
 }: {
   results: ScoredDataset[];
   criteria: string[];
+  renderAction?: (datasetId: string) => React.ReactNode;
 }) {
   const t = useTranslations("scoring");
 
@@ -44,6 +46,7 @@ export function ResultsList({
                     {[...result.dataset.domain, ...result.dataset.task].join(" · ")}
                   </p>
                 </div>
+                {renderAction ? renderAction(result.dataset.id) : null}
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <span

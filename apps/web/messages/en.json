@@ -439,7 +439,8 @@
     "heatmapHint": "Datasets × criteria — click a header to sort, a row to open the dataset.",
     "scoreSelection": "Score this selection",
     "empty": "No dataset to score — adjust the catalog filters.",
-    "loading": "Computing ranking…"
+    "loading": "Computing ranking…",
+    "train": "Start a training"
   },
   "projects": {
     "title": "Projects",
@@ -499,5 +500,256 @@
       "training": "Training",
       "explanation": "Explanation"
     }
+  },
+  "wizard": {
+    "title": "Guided training",
+    "missingContext": "The wizard opens from a project: pick a recommended dataset then “Start a training”.",
+    "backToProject": "Back to project",
+    "draftSaved": "Draft saved",
+    "draftResumed": "Draft resumed — continue where you left off.",
+    "steps": {
+      "1": "Dataset overview",
+      "2": "Prediction target",
+      "3": "Data cleaning",
+      "4": "Data split",
+      "5": "Final preparation",
+      "6": "Algorithm",
+      "7": "Hyperparameters",
+      "8": "Training",
+      "9": "Results"
+    },
+    "next": "Next step",
+    "back": "Previous step",
+    "step1": {
+      "understand": "Understand: what is a dataset?",
+      "understandBody": "A dataset is a table, like a spreadsheet: each row is an example (a student, a flower, a passenger…) and each column a measured piece of information. The model learns regularities in these rows to predict a target column.",
+      "rows": "rows",
+      "cols": "columns",
+      "quality": "Quality score",
+      "qualityHint": "100 − penalties (missing values, outliers) — computed on the full file.",
+      "preview": "Preview (first 10 rows)",
+      "confirm": "Got it, start"
+    },
+    "step2": {
+      "targetLabel": "Target column (what the model must predict)",
+      "targetPlaceholder": "Pick a column…",
+      "suggested": "Suggestion",
+      "taskLabel": "Task type",
+      "classification": "Classification",
+      "classificationHint": "Predict a category (e.g. setosa / versicolor / virginica).",
+      "regression": "Regression",
+      "regressionHint": "Predict a number (e.g. a grade from 0 to 20).",
+      "aiTitle": "Assistance",
+      "aiApply": "Apply recommendation",
+      "aiReco": "Recommendation: {task}. {reason}",
+      "reasonCategorical": "Target “{column}” holds {count} distinct text/category values: classification fits.",
+      "reasonNumeric": "Target “{column}” is continuous numeric ({count} distinct values): regression fits.",
+      "blockTitle": "Inconsistency detected",
+      "blockBody": "Target “{column}” is categorical: regression is impossible. Choose classification, or a numeric target.",
+      "understand": "Understand: classification or regression?",
+      "understandBody": "Classification = predict a label among categories. Regression = predict a continuous numeric value. It depends on the target column."
+    },
+    "step3": {
+      "intro": "Columns to clean: choose a strategy for every column with missing values. What you configure here is REALLY applied during training.",
+      "cleanTitle": "0 columns to clean 🎉",
+      "cleanBody": "Your data is excellent — no unnecessary treatment will be applied (over-processing degrades models).",
+      "column": "Column",
+      "type": "Type",
+      "missing": "Missing",
+      "distribution": "Distribution",
+      "strategy": "Strategy",
+      "applyReco": "Apply recommendations",
+      "recommended": "recommended",
+      "strategies": {
+        "mean": "Mean",
+        "median": "Median",
+        "most_frequent": "Most frequent",
+        "constant": "Constant",
+        "knn": "KNN (neighbors)",
+        "iterative": "Iterative",
+        "drop_rows": "Drop rows",
+        "drop_column": "Drop column"
+      },
+      "distributions": {
+        "normal": "normal",
+        "symmetric": "symmetric",
+        "right_skewed": "right-skewed",
+        "left_skewed": "left-skewed",
+        "categorical": "categorical",
+        "unknown": "unknown"
+      },
+      "blockOver30": "These columns exceed 30% missing and require an explicit strategy: {columns}",
+      "targetMissing": "Target “{column}” has {count} missing values: those rows will be dropped at training (shown in the recap).",
+      "outliers": "{count} outliers ({pct}%)"
+    },
+    "step4": {
+      "testSize": "Share reserved for testing: {pct}%",
+      "trainRows": "{count} training rows",
+      "testRows": "{count} test rows",
+      "stratified": "Automatic stratification in classification: each class keeps the same proportion in train and test.",
+      "seed": "random_state = 42 (fixed — reproducibility guaranteed: two identical runs give identical results)",
+      "understand": "Understand: why split train/test?",
+      "understandBody": "The model learns on train then is evaluated on test — data it has NEVER seen. It is the only honest way to measure generalization."
+    },
+    "step5": {
+      "scaling": "Numeric feature scaling",
+      "scalingHint": "E.g. [10, 20, 30] → [−1, 0, +1]: all features speak the same scale “language”.",
+      "methods": {
+        "standard": "Standard (μ=0, σ=1) — recommended",
+        "minmax": "Min-Max (0 to 1)",
+        "robust": "Robust (resists outliers)"
+      },
+      "robustReco": "Outliers were detected at step 3: the robust method is recommended.",
+      "encoding": "Categorical encoding",
+      "encodings": {
+        "onehot": "One-hot (one column per category) — recommended",
+        "ordinal": "Ordinal (one integer per category)"
+      },
+      "applied": "This configuration is really transmitted and applied during training."
+    },
+    "step6": {
+      "badges": {
+        "recommended": "Recommended",
+        "max_explainability": "Maximum explainability"
+      },
+      "names": {
+        "decision_tree": "Decision tree",
+        "random_forest": "Random forest"
+      },
+      "descriptions": {
+        "decision_tree": "A readable series of if/then questions. 100% interpretable, fast, ideal to understand decisions — may lack accuracy on complex data.",
+        "random_forest": "Hundreds of trees voting. Robust and accurate (bonus OOB score) — slightly less readable than a single tree."
+      },
+      "aiReco": "Recommendation: {algo}. {reason}",
+      "reasonSmall": "Compact dataset ({rows} rows): a decision tree stays readable and sufficient.",
+      "reasonLarge": "{rows} rows and {cols} features: the random forest will handle the complexity better."
+    },
+    "step7": {
+      "presets": {
+        "balanced": "Balanced",
+        "high_precision": "High precision",
+        "fast": "Fast",
+        "custom": "Custom"
+      },
+      "hints": {
+        "max_depth": "Maximum depth: higher = more precise but overfitting risk.",
+        "min_samples_split": "Minimum samples to split a node: higher = simpler tree.",
+        "min_samples_leaf": "Minimum samples per leaf: higher = more robust to noise.",
+        "n_estimators": "Number of trees: more = more stable but slower.",
+        "criterion": "Split purity measure (gini/entropy).",
+        "bootstrap": "Sampling with replacement (enables OOB score)."
+      }
+    },
+    "step8": {
+      "recap": "Full recap",
+      "dataset": "Dataset",
+      "target": "Target",
+      "task": "Task",
+      "cleaning": "Cleaning",
+      "cleaningValue": "{count} custom strategies",
+      "split": "Split",
+      "prep": "Preparation",
+      "algo": "Algorithm",
+      "cost": "Cost: 1 credit (current balance: {credits})",
+      "confirm": "I confirm launching this training",
+      "launch": "Start training",
+      "launching": "Starting…",
+      "queued": "Queued (position {position})",
+      "console": "Training console",
+      "cancel": "Cancel training",
+      "cancelled": "Training cancelled.",
+      "failed": "Failed: {message}",
+      "seeResults": "See results"
+    },
+    "errors": {
+      "MAX_CONCURRENT_TRAININGS": "You already have 3 trainings running — wait for one to finish.",
+      "MAX_DAILY_TRAININGS": "Daily training limit reached.",
+      "INSUFFICIENT_CREDITS": "Not enough credits: ask an administrator for a top-up."
+    }
+  },
+  "experiments": {
+    "resultsTitle": "Experiment results",
+    "tabPerformance": "Performance",
+    "tabXai": "Explainability",
+    "xaiSoon": "Explainability (SHAP/LIME, reliability KPIs, chat) arrives in the next milestone.",
+    "composite": {
+      "excellent": "Excellent",
+      "good": "Good",
+      "fair": "Fair",
+      "needs_improvement": "Needs improvement",
+      "method": "Method: {method}"
+    },
+    "metrics": {
+      "accuracy": "Accuracy",
+      "precision": "Precision",
+      "recall": "Recall",
+      "f1_score": "F1 (weighted)",
+      "precision_macro": "Precision macro",
+      "recall_macro": "Recall macro",
+      "f1_macro": "F1-Macro",
+      "roc_auc": "ROC AUC",
+      "pr_auc": "PR AUC",
+      "oob_score": "OOB score",
+      "mae": "MAE",
+      "mse": "MSE",
+      "rmse": "RMSE",
+      "r2": "R²",
+      "primary": "primary metric"
+    },
+    "metricHints": {
+      "f1_macro": "Unweighted mean of per-class F1 — more representative in multiclass.",
+      "accuracy": "Share of correct predictions.",
+      "roc_auc": "Ability to separate classes (1 = perfect, 0.5 = random).",
+      "oob_score": "Free evaluation on out-of-bag samples (forest).",
+      "mae": "Mean absolute error, in target units.",
+      "r2": "Share of explained variance (1 = perfect)."
+    },
+    "charts": {
+      "confusion": "Confusion matrix",
+      "roc": "ROC curve",
+      "pr": "Precision-recall curve",
+      "importance": "Feature importance (model)",
+      "importanceHint": "NATIVE model importance (Gini) — this is not SHAP.",
+      "tree": "Decision tree",
+      "treeNote": "{note} — displayed depth ≤ {depth}",
+      "predVsActual": "Predicted vs actual",
+      "residuals": "Residuals",
+      "residualsHist": "Residuals distribution",
+      "predicted": "predicted",
+      "actual": "actual",
+      "samples": "samples"
+    },
+    "appliedTitle": "Transformations really applied",
+    "appliedBadge": "applied: true",
+    "actions": {
+      "download": "Download model (.joblib)",
+      "rerun": "Re-run with adjustments",
+      "newExperiment": "New experiment",
+      "toXai": "Go to explainability"
+    },
+    "logs": "Training log",
+    "table": {
+      "dataset": "Dataset",
+      "algorithm": "Algorithm",
+      "status": "Status",
+      "score": "Primary score",
+      "duration": "Duration",
+      "date": "Date",
+      "actions": "Actions",
+      "view": "View",
+      "delete": "Delete",
+      "compare": "Compare ({count})",
+      "selectHint": "Select 2 to 8 completed experiments to compare them."
+    },
+    "status": {
+      "draft": "Draft",
+      "pending": "Pending",
+      "running": "Running",
+      "completed": "Completed",
+      "failed": "Failed",
+      "cancelled": "Cancelled"
+    },
+    "compareTitle": "Experiment comparison",
+    "compareEmpty": "Select at least 2 completed experiments."
   }
 }

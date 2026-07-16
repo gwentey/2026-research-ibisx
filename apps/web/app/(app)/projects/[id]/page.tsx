@@ -4,7 +4,7 @@ import { use, useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { FlaskConicalIcon, PencilIcon, Trash2Icon } from "lucide-react";
+import { PencilIcon, PlayIcon, Trash2Icon } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -21,6 +21,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { MissionStepper } from "@/components/ibis/mission-stepper";
+import { ProjectExperimentsTab } from "@/components/ibis/experiments/project-experiments-tab";
 import { ResultsList } from "@/components/ibis/scoring/results-list";
 import { ScoreHeatmap } from "@/components/ibis/scoring/score-heatmap";
 import {
@@ -169,6 +170,14 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ id: st
               <ResultsList
                 results={recommendations.results}
                 criteria={recommendations.criteria}
+                renderAction={(datasetId) => (
+                  <Button size="sm" asChild>
+                    <Link href={`/wizard?projectId=${project.id}&datasetId=${datasetId}`}>
+                      <PlayIcon />
+                      {tScoring("train")}
+                    </Link>
+                  </Button>
+                )}
               />
             )
           ) : (
@@ -181,15 +190,7 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ id: st
         </TabsContent>
 
         <TabsContent value="experiments">
-          <Card>
-            <CardContent className="space-y-2 py-10 text-center">
-              <FlaskConicalIcon className="text-muted-foreground mx-auto size-8" />
-              <p className="font-medium">{td("experimentsEmptyTitle")}</p>
-              <p className="text-muted-foreground mx-auto max-w-md text-sm">
-                {td("experimentsEmptyBody")}
-              </p>
-            </CardContent>
-          </Card>
+          <ProjectExperimentsTab projectId={project.id} />
         </TabsContent>
 
         <TabsContent value="config">

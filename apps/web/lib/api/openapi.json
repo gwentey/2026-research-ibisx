@@ -188,6 +188,123 @@
         "title": "ColumnRead",
         "type": "object"
       },
+      "ColumnStrategy": {
+        "additionalProperties": false,
+        "properties": {
+          "constant_value": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Constant Value"
+          },
+          "strategy": {
+            "enum": [
+              "mean",
+              "median",
+              "most_frequent",
+              "constant",
+              "knn",
+              "iterative",
+              "drop_rows",
+              "drop_column"
+            ],
+            "title": "Strategy",
+            "type": "string"
+          }
+        },
+        "required": [
+          "strategy"
+        ],
+        "title": "ColumnStrategy",
+        "type": "object"
+      },
+      "CompareRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "experiment_ids": {
+            "items": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "maxItems": 8,
+            "minItems": 2,
+            "title": "Experiment Ids",
+            "type": "array"
+          }
+        },
+        "required": [
+          "experiment_ids"
+        ],
+        "title": "CompareRequest",
+        "type": "object"
+      },
+      "CompareResponse": {
+        "properties": {
+          "metric_keys": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Metric Keys",
+            "type": "array"
+          },
+          "rows": {
+            "items": {
+              "$ref": "#/components/schemas/CompareRow"
+            },
+            "title": "Rows",
+            "type": "array"
+          }
+        },
+        "required": [
+          "rows",
+          "metric_keys"
+        ],
+        "title": "CompareResponse",
+        "type": "object"
+      },
+      "CompareRow": {
+        "properties": {
+          "algorithm": {
+            "title": "Algorithm",
+            "type": "string"
+          },
+          "dataset_name": {
+            "title": "Dataset Name",
+            "type": "string"
+          },
+          "experiment_id": {
+            "format": "uuid",
+            "title": "Experiment Id",
+            "type": "string"
+          },
+          "metrics": {
+            "additionalProperties": true,
+            "title": "Metrics",
+            "type": "object"
+          },
+          "task_type": {
+            "title": "Task Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "experiment_id",
+          "dataset_name",
+          "algorithm",
+          "task_type",
+          "metrics"
+        ],
+        "title": "CompareRow",
+        "type": "object"
+      },
       "CompletionSection": {
         "properties": {
           "filled": {
@@ -1766,6 +1883,33 @@
         "title": "DatasetPreview",
         "type": "object"
       },
+      "DraftUpsert": {
+        "additionalProperties": false,
+        "properties": {
+          "dataset_id": {
+            "format": "uuid",
+            "title": "Dataset Id",
+            "type": "string"
+          },
+          "project_id": {
+            "format": "uuid",
+            "title": "Project Id",
+            "type": "string"
+          },
+          "state": {
+            "additionalProperties": true,
+            "title": "State",
+            "type": "object"
+          }
+        },
+        "required": [
+          "project_id",
+          "dataset_id",
+          "state"
+        ],
+        "title": "DraftUpsert",
+        "type": "object"
+      },
       "EducationLevel": {
         "enum": [
           "lycee",
@@ -1776,6 +1920,539 @@
         ],
         "title": "EducationLevel",
         "type": "string"
+      },
+      "ExperimentCreate": {
+        "additionalProperties": false,
+        "properties": {
+          "algorithm": {
+            "title": "Algorithm",
+            "type": "string"
+          },
+          "dataset_id": {
+            "format": "uuid",
+            "title": "Dataset Id",
+            "type": "string"
+          },
+          "hyperparameters": {
+            "additionalProperties": true,
+            "title": "Hyperparameters",
+            "type": "object"
+          },
+          "preprocessing": {
+            "$ref": "#/components/schemas/PreprocessingConfig"
+          },
+          "project_id": {
+            "format": "uuid",
+            "title": "Project Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "project_id",
+          "dataset_id",
+          "algorithm",
+          "preprocessing"
+        ],
+        "title": "ExperimentCreate",
+        "type": "object"
+      },
+      "ExperimentRead": {
+        "properties": {
+          "algorithm": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Algorithm"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "dataset_id": {
+            "format": "uuid",
+            "title": "Dataset Id",
+            "type": "string"
+          },
+          "draft_state": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Draft State"
+          },
+          "duration_seconds": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Duration Seconds"
+          },
+          "error_code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error Code"
+          },
+          "error_message": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error Message"
+          },
+          "finished_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Finished At"
+          },
+          "hyperparameters": {
+            "additionalProperties": true,
+            "title": "Hyperparameters",
+            "type": "object"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "job_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Job Id"
+          },
+          "preprocessing_config": {
+            "additionalProperties": true,
+            "title": "Preprocessing Config",
+            "type": "object"
+          },
+          "progress": {
+            "title": "Progress",
+            "type": "integer"
+          },
+          "project_id": {
+            "format": "uuid",
+            "title": "Project Id",
+            "type": "string"
+          },
+          "started_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Started At"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "updated_at": {
+            "format": "date-time",
+            "title": "Updated At",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "project_id",
+          "dataset_id",
+          "algorithm",
+          "hyperparameters",
+          "preprocessing_config",
+          "status",
+          "progress",
+          "job_id",
+          "error_code",
+          "error_message",
+          "draft_state",
+          "started_at",
+          "finished_at",
+          "duration_seconds",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "ExperimentRead",
+        "type": "object"
+      },
+      "ExperimentResults": {
+        "properties": {
+          "algorithm": {
+            "title": "Algorithm",
+            "type": "string"
+          },
+          "applied_preprocessing": {
+            "additionalProperties": true,
+            "title": "Applied Preprocessing",
+            "type": "object"
+          },
+          "class_names": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Class Names"
+          },
+          "composite": {
+            "additionalProperties": true,
+            "title": "Composite",
+            "type": "object"
+          },
+          "feature_importance": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "title": "Feature Importance",
+            "type": "array"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "metrics": {
+            "additionalProperties": true,
+            "title": "Metrics",
+            "type": "object"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "task_type": {
+            "title": "Task Type",
+            "type": "string"
+          },
+          "viz_data": {
+            "additionalProperties": true,
+            "title": "Viz Data",
+            "type": "object"
+          }
+        },
+        "required": [
+          "id",
+          "status",
+          "task_type",
+          "algorithm",
+          "metrics",
+          "viz_data",
+          "feature_importance",
+          "applied_preprocessing",
+          "composite",
+          "class_names"
+        ],
+        "title": "ExperimentResults",
+        "type": "object"
+      },
+      "ExperimentSummary": {
+        "description": "Ligne de l'onglet Expériences du projet (benchmarking, CDC §7.2).",
+        "properties": {
+          "algorithm": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Algorithm"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "dataset_id": {
+            "format": "uuid",
+            "title": "Dataset Id",
+            "type": "string"
+          },
+          "dataset_name": {
+            "title": "Dataset Name",
+            "type": "string"
+          },
+          "duration_seconds": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Duration Seconds"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "primary_metric_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Primary Metric Name"
+          },
+          "primary_metric_value": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Primary Metric Value"
+          },
+          "progress": {
+            "title": "Progress",
+            "type": "integer"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "dataset_id",
+          "dataset_name",
+          "algorithm",
+          "status",
+          "progress",
+          "primary_metric_name",
+          "primary_metric_value",
+          "duration_seconds",
+          "created_at"
+        ],
+        "title": "ExperimentSummary",
+        "type": "object"
+      },
+      "ExperimentWithQueue": {
+        "properties": {
+          "algorithm": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Algorithm"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "dataset_id": {
+            "format": "uuid",
+            "title": "Dataset Id",
+            "type": "string"
+          },
+          "draft_state": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Draft State"
+          },
+          "duration_seconds": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Duration Seconds"
+          },
+          "error_code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error Code"
+          },
+          "error_message": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error Message"
+          },
+          "finished_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Finished At"
+          },
+          "hyperparameters": {
+            "additionalProperties": true,
+            "title": "Hyperparameters",
+            "type": "object"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "job_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Job Id"
+          },
+          "preprocessing_config": {
+            "additionalProperties": true,
+            "title": "Preprocessing Config",
+            "type": "object"
+          },
+          "progress": {
+            "title": "Progress",
+            "type": "integer"
+          },
+          "project_id": {
+            "format": "uuid",
+            "title": "Project Id",
+            "type": "string"
+          },
+          "queue_position": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Queue Position"
+          },
+          "started_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Started At"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "updated_at": {
+            "format": "date-time",
+            "title": "Updated At",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "project_id",
+          "dataset_id",
+          "algorithm",
+          "hyperparameters",
+          "preprocessing_config",
+          "status",
+          "progress",
+          "job_id",
+          "error_code",
+          "error_message",
+          "draft_state",
+          "started_at",
+          "finished_at",
+          "duration_seconds",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "ExperimentWithQueue",
+        "type": "object"
       },
       "FacetValue": {
         "properties": {
@@ -2134,6 +2811,30 @@
         "title": "JobStatus",
         "type": "string"
       },
+      "LogLine": {
+        "properties": {
+          "level": {
+            "title": "Level",
+            "type": "string"
+          },
+          "message": {
+            "title": "Message",
+            "type": "string"
+          },
+          "ts": {
+            "format": "date-time",
+            "title": "Ts",
+            "type": "string"
+          }
+        },
+        "required": [
+          "ts",
+          "level",
+          "message"
+        ],
+        "title": "LogLine",
+        "type": "object"
+      },
       "LoginRequest": {
         "additionalProperties": false,
         "properties": {
@@ -2208,6 +2909,84 @@
           "new_password"
         ],
         "title": "PasswordChangeRequest",
+        "type": "object"
+      },
+      "PreprocessingConfig": {
+        "additionalProperties": false,
+        "description": "Contrat v2 strict (`extra=forbid`) — validé à la création de l'expérience.",
+        "properties": {
+          "column_strategies": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/ColumnStrategy"
+            },
+            "title": "Column Strategies",
+            "type": "object"
+          },
+          "default_categorical_strategy": {
+            "const": "most_frequent",
+            "default": "most_frequent",
+            "title": "Default Categorical Strategy",
+            "type": "string"
+          },
+          "default_numeric_strategy": {
+            "default": "median",
+            "enum": [
+              "mean",
+              "median"
+            ],
+            "title": "Default Numeric Strategy",
+            "type": "string"
+          },
+          "drop_columns": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Drop Columns",
+            "type": "array"
+          },
+          "encoding": {
+            "default": "onehot",
+            "enum": [
+              "onehot",
+              "ordinal"
+            ],
+            "title": "Encoding",
+            "type": "string"
+          },
+          "random_state": {
+            "const": 42,
+            "default": 42,
+            "title": "Random State",
+            "type": "integer"
+          },
+          "scaling": {
+            "$ref": "#/components/schemas/ScalingConfig"
+          },
+          "target_column": {
+            "title": "Target Column",
+            "type": "string"
+          },
+          "task_type": {
+            "enum": [
+              "classification",
+              "regression"
+            ],
+            "title": "Task Type",
+            "type": "string"
+          },
+          "test_size": {
+            "default": 0.2,
+            "maximum": 0.5,
+            "minimum": 0.1,
+            "title": "Test Size",
+            "type": "number"
+          }
+        },
+        "required": [
+          "target_column",
+          "task_type"
+        ],
+        "title": "PreprocessingConfig",
         "type": "object"
       },
       "PreviewColumnStats": {
@@ -2543,6 +3322,28 @@
           "new_password"
         ],
         "title": "ResetPasswordRequest",
+        "type": "object"
+      },
+      "ScalingConfig": {
+        "additionalProperties": false,
+        "properties": {
+          "enabled": {
+            "default": true,
+            "title": "Enabled",
+            "type": "boolean"
+          },
+          "method": {
+            "default": "standard",
+            "enum": [
+              "standard",
+              "minmax",
+              "robust"
+            ],
+            "title": "Method",
+            "type": "string"
+          }
+        },
+        "title": "ScalingConfig",
         "type": "object"
       },
       "ScoreRequest": {
@@ -3018,6 +3819,33 @@
   },
   "openapi": "3.1.0",
   "paths": {
+    "/api/v1/algorithms": {
+      "get": {
+        "description": "Cartes d'algorithmes + schémas d'hyperparamètres (source du formulaire, CDC §8.2 É6-7).",
+        "operationId": "listAlgorithms",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "additionalProperties": true,
+                    "type": "object"
+                  },
+                  "title": "Response Listalgorithms",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "List Algorithms",
+        "tags": [
+          "experiments"
+        ]
+      }
+    },
     "/api/v1/auth/forgot-password": {
       "post": {
         "description": "Répond toujours 204 (pas d'énumération). Sans SMTP le lien est loggé (dev).",
@@ -4377,6 +5205,62 @@
         ]
       }
     },
+    "/api/v1/datasets/{dataset_id}/quality-analysis": {
+      "get": {
+        "description": "Analyse de qualité serveur, cache 7 j invalidable (CDC §8.2 É3).",
+        "operationId": "getQualityAnalysis",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "dataset_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Dataset Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "force",
+            "required": false,
+            "schema": {
+              "default": false,
+              "title": "Force",
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Getqualityanalysis",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Quality Analysis",
+        "tags": [
+          "experiments"
+        ]
+      }
+    },
     "/api/v1/datasets/{dataset_id}/similar": {
       "get": {
         "operationId": "getSimilarDatasets",
@@ -4421,6 +5305,438 @@
         "summary": "Get Similar",
         "tags": [
           "datasets"
+        ]
+      }
+    },
+    "/api/v1/experiments": {
+      "post": {
+        "description": "Lancement : validation registre + quotas + débit 1 crédit → file `training`.",
+        "operationId": "startExperiment",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ExperimentCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExperimentRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Start Experiment",
+        "tags": [
+          "experiments"
+        ]
+      }
+    },
+    "/api/v1/experiments/compare": {
+      "post": {
+        "description": "Benchmarking (CDC §7.2) : métriques alignées côte à côte.",
+        "operationId": "compareExperiments",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CompareRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompareResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Compare Experiments",
+        "tags": [
+          "experiments"
+        ]
+      }
+    },
+    "/api/v1/experiments/draft": {
+      "get": {
+        "operationId": "getDraft",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Project Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "dataset_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Dataset Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/ExperimentRead"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "title": "Response Getdraft"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Draft",
+        "tags": [
+          "experiments"
+        ]
+      },
+      "put": {
+        "description": "Brouillon persisté à chaque étape validée → reprise du wizard (P5).",
+        "operationId": "upsertDraft",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DraftUpsert"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExperimentRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Upsert Draft",
+        "tags": [
+          "experiments"
+        ]
+      }
+    },
+    "/api/v1/experiments/{experiment_id}": {
+      "delete": {
+        "operationId": "deleteExperiment",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "experiment_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Experiment Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Delete Experiment",
+        "tags": [
+          "experiments"
+        ]
+      },
+      "get": {
+        "operationId": "getExperiment",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "experiment_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Experiment Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExperimentWithQueue"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Experiment",
+        "tags": [
+          "experiments"
+        ]
+      }
+    },
+    "/api/v1/experiments/{experiment_id}/cancel": {
+      "post": {
+        "operationId": "cancelExperiment",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "experiment_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Experiment Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExperimentRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Cancel Experiment",
+        "tags": [
+          "experiments"
+        ]
+      }
+    },
+    "/api/v1/experiments/{experiment_id}/download-model": {
+      "get": {
+        "description": "Artefact .joblib {model, preprocessing_pipeline, feature_names, training_config}.",
+        "operationId": "downloadModel",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "experiment_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Experiment Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Download Model",
+        "tags": [
+          "experiments"
+        ]
+      }
+    },
+    "/api/v1/experiments/{experiment_id}/logs": {
+      "get": {
+        "operationId": "getExperimentLogs",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "experiment_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Experiment Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/LogLine"
+                  },
+                  "title": "Response Getexperimentlogs",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Logs",
+        "tags": [
+          "experiments"
+        ]
+      }
+    },
+    "/api/v1/experiments/{experiment_id}/results": {
+      "get": {
+        "operationId": "getExperimentResults",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "experiment_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Experiment Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExperimentResults"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Results",
+        "tags": [
+          "experiments"
         ]
       }
     },
@@ -4811,6 +6127,53 @@
         "summary": "Update Project",
         "tags": [
           "projects"
+        ]
+      }
+    },
+    "/api/v1/projects/{project_id}/experiments": {
+      "get": {
+        "operationId": "listProjectExperiments",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Project Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ExperimentSummary"
+                  },
+                  "title": "Response Listprojectexperiments",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Project Experiments",
+        "tags": [
+          "experiments"
         ]
       }
     },
