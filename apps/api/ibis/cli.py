@@ -19,5 +19,19 @@ def version() -> None:
     typer.echo(f"ibis-api {__version__}")
 
 
+@app.command("create-admin")
+def create_admin(
+    email: str,
+    password: str = typer.Option(
+        None, prompt=True, hide_input=True, confirmation_prompt=True, help="Mot de passe (≥ 8)"
+    ),
+) -> None:
+    """Crée (ou promeut) un compte administrateur (CDC §11)."""
+    from ibis.modules.auth.bootstrap import create_admin as do_create
+
+    user = do_create(email, password)
+    typer.echo(f"Admin prêt : {user.email} (id={user.id})")
+
+
 if __name__ == "__main__":
     app()

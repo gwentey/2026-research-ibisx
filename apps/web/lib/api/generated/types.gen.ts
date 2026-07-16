@@ -5,6 +5,69 @@ export type ClientOptions = {
 };
 
 /**
+ * AccountDeleteRequest
+ */
+export type AccountDeleteRequest = {
+    /**
+     * Email Confirmation
+     */
+    email_confirmation: string;
+};
+
+/**
+ * Body_uploadAvatar
+ */
+export type BodyUploadAvatar = {
+    /**
+     * File
+     */
+    file: Blob | File;
+};
+
+/**
+ * EducationLevel
+ */
+export type EducationLevel = 'lycee' | 'licence' | 'master' | 'doctorat' | 'autre';
+
+/**
+ * ForgotPasswordRequest
+ */
+export type ForgotPasswordRequest = {
+    /**
+     * Email
+     */
+    email: string;
+};
+
+/**
+ * GoogleAuthorizeResponse
+ */
+export type GoogleAuthorizeResponse = {
+    /**
+     * Authorization Url
+     */
+    authorization_url: string;
+    /**
+     * State
+     */
+    state: string;
+};
+
+/**
+ * GoogleExchangeRequest
+ */
+export type GoogleExchangeRequest = {
+    /**
+     * Code
+     */
+    code: string;
+    /**
+     * State
+     */
+    state: string;
+};
+
+/**
  * HTTPValidationError
  */
 export type HttpValidationError = {
@@ -99,6 +162,198 @@ export type JobRead = {
 export type JobStatus = 'pending' | 'running' | 'completed' | 'failed' | 'cancelled';
 
 /**
+ * LoginRequest
+ */
+export type LoginRequest = {
+    /**
+     * Email
+     */
+    email: string;
+    /**
+     * Password
+     */
+    password: string;
+};
+
+/**
+ * OnboardingRequest
+ */
+export type OnboardingRequest = {
+    /**
+     * Age
+     */
+    age: number;
+    /**
+     * Ai Familiarity
+     */
+    ai_familiarity: number;
+    education_level: EducationLevel;
+};
+
+/**
+ * PasswordChangeRequest
+ */
+export type PasswordChangeRequest = {
+    /**
+     * Current Password
+     */
+    current_password?: string | null;
+    /**
+     * New Password
+     */
+    new_password: string;
+};
+
+/**
+ * ProfileUpdateRequest
+ */
+export type ProfileUpdateRequest = {
+    /**
+     * Age
+     */
+    age?: number | null;
+    /**
+     * Ai Familiarity
+     */
+    ai_familiarity?: number | null;
+    education_level?: EducationLevel | null;
+    /**
+     * Family Name
+     */
+    family_name?: string | null;
+    /**
+     * Given Name
+     */
+    given_name?: string | null;
+    /**
+     * Locale
+     */
+    locale?: string | null;
+    /**
+     * Pseudo
+     */
+    pseudo?: string | null;
+    xai_audience?: XaiAudience | null;
+};
+
+/**
+ * RegisterRequest
+ */
+export type RegisterRequest = {
+    /**
+     * Email
+     */
+    email: string;
+    /**
+     * Password
+     */
+    password: string;
+};
+
+/**
+ * ResetPasswordRequest
+ */
+export type ResetPasswordRequest = {
+    /**
+     * New Password
+     */
+    new_password: string;
+    /**
+     * Token
+     */
+    token: string;
+};
+
+/**
+ * TokenResponse
+ */
+export type TokenResponse = {
+    /**
+     * Access Token
+     */
+    access_token: string;
+    /**
+     * Expires In
+     */
+    expires_in: number;
+    /**
+     * Token Type
+     */
+    token_type?: string;
+    user: UserRead;
+};
+
+/**
+ * UserRead
+ */
+export type UserRead = {
+    /**
+     * Age
+     */
+    age: number | null;
+    /**
+     * Ai Familiarity
+     */
+    ai_familiarity: number | null;
+    /**
+     * Created At
+     */
+    created_at: string;
+    /**
+     * Credits
+     */
+    credits: number;
+    education_level: EducationLevel | null;
+    /**
+     * Email
+     */
+    email: string;
+    /**
+     * Family Name
+     */
+    family_name: string | null;
+    /**
+     * Given Name
+     */
+    given_name: string | null;
+    /**
+     * Has Avatar
+     */
+    has_avatar: boolean;
+    /**
+     * Has Password
+     */
+    has_password: boolean;
+    /**
+     * Id
+     */
+    id: string;
+    /**
+     * Is Active
+     */
+    is_active: boolean;
+    /**
+     * Locale
+     */
+    locale: string;
+    /**
+     * Onboarding Completed
+     */
+    onboarding_completed: boolean;
+    /**
+     * Pseudo
+     */
+    pseudo: string | null;
+    role: UserRole;
+    xai_audience: XaiAudience;
+};
+
+/**
+ * UserRole
+ */
+export type UserRole = 'user' | 'contributor' | 'admin';
+
+/**
  * ValidationError
  */
 export type ValidationError = {
@@ -139,6 +394,184 @@ export type WorkerHealthReport = {
      */
     workers: Array<string>;
 };
+
+/**
+ * XaiAudience
+ */
+export type XaiAudience = 'novice' | 'intermediate' | 'expert';
+
+export type ForgotPasswordData = {
+    body: ForgotPasswordRequest;
+    path?: never;
+    query?: never;
+    url: '/api/v1/auth/forgot-password';
+};
+
+export type ForgotPasswordErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type ForgotPasswordError = ForgotPasswordErrors[keyof ForgotPasswordErrors];
+
+export type ForgotPasswordResponses = {
+    /**
+     * Successful Response
+     */
+    204: void;
+};
+
+export type ForgotPasswordResponse = ForgotPasswordResponses[keyof ForgotPasswordResponses];
+
+export type GoogleAuthorizeData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/v1/auth/google/authorize';
+};
+
+export type GoogleAuthorizeResponses = {
+    /**
+     * Successful Response
+     */
+    200: GoogleAuthorizeResponse;
+};
+
+export type GoogleAuthorizeResponse2 = GoogleAuthorizeResponses[keyof GoogleAuthorizeResponses];
+
+export type GoogleExchangeData = {
+    body: GoogleExchangeRequest;
+    path?: never;
+    query?: never;
+    url: '/api/v1/auth/google/exchange';
+};
+
+export type GoogleExchangeErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type GoogleExchangeError = GoogleExchangeErrors[keyof GoogleExchangeErrors];
+
+export type GoogleExchangeResponses = {
+    /**
+     * Successful Response
+     */
+    200: TokenResponse;
+};
+
+export type GoogleExchangeResponse = GoogleExchangeResponses[keyof GoogleExchangeResponses];
+
+export type LoginData = {
+    body: LoginRequest;
+    path?: never;
+    query?: never;
+    url: '/api/v1/auth/login';
+};
+
+export type LoginErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type LoginError = LoginErrors[keyof LoginErrors];
+
+export type LoginResponses = {
+    /**
+     * Successful Response
+     */
+    200: TokenResponse;
+};
+
+export type LoginResponse = LoginResponses[keyof LoginResponses];
+
+export type LogoutData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/v1/auth/logout';
+};
+
+export type LogoutResponses = {
+    /**
+     * Successful Response
+     */
+    204: void;
+};
+
+export type LogoutResponse = LogoutResponses[keyof LogoutResponses];
+
+export type RefreshTokenData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/v1/auth/refresh';
+};
+
+export type RefreshTokenResponses = {
+    /**
+     * Successful Response
+     */
+    200: TokenResponse;
+};
+
+export type RefreshTokenResponse = RefreshTokenResponses[keyof RefreshTokenResponses];
+
+export type RegisterData = {
+    body: RegisterRequest;
+    path?: never;
+    query?: never;
+    url: '/api/v1/auth/register';
+};
+
+export type RegisterErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type RegisterError = RegisterErrors[keyof RegisterErrors];
+
+export type RegisterResponses = {
+    /**
+     * Successful Response
+     */
+    201: TokenResponse;
+};
+
+export type RegisterResponse = RegisterResponses[keyof RegisterResponses];
+
+export type ResetPasswordData = {
+    body: ResetPasswordRequest;
+    path?: never;
+    query?: never;
+    url: '/api/v1/auth/reset-password';
+};
+
+export type ResetPasswordErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type ResetPasswordError = ResetPasswordErrors[keyof ResetPasswordErrors];
+
+export type ResetPasswordResponses = {
+    /**
+     * Successful Response
+     */
+    204: void;
+};
+
+export type ResetPasswordResponse = ResetPasswordResponses[keyof ResetPasswordResponses];
 
 export type GetHealthData = {
     body?: never;
@@ -245,3 +678,158 @@ export type StreamJobEventsResponses = {
      */
     200: unknown;
 };
+
+export type GetMeData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/v1/users/me';
+};
+
+export type GetMeResponses = {
+    /**
+     * Successful Response
+     */
+    200: UserRead;
+};
+
+export type GetMeResponse = GetMeResponses[keyof GetMeResponses];
+
+export type UpdateMeData = {
+    body: ProfileUpdateRequest;
+    path?: never;
+    query?: never;
+    url: '/api/v1/users/me';
+};
+
+export type UpdateMeErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type UpdateMeError = UpdateMeErrors[keyof UpdateMeErrors];
+
+export type UpdateMeResponses = {
+    /**
+     * Successful Response
+     */
+    200: UserRead;
+};
+
+export type UpdateMeResponse = UpdateMeResponses[keyof UpdateMeResponses];
+
+export type GetMyAvatarData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/v1/users/me/avatar';
+};
+
+export type GetMyAvatarResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
+
+export type UploadAvatarData = {
+    body: BodyUploadAvatar;
+    path?: never;
+    query?: never;
+    url: '/api/v1/users/me/avatar';
+};
+
+export type UploadAvatarErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type UploadAvatarError = UploadAvatarErrors[keyof UploadAvatarErrors];
+
+export type UploadAvatarResponses = {
+    /**
+     * Successful Response
+     */
+    200: UserRead;
+};
+
+export type UploadAvatarResponse = UploadAvatarResponses[keyof UploadAvatarResponses];
+
+export type DeleteAccountData = {
+    body: AccountDeleteRequest;
+    path?: never;
+    query?: never;
+    url: '/api/v1/users/me/delete';
+};
+
+export type DeleteAccountErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type DeleteAccountError = DeleteAccountErrors[keyof DeleteAccountErrors];
+
+export type DeleteAccountResponses = {
+    /**
+     * Successful Response
+     */
+    204: void;
+};
+
+export type DeleteAccountResponse = DeleteAccountResponses[keyof DeleteAccountResponses];
+
+export type CompleteOnboardingData = {
+    body: OnboardingRequest;
+    path?: never;
+    query?: never;
+    url: '/api/v1/users/me/onboarding';
+};
+
+export type CompleteOnboardingErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type CompleteOnboardingError = CompleteOnboardingErrors[keyof CompleteOnboardingErrors];
+
+export type CompleteOnboardingResponses = {
+    /**
+     * Successful Response
+     */
+    200: UserRead;
+};
+
+export type CompleteOnboardingResponse = CompleteOnboardingResponses[keyof CompleteOnboardingResponses];
+
+export type ChangePasswordData = {
+    body: PasswordChangeRequest;
+    path?: never;
+    query?: never;
+    url: '/api/v1/users/me/password';
+};
+
+export type ChangePasswordErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type ChangePasswordError = ChangePasswordErrors[keyof ChangePasswordErrors];
+
+export type ChangePasswordResponses = {
+    /**
+     * Successful Response
+     */
+    204: void;
+};
+
+export type ChangePasswordResponse = ChangePasswordResponses[keyof ChangePasswordResponses];

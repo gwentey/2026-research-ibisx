@@ -81,10 +81,34 @@ def db_session(migrated_database: None) -> Generator[Session, None, None]:
 
 @pytest.fixture()
 def client(db_session: Session) -> Generator[TestClient, None, None]:
+    """Client API standard : BDD de test, rate limiting neutralisé."""
+    from ibis.db.engine import get_db
+    from ibis.main import app
+    from ibis.modules.auth.routes import auth_limiter
+
+    app.dependency_overrides[get_db] = lambda: db_session
+    app.dependency_overrides[auth_limiter] = lambda: None
+    with TestClient(app) as test_client:
+        yield test_client
+    app.dependency_overrides.pop(get_db, None)
+    app.dependency_overrides.pop(auth_limiter, None)
+
+
+@pytest.fixture()
+def rate_limited_client(db_session: Session) -> Generator[TestClient, None, None]:
+    """Client avec le VRAI rate limiting (test dédié) — clés Redis purgées avant/après."""
+    from ibis.core.redis import get_sync_redis
     from ibis.db.engine import get_db
     from ibis.main import app
 
+    def flush_ratelimit_keys() -> None:
+        redis = get_sync_redis()
+        for key in redis.scan_iter("ibis:ratelimit:*"):
+            redis.delete(key)
+
+    flush_ratelimit_keys()
     app.dependency_overrides[get_db] = lambda: db_session
     with TestClient(app) as test_client:
         yield test_client
     app.dependency_overrides.pop(get_db, None)
+    flush_ratelimit_keys()
