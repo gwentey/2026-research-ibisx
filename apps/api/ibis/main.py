@@ -12,6 +12,7 @@ from ibis.core.errors import register_error_handlers
 from ibis.core.logging import configure_logging, get_logger
 from ibis.modules.auth.routes import router as auth_router
 from ibis.modules.datasets.routes import router as datasets_router
+from ibis.modules.experiments.routes import router as experiments_router
 from ibis.modules.health.routes import router as health_router
 from ibis.modules.jobs.routes import router as jobs_router
 from ibis.modules.projects.routes import router as projects_router
@@ -67,6 +68,7 @@ def create_app() -> FastAPI:
     app.include_router(users_router, prefix=API_PREFIX)
     app.include_router(scoring_router, prefix=API_PREFIX)  # avant datasets (/datasets/score)
     app.include_router(projects_router, prefix=API_PREFIX)
+    app.include_router(experiments_router, prefix=API_PREFIX)
     app.include_router(datasets_router, prefix=API_PREFIX)
 
     return app

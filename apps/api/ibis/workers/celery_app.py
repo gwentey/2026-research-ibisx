@@ -17,6 +17,8 @@ celery_app = Celery(
     include=[
         "ibis.workers.tasks.smoke",
         "ibis.workers.tasks.guide",
+        "ibis.workers.tasks.train",
+        "ibis.workers.tasks.maintenance",
     ],
 )
 
@@ -36,8 +38,16 @@ celery_app.conf.update(
     task_routes={
         "ibis.workers.tasks.smoke.*": {"queue": "maintenance"},
         "ibis.workers.tasks.guide.*": {"queue": "llm"},
+        "ibis.workers.tasks.train.*": {"queue": "training"},
+        "ibis.workers.tasks.maintenance.*": {"queue": "maintenance"},
     },
-    beat_schedule={},  # tâches périodiques ajoutées en J5/J6 (purges, expirations)
+    beat_schedule={
+        # Détection de worker perdu : running sans battement > 10 min → WORKER_LOST
+        "purge-stale-running": {
+            "task": "ibis.workers.tasks.maintenance.purge_stale_running",
+            "schedule": 300.0,
+        },
+    },
     # Hors du bind mount du code (dev) — fichier d'état interne de beat
     beat_schedule_filename="/tmp/celerybeat-schedule",
 )

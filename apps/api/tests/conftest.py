@@ -95,6 +95,49 @@ def client(db_session: Session) -> Generator[TestClient, None, None]:
 
 
 @pytest.fixture()
+def real_db(migrated_database: None) -> Generator[Session, None, None]:
+    """Session RÉELLEMENT commitée (tests qui exécutent la tâche worker en direct :
+    le worker ouvre sa propre session et doit voir les données). Nettoyage par TRUNCATE."""
+    from ibis.db.engine import get_sessionmaker
+
+    session = get_sessionmaker()()
+    try:
+        yield session
+    finally:
+        session.close()
+        engine = create_engine(TEST_DATABASE_URL, pool_pre_ping=True)
+        with engine.begin() as connection:
+            tables = [
+                row[0]
+                for row in connection.execute(
+                    text(
+                        "SELECT tablename FROM pg_tables "
+                        "WHERE schemaname='public' AND tablename != 'alembic_version'"
+                    )
+                )
+            ]
+            if tables:
+                joined = ", ".join(f'"{t}"' for t in tables)
+                connection.execute(text(f"TRUNCATE TABLE {joined} CASCADE"))
+        engine.dispose()
+
+
+@pytest.fixture()
+def worker_client(real_db: Session) -> Generator[TestClient, None, None]:
+    """Client API sur la session commitée (cycle complet API → worker → API)."""
+    from ibis.db.engine import get_db
+    from ibis.main import app
+    from ibis.modules.auth.routes import auth_limiter
+
+    app.dependency_overrides[get_db] = lambda: real_db
+    app.dependency_overrides[auth_limiter] = lambda: None
+    with TestClient(app) as test_client:
+        yield test_client
+    app.dependency_overrides.pop(get_db, None)
+    app.dependency_overrides.pop(auth_limiter, None)
+
+
+@pytest.fixture()
 def rate_limited_client(db_session: Session) -> Generator[TestClient, None, None]:
     """Client avec le VRAI rate limiting (test dédié) — clés Redis purgées avant/après."""
     from ibis.core.redis import get_sync_redis
