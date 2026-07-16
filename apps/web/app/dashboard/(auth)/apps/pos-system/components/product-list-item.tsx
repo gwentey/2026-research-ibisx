@@ -1,0 +1,64 @@
+"use client";
+
+import React from "react";
+import { ShoppingCartIcon } from "lucide-react";
+
+import { Product, useStore } from "../store";
+
+import { Button } from "@/components/ui/button";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { toast } from "sonner";
+
+export default function ProductListItem({ product }: { product: Product }) {
+  const { addToCart } = useStore();
+
+  const [productQuantities, setProductQuantities] = React.useState<Record<string, number>>({});
+
+  const getProductQuantity = (productId: string) => {
+    return productQuantities[productId] || 1;
+  };
+
+  const handleAddToCart = (product: Product) => {
+    const quantity = getProductQuantity(product.id);
+    addToCart(product, quantity);
+
+    // Reset quantity after adding
+    setProductQuantities((prev) => ({
+      ...prev,
+      [product.id]: 1
+    }));
+    toast.success("Product added to cart.");
+  };
+
+  return (
+    <div className="overflow-hidden rounded-md border">
+      <div className="relative aspect-4/3">
+        <img
+          src={product.image || "/placeholder.svg"}
+          alt={product.name}
+          className="absolute inset-0 h-full w-full object-cover"
+        />
+      </div>
+      <div className="p-4">
+        <h3 className="truncate font-semibold">{product.name}</h3>
+        <div className="flex items-center justify-between">
+          <p className="text-muted-foreground">${product.price.toFixed(2)}</p>
+          <div className="flex items-center gap-1">
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button variant="outline" size="icon" onClick={() => handleAddToCart(product)}>
+                    <ShoppingCartIcon />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Add to cart</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

@@ -1,0 +1,39 @@
+{
+  "common": {
+    "appName": "IBIS-X",
+    "loading": "Chargement…",
+    "error": "Une erreur est survenue",
+    "retry": "Réessayer",
+    "cancel": "Annuler",
+    "confirm": "Confirmer",
+    "save": "Enregistrer",
+    "delete": "Supprimer",
+    "back": "Retour",
+    "next": "Suivant",
+    "language": "Langue",
+    "french": "Français",
+    "english": "Anglais"
+  },
+  "status": {
+    "title": "État du système",
+    "subtitle": "Santé de la plateforme IBIS-X et démonstration du socle temps réel.",
+    "apiHealth": "API",
+    "workerHealth": "Worker",
+    "database": "Base de données",
+    "redis": "Redis",
+    "storage": "Stockage",
+    "version": "Version",
+    "ok": "Opérationnel",
+    "degraded": "Dégradé",
+    "unavailable": "Indisponible",
+    "checking": "Vérification…",
+    "workers": "Processus actifs",
+    "smokeTitle": "Démonstration temps réel (SSE)",
+    "smokeDescription": "Lance un job de démonstration dans le worker et suit sa progression en direct via Server-Sent Events.",
+    "smokeStart": "Lancer le job de démonstration",
+    "smokeRunning": "Job en cours…",
+    "smokeDone": "Job terminé",
+    "smokeFailed": "Job échoué",
+    "smokeLogs": "Journal du job"
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "common": {
+    "appName": "IBIS-X",
+    "loading": "Loading…",
+    "error": "Something went wrong",
+    "retry": "Retry",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "save": "Save",
+    "delete": "Delete",
+    "back": "Back",
+    "next": "Next",
+    "language": "Language",
+    "french": "French",
+    "english": "English"
+  },
+  "status": {
+    "title": "System status",
+    "subtitle": "IBIS-X platform health and real-time foundation demo.",
+    "apiHealth": "API",
+    "workerHealth": "Worker",
+    "database": "Database",
+    "redis": "Redis",
+    "storage": "Storage",
+    "version": "Version",
+    "ok": "Operational",
+    "degraded": "Degraded",
+    "unavailable": "Unavailable",
+    "checking": "Checking…",
+    "workers": "Active processes",
+    "smokeTitle": "Real-time demo (SSE)",
+    "smokeDescription": "Starts a demo job in the worker and follows its progress live through Server-Sent Events.",
+    "smokeStart": "Start the demo job",
+    "smokeRunning": "Job running…",
+    "smokeDone": "Job completed",
+    "smokeFailed": "Job failed",
+    "smokeLogs": "Job log"
+  }
+}

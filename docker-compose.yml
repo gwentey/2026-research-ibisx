@@ -1,0 +1,92 @@
+# IBIS-X v2 — topologie dev (ARCH §11) : 5 conteneurs, hot reload.
+# Profil production : compose.prod.yml (Caddy TLS, ports fermés) — livré au J9.
+
+services:
+  web:
+    build: apps/web
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=/api
+      - INTERNAL_API_URL=http://api:8000
+    volumes:
+      - ./apps/web:/app
+      - web-node-modules:/app/node_modules
+    depends_on:
+      api:
+        condition: service_healthy
+
+  api:
+    build: apps/api
+    command: sh -c "alembic upgrade head && uvicorn ibis.main:app --host 0.0.0.0 --port 8000 --reload"
+    ports:
+      - "8000:8000"
+    env_file: .env
+    environment:
+      - DATABASE_URL=postgresql+psycopg://ibis:${POSTGRES_PASSWORD:-ibis}@postgres:5432/ibis
+      - REDIS_URL=redis://redis:6379/0
+      - DATA_DIR=/data
+    volumes:
+      - ./apps/api:/app
+      - ibis-data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8000/api/v1/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+
+  worker:
+    build: apps/api # MÊME image que l'api (ADR-004)
+    command: celery -A ibis.workers.celery_app:celery_app worker -Q training,xai,llm,maintenance -c 2 -B --max-tasks-per-child=10
+    env_file: .env
+    environment:
+      - DATABASE_URL=postgresql+psycopg://ibis:${POSTGRES_PASSWORD:-ibis}@postgres:5432/ibis
+      - REDIS_URL=redis://redis:6379/0
+      - DATA_DIR=/data
+    volumes:
+      - ./apps/api:/app
+      - ibis-data:/data
+    mem_limit: 4g
+    depends_on:
+      api:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      - POSTGRES_DB=ibis
+      - POSTGRES_USER=ibis
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-ibis}
+    ports:
+      - "5432:5432" # exposé en dev pour pytest local ; retiré en prod
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ibis -d ibis"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+
+  redis:
+    image: redis:7-alpine
+    command: redis-server --appendonly yes
+    ports:
+      - "6380:6379" # exposé en dev pour pytest local (6380 : 6379 occupé par un autre projet) ; retiré en prod
+    volumes:
+      - redis-data:/data
+
+volumes:
+  ibis-data:
+  pg-data:
+  redis-data:
+  web-node-modules:
