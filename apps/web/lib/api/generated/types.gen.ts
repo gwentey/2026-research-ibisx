@@ -15,6 +15,42 @@ export type AccountDeleteRequest = {
 };
 
 /**
+ * AiGuideJob
+ */
+export type AiGuideJob = {
+    /**
+     * Job Id
+     */
+    job_id: string;
+};
+
+/**
+ * Body_analyzeUpload
+ */
+export type BodyAnalyzeUpload = {
+    /**
+     * Files
+     */
+    files: Array<Blob | File>;
+};
+
+/**
+ * Body_createDataset
+ */
+export type BodyCreateDataset = {
+    /**
+     * Files
+     */
+    files: Array<Blob | File>;
+    /**
+     * Metadata
+     *
+     * JSON du schéma DatasetMetadataInput
+     */
+    metadata?: string;
+};
+
+/**
  * Body_uploadAvatar
  */
 export type BodyUploadAvatar = {
@@ -25,9 +61,699 @@ export type BodyUploadAvatar = {
 };
 
 /**
+ * CatalogStats
+ */
+export type CatalogStats = {
+    /**
+     * Average Features
+     */
+    average_features: number | null;
+    /**
+     * Domain Distribution
+     */
+    domain_distribution: Array<FacetValue>;
+    /**
+     * Task Distribution
+     */
+    task_distribution: Array<FacetValue>;
+    /**
+     * Total Datasets
+     */
+    total_datasets: number;
+    /**
+     * Total Instances
+     */
+    total_instances: number;
+};
+
+/**
+ * ColumnRead
+ */
+export type ColumnRead = {
+    /**
+     * Dtype Interpreted
+     */
+    dtype_interpreted: string;
+    /**
+     * Dtype Original
+     */
+    dtype_original: string;
+    /**
+     * Example Values
+     */
+    example_values: Array<string>;
+    /**
+     * Id
+     */
+    id: string;
+    /**
+     * Is Nullable
+     */
+    is_nullable: boolean;
+    /**
+     * Is Pii
+     */
+    is_pii: boolean;
+    /**
+     * Name
+     */
+    name: string;
+    /**
+     * Position
+     */
+    position: number;
+    /**
+     * Stats
+     */
+    stats: {
+        [key: string]: unknown;
+    };
+};
+
+/**
+ * CompletionSection
+ */
+export type CompletionSection = {
+    /**
+     * Filled
+     */
+    filled: number;
+    /**
+     * Missing Fields
+     */
+    missing_fields: Array<string>;
+    /**
+     * Name
+     */
+    name: 'general' | 'technical' | 'ethical';
+    /**
+     * Total
+     */
+    total: number;
+};
+
+/**
+ * CompletionStatus
+ */
+export type CompletionStatus = {
+    /**
+     * Needs Human Review
+     */
+    needs_human_review: Array<string>;
+    /**
+     * Overall Percentage
+     */
+    overall_percentage: number;
+    /**
+     * Sections
+     */
+    sections: Array<CompletionSection>;
+};
+
+/**
+ * DatasetCard
+ *
+ * Résumé pour les cartes/tableau du catalogue.
+ */
+export type DatasetCard = {
+    /**
+     * Access
+     */
+    access: string;
+    /**
+     * Anonymization Applied
+     */
+    anonymization_applied: boolean | null;
+    /**
+     * Created At
+     */
+    created_at: string;
+    /**
+     * Created By
+     */
+    created_by: string | null;
+    /**
+     * Dataset Name
+     */
+    dataset_name: string;
+    /**
+     * Display Name
+     */
+    display_name: string;
+    /**
+     * Domain
+     */
+    domain: Array<string>;
+    /**
+     * Ethical Score
+     */
+    ethical_score: number;
+    /**
+     * Features Number
+     */
+    features_number: number | null;
+    /**
+     * Global Missing Percentage
+     */
+    global_missing_percentage: number | null;
+    /**
+     * Has Missing Values
+     */
+    has_missing_values: boolean | null;
+    /**
+     * Id
+     */
+    id: string;
+    /**
+     * Instances Number
+     */
+    instances_number: number | null;
+    /**
+     * Num Citations
+     */
+    num_citations: number;
+    /**
+     * Objective
+     */
+    objective: string | null;
+    /**
+     * Representativity Level
+     */
+    representativity_level: string | null;
+    /**
+     * Split
+     */
+    split: boolean | null;
+    /**
+     * Task
+     */
+    task: Array<string>;
+    /**
+     * Temporal Factors
+     */
+    temporal_factors: boolean | null;
+    /**
+     * Updated At
+     */
+    updated_at: string;
+    /**
+     * Year
+     */
+    year: number | null;
+};
+
+/**
+ * DatasetDetail
+ */
+export type DatasetDetail = {
+    /**
+     * Access
+     */
+    access: string;
+    /**
+     * Ai Guide
+     */
+    ai_guide: {
+        [key: string]: unknown;
+    } | null;
+    /**
+     * Anonymization Applied
+     */
+    anonymization_applied: boolean | null;
+    /**
+     * Availability
+     */
+    availability: string | null;
+    /**
+     * Citation Link
+     */
+    citation_link: string | null;
+    /**
+     * Completeness
+     */
+    completeness: number | null;
+    /**
+     * Created At
+     */
+    created_at: string;
+    /**
+     * Created By
+     */
+    created_by: string | null;
+    /**
+     * Dataset Name
+     */
+    dataset_name: string;
+    /**
+     * Display Name
+     */
+    display_name: string;
+    /**
+     * Documentation Link
+     */
+    documentation_link: string | null;
+    /**
+     * Domain
+     */
+    domain: Array<string>;
+    /**
+     * Ethical Criteria
+     */
+    ethical_criteria: {
+        [key: string]: boolean | null;
+    };
+    /**
+     * Ethical Score
+     */
+    ethical_score: number;
+    /**
+     * External Documentation Available
+     */
+    external_documentation_available: boolean | null;
+    /**
+     * Features Description
+     */
+    features_description: string | null;
+    /**
+     * Features Number
+     */
+    features_number: number | null;
+    /**
+     * Files
+     */
+    files: Array<FileWithColumns>;
+    /**
+     * Global Missing Percentage
+     */
+    global_missing_percentage: number | null;
+    /**
+     * Has Missing Values
+     */
+    has_missing_values: boolean | null;
+    /**
+     * Id
+     */
+    id: string;
+    /**
+     * Instances Number
+     */
+    instances_number: number | null;
+    /**
+     * Metadata Provided With Dataset
+     */
+    metadata_provided_with_dataset: boolean | null;
+    /**
+     * Missing Values Description
+     */
+    missing_values_description: string | null;
+    /**
+     * Missing Values Handling Method
+     */
+    missing_values_handling_method: string | null;
+    /**
+     * Num Citations
+     */
+    num_citations: number;
+    /**
+     * Objective
+     */
+    objective: string | null;
+    /**
+     * Representativity Description
+     */
+    representativity_description: string | null;
+    /**
+     * Representativity Level
+     */
+    representativity_level: string | null;
+    /**
+     * Sample Balance Description
+     */
+    sample_balance_description: string | null;
+    /**
+     * Sample Balance Level
+     */
+    sample_balance_level: string | null;
+    /**
+     * Sources
+     */
+    sources: string | null;
+    /**
+     * Split
+     */
+    split: boolean | null;
+    /**
+     * Storage Uri
+     */
+    storage_uri: string | null;
+    /**
+     * Task
+     */
+    task: Array<string>;
+    /**
+     * Temporal Factors
+     */
+    temporal_factors: boolean | null;
+    /**
+     * Updated At
+     */
+    updated_at: string;
+    /**
+     * Year
+     */
+    year: number | null;
+};
+
+/**
+ * DatasetFacets
+ */
+export type DatasetFacets = {
+    /**
+     * Citations Max
+     */
+    citations_max: number;
+    /**
+     * Domains
+     */
+    domains: Array<FacetValue>;
+    /**
+     * Features Max
+     */
+    features_max: number;
+    /**
+     * Instances Max
+     */
+    instances_max: number;
+    /**
+     * Tasks
+     */
+    tasks: Array<FacetValue>;
+    /**
+     * Year Max
+     */
+    year_max: number;
+    /**
+     * Year Min
+     */
+    year_min: number;
+};
+
+/**
+ * DatasetMetadataUpdate
+ */
+export type DatasetMetadataUpdate = {
+    /**
+     * Access
+     */
+    access?: 'public' | 'private' | null;
+    /**
+     * Accountability Defined
+     */
+    accountability_defined?: boolean | null;
+    /**
+     * Anonymization Applied
+     */
+    anonymization_applied?: boolean | null;
+    /**
+     * Availability
+     */
+    availability?: string | null;
+    /**
+     * Citation Link
+     */
+    citation_link?: string | null;
+    /**
+     * Data Quality Documented
+     */
+    data_quality_documented?: boolean | null;
+    /**
+     * Dataset Name
+     */
+    dataset_name?: string | null;
+    /**
+     * Display Name
+     */
+    display_name?: string | null;
+    /**
+     * Documentation Link
+     */
+    documentation_link?: string | null;
+    /**
+     * Domain
+     */
+    domain?: Array<string>;
+    /**
+     * Equity Non Discrimination
+     */
+    equity_non_discrimination?: boolean | null;
+    /**
+     * External Documentation Available
+     */
+    external_documentation_available?: boolean | null;
+    /**
+     * Features Description
+     */
+    features_description?: string | null;
+    /**
+     * Informed Consent
+     */
+    informed_consent?: boolean | null;
+    /**
+     * Metadata Provided With Dataset
+     */
+    metadata_provided_with_dataset?: boolean | null;
+    /**
+     * Missing Values Description
+     */
+    missing_values_description?: string | null;
+    /**
+     * Missing Values Handling Method
+     */
+    missing_values_handling_method?: string | null;
+    /**
+     * Num Citations
+     */
+    num_citations?: number | null;
+    /**
+     * Objective
+     */
+    objective?: string | null;
+    /**
+     * Purpose Limitation Respected
+     */
+    purpose_limitation_respected?: boolean | null;
+    /**
+     * Record Keeping Policy Exists
+     */
+    record_keeping_policy_exists?: boolean | null;
+    /**
+     * Representativity Description
+     */
+    representativity_description?: string | null;
+    /**
+     * Representativity Level
+     */
+    representativity_level?: 'high' | 'medium' | 'low' | null;
+    /**
+     * Sample Balance Description
+     */
+    sample_balance_description?: string | null;
+    /**
+     * Sample Balance Level
+     */
+    sample_balance_level?: 'balanced' | 'moderate' | 'imbalanced' | 'severely_imbalanced' | null;
+    /**
+     * Security Measures In Place
+     */
+    security_measures_in_place?: boolean | null;
+    /**
+     * Sources
+     */
+    sources?: string | null;
+    /**
+     * Split
+     */
+    split?: boolean | null;
+    /**
+     * Storage Uri
+     */
+    storage_uri?: string | null;
+    /**
+     * Task
+     */
+    task?: Array<string>;
+    /**
+     * Temporal Factors
+     */
+    temporal_factors?: boolean | null;
+    /**
+     * Transparency
+     */
+    transparency?: boolean | null;
+    /**
+     * User Control
+     */
+    user_control?: boolean | null;
+    /**
+     * Year
+     */
+    year?: number | null;
+};
+
+/**
+ * DatasetPage
+ */
+export type DatasetPage = {
+    /**
+     * Items
+     */
+    items: Array<DatasetCard>;
+    /**
+     * Page
+     */
+    page: number;
+    /**
+     * Page Size
+     */
+    page_size: number;
+    /**
+     * Total
+     */
+    total: number;
+    /**
+     * Total Pages
+     */
+    total_pages: number;
+};
+
+/**
+ * DatasetPreview
+ *
+ * Échantillon RÉEL (random_state=42) — jamais simulé (P1).
+ */
+export type DatasetPreview = {
+    /**
+     * Column Stats
+     */
+    column_stats: Array<PreviewColumnStats>;
+    /**
+     * Displayed Columns
+     */
+    displayed_columns: Array<string>;
+    /**
+     * File Id
+     */
+    file_id: string;
+    /**
+     * Original Filename
+     */
+    original_filename: string;
+    /**
+     * Random State
+     */
+    random_state: number;
+    /**
+     * Rows
+     */
+    rows: Array<{
+        [key: string]: unknown;
+    }>;
+    /**
+     * Sampled
+     */
+    sampled: boolean;
+    /**
+     * Total Columns
+     */
+    total_columns: number;
+    /**
+     * Total Rows
+     */
+    total_rows: number;
+};
+
+/**
  * EducationLevel
  */
 export type EducationLevel = 'lycee' | 'licence' | 'master' | 'doctorat' | 'autre';
+
+/**
+ * FacetValue
+ */
+export type FacetValue = {
+    /**
+     * Count
+     */
+    count: number;
+    /**
+     * Value
+     */
+    value: string;
+};
+
+/**
+ * FileRead
+ */
+export type FileRead = {
+    /**
+     * Format
+     */
+    format: string;
+    /**
+     * Id
+     */
+    id: string;
+    /**
+     * Logical Role
+     */
+    logical_role: string;
+    /**
+     * Original Filename
+     */
+    original_filename: string;
+    /**
+     * Row Count
+     */
+    row_count: number;
+    /**
+     * Size Bytes
+     */
+    size_bytes: number;
+};
+
+/**
+ * FileWithColumns
+ */
+export type FileWithColumns = {
+    /**
+     * Columns
+     */
+    columns: Array<ColumnRead>;
+    /**
+     * Format
+     */
+    format: string;
+    /**
+     * Id
+     */
+    id: string;
+    /**
+     * Logical Role
+     */
+    logical_role: string;
+    /**
+     * Original Filename
+     */
+    original_filename: string;
+    /**
+     * Row Count
+     */
+    row_count: number;
+    /**
+     * Size Bytes
+     */
+    size_bytes: number;
+};
 
 /**
  * ForgotPasswordRequest
@@ -205,6 +931,26 @@ export type PasswordChangeRequest = {
 };
 
 /**
+ * PreviewColumnStats
+ */
+export type PreviewColumnStats = {
+    /**
+     * Dtype Interpreted
+     */
+    dtype_interpreted: string;
+    /**
+     * Name
+     */
+    name: string;
+    /**
+     * Stats
+     */
+    stats: {
+        [key: string]: unknown;
+    };
+};
+
+/**
  * ProfileUpdateRequest
  */
 export type ProfileUpdateRequest = {
@@ -265,6 +1011,17 @@ export type ResetPasswordRequest = {
 };
 
 /**
+ * SimilarDataset
+ */
+export type SimilarDataset = {
+    dataset: DatasetCard;
+    /**
+     * Reason
+     */
+    reason: 'domain_and_task' | 'domain' | 'task' | 'size';
+};
+
+/**
  * TokenResponse
  */
 export type TokenResponse = {
@@ -281,6 +1038,68 @@ export type TokenResponse = {
      */
     token_type?: string;
     user: UserRead;
+};
+
+/**
+ * UploadAnalysis
+ *
+ * Analyse pré-upload SANS persistance (CDC §5.5.b).
+ */
+export type UploadAnalysis = {
+    /**
+     * Files
+     */
+    files: Array<UploadFileAnalysis>;
+    /**
+     * Indicative Quality Score
+     */
+    indicative_quality_score: number;
+    /**
+     * Suggested Domains
+     */
+    suggested_domains: Array<string>;
+    /**
+     * Suggested Name
+     */
+    suggested_name: string;
+    /**
+     * Suggested Tasks
+     */
+    suggested_tasks: Array<string>;
+};
+
+/**
+ * UploadFileAnalysis
+ */
+export type UploadFileAnalysis = {
+    /**
+     * Column Count
+     */
+    column_count: number;
+    /**
+     * Columns
+     */
+    columns: Array<{
+        [key: string]: unknown;
+    }>;
+    /**
+     * Missing Percentage
+     */
+    missing_percentage: number;
+    /**
+     * Original Filename
+     */
+    original_filename: string;
+    /**
+     * Preview Rows
+     */
+    preview_rows: Array<{
+        [key: string]: unknown;
+    }>;
+    /**
+     * Row Count
+     */
+    row_count: number;
 };
 
 /**
@@ -572,6 +1391,528 @@ export type ResetPasswordResponses = {
 };
 
 export type ResetPasswordResponse = ResetPasswordResponses[keyof ResetPasswordResponses];
+
+export type ListDatasetsData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Q
+         */
+        q?: string | null;
+        /**
+         * Domains
+         */
+        domains?: Array<string> | null;
+        /**
+         * Tasks
+         */
+        tasks?: Array<string> | null;
+        /**
+         * Instances Min
+         */
+        instances_min?: number | null;
+        /**
+         * Instances Max
+         */
+        instances_max?: number | null;
+        /**
+         * Features Min
+         */
+        features_min?: number | null;
+        /**
+         * Features Max
+         */
+        features_max?: number | null;
+        /**
+         * Year Min
+         */
+        year_min?: number | null;
+        /**
+         * Year Max
+         */
+        year_max?: number | null;
+        /**
+         * Citations Min
+         */
+        citations_min?: number | null;
+        /**
+         * Citations Max
+         */
+        citations_max?: number | null;
+        /**
+         * Ethical Score Min
+         */
+        ethical_score_min?: number | null;
+        /**
+         * Split
+         */
+        split?: boolean | null;
+        /**
+         * Anonymized
+         */
+        anonymized?: boolean | null;
+        /**
+         * Temporal
+         */
+        temporal?: boolean | null;
+        /**
+         * Public
+         */
+        public?: boolean | null;
+        /**
+         * Representativity Level
+         */
+        representativity_level?: 'high' | 'medium' | 'low' | null;
+        /**
+         * Has Missing Values
+         */
+        has_missing_values?: boolean | null;
+        /**
+         * Informed Consent
+         */
+        informed_consent?: boolean | null;
+        /**
+         * Transparency
+         */
+        transparency?: boolean | null;
+        /**
+         * User Control
+         */
+        user_control?: boolean | null;
+        /**
+         * Equity Non Discrimination
+         */
+        equity_non_discrimination?: boolean | null;
+        /**
+         * Security Measures In Place
+         */
+        security_measures_in_place?: boolean | null;
+        /**
+         * Data Quality Documented
+         */
+        data_quality_documented?: boolean | null;
+        /**
+         * Anonymization Applied
+         */
+        anonymization_applied?: boolean | null;
+        /**
+         * Record Keeping Policy Exists
+         */
+        record_keeping_policy_exists?: boolean | null;
+        /**
+         * Purpose Limitation Respected
+         */
+        purpose_limitation_respected?: boolean | null;
+        /**
+         * Accountability Defined
+         */
+        accountability_defined?: boolean | null;
+        /**
+         * Sort By
+         */
+        sort_by?: 'name' | 'year' | 'instances' | 'features' | 'citations' | 'created' | 'updated';
+        /**
+         * Sort Order
+         */
+        sort_order?: 'asc' | 'desc';
+        /**
+         * Page
+         */
+        page?: number;
+        /**
+         * Page Size
+         */
+        page_size?: number;
+    };
+    url: '/api/v1/datasets';
+};
+
+export type ListDatasetsErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type ListDatasetsError = ListDatasetsErrors[keyof ListDatasetsErrors];
+
+export type ListDatasetsResponses = {
+    /**
+     * Successful Response
+     */
+    200: DatasetPage;
+};
+
+export type ListDatasetsResponse = ListDatasetsResponses[keyof ListDatasetsResponses];
+
+export type CreateDatasetData = {
+    body: BodyCreateDataset;
+    path?: never;
+    query?: never;
+    url: '/api/v1/datasets';
+};
+
+export type CreateDatasetErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type CreateDatasetError = CreateDatasetErrors[keyof CreateDatasetErrors];
+
+export type CreateDatasetResponses = {
+    /**
+     * Successful Response
+     */
+    201: DatasetDetail;
+};
+
+export type CreateDatasetResponse = CreateDatasetResponses[keyof CreateDatasetResponses];
+
+export type GetDatasetFacetsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/v1/datasets/facets';
+};
+
+export type GetDatasetFacetsResponses = {
+    /**
+     * Successful Response
+     */
+    200: DatasetFacets;
+};
+
+export type GetDatasetFacetsResponse = GetDatasetFacetsResponses[keyof GetDatasetFacetsResponses];
+
+export type AnalyzeUploadData = {
+    body: BodyAnalyzeUpload;
+    path?: never;
+    query?: never;
+    url: '/api/v1/datasets/preview';
+};
+
+export type AnalyzeUploadErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type AnalyzeUploadError = AnalyzeUploadErrors[keyof AnalyzeUploadErrors];
+
+export type AnalyzeUploadResponses = {
+    /**
+     * Successful Response
+     */
+    200: UploadAnalysis;
+};
+
+export type AnalyzeUploadResponse = AnalyzeUploadResponses[keyof AnalyzeUploadResponses];
+
+export type GetCatalogStatsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/v1/datasets/stats';
+};
+
+export type GetCatalogStatsResponses = {
+    /**
+     * Successful Response
+     */
+    200: CatalogStats;
+};
+
+export type GetCatalogStatsResponse = GetCatalogStatsResponses[keyof GetCatalogStatsResponses];
+
+export type DeleteDatasetData = {
+    body?: never;
+    path: {
+        /**
+         * Dataset Id
+         */
+        dataset_id: string;
+    };
+    query?: never;
+    url: '/api/v1/datasets/{dataset_id}';
+};
+
+export type DeleteDatasetErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type DeleteDatasetError = DeleteDatasetErrors[keyof DeleteDatasetErrors];
+
+export type DeleteDatasetResponses = {
+    /**
+     * Successful Response
+     */
+    204: void;
+};
+
+export type DeleteDatasetResponse = DeleteDatasetResponses[keyof DeleteDatasetResponses];
+
+export type GetDatasetData = {
+    body?: never;
+    path: {
+        /**
+         * Dataset Id
+         */
+        dataset_id: string;
+    };
+    query?: never;
+    url: '/api/v1/datasets/{dataset_id}';
+};
+
+export type GetDatasetErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type GetDatasetError = GetDatasetErrors[keyof GetDatasetErrors];
+
+export type GetDatasetResponses = {
+    /**
+     * Successful Response
+     */
+    200: DatasetDetail;
+};
+
+export type GetDatasetResponse = GetDatasetResponses[keyof GetDatasetResponses];
+
+export type UpdateDatasetData = {
+    body: DatasetMetadataUpdate;
+    path: {
+        /**
+         * Dataset Id
+         */
+        dataset_id: string;
+    };
+    query?: never;
+    url: '/api/v1/datasets/{dataset_id}';
+};
+
+export type UpdateDatasetErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type UpdateDatasetError = UpdateDatasetErrors[keyof UpdateDatasetErrors];
+
+export type UpdateDatasetResponses = {
+    /**
+     * Successful Response
+     */
+    200: DatasetDetail;
+};
+
+export type UpdateDatasetResponse = UpdateDatasetResponses[keyof UpdateDatasetResponses];
+
+export type RequestAiGuideData = {
+    body?: never;
+    path: {
+        /**
+         * Dataset Id
+         */
+        dataset_id: string;
+    };
+    query?: {
+        /**
+         * Language
+         */
+        language?: string;
+    };
+    url: '/api/v1/datasets/{dataset_id}/ai-guide';
+};
+
+export type RequestAiGuideErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type RequestAiGuideError = RequestAiGuideErrors[keyof RequestAiGuideErrors];
+
+export type RequestAiGuideResponses = {
+    /**
+     * Successful Response
+     */
+    202: AiGuideJob;
+};
+
+export type RequestAiGuideResponse = RequestAiGuideResponses[keyof RequestAiGuideResponses];
+
+export type GetDatasetCompletionData = {
+    body?: never;
+    path: {
+        /**
+         * Dataset Id
+         */
+        dataset_id: string;
+    };
+    query?: never;
+    url: '/api/v1/datasets/{dataset_id}/completion';
+};
+
+export type GetDatasetCompletionErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type GetDatasetCompletionError = GetDatasetCompletionErrors[keyof GetDatasetCompletionErrors];
+
+export type GetDatasetCompletionResponses = {
+    /**
+     * Successful Response
+     */
+    200: CompletionStatus;
+};
+
+export type GetDatasetCompletionResponse = GetDatasetCompletionResponses[keyof GetDatasetCompletionResponses];
+
+export type ListDatasetFilesData = {
+    body?: never;
+    path: {
+        /**
+         * Dataset Id
+         */
+        dataset_id: string;
+    };
+    query?: never;
+    url: '/api/v1/datasets/{dataset_id}/files';
+};
+
+export type ListDatasetFilesErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type ListDatasetFilesError = ListDatasetFilesErrors[keyof ListDatasetFilesErrors];
+
+export type ListDatasetFilesResponses = {
+    /**
+     * Response Listdatasetfiles
+     *
+     * Successful Response
+     */
+    200: Array<FileRead>;
+};
+
+export type ListDatasetFilesResponse = ListDatasetFilesResponses[keyof ListDatasetFilesResponses];
+
+export type DownloadDatasetFileData = {
+    body?: never;
+    path: {
+        /**
+         * Dataset Id
+         */
+        dataset_id: string;
+        /**
+         * File Id
+         */
+        file_id: string;
+    };
+    query?: never;
+    url: '/api/v1/datasets/{dataset_id}/files/{file_id}/download';
+};
+
+export type DownloadDatasetFileErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type DownloadDatasetFileError = DownloadDatasetFileErrors[keyof DownloadDatasetFileErrors];
+
+export type DownloadDatasetFileResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
+
+export type PreviewDatasetData = {
+    body?: never;
+    path: {
+        /**
+         * Dataset Id
+         */
+        dataset_id: string;
+    };
+    query?: {
+        /**
+         * Columns
+         */
+        columns?: Array<string> | null;
+    };
+    url: '/api/v1/datasets/{dataset_id}/preview';
+};
+
+export type PreviewDatasetErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type PreviewDatasetError = PreviewDatasetErrors[keyof PreviewDatasetErrors];
+
+export type PreviewDatasetResponses = {
+    /**
+     * Successful Response
+     */
+    200: DatasetPreview;
+};
+
+export type PreviewDatasetResponse = PreviewDatasetResponses[keyof PreviewDatasetResponses];
+
+export type GetSimilarDatasetsData = {
+    body?: never;
+    path: {
+        /**
+         * Dataset Id
+         */
+        dataset_id: string;
+    };
+    query?: never;
+    url: '/api/v1/datasets/{dataset_id}/similar';
+};
+
+export type GetSimilarDatasetsErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type GetSimilarDatasetsError = GetSimilarDatasetsErrors[keyof GetSimilarDatasetsErrors];
+
+export type GetSimilarDatasetsResponses = {
+    /**
+     * Response Getsimilardatasets
+     *
+     * Successful Response
+     */
+    200: Array<SimilarDataset>;
+};
+
+export type GetSimilarDatasetsResponse = GetSimilarDatasetsResponses[keyof GetSimilarDatasetsResponses];
 
 export type GetHealthData = {
     body?: never;

@@ -1,0 +1,36 @@
+{
+  "display_name": "Student Performance (Math)",
+  "year": 2008,
+  "objective": "Prédire la note finale (G3) d'élèves portugais en mathématiques à partir de facteurs scolaires, familiaux et sociaux, ou classer la réussite.",
+  "sources": "P. Cortez & A. Silva (2008) — UCI Machine Learning Repository",
+  "storage_uri": "https://archive.ics.uci.edu/dataset/320/student+performance",
+  "documentation_link": "https://archive.ics.uci.edu/dataset/320/student+performance",
+  "citation_link": "http://www3.dsi.uminho.pt/pcortez/student.pdf",
+  "access": "public",
+  "availability": "online",
+  "metadata_provided_with_dataset": true,
+  "external_documentation_available": true,
+  "domain": [
+    "education"
+  ],
+  "task": [
+    "classification",
+    "regression"
+  ],
+  "split": false,
+  "temporal_factors": false,
+  "representativity_level": "medium",
+  "representativity_description": "Deux écoles portugaises, année 2005-2006.",
+  "sample_balance_level": "moderate",
+  "features_description": "30 attributs (démographie, famille, temps d'étude, absences, notes G1/G2) + note finale G3.",
+  "transparency": true,
+  "data_quality_documented": true,
+  "anonymization_applied": true,
+  "informed_consent": null,
+  "user_control": null,
+  "equity_non_discrimination": null,
+  "security_measures_in_place": null,
+  "record_keeping_policy_exists": true,
+  "purpose_limitation_respected": null,
+  "accountability_defined": true
+}

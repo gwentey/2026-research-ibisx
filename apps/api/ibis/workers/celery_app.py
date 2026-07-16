@@ -16,6 +16,7 @@ celery_app = Celery(
     backend=settings.redis_url,
     include=[
         "ibis.workers.tasks.smoke",
+        "ibis.workers.tasks.guide",
     ],
 )
 
@@ -34,6 +35,7 @@ celery_app.conf.update(
     task_default_queue="maintenance",
     task_routes={
         "ibis.workers.tasks.smoke.*": {"queue": "maintenance"},
+        "ibis.workers.tasks.guide.*": {"queue": "llm"},
     },
     beat_schedule={},  # tâches périodiques ajoutées en J5/J6 (purges, expirations)
     # Hors du bind mount du code (dev) — fichier d'état interne de beat

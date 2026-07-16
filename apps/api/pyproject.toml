@@ -22,6 +22,12 @@ dependencies = [
     "argon2-cffi>=25.1.0",
     "authlib>=1.7.2",
     "pillow>=12.3.0",
+    "pandas>=2.2,<3",
+    "pyarrow>=16",
+    "openpyxl>=3.1.5",
+    "jsonschema>=4.22",
+    "pyyaml>=6.0.1",
+    "numpy>=1.26,<2",
 ]
 
 [project.scripts]

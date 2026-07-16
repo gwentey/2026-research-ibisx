@@ -6,9 +6,8 @@ Un verrou advisory PostgreSQL sérialise les `upgrade head` concurrents
 
 from sqlalchemy import create_engine, text
 
-# Importe tous les modèles pour peupler Base.metadata (autogenerate + create_all tests)
-import ibis.modules.auth.models
-import ibis.modules.jobs.models  # noqa: F401
+# Registre central : tous les modèles chargés (autogenerate + résolution FK)
+import ibis.db.registry  # noqa: F401
 from alembic import context
 from ibis.core.config import get_settings
 from ibis.db.base import Base

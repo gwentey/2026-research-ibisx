@@ -1,0 +1,36 @@
+{
+  "display_name": "Titanic",
+  "year": 1912,
+  "objective": "Prédire la survie des passagers du Titanic à partir de caractéristiques socio-démographiques et de voyage (classe, sexe, âge, tarif…).",
+  "sources": "Registres historiques — diffusion Data Science Dojo / Kaggle",
+  "storage_uri": "https://www.kaggle.com/c/titanic",
+  "documentation_link": "https://www.kaggle.com/c/titanic/data",
+  "access": "public",
+  "availability": "online",
+  "metadata_provided_with_dataset": true,
+  "external_documentation_available": true,
+  "domain": [
+    "social"
+  ],
+  "task": [
+    "classification"
+  ],
+  "split": false,
+  "temporal_factors": false,
+  "representativity_level": "medium",
+  "representativity_description": "891 passagers sur ~2 200 ; sur-représentation relative des passagers dont le sort est documenté.",
+  "sample_balance_level": "moderate",
+  "sample_balance_description": "≈38 % de survivants.",
+  "missing_values_description": "Âge manquant pour ~20 % des passagers ; cabine largement manquante.",
+  "features_description": "Identité, classe, sexe, âge, fratrie/parents à bord, billet, tarif, cabine, port d'embarquement.",
+  "transparency": true,
+  "data_quality_documented": true,
+  "informed_consent": false,
+  "anonymization_applied": false,
+  "user_control": false,
+  "record_keeping_policy_exists": true,
+  "equity_non_discrimination": null,
+  "security_measures_in_place": null,
+  "purpose_limitation_respected": null,
+  "accountability_defined": null
+}

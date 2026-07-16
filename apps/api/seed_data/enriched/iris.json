@@ -1,0 +1,34 @@
+{
+  "display_name": "Iris",
+  "year": 1936,
+  "objective": "Classer trois espèces d'iris (setosa, versicolor, virginica) à partir de quatre mesures morphologiques de fleurs. Jeu de référence historique introduit par R. A. Fisher (1936).",
+  "sources": "R. A. Fisher — UCI Machine Learning Repository",
+  "storage_uri": "https://archive.ics.uci.edu/dataset/53/iris",
+  "documentation_link": "https://archive.ics.uci.edu/dataset/53/iris",
+  "access": "public",
+  "availability": "online",
+  "metadata_provided_with_dataset": true,
+  "external_documentation_available": true,
+  "domain": [
+    "biology"
+  ],
+  "task": [
+    "classification"
+  ],
+  "split": false,
+  "temporal_factors": false,
+  "representativity_level": "high",
+  "representativity_description": "50 exemplaires par espèce, parfaitement équilibré.",
+  "sample_balance_level": "balanced",
+  "features_description": "4 mesures numériques (longueur/largeur des sépales et pétales, en cm) + l'espèce.",
+  "transparency": true,
+  "data_quality_documented": true,
+  "record_keeping_policy_exists": true,
+  "accountability_defined": true,
+  "informed_consent": null,
+  "user_control": null,
+  "equity_non_discrimination": null,
+  "security_measures_in_place": null,
+  "anonymization_applied": null,
+  "purpose_limitation_respected": null
+}

@@ -1,0 +1,31 @@
+# Catalogue d'import IBIS-X (CDC §5.5.a, §12.5)
+# - Les 6 entrées `local_file` sont EMBARQUÉES (vrais datasets UCI/GitHub, aucun
+#   téléchargement ni clé Kaggle requis) : c'est le seed démontrable en 20 min.
+# - Les entrées `kaggle_ref` (sans local_file) nécessitent KAGGLE_USERNAME/KAGGLE_KEY
+#   et seront complétées au J9 (~30 datasets).
+# Chemins relatifs à ce fichier. Import idempotent : slug déjà présent → ignoré.
+
+datasets:
+  - slug: iris
+    local_file: files/iris.csv
+    enriched: enriched/iris.json
+
+  - slug: student_performance
+    local_file: files/student-mat.csv
+    enriched: enriched/student_performance.json
+
+  - slug: titanic
+    local_file: files/titanic.csv
+    enriched: enriched/titanic.json
+
+  - slug: pima_diabetes
+    local_file: files/pima_diabetes.csv
+    enriched: enriched/pima_diabetes.json
+
+  - slug: wine_quality_red
+    local_file: files/winequality-red.csv
+    enriched: enriched/wine_quality_red.json
+
+  - slug: penguins
+    local_file: files/penguins.csv
+    enriched: enriched/penguins.json

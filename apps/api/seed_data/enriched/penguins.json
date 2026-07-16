@@ -1,0 +1,36 @@
+{
+  "display_name": "Palmer Penguins",
+  "year": 2020,
+  "objective": "Classer trois espèces de manchots (Adélie, Chinstrap, Gentoo) de l'archipel Palmer à partir de mesures morphologiques et de l'île d'origine.",
+  "sources": "Palmer Station LTER — K. Gorman ; diffusion seaborn-data",
+  "storage_uri": "https://github.com/allisonhorst/palmerpenguins",
+  "documentation_link": "https://allisonhorst.github.io/palmerpenguins/",
+  "access": "public",
+  "availability": "online",
+  "metadata_provided_with_dataset": true,
+  "external_documentation_available": true,
+  "domain": [
+    "biology",
+    "environment"
+  ],
+  "task": [
+    "classification"
+  ],
+  "split": false,
+  "temporal_factors": false,
+  "representativity_level": "high",
+  "sample_balance_level": "moderate",
+  "sample_balance_description": "152 Adélie, 68 Chinstrap, 124 Gentoo.",
+  "missing_values_description": "Quelques mesures manquantes (2 individus incomplets, sexe manquant pour 11).",
+  "features_description": "Espèce, île, longueur/profondeur du bec, longueur de nageoire, masse, sexe.",
+  "transparency": true,
+  "data_quality_documented": true,
+  "record_keeping_policy_exists": true,
+  "accountability_defined": true,
+  "informed_consent": null,
+  "user_control": null,
+  "equity_non_discrimination": null,
+  "security_measures_in_place": null,
+  "anonymization_applied": null,
+  "purpose_limitation_respected": null
+}

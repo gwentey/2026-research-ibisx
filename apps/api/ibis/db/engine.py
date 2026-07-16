@@ -11,6 +11,9 @@ from ibis.core.config import get_settings
 
 @lru_cache
 def get_engine() -> Engine:
+    # Charge tous les modèles avant la première session (résolution des FK inter-modules)
+    import ibis.db.registry  # noqa: F401
+
     return create_engine(get_settings().database_url, pool_pre_ping=True, pool_size=5)
 
 

@@ -2,7 +2,7 @@
 
 import { type Client, type ClientMeta, formDataBodySerializer, type Options as Options2, type RequestResult, type TDataShape } from './client';
 import { client } from './client.gen';
-import type { ChangePasswordData, ChangePasswordErrors, ChangePasswordResponses, CompleteOnboardingData, CompleteOnboardingErrors, CompleteOnboardingResponses, DeleteAccountData, DeleteAccountErrors, DeleteAccountResponses, ForgotPasswordData, ForgotPasswordErrors, ForgotPasswordResponses, GetHealthData, GetHealthResponses, GetJobData, GetJobErrors, GetJobResponses, GetMeData, GetMeResponses, GetMyAvatarData, GetMyAvatarResponses, GetWorkerHealthData, GetWorkerHealthResponses, GoogleAuthorizeData, GoogleAuthorizeResponses, GoogleExchangeData, GoogleExchangeErrors, GoogleExchangeResponses, LoginData, LoginErrors, LoginResponses, LogoutData, LogoutResponses, RefreshTokenData, RefreshTokenResponses, RegisterData, RegisterErrors, RegisterResponses, ResetPasswordData, ResetPasswordErrors, ResetPasswordResponses, StartSmokeJobData, StartSmokeJobResponses, StreamJobEventsData, StreamJobEventsErrors, StreamJobEventsResponses, UpdateMeData, UpdateMeErrors, UpdateMeResponses, UploadAvatarData, UploadAvatarErrors, UploadAvatarResponses } from './types.gen';
+import type { AnalyzeUploadData, AnalyzeUploadErrors, AnalyzeUploadResponses, ChangePasswordData, ChangePasswordErrors, ChangePasswordResponses, CompleteOnboardingData, CompleteOnboardingErrors, CompleteOnboardingResponses, CreateDatasetData, CreateDatasetErrors, CreateDatasetResponses, DeleteAccountData, DeleteAccountErrors, DeleteAccountResponses, DeleteDatasetData, DeleteDatasetErrors, DeleteDatasetResponses, DownloadDatasetFileData, DownloadDatasetFileErrors, DownloadDatasetFileResponses, ForgotPasswordData, ForgotPasswordErrors, ForgotPasswordResponses, GetCatalogStatsData, GetCatalogStatsResponses, GetDatasetCompletionData, GetDatasetCompletionErrors, GetDatasetCompletionResponses, GetDatasetData, GetDatasetErrors, GetDatasetFacetsData, GetDatasetFacetsResponses, GetDatasetResponses, GetHealthData, GetHealthResponses, GetJobData, GetJobErrors, GetJobResponses, GetMeData, GetMeResponses, GetMyAvatarData, GetMyAvatarResponses, GetSimilarDatasetsData, GetSimilarDatasetsErrors, GetSimilarDatasetsResponses, GetWorkerHealthData, GetWorkerHealthResponses, GoogleAuthorizeData, GoogleAuthorizeResponses, GoogleExchangeData, GoogleExchangeErrors, GoogleExchangeResponses, ListDatasetFilesData, ListDatasetFilesErrors, ListDatasetFilesResponses, ListDatasetsData, ListDatasetsErrors, ListDatasetsResponses, LoginData, LoginErrors, LoginResponses, LogoutData, LogoutResponses, PreviewDatasetData, PreviewDatasetErrors, PreviewDatasetResponses, RefreshTokenData, RefreshTokenResponses, RegisterData, RegisterErrors, RegisterResponses, RequestAiGuideData, RequestAiGuideErrors, RequestAiGuideResponses, ResetPasswordData, ResetPasswordErrors, ResetPasswordResponses, StartSmokeJobData, StartSmokeJobResponses, StreamJobEventsData, StreamJobEventsErrors, StreamJobEventsResponses, UpdateDatasetData, UpdateDatasetErrors, UpdateDatasetResponses, UpdateMeData, UpdateMeErrors, UpdateMeResponses, UploadAvatarData, UploadAvatarErrors, UploadAvatarResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean, TResponse = unknown> = Options2<TData, ThrowOnError, TResponse> & {
     /**
@@ -100,6 +100,109 @@ export const resetPassword = <ThrowOnError extends boolean = false>(options: Opt
         ...options.headers
     }
 });
+
+/**
+ * List Datasets
+ */
+export const listDatasets = <ThrowOnError extends boolean = false>(options?: Options<ListDatasetsData, ThrowOnError>): RequestResult<ListDatasetsResponses, ListDatasetsErrors, ThrowOnError> => (options?.client ?? client).get<ListDatasetsResponses, ListDatasetsErrors, ThrowOnError>({ url: '/api/v1/datasets', ...options });
+
+/**
+ * Create Dataset
+ *
+ * Création (multipart) : `metadata` = JSON du schéma DatasetMetadataInput + fichiers.
+ */
+export const createDataset = <ThrowOnError extends boolean = false>(options: Options<CreateDatasetData, ThrowOnError>): RequestResult<CreateDatasetResponses, CreateDatasetErrors, ThrowOnError> => (options.client ?? client).post<CreateDatasetResponses, CreateDatasetErrors, ThrowOnError>({
+    ...formDataBodySerializer,
+    url: '/api/v1/datasets',
+    ...options,
+    headers: {
+        'Content-Type': null,
+        ...options.headers
+    }
+});
+
+/**
+ * Get Facets
+ */
+export const getDatasetFacets = <ThrowOnError extends boolean = false>(options?: Options<GetDatasetFacetsData, ThrowOnError>): RequestResult<GetDatasetFacetsResponses, unknown, ThrowOnError> => (options?.client ?? client).get<GetDatasetFacetsResponses, unknown, ThrowOnError>({ url: '/api/v1/datasets/facets', ...options });
+
+/**
+ * Analyze Upload
+ *
+ * Analyse pré-upload SANS persistance (CDC §5.5.b) — contributor+.
+ */
+export const analyzeUpload = <ThrowOnError extends boolean = false>(options: Options<AnalyzeUploadData, ThrowOnError>): RequestResult<AnalyzeUploadResponses, AnalyzeUploadErrors, ThrowOnError> => (options.client ?? client).post<AnalyzeUploadResponses, AnalyzeUploadErrors, ThrowOnError>({
+    ...formDataBodySerializer,
+    url: '/api/v1/datasets/preview',
+    ...options,
+    headers: {
+        'Content-Type': null,
+        ...options.headers
+    }
+});
+
+/**
+ * Get Stats
+ */
+export const getCatalogStats = <ThrowOnError extends boolean = false>(options?: Options<GetCatalogStatsData, ThrowOnError>): RequestResult<GetCatalogStatsResponses, unknown, ThrowOnError> => (options?.client ?? client).get<GetCatalogStatsResponses, unknown, ThrowOnError>({ url: '/api/v1/datasets/stats', ...options });
+
+/**
+ * Delete Dataset
+ */
+export const deleteDataset = <ThrowOnError extends boolean = false>(options: Options<DeleteDatasetData, ThrowOnError>): RequestResult<DeleteDatasetResponses, DeleteDatasetErrors, ThrowOnError> => (options.client ?? client).delete<DeleteDatasetResponses, DeleteDatasetErrors, ThrowOnError>({ url: '/api/v1/datasets/{dataset_id}', ...options });
+
+/**
+ * Get Dataset
+ */
+export const getDataset = <ThrowOnError extends boolean = false>(options: Options<GetDatasetData, ThrowOnError>): RequestResult<GetDatasetResponses, GetDatasetErrors, ThrowOnError> => (options.client ?? client).get<GetDatasetResponses, GetDatasetErrors, ThrowOnError>({ url: '/api/v1/datasets/{dataset_id}', ...options });
+
+/**
+ * Update Dataset
+ */
+export const updateDataset = <ThrowOnError extends boolean = false>(options: Options<UpdateDatasetData, ThrowOnError>): RequestResult<UpdateDatasetResponses, UpdateDatasetErrors, ThrowOnError> => (options.client ?? client).put<UpdateDatasetResponses, UpdateDatasetErrors, ThrowOnError>({
+    url: '/api/v1/datasets/{dataset_id}',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Request Ai Guide
+ *
+ * Analyse LLM asynchrone du dataset (job) — sortie balisée model_used / is_fallback (P2).
+ */
+export const requestAiGuide = <ThrowOnError extends boolean = false>(options: Options<RequestAiGuideData, ThrowOnError>): RequestResult<RequestAiGuideResponses, RequestAiGuideErrors, ThrowOnError> => (options.client ?? client).post<RequestAiGuideResponses, RequestAiGuideErrors, ThrowOnError>({ url: '/api/v1/datasets/{dataset_id}/ai-guide', ...options });
+
+/**
+ * Get Completion
+ */
+export const getDatasetCompletion = <ThrowOnError extends boolean = false>(options: Options<GetDatasetCompletionData, ThrowOnError>): RequestResult<GetDatasetCompletionResponses, GetDatasetCompletionErrors, ThrowOnError> => (options.client ?? client).get<GetDatasetCompletionResponses, GetDatasetCompletionErrors, ThrowOnError>({ url: '/api/v1/datasets/{dataset_id}/completion', ...options });
+
+/**
+ * List Files
+ */
+export const listDatasetFiles = <ThrowOnError extends boolean = false>(options: Options<ListDatasetFilesData, ThrowOnError>): RequestResult<ListDatasetFilesResponses, ListDatasetFilesErrors, ThrowOnError> => (options.client ?? client).get<ListDatasetFilesResponses, ListDatasetFilesErrors, ThrowOnError>({ url: '/api/v1/datasets/{dataset_id}/files', ...options });
+
+/**
+ * Download File
+ *
+ * Streaming authentifié — les fichiers ne sont JAMAIS servis directement (ADR-005).
+ */
+export const downloadDatasetFile = <ThrowOnError extends boolean = false>(options: Options<DownloadDatasetFileData, ThrowOnError>): RequestResult<DownloadDatasetFileResponses, DownloadDatasetFileErrors, ThrowOnError> => (options.client ?? client).get<DownloadDatasetFileResponses, DownloadDatasetFileErrors, ThrowOnError>({ url: '/api/v1/datasets/{dataset_id}/files/{file_id}/download', ...options });
+
+/**
+ * Preview Dataset
+ *
+ * Échantillon réel 50 lignes (random_state=42) — erreur explicite si indisponible (P1).
+ */
+export const previewDataset = <ThrowOnError extends boolean = false>(options: Options<PreviewDatasetData, ThrowOnError>): RequestResult<PreviewDatasetResponses, PreviewDatasetErrors, ThrowOnError> => (options.client ?? client).get<PreviewDatasetResponses, PreviewDatasetErrors, ThrowOnError>({ url: '/api/v1/datasets/{dataset_id}/preview', ...options });
+
+/**
+ * Get Similar
+ */
+export const getSimilarDatasets = <ThrowOnError extends boolean = false>(options: Options<GetSimilarDatasetsData, ThrowOnError>): RequestResult<GetSimilarDatasetsResponses, GetSimilarDatasetsErrors, ThrowOnError> => (options.client ?? client).get<GetSimilarDatasetsResponses, GetSimilarDatasetsErrors, ThrowOnError>({ url: '/api/v1/datasets/{dataset_id}/similar', ...options });
 
 /**
  * Get Health
