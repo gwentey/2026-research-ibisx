@@ -440,5 +440,64 @@
     "scoreSelection": "Score this selection",
     "empty": "No dataset to score — adjust the catalog filters.",
     "loading": "Computing ranking…"
+  },
+  "projects": {
+    "title": "Projects",
+    "subtitle": "A project captures your need (criteria + weights), recommends datasets and will group your experiments.",
+    "new": "New project",
+    "searchPlaceholder": "Search a project…",
+    "results": "{count, plural, =0 {No project} one {# project} other {# projects}}",
+    "card": {
+      "criteria": "{count, plural, =0 {no criteria} one {# criterion} other {# criteria}}",
+      "weights": "{count, plural, =0 {no weight} one {# weight} other {# weights}}",
+      "updated": "Updated {date}",
+      "open": "Open"
+    },
+    "empty": {
+      "title": "No project yet",
+      "body": "Create your first project: define your criteria and priorities, IBIS-X will recommend the most suitable datasets.",
+      "cta": "Create a project"
+    },
+    "form": {
+      "createTitle": "New project",
+      "editTitle": "Edit project",
+      "step1": "Information",
+      "step2": "Selection criteria",
+      "step3": "Weights",
+      "name": "Project name",
+      "namePlaceholder": "E.g. School dropout detection",
+      "description": "Description",
+      "descriptionPlaceholder": "Goal, context, constraints…",
+      "criteriaHint": "Same filters as the catalog: only matching datasets will be recommended. No criteria = whole catalog.",
+      "preview": "Recommendations preview",
+      "previewCount": "{count, plural, =0 {No dataset matches} one {# dataset matches} other {# datasets match}}",
+      "previewTop": "Current top 3",
+      "create": "Create project",
+      "save": "Save",
+      "saving": "Saving…",
+      "created": "Project created.",
+      "saved": "Project saved."
+    },
+    "detail": {
+      "tabRecommendations": "Recommendations",
+      "tabExperiments": "Experiments",
+      "tabConfig": "Configuration",
+      "edit": "Edit",
+      "delete": "Delete project",
+      "deleteConfirmTitle": "Delete this project?",
+      "deleteConfirmBody": "Associated experiments will also be deleted. This action is permanent.",
+      "experimentsEmptyTitle": "No experiment",
+      "experimentsEmptyBody": "The guided training pipeline (9 steps) arrives in the next milestone: you will launch trainings from this project and compare them here.",
+      "criteria": "Selection criteria",
+      "weights": "Weights",
+      "noCriteria": "No criteria: the whole catalog is considered.",
+      "noWeights": "Default weights (ethics 40% · technical 40% · popularity 20%)."
+    },
+    "mission": {
+      "project": "Project",
+      "dataset": "Dataset",
+      "training": "Training",
+      "explanation": "Explanation"
+    }
   }
 }

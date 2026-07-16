@@ -440,5 +440,64 @@
     "scoreSelection": "Scorer cette sélection",
     "empty": "Aucun dataset à scorer — ajustez les filtres du catalogue.",
     "loading": "Calcul du classement…"
+  },
+  "projects": {
+    "title": "Projets",
+    "subtitle": "Un projet capture votre besoin (critères + pondérations), recommande des datasets et regroupera vos expériences.",
+    "new": "Nouveau projet",
+    "searchPlaceholder": "Rechercher un projet…",
+    "results": "{count, plural, =0 {Aucun projet} one {# projet} other {# projets}}",
+    "card": {
+      "criteria": "{count, plural, =0 {aucun critère} one {# critère} other {# critères}}",
+      "weights": "{count, plural, =0 {aucune pondération} one {# pondération} other {# pondérations}}",
+      "updated": "Modifié le {date}",
+      "open": "Ouvrir"
+    },
+    "empty": {
+      "title": "Aucun projet pour l'instant",
+      "body": "Créez votre premier projet : définissez vos critères et vos priorités, IBIS-X vous recommandera les datasets les plus adaptés.",
+      "cta": "Créer un projet"
+    },
+    "form": {
+      "createTitle": "Nouveau projet",
+      "editTitle": "Modifier le projet",
+      "step1": "Informations",
+      "step2": "Critères de sélection",
+      "step3": "Pondérations",
+      "name": "Nom du projet",
+      "namePlaceholder": "Ex. Détection du décrochage scolaire",
+      "description": "Description",
+      "descriptionPlaceholder": "Objectif, contexte, contraintes…",
+      "criteriaHint": "Mêmes filtres que le catalogue : seuls les datasets correspondants seront recommandés. Aucun critère = tout le catalogue.",
+      "preview": "Aperçu des recommandations",
+      "previewCount": "{count, plural, =0 {Aucun dataset ne correspond} one {# dataset correspond} other {# datasets correspondent}}",
+      "previewTop": "Top 3 actuel",
+      "create": "Créer le projet",
+      "save": "Enregistrer",
+      "saving": "Enregistrement…",
+      "created": "Projet créé.",
+      "saved": "Projet enregistré."
+    },
+    "detail": {
+      "tabRecommendations": "Recommandations",
+      "tabExperiments": "Expériences",
+      "tabConfig": "Configuration",
+      "edit": "Modifier",
+      "delete": "Supprimer le projet",
+      "deleteConfirmTitle": "Supprimer ce projet ?",
+      "deleteConfirmBody": "Les expériences associées seront également supprimées. Cette action est définitive.",
+      "experimentsEmptyTitle": "Aucune expérience",
+      "experimentsEmptyBody": "Le pipeline d'entraînement guidé (9 étapes) arrive au prochain jalon : vous lancerez vos entraînements depuis ce projet et les comparerez ici.",
+      "criteria": "Critères de sélection",
+      "weights": "Pondérations",
+      "noCriteria": "Aucun critère : tout le catalogue est considéré.",
+      "noWeights": "Poids par défaut (éthique 40 % · technique 40 % · popularité 20 %)."
+    },
+    "mission": {
+      "project": "Projet",
+      "dataset": "Dataset",
+      "training": "Entraînement",
+      "explanation": "Explication"
+    }
   }
 }
