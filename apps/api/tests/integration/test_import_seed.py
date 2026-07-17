@@ -36,3 +36,10 @@ def test_seed_import_is_real_and_idempotent(db_session: Session) -> None:
     assert second.imported == []
     assert sorted(second.skipped) == ["iris", "student_performance"]
     assert second.failed == []
+
+
+def test_seed_local_only_skips_kaggle_entries(db_session: Session) -> None:
+    """`ibis seed` (CDC §12.5) : aucune clé externe — les entrées kaggle_ref sont exclues."""
+    report = import_from_config(db_session, default_config_path(), local_only=True)
+    assert report.failed == [], report.failed
+    assert len(report.imported) == 6  # les 6 datasets embarqués, jamais l'entrée kaggle_ref

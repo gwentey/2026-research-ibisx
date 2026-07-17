@@ -1,35 +1,51 @@
-# IBIS-X v2 — topologie dev (ARCH §11) : 5 conteneurs, hot reload.
-# Profil production : compose.prod.yml (Caddy TLS, ports fermés) — livré au J9.
+# IBIS-X v2 — profil PRODUCTION mono-machine (ARCH §11-13, CDC §12.3).
+#   docker compose -f compose.prod.yml up -d --build
+# Seul Caddy expose des ports (80/443, TLS automatique) ; tout le reste est interne.
+# Voir docs/deploiement-vps.md pour le pas-à-pas complet.
 
 services:
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      - IBIS_DOMAIN=${IBIS_DOMAIN:-localhost}
+    volumes:
+      - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    depends_on:
+      web:
+        condition: service_started
+      api:
+        condition: service_healthy
+
   web:
     build:
       context: apps/web
-      target: dev
-    ports:
-      - "3000:3000"
+      target: prod
+    restart: unless-stopped
     environment:
       - NEXT_PUBLIC_API_URL=/api
       - INTERNAL_API_URL=http://api:8000
-    volumes:
-      - ./apps/web:/app
-      - web-node-modules:/app/node_modules
     depends_on:
       api:
         condition: service_healthy
 
   api:
     build: apps/api
-    command: sh -c "alembic upgrade head && uvicorn ibis.main:app --host 0.0.0.0 --port 8000 --reload"
-    ports:
-      - "8000:8000"
+    command: sh -c "alembic upgrade head && uvicorn ibis.main:app --host 0.0.0.0 --port 8000 --workers 2"
+    restart: unless-stopped
     env_file: .env
     environment:
-      - DATABASE_URL=postgresql+psycopg://ibis:${POSTGRES_PASSWORD:-ibis}@postgres:5432/ibis
+      - ENVIRONMENT=production
+      - LOG_LEVEL=INFO # jamais DEBUG en prod ([NE PAS REPRODUIRE] retro 01/04)
+      - DATABASE_URL=postgresql+psycopg://ibis:${POSTGRES_PASSWORD:?POSTGRES_PASSWORD requis}@postgres:5432/ibis
       - REDIS_URL=redis://redis:6379/0
       - DATA_DIR=/data
     volumes:
-      - ./apps/api:/app
       - ibis-data:/data
     healthcheck:
       test: ["CMD", "curl", "-fsS", "http://localhost:8000/api/v1/health"]
@@ -46,31 +62,28 @@ services:
   worker:
     build: apps/api # MÊME image que l'api (ADR-004)
     command: celery -A ibis.workers.celery_app:celery_app worker -Q training,xai,llm,maintenance -c 2 -B --max-tasks-per-child=10
+    restart: unless-stopped
     env_file: .env
     environment:
-      - DATABASE_URL=postgresql+psycopg://ibis:${POSTGRES_PASSWORD:-ibis}@postgres:5432/ibis
+      - ENVIRONMENT=production
+      - LOG_LEVEL=INFO
+      - DATABASE_URL=postgresql+psycopg://ibis:${POSTGRES_PASSWORD:?POSTGRES_PASSWORD requis}@postgres:5432/ibis
       - REDIS_URL=redis://redis:6379/0
       - DATA_DIR=/data
     volumes:
-      - ./apps/api:/app
       - ibis-data:/data
     mem_limit: 4g
     depends_on:
       api:
         condition: service_healthy
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_started
 
   postgres:
     image: postgres:16-alpine
+    restart: unless-stopped
     environment:
       - POSTGRES_DB=ibis
       - POSTGRES_USER=ibis
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-ibis}
-    ports:
-      - "5432:5432" # exposé en dev pour pytest local ; retiré en prod
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:?POSTGRES_PASSWORD requis}
     volumes:
       - pg-data:/var/lib/postgresql/data
     healthcheck:
@@ -81,9 +94,8 @@ services:
 
   redis:
     image: redis:7-alpine
+    restart: unless-stopped
     command: redis-server --appendonly yes
-    ports:
-      - "6380:6379" # exposé en dev pour pytest local (6380 : 6379 occupé par un autre projet) ; retiré en prod
     volumes:
       - redis-data:/data
 
@@ -91,4 +103,5 @@ volumes:
   ibis-data:
   pg-data:
   redis-data:
-  web-node-modules:
+  caddy-data:
+  caddy-config:

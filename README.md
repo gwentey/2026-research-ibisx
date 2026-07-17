@@ -10,11 +10,13 @@ rétro-analyse) et [JALONS.md](JALONS.md) (plan de développement J0 → J9).
 
 ## Démarrage rapide
 
-Prérequis : Docker (avec Compose v2).
+Prérequis : Docker (avec Compose v2). **Aucune clé externe requise** (le LLM passe en repli
+déterministe marqué `is_fallback` sans clé OpenRouter — P2).
 
 ```bash
-cp .env.example .env               # puis générer JWT_SECRET (cf. commentaires du fichier)
+cp .env.example .env               # puis générer JWT_SECRET + INITIAL_ADMIN_* (cf. commentaires)
 docker compose up -d               # web + api + worker + postgres + redis
+docker compose exec api ibis seed  # admin + 6 datasets embarqués (idempotent, JAMAIS auto)
 ```
 
 - Frontend : http://localhost:3000
@@ -22,6 +24,40 @@ docker compose up -d               # web + api + worker + postgres + redis
 - API docs : http://localhost:8000/api/v1/docs
 
 Les migrations s'appliquent automatiquement au démarrage de l'API.
+Script de démonstration complet (20 min, persona enseignant) : [docs/demo-20min.md](docs/demo-20min.md).
+
+### Import Kaggle complet (optionnel)
+
+Le seed embarque 6 datasets réels. Pour le catalogue étendu (CDC §5.5.a), renseigner
+`KAGGLE_USERNAME`/`KAGGLE_KEY` dans `.env` puis :
+
+```bash
+docker compose exec api ibis import-kaggle           # toutes les entrées du YAML
+docker compose exec api ibis import-kaggle --only adult-census   # ou ciblé
+```
+
+Toute erreur d'import est visible et loggée ([NE PAS REPRODUIRE] S4 : jamais de `return False` silencieux).
+
+## Production
+
+Profil mono-machine derrière **Caddy** (TLS automatique, en-têtes de sécurité, ports internes fermés) :
+
+```bash
+IBIS_DOMAIN=mondomaine.fr docker compose -f compose.prod.yml up -d --build
+```
+
+Guide pas-à-pas (VPS, secrets, sauvegardes, rotation des clés) : [docs/deploiement-vps.md](docs/deploiement-vps.md).
+
+## Tests
+
+```bash
+cd apps/api && uv run pytest -q          # 169 tests backend (RBAC, déterminisme, worker réel)
+cd apps/web && pnpm test                 # vitest (parité i18n FR/EN)
+cd apps/web && pnpm e2e                  # parcours mission complet FR+EN (stack compose requise + seed)
+```
+
+Le parcours mission (inscription → onboarding → projet → wizard 9 étapes → entraînement →
+SHAP → chat) est le test d'acceptation final, exécuté chaque nuit en CI (`e2e.yml`).
 
 ## Développement
 

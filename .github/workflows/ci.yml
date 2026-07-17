@@ -102,3 +102,14 @@ jobs:
       - uses: actions/checkout@v4
       - run: docker build apps/api -t ibis-api:ci
       - run: docker build apps/web -t ibis-web:ci
+
+  secrets:
+    name: Sécurité — scan de secrets (gitleaks)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # tout l'historique ([NE PAS REPRODUIRE] S7 : secrets v1 dans git)
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

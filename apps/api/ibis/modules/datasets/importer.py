@@ -87,6 +87,7 @@ def import_from_config(
     *,
     only: list[str] | None = None,
     force: bool = False,
+    local_only: bool = False,
 ) -> ImportReport:
     config = yaml.safe_load(config_path.read_text())
     base_dir = config_path.parent
@@ -96,6 +97,8 @@ def import_from_config(
         slug = entry["slug"]
         if only and slug not in only:
             continue
+        if local_only and not entry.get("local_file"):
+            continue  # seed sans clé Kaggle : uniquement les fichiers embarqués (CDC §12.5)
         try:
             from sqlalchemy import select
 

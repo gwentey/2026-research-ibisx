@@ -1,0 +1,30 @@
+# Reverse proxy de production (ARCH §11, CDC §12.3).
+# IBIS_DOMAIN=mondomaine.fr → certificat Let's Encrypt automatique.
+# Sans domaine (défaut localhost) → certificat local auto-signé, pratique pour valider le profil.
+
+{$IBIS_DOMAIN:localhost} {
+	encode zstd gzip
+
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Frame-Options "DENY"
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		Permissions-Policy "camera=(), microphone=(), geolocation=()"
+		# 'unsafe-inline'/'unsafe-eval' : requis par les scripts inline de Next.js (compromis documenté).
+		Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'"
+		-Server
+	}
+
+	# API (REST + SSE) — flush immédiat pour les évènements d'entraînement
+	handle /api/* {
+		reverse_proxy api:8000 {
+			flush_interval -1
+		}
+	}
+
+	# Frontend Next.js
+	handle {
+		reverse_proxy web:3000
+	}
+}

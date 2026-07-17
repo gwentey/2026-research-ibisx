@@ -29,14 +29,10 @@ router = APIRouter(prefix="/admin", tags=["admin"])
 DbDep = Annotated[Session, Depends(get_db)]
 
 
-def audit(
-    db: Session, admin: User, action: str, entity: str, entity_id: str, **meta: Any
-) -> None:
+def audit(db: Session, admin: User, action: str, entity: str, entity_id: str, **meta: Any) -> None:
     """Trace l'action dans audit_events — commitée avec la transaction de la route."""
     db.add(
-        AuditEvent(
-            user_id=admin.id, action=action, entity=entity, entity_id=entity_id, meta=meta
-        )
+        AuditEvent(user_id=admin.id, action=action, entity=entity, entity_id=entity_id, meta=meta)
     )
 
 
@@ -117,7 +113,15 @@ def update_user(
         )
 
     if payload.role is not None and payload.role != user.role:
-        audit(db, admin, "role_changed", "user", str(user.id), from_=user.role.value, to=payload.role.value)
+        audit(
+            db,
+            admin,
+            "role_changed",
+            "user",
+            str(user.id),
+            from_=user.role.value,
+            to=payload.role.value,
+        )
         user.role = payload.role
     if payload.is_active is not None and payload.is_active != user.is_active:
         audit(db, admin, "active_changed", "user", str(user.id), to=payload.is_active)
@@ -198,9 +202,7 @@ def upsert_template(
     return TemplateRead.model_validate(template)
 
 
-@router.delete(
-    "/ethical-templates/{domain}", status_code=204, operation_id="adminDeleteTemplate"
-)
+@router.delete("/ethical-templates/{domain}", status_code=204, operation_id="adminDeleteTemplate")
 def delete_template(domain: str, db: DbDep, admin: CurrentAdminVerified) -> None:
     template = db.scalar(select(EthicalTemplate).where(EthicalTemplate.domain == domain))
     if template is None:

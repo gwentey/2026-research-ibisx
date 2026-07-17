@@ -1,0 +1,74 @@
+# E2E parcours mission (CDC §12.4) — nightly sur la stack Docker Compose complète.
+# Le parcours inscription → onboarding → projet → wizard → entraînement → SHAP → chat
+# EST le test d'acceptation final ([NE PAS REPRODUIRE] S9 : la v1 n'a jamais eu de e2e).
+name: E2E mission (nightly)
+
+on:
+  schedule:
+    - cron: "0 3 * * *"
+  workflow_dispatch:
+
+jobs:
+  mission:
+    name: Parcours mission FR + EN sur compose
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Environnement (secrets de CI jetables — aucune clé externe)
+        run: |
+          cp .env.example .env
+          python3 - <<'EOF'
+          import re, secrets
+          env = open(".env").read()
+          env = re.sub(r"^JWT_SECRET=.*", f"JWT_SECRET={secrets.token_urlsafe(48)}", env, flags=re.M)
+          env = re.sub(r"^INITIAL_ADMIN_EMAIL=.*", "INITIAL_ADMIN_EMAIL=admin@ibisx-demo.org", env, flags=re.M)
+          env = re.sub(r"^INITIAL_ADMIN_PASSWORD=.*", f"INITIAL_ADMIN_PASSWORD={secrets.token_urlsafe(16)}", env, flags=re.M)
+          open(".env", "w").write(env)
+          EOF
+
+      - name: Démarrer la stack complète
+        run: docker compose up -d --build
+
+      - name: Attendre l'API puis seed (admin + 6 datasets embarqués)
+        run: |
+          for i in $(seq 1 90); do
+            curl -fs http://localhost:8000/api/v1/health > /dev/null && break
+            sleep 2
+          done
+          curl -fs http://localhost:8000/api/v1/health
+          docker compose exec -T api ibis seed
+
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: apps/web/pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile
+        working-directory: apps/web
+      - run: npx playwright install --with-deps chromium
+        working-directory: apps/web
+
+      - name: Parcours mission (FR puis EN)
+        run: pnpm e2e
+        working-directory: apps/web
+
+      - name: Déterminisme sur l'image finale (P4)
+        # L'image de prod n'embarque pas les dépendances de dev : uv les ajoute à la volée,
+        # puis on rejoue les tests de déterminisme du pipeline (préprocessing + entraînement).
+        run: |
+          docker compose exec -T \
+            -e TEST_DATABASE_URL=postgresql+psycopg://ibis:ibis@postgres:5432/ibis_test \
+            -e TEST_REDIS_URL=redis://redis:6379/9 \
+            api sh -c "
+            uv sync --frozen &&
+            uv run pytest -q \
+              tests/unit/test_preprocessing.py::test_split_stratified_and_reproducible \
+              tests/unit/test_ml_quality_and_eval.py::test_training_determinism_end_to_end
+          "
+
+      - name: Logs compose en cas d'échec
+        if: failure()
+        run: docker compose logs --tail 300

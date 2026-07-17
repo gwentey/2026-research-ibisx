@@ -66,5 +66,44 @@ def import_kaggle(
         raise typer.Exit(code=1)
 
 
+@app.command()
+def seed() -> None:
+    """Instance de démo en UNE commande (CDC §12.5) : admin (env) + datasets embarqués.
+
+    Idempotente, relançable, et EXPLICITE — jamais exécutée au boot
+    ([NE PAS REPRODUIRE] AUTO_INIT_DATA de la v1). Aucune clé externe requise.
+    """
+    from ibis.core.config import get_settings
+    from ibis.db.engine import open_session
+    from ibis.modules.auth.bootstrap import ensure_initial_admin
+    from ibis.modules.datasets.importer import default_config_path, import_from_config
+
+    settings = get_settings()
+    if settings.initial_admin_email and settings.initial_admin_password:
+        ensure_initial_admin()
+        typer.echo(f"Admin : {settings.initial_admin_email} (créé s'il n'existait pas)")
+    else:
+        typer.echo(
+            "INITIAL_ADMIN_EMAIL/PASSWORD absents du .env — admin non créé "
+            "(utilisez `ibis create-admin`)."
+        )
+
+    db = open_session()
+    try:
+        report = import_from_config(db, default_config_path(), local_only=True)
+    finally:
+        db.close()
+    typer.echo(f"Datasets embarqués : {report.summary}")
+    for slug in report.imported:
+        typer.echo(f"  ✓ {slug}")
+    for slug in report.skipped:
+        typer.echo(f"  = {slug} (déjà présent)")
+    for slug, error in report.failed:
+        typer.echo(f"  ✗ {slug} : {error}")
+    if report.failed:
+        raise typer.Exit(code=1)
+    typer.echo("Seed terminé — connectez-vous et suivez docs/demo-20min.md")
+
+
 if __name__ == "__main__":
     app()

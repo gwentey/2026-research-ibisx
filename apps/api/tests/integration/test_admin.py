@@ -209,8 +209,7 @@ def test_ethical_templates_crud_and_application(client: TestClient, db_session: 
 
     # Suppression
     assert (
-        client.delete("/api/v1/admin/ethical-templates/education", headers=admin).status_code
-        == 204
+        client.delete("/api/v1/admin/ethical-templates/education", headers=admin).status_code == 204
     )
     assert client.get("/api/v1/admin/ethical-templates", headers=admin).json() == []
     missing = client.delete("/api/v1/admin/ethical-templates/education", headers=admin)
@@ -238,7 +237,12 @@ def test_jobs_supervision(client: TestClient, db_session: Session) -> None:
     db_session.add_all(
         [
             Job(kind=JobKind.training, status=JobStatus.completed, queue="training", progress=100),
-            Job(kind=JobKind.training, status=JobStatus.failed, queue="training", error_code="TIMEOUT"),
+            Job(
+                kind=JobKind.training,
+                status=JobStatus.failed,
+                queue="training",
+                error_code="TIMEOUT",
+            ),
             Job(kind=JobKind.explanation, status=JobStatus.running, queue="xai", progress=40),
         ]
     )
@@ -247,13 +251,9 @@ def test_jobs_supervision(client: TestClient, db_session: Session) -> None:
     jobs = client.get("/api/v1/admin/jobs", headers=admin).json()
     assert len(jobs) == 3
 
-    failed = client.get(
-        "/api/v1/admin/jobs", params={"status": "failed"}, headers=admin
-    ).json()
+    failed = client.get("/api/v1/admin/jobs", params={"status": "failed"}, headers=admin).json()
     assert len(failed) == 1
     assert failed[0]["error_code"] == "TIMEOUT"
 
-    trainings = client.get(
-        "/api/v1/admin/jobs", params={"kind": "training"}, headers=admin
-    ).json()
+    trainings = client.get("/api/v1/admin/jobs", params={"kind": "training"}, headers=admin).json()
     assert len(trainings) == 2

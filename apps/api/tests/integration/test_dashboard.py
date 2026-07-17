@@ -32,23 +32,37 @@ def seed_state(db: Session, user_id: str) -> None:
     db.add_all(
         [
             Experiment(
-                user_id=user_uuid, project_id=project_a.id, dataset_id=dataset.id,
-                algorithm="decision_tree", status=ExperimentStatus.completed,
-                duration_seconds=10.0, finished_at=now,
+                user_id=user_uuid,
+                project_id=project_a.id,
+                dataset_id=dataset.id,
+                algorithm="decision_tree",
+                status=ExperimentStatus.completed,
+                duration_seconds=10.0,
+                finished_at=now,
             ),
             Experiment(
-                user_id=user_uuid, project_id=project_a.id, dataset_id=dataset.id,
-                algorithm="random_forest", status=ExperimentStatus.completed,
-                duration_seconds=20.0, finished_at=now,
+                user_id=user_uuid,
+                project_id=project_a.id,
+                dataset_id=dataset.id,
+                algorithm="random_forest",
+                status=ExperimentStatus.completed,
+                duration_seconds=20.0,
+                finished_at=now,
             ),
             Experiment(
-                user_id=user_uuid, project_id=project_b.id, dataset_id=dataset.id,
-                algorithm="decision_tree", status=ExperimentStatus.failed,
+                user_id=user_uuid,
+                project_id=project_b.id,
+                dataset_id=dataset.id,
+                algorithm="decision_tree",
+                status=ExperimentStatus.failed,
                 error_code="TIMEOUT",
             ),
             Experiment(  # brouillon : exclu des KPI, présent en pending_draft
-                user_id=user_uuid, project_id=project_b.id, dataset_id=dataset.id,
-                status=ExperimentStatus.draft, draft_state={"step": 3},
+                user_id=user_uuid,
+                project_id=project_b.id,
+                dataset_id=dataset.id,
+                status=ExperimentStatus.draft,
+                draft_state={"step": 3},
             ),
         ]
     )

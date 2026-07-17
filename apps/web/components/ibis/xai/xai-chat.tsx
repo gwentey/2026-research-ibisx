@@ -162,7 +162,11 @@ export function XaiChat({ explanation }: { explanation: ExplanationResults }) {
               onChange={(event) => setQuestion(event.target.value)}
               disabled={waiting}
             />
-            <Button type="submit" size="icon" disabled={waiting || !question.trim()}>
+            <Button
+              type="submit"
+              size="icon"
+              aria-label={t("send")}
+              disabled={waiting || !question.trim()}>
               <SendIcon />
             </Button>
           </form>

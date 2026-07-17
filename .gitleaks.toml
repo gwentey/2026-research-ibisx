@@ -1,0 +1,14 @@
+# Config gitleaks (CI : job `secrets`) — S7 : aucune clé v1 réutilisée, scan permanent.
+# L'allowlist ne couvre QUE des faux positifs identifiés :
+# - les données factices du template shadcn (UUID de démo, purgées du code au J9
+#   mais présentes dans l'historique du commit d'import du template) ;
+# - la documentation de refonte (diagrammes/texte qui matchent la règle generic-api-key).
+
+[extend]
+useDefault = true
+
+[allowlist]
+paths = [
+  '''apps/web/app/dashboard/.*''',
+  '''docs/refonte/.*''',
+]
