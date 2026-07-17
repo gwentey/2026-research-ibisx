@@ -3,6 +3,7 @@
 Tout est asynchrone ([NE PAS REPRODUIRE] X9 : chat bloquant 60 s en HTTP).
 """
 
+import contextlib
 import time
 import uuid
 from datetime import UTC, datetime
@@ -191,12 +192,10 @@ def _fail(db, explanation, job_id: str, code: str, message: str) -> None:  # typ
         explanation.error_code = code
         explanation.error_message = message
         db.commit()
-    try:
+    with contextlib.suppress(Exception):
         jobs_service.update_progress(
             db, uuid.UUID(job_id), status=JobStatus.failed, error_code=code, message=message
         )
-    except Exception:
-        pass
 
 
 @celery_app.task(name="ibis.workers.tasks.explain.answer_chat_question", soft_time_limit=120)

@@ -87,6 +87,86 @@ export type CatalogStats = {
 };
 
 /**
+ * ChatAsk
+ */
+export type ChatAsk = {
+    /**
+     * Question
+     */
+    question: string;
+};
+
+/**
+ * ChatMessageRead
+ */
+export type ChatMessageRead = {
+    /**
+     * Content
+     */
+    content: string;
+    /**
+     * Created At
+     */
+    created_at: string;
+    /**
+     * Id
+     */
+    id: string;
+    /**
+     * Is Fallback
+     */
+    is_fallback: boolean;
+    /**
+     * Model Used
+     */
+    model_used: string | null;
+    /**
+     * Role
+     */
+    role: string;
+};
+
+/**
+ * ChatSessionCreate
+ */
+export type ChatSessionCreate = {
+    /**
+     * Language
+     */
+    language?: 'fr' | 'en';
+};
+
+/**
+ * ChatSessionRead
+ */
+export type ChatSessionRead = {
+    /**
+     * Explanation Id
+     */
+    explanation_id: string;
+    /**
+     * Id
+     */
+    id: string;
+    /**
+     * Is Active
+     */
+    is_active: boolean;
+    /**
+     * Language
+     */
+    language: string;
+    /**
+     * Max Questions
+     */
+    max_questions: number;
+    /**
+     * Questions Count
+     */
+    questions_count: number;
+};
+
+/**
  * ColumnRead
  */
 export type ColumnRead = {
@@ -1191,6 +1271,204 @@ export type ExperimentWithQueue = {
 };
 
 /**
+ * ExplanationRead
+ */
+export type ExplanationRead = {
+    /**
+     * Audience Level
+     */
+    audience_level: string;
+    /**
+     * Created At
+     */
+    created_at: string;
+    /**
+     * Error Code
+     */
+    error_code: string | null;
+    /**
+     * Error Message
+     */
+    error_message: string | null;
+    /**
+     * Experiment Id
+     */
+    experiment_id: string;
+    /**
+     * Id
+     */
+    id: string;
+    /**
+     * Is Fallback
+     */
+    is_fallback: boolean;
+    /**
+     * Job Id
+     */
+    job_id: string | null;
+    /**
+     * Language
+     */
+    language: string;
+    /**
+     * Method Justification
+     */
+    method_justification: string | null;
+    /**
+     * Method Requested
+     */
+    method_requested: string;
+    /**
+     * Method Used
+     */
+    method_used: string | null;
+    /**
+     * Model Used
+     */
+    model_used: string | null;
+    /**
+     * Processing Seconds
+     */
+    processing_seconds: number | null;
+    /**
+     * Progress
+     */
+    progress: number;
+    /**
+     * Status
+     */
+    status: string;
+    /**
+     * Type
+     */
+    type: string;
+};
+
+/**
+ * ExplanationRequest
+ */
+export type ExplanationRequest = {
+    /**
+     * Instance Index
+     */
+    instance_index?: number | null;
+    /**
+     * Language
+     */
+    language?: 'fr' | 'en';
+    /**
+     * Method
+     */
+    method?: 'auto' | 'shap' | 'lime';
+    /**
+     * Type
+     */
+    type: 'global' | 'local';
+};
+
+/**
+ * ExplanationResults
+ */
+export type ExplanationResults = {
+    /**
+     * Audience Level
+     */
+    audience_level: string;
+    /**
+     * Created At
+     */
+    created_at: string;
+    /**
+     * Error Code
+     */
+    error_code: string | null;
+    /**
+     * Error Message
+     */
+    error_message: string | null;
+    /**
+     * Experiment Id
+     */
+    experiment_id: string;
+    /**
+     * Id
+     */
+    id: string;
+    /**
+     * Instance Ref
+     */
+    instance_ref: {
+        [key: string]: unknown;
+    } | null;
+    /**
+     * Is Fallback
+     */
+    is_fallback: boolean;
+    /**
+     * Job Id
+     */
+    job_id: string | null;
+    /**
+     * Language
+     */
+    language: string;
+    /**
+     * Method Justification
+     */
+    method_justification: string | null;
+    /**
+     * Method Requested
+     */
+    method_requested: string;
+    /**
+     * Method Used
+     */
+    method_used: string | null;
+    /**
+     * Model Used
+     */
+    model_used: string | null;
+    /**
+     * Processing Seconds
+     */
+    processing_seconds: number | null;
+    /**
+     * Progress
+     */
+    progress: number;
+    /**
+     * Quality Kpis
+     */
+    quality_kpis: {
+        [key: string]: unknown;
+    } | null;
+    /**
+     * Status
+     */
+    status: string;
+    /**
+     * Text Explanation
+     */
+    text_explanation: string | null;
+    /**
+     * Type
+     */
+    type: string;
+    /**
+     * Values
+     */
+    values: {
+        [key: string]: unknown;
+    } | null;
+    /**
+     * Viz Data
+     */
+    viz_data: {
+        [key: string]: unknown;
+    } | null;
+};
+
+/**
  * FacetValue
  */
 export type FacetValue = {
@@ -2181,6 +2459,68 @@ export type ResetPasswordResponses = {
 
 export type ResetPasswordResponse = ResetPasswordResponses[keyof ResetPasswordResponses];
 
+export type ListChatMessagesData = {
+    body?: never;
+    path: {
+        /**
+         * Session Id
+         */
+        session_id: string;
+    };
+    query?: never;
+    url: '/api/v1/chat/{session_id}/messages';
+};
+
+export type ListChatMessagesErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type ListChatMessagesError = ListChatMessagesErrors[keyof ListChatMessagesErrors];
+
+export type ListChatMessagesResponses = {
+    /**
+     * Response Listchatmessages
+     *
+     * Successful Response
+     */
+    200: Array<ChatMessageRead>;
+};
+
+export type ListChatMessagesResponse = ListChatMessagesResponses[keyof ListChatMessagesResponses];
+
+export type AskChatQuestionData = {
+    body: ChatAsk;
+    path: {
+        /**
+         * Session Id
+         */
+        session_id: string;
+    };
+    query?: never;
+    url: '/api/v1/chat/{session_id}/messages';
+};
+
+export type AskChatQuestionErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type AskChatQuestionError = AskChatQuestionErrors[keyof AskChatQuestionErrors];
+
+export type AskChatQuestionResponses = {
+    /**
+     * Successful Response
+     */
+    202: ChatSessionRead;
+};
+
+export type AskChatQuestionResponse = AskChatQuestionResponses[keyof AskChatQuestionResponses];
+
 export type ListDatasetsData = {
     body?: never;
     path?: never;
@@ -2996,6 +3336,68 @@ export type DownloadModelResponses = {
     200: unknown;
 };
 
+export type ListExplanationsData = {
+    body?: never;
+    path: {
+        /**
+         * Experiment Id
+         */
+        experiment_id: string;
+    };
+    query?: never;
+    url: '/api/v1/experiments/{experiment_id}/explanations';
+};
+
+export type ListExplanationsErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type ListExplanationsError = ListExplanationsErrors[keyof ListExplanationsErrors];
+
+export type ListExplanationsResponses = {
+    /**
+     * Response Listexplanations
+     *
+     * Successful Response
+     */
+    200: Array<ExplanationRead>;
+};
+
+export type ListExplanationsResponse = ListExplanationsResponses[keyof ListExplanationsResponses];
+
+export type RequestExplanationData = {
+    body: ExplanationRequest;
+    path: {
+        /**
+         * Experiment Id
+         */
+        experiment_id: string;
+    };
+    query?: never;
+    url: '/api/v1/experiments/{experiment_id}/explanations';
+};
+
+export type RequestExplanationErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type RequestExplanationError = RequestExplanationErrors[keyof RequestExplanationErrors];
+
+export type RequestExplanationResponses = {
+    /**
+     * Successful Response
+     */
+    202: ExplanationRead;
+};
+
+export type RequestExplanationResponse = RequestExplanationResponses[keyof RequestExplanationResponses];
+
 export type GetExperimentLogsData = {
     body?: never;
     path: {
@@ -3057,6 +3459,180 @@ export type GetExperimentResultsResponses = {
 };
 
 export type GetExperimentResultsResponse = GetExperimentResultsResponses[keyof GetExperimentResultsResponses];
+
+export type GetSuggestedQuestionsData = {
+    body?: never;
+    path: {
+        /**
+         * Experiment Id
+         */
+        experiment_id: string;
+    };
+    query?: {
+        /**
+         * Language
+         */
+        language?: string;
+    };
+    url: '/api/v1/experiments/{experiment_id}/suggested-questions';
+};
+
+export type GetSuggestedQuestionsErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type GetSuggestedQuestionsError = GetSuggestedQuestionsErrors[keyof GetSuggestedQuestionsErrors];
+
+export type GetSuggestedQuestionsResponses = {
+    /**
+     * Response Getsuggestedquestions
+     *
+     * Successful Response
+     */
+    200: Array<string>;
+};
+
+export type GetSuggestedQuestionsResponse = GetSuggestedQuestionsResponses[keyof GetSuggestedQuestionsResponses];
+
+export type ListTestInstancesData = {
+    body?: never;
+    path: {
+        /**
+         * Experiment Id
+         */
+        experiment_id: string;
+    };
+    query?: {
+        /**
+         * Page
+         */
+        page?: number;
+        /**
+         * Page Size
+         */
+        page_size?: number;
+        /**
+         * Sort By Error
+         */
+        sort_by_error?: boolean;
+    };
+    url: '/api/v1/experiments/{experiment_id}/test-instances';
+};
+
+export type ListTestInstancesErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type ListTestInstancesError = ListTestInstancesErrors[keyof ListTestInstancesErrors];
+
+export type ListTestInstancesResponses = {
+    /**
+     * Response Listtestinstances
+     *
+     * Successful Response
+     */
+    200: {
+        [key: string]: unknown;
+    };
+};
+
+export type ListTestInstancesResponse = ListTestInstancesResponses[keyof ListTestInstancesResponses];
+
+export type GetExplanationData = {
+    body?: never;
+    path: {
+        /**
+         * Explanation Id
+         */
+        explanation_id: string;
+    };
+    query?: never;
+    url: '/api/v1/explanations/{explanation_id}';
+};
+
+export type GetExplanationErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type GetExplanationError = GetExplanationErrors[keyof GetExplanationErrors];
+
+export type GetExplanationResponses = {
+    /**
+     * Successful Response
+     */
+    200: ExplanationRead;
+};
+
+export type GetExplanationResponse = GetExplanationResponses[keyof GetExplanationResponses];
+
+export type CreateChatSessionData = {
+    body: ChatSessionCreate;
+    path: {
+        /**
+         * Explanation Id
+         */
+        explanation_id: string;
+    };
+    query?: never;
+    url: '/api/v1/explanations/{explanation_id}/chat';
+};
+
+export type CreateChatSessionErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type CreateChatSessionError = CreateChatSessionErrors[keyof CreateChatSessionErrors];
+
+export type CreateChatSessionResponses = {
+    /**
+     * Successful Response
+     */
+    201: ChatSessionRead;
+};
+
+export type CreateChatSessionResponse = CreateChatSessionResponses[keyof CreateChatSessionResponses];
+
+export type GetExplanationResultsData = {
+    body?: never;
+    path: {
+        /**
+         * Explanation Id
+         */
+        explanation_id: string;
+    };
+    query?: never;
+    url: '/api/v1/explanations/{explanation_id}/results';
+};
+
+export type GetExplanationResultsErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type GetExplanationResultsError = GetExplanationResultsErrors[keyof GetExplanationResultsErrors];
+
+export type GetExplanationResultsResponses = {
+    /**
+     * Successful Response
+     */
+    200: ExplanationResults;
+};
+
+export type GetExplanationResultsResponse = GetExplanationResultsResponses[keyof GetExplanationResultsResponses];
 
 export type GetHealthData = {
     body?: never;
