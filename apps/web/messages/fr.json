@@ -887,5 +887,136 @@
     "filterAlgo": "Algorithme",
     "any": "Tous",
     "empty": "Aucune expérience. Lancez un entraînement depuis un projet."
+  },
+  "admin": {
+    "users": {
+      "title": "Utilisateurs",
+      "subtitle": "Rôles, activation, crédits et suppression de comptes.",
+      "search": "Rechercher par email ou pseudo…",
+      "empty": "Aucun utilisateur trouvé.",
+      "you": "vous",
+      "active": "Actif",
+      "inactive": "Désactivé",
+      "addCredits": "Crédits",
+      "creditsAmount": "Crédits à ajouter (1–1000)",
+      "confirmCredits": "Ajouter",
+      "activate": "Réactiver",
+      "deactivate": "Désactiver",
+      "delete": "Supprimer",
+      "deleteTitle": "Supprimer ce compte ?",
+      "deleteBody": "Les projets, expériences et explications de {email} seront supprimés définitivement.",
+      "cancel": "Annuler",
+      "updated": "Utilisateur mis à jour.",
+      "deleted": "Compte supprimé.",
+      "error": "Action impossible.",
+      "lastAdmin": "Impossible : c'est le dernier administrateur actif.",
+      "pagination": "Page {page} / {total}",
+      "previous": "Précédente",
+      "next": "Suivante",
+      "table": {
+        "user": "Utilisateur",
+        "role": "Rôle",
+        "status": "Statut",
+        "credits": "Crédits",
+        "created": "Inscrit le",
+        "actions": "Actions"
+      },
+      "roles": {
+        "user": "Utilisateur",
+        "contributor": "Contributeur",
+        "admin": "Administrateur"
+      }
+    },
+    "datasets": {
+      "title": "Datasets (administration)",
+      "subtitle": "Tous les datasets du catalogue, y compris ceux du système.",
+      "search": "Rechercher un dataset…",
+      "empty": "Aucun dataset.",
+      "system": "Système",
+      "userOrigin": "Contributeur",
+      "open": "Ouvrir",
+      "reanalyze": "Ré-analyser",
+      "reanalyzed": "Analyse relancée — score qualité {score}/100.",
+      "delete": "Supprimer",
+      "deleteTitle": "Supprimer ce dataset ?",
+      "deleteBody": "« {name} » et ses fichiers seront supprimés. Les expériences liées perdront leur source.",
+      "deleted": "Dataset supprimé.",
+      "error": "Action impossible.",
+      "cancel": "Annuler",
+      "pagination": "Page {page} / {total}",
+      "previous": "Précédente",
+      "next": "Suivante",
+      "table": {
+        "name": "Nom",
+        "domain": "Domaines",
+        "origin": "Origine",
+        "size": "Lignes × colonnes",
+        "ethical": "Score éthique",
+        "actions": "Actions"
+      }
+    },
+    "templates": {
+      "title": "Templates éthiques",
+      "subtitle": "Défauts par domaine appliqués à l'import quand un critère n'est pas renseigné (le domaine « default » sert de repli).",
+      "newDomain": "Domaine (ex. sante, education, default)",
+      "create": "Créer / éditer",
+      "edit": "Éditer",
+      "delete": "Supprimer",
+      "saved": "Template enregistré.",
+      "deleted": "Template supprimé.",
+      "error": "Enregistrement impossible.",
+      "empty": "Aucun template — créez le premier ci-dessus.",
+      "dialogTitle": "Template « {domain} »",
+      "yes": "Oui",
+      "no": "Non",
+      "unset": "Non renseigné",
+      "save": "Enregistrer",
+      "cancel": "Annuler",
+      "definedCount": "{count} critère(s) défini(s)",
+      "deleteTitle": "Supprimer le template « {domain} » ?",
+      "deleteBody": "Les prochains imports de ce domaine n'hériteront plus d'aucun défaut.",
+      "table": {
+        "domain": "Domaine",
+        "defined": "Critères",
+        "updated": "Modifié le",
+        "actions": "Actions"
+      }
+    },
+    "jobs": {
+      "title": "Supervision des jobs",
+      "subtitle": "Entraînements, explications et tâches de fond — table jobs alimentée par le worker.",
+      "workers": "Workers en ligne",
+      "noWorkers": "Aucun worker détecté — les entraînements resteront en attente.",
+      "empty": "Aucun job.",
+      "filters": {
+        "kind": "Type",
+        "status": "Statut",
+        "any": "Tous"
+      },
+      "kinds": {
+        "training": "Entraînement",
+        "explanation": "Explication",
+        "chat": "Chat XAI",
+        "import": "Import",
+        "guide": "Guide IA",
+        "maintenance": "Maintenance"
+      },
+      "statuses": {
+        "pending": "En attente",
+        "running": "En cours",
+        "completed": "Terminé",
+        "failed": "Échoué",
+        "cancelled": "Annulé"
+      },
+      "table": {
+        "kind": "Type",
+        "status": "Statut",
+        "queue": "File",
+        "progress": "Progression",
+        "error": "Erreur",
+        "created": "Créé le",
+        "duration": "Durée"
+      }
+    }
   }
 }

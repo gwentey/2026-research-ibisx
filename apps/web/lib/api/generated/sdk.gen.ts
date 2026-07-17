@@ -2,7 +2,7 @@
 
 import { type Client, type ClientMeta, formDataBodySerializer, type Options as Options2, type RequestResult, type TDataShape } from './client';
 import { client } from './client.gen';
-import type { AnalyzeUploadData, AnalyzeUploadErrors, AnalyzeUploadResponses, AskChatQuestionData, AskChatQuestionErrors, AskChatQuestionResponses, CancelExperimentData, CancelExperimentErrors, CancelExperimentResponses, ChangePasswordData, ChangePasswordErrors, ChangePasswordResponses, CompareExperimentsData, CompareExperimentsErrors, CompareExperimentsResponses, CompleteOnboardingData, CompleteOnboardingErrors, CompleteOnboardingResponses, CreateChatSessionData, CreateChatSessionErrors, CreateChatSessionResponses, CreateDatasetData, CreateDatasetErrors, CreateDatasetResponses, CreateProjectData, CreateProjectErrors, CreateProjectResponses, DeleteAccountData, DeleteAccountErrors, DeleteAccountResponses, DeleteDatasetData, DeleteDatasetErrors, DeleteDatasetResponses, DeleteExperimentData, DeleteExperimentErrors, DeleteExperimentResponses, DeleteProjectData, DeleteProjectErrors, DeleteProjectResponses, DownloadDatasetFileData, DownloadDatasetFileErrors, DownloadDatasetFileResponses, DownloadModelData, DownloadModelErrors, DownloadModelResponses, ForgotPasswordData, ForgotPasswordErrors, ForgotPasswordResponses, GetCatalogStatsData, GetCatalogStatsResponses, GetDashboardData, GetDashboardResponses, GetDatasetCompletionData, GetDatasetCompletionErrors, GetDatasetCompletionResponses, GetDatasetData, GetDatasetErrors, GetDatasetFacetsData, GetDatasetFacetsResponses, GetDatasetResponses, GetDraftData, GetDraftErrors, GetDraftResponses, GetExperimentData, GetExperimentErrors, GetExperimentLogsData, GetExperimentLogsErrors, GetExperimentLogsResponses, GetExperimentResponses, GetExperimentResultsData, GetExperimentResultsErrors, GetExperimentResultsResponses, GetExplanationData, GetExplanationErrors, GetExplanationResponses, GetExplanationResultsData, GetExplanationResultsErrors, GetExplanationResultsResponses, GetHealthData, GetHealthResponses, GetJobData, GetJobErrors, GetJobResponses, GetMeData, GetMeResponses, GetMyAvatarData, GetMyAvatarResponses, GetProjectData, GetProjectErrors, GetProjectRecommendationsData, GetProjectRecommendationsErrors, GetProjectRecommendationsResponses, GetProjectResponses, GetQualityAnalysisData, GetQualityAnalysisErrors, GetQualityAnalysisResponses, GetScoringProfilesData, GetScoringProfilesResponses, GetSimilarDatasetsData, GetSimilarDatasetsErrors, GetSimilarDatasetsResponses, GetSuggestedQuestionsData, GetSuggestedQuestionsErrors, GetSuggestedQuestionsResponses, GetWorkerHealthData, GetWorkerHealthResponses, GoogleAuthorizeData, GoogleAuthorizeResponses, GoogleExchangeData, GoogleExchangeErrors, GoogleExchangeResponses, ListAlgorithmsData, ListAlgorithmsResponses, ListChatMessagesData, ListChatMessagesErrors, ListChatMessagesResponses, ListDatasetFilesData, ListDatasetFilesErrors, ListDatasetFilesResponses, ListDatasetsData, ListDatasetsErrors, ListDatasetsResponses, ListExperimentsData, ListExperimentsErrors, ListExperimentsResponses, ListExplanationsData, ListExplanationsErrors, ListExplanationsResponses, ListProjectExperimentsData, ListProjectExperimentsErrors, ListProjectExperimentsResponses, ListProjectsData, ListProjectsErrors, ListProjectsResponses, ListTestInstancesData, ListTestInstancesErrors, ListTestInstancesResponses, LoginData, LoginErrors, LoginResponses, LogoutData, LogoutResponses, PreviewDatasetData, PreviewDatasetErrors, PreviewDatasetResponses, RefreshTokenData, RefreshTokenResponses, RegisterData, RegisterErrors, RegisterResponses, RequestAiGuideData, RequestAiGuideErrors, RequestAiGuideResponses, RequestExplanationData, RequestExplanationErrors, RequestExplanationResponses, ResetPasswordData, ResetPasswordErrors, ResetPasswordResponses, ScoreDatasetsData, ScoreDatasetsErrors, ScoreDatasetsResponses, StartExperimentData, StartExperimentErrors, StartExperimentResponses, StartSmokeJobData, StartSmokeJobResponses, StreamJobEventsData, StreamJobEventsErrors, StreamJobEventsResponses, UpdateDatasetData, UpdateDatasetErrors, UpdateDatasetResponses, UpdateMeData, UpdateMeErrors, UpdateMeResponses, UpdateProjectData, UpdateProjectErrors, UpdateProjectResponses, UploadAvatarData, UploadAvatarErrors, UploadAvatarResponses, UpsertDraftData, UpsertDraftErrors, UpsertDraftResponses } from './types.gen';
+import type { AdminDeleteTemplateData, AdminDeleteTemplateErrors, AdminDeleteTemplateResponses, AdminDeleteUserData, AdminDeleteUserErrors, AdminDeleteUserResponses, AdminListAuditData, AdminListAuditErrors, AdminListAuditResponses, AdminListJobsData, AdminListJobsErrors, AdminListJobsResponses, AdminListTemplatesData, AdminListTemplatesResponses, AdminListUsersData, AdminListUsersErrors, AdminListUsersResponses, AdminReanalyzeDatasetData, AdminReanalyzeDatasetErrors, AdminReanalyzeDatasetResponses, AdminUpdateUserData, AdminUpdateUserErrors, AdminUpdateUserResponses, AdminUpsertTemplateData, AdminUpsertTemplateErrors, AdminUpsertTemplateResponses, AnalyzeUploadData, AnalyzeUploadErrors, AnalyzeUploadResponses, AskChatQuestionData, AskChatQuestionErrors, AskChatQuestionResponses, CancelExperimentData, CancelExperimentErrors, CancelExperimentResponses, ChangePasswordData, ChangePasswordErrors, ChangePasswordResponses, CompareExperimentsData, CompareExperimentsErrors, CompareExperimentsResponses, CompleteOnboardingData, CompleteOnboardingErrors, CompleteOnboardingResponses, CreateChatSessionData, CreateChatSessionErrors, CreateChatSessionResponses, CreateDatasetData, CreateDatasetErrors, CreateDatasetResponses, CreateProjectData, CreateProjectErrors, CreateProjectResponses, DeleteAccountData, DeleteAccountErrors, DeleteAccountResponses, DeleteDatasetData, DeleteDatasetErrors, DeleteDatasetResponses, DeleteExperimentData, DeleteExperimentErrors, DeleteExperimentResponses, DeleteProjectData, DeleteProjectErrors, DeleteProjectResponses, DownloadDatasetFileData, DownloadDatasetFileErrors, DownloadDatasetFileResponses, DownloadModelData, DownloadModelErrors, DownloadModelResponses, ForgotPasswordData, ForgotPasswordErrors, ForgotPasswordResponses, GetCatalogStatsData, GetCatalogStatsResponses, GetDashboardData, GetDashboardResponses, GetDatasetCompletionData, GetDatasetCompletionErrors, GetDatasetCompletionResponses, GetDatasetData, GetDatasetErrors, GetDatasetFacetsData, GetDatasetFacetsResponses, GetDatasetResponses, GetDraftData, GetDraftErrors, GetDraftResponses, GetExperimentData, GetExperimentErrors, GetExperimentLogsData, GetExperimentLogsErrors, GetExperimentLogsResponses, GetExperimentResponses, GetExperimentResultsData, GetExperimentResultsErrors, GetExperimentResultsResponses, GetExplanationData, GetExplanationErrors, GetExplanationResponses, GetExplanationResultsData, GetExplanationResultsErrors, GetExplanationResultsResponses, GetHealthData, GetHealthResponses, GetJobData, GetJobErrors, GetJobResponses, GetMeData, GetMeResponses, GetMyAvatarData, GetMyAvatarResponses, GetProjectData, GetProjectErrors, GetProjectRecommendationsData, GetProjectRecommendationsErrors, GetProjectRecommendationsResponses, GetProjectResponses, GetQualityAnalysisData, GetQualityAnalysisErrors, GetQualityAnalysisResponses, GetScoringProfilesData, GetScoringProfilesResponses, GetSimilarDatasetsData, GetSimilarDatasetsErrors, GetSimilarDatasetsResponses, GetSuggestedQuestionsData, GetSuggestedQuestionsErrors, GetSuggestedQuestionsResponses, GetWorkerHealthData, GetWorkerHealthResponses, GoogleAuthorizeData, GoogleAuthorizeResponses, GoogleExchangeData, GoogleExchangeErrors, GoogleExchangeResponses, ListAlgorithmsData, ListAlgorithmsResponses, ListChatMessagesData, ListChatMessagesErrors, ListChatMessagesResponses, ListDatasetFilesData, ListDatasetFilesErrors, ListDatasetFilesResponses, ListDatasetsData, ListDatasetsErrors, ListDatasetsResponses, ListExperimentsData, ListExperimentsErrors, ListExperimentsResponses, ListExplanationsData, ListExplanationsErrors, ListExplanationsResponses, ListProjectExperimentsData, ListProjectExperimentsErrors, ListProjectExperimentsResponses, ListProjectsData, ListProjectsErrors, ListProjectsResponses, ListTestInstancesData, ListTestInstancesErrors, ListTestInstancesResponses, LoginData, LoginErrors, LoginResponses, LogoutData, LogoutResponses, PreviewDatasetData, PreviewDatasetErrors, PreviewDatasetResponses, RefreshTokenData, RefreshTokenResponses, RegisterData, RegisterErrors, RegisterResponses, RequestAiGuideData, RequestAiGuideErrors, RequestAiGuideResponses, RequestExplanationData, RequestExplanationErrors, RequestExplanationResponses, ResetPasswordData, ResetPasswordErrors, ResetPasswordResponses, ScoreDatasetsData, ScoreDatasetsErrors, ScoreDatasetsResponses, StartExperimentData, StartExperimentErrors, StartExperimentResponses, StartSmokeJobData, StartSmokeJobResponses, StreamJobEventsData, StreamJobEventsErrors, StreamJobEventsResponses, UpdateDatasetData, UpdateDatasetErrors, UpdateDatasetResponses, UpdateMeData, UpdateMeErrors, UpdateMeResponses, UpdateProjectData, UpdateProjectErrors, UpdateProjectResponses, UploadAvatarData, UploadAvatarErrors, UploadAvatarResponses, UpsertDraftData, UpsertDraftErrors, UpsertDraftResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean, TResponse = unknown> = Options2<TData, ThrowOnError, TResponse> & {
     /**
@@ -17,6 +17,73 @@ export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends 
      */
     meta?: keyof ClientMeta extends never ? Record<string, unknown> : ClientMeta;
 };
+
+/**
+ * List Audit
+ */
+export const adminListAudit = <ThrowOnError extends boolean = false>(options?: Options<AdminListAuditData, ThrowOnError>): RequestResult<AdminListAuditResponses, AdminListAuditErrors, ThrowOnError> => (options?.client ?? client).get<AdminListAuditResponses, AdminListAuditErrors, ThrowOnError>({ url: '/api/v1/admin/audit', ...options });
+
+/**
+ * Reanalyze Dataset
+ *
+ * Relance l'analyse qualité (cache invalidé) — CDC §11.
+ */
+export const adminReanalyzeDataset = <ThrowOnError extends boolean = false>(options: Options<AdminReanalyzeDatasetData, ThrowOnError>): RequestResult<AdminReanalyzeDatasetResponses, AdminReanalyzeDatasetErrors, ThrowOnError> => (options.client ?? client).post<AdminReanalyzeDatasetResponses, AdminReanalyzeDatasetErrors, ThrowOnError>({ url: '/api/v1/admin/datasets/{dataset_id}/reanalyze', ...options });
+
+/**
+ * List Templates
+ */
+export const adminListTemplates = <ThrowOnError extends boolean = false>(options?: Options<AdminListTemplatesData, ThrowOnError>): RequestResult<AdminListTemplatesResponses, unknown, ThrowOnError> => (options?.client ?? client).get<AdminListTemplatesResponses, unknown, ThrowOnError>({ url: '/api/v1/admin/ethical-templates', ...options });
+
+/**
+ * Delete Template
+ */
+export const adminDeleteTemplate = <ThrowOnError extends boolean = false>(options: Options<AdminDeleteTemplateData, ThrowOnError>): RequestResult<AdminDeleteTemplateResponses, AdminDeleteTemplateErrors, ThrowOnError> => (options.client ?? client).delete<AdminDeleteTemplateResponses, AdminDeleteTemplateErrors, ThrowOnError>({ url: '/api/v1/admin/ethical-templates/{domain}', ...options });
+
+/**
+ * Upsert Template
+ *
+ * Défauts éthiques par domaine, EN BASE — appliqués à l'import (CDC §11).
+ */
+export const adminUpsertTemplate = <ThrowOnError extends boolean = false>(options: Options<AdminUpsertTemplateData, ThrowOnError>): RequestResult<AdminUpsertTemplateResponses, AdminUpsertTemplateErrors, ThrowOnError> => (options.client ?? client).put<AdminUpsertTemplateResponses, AdminUpsertTemplateErrors, ThrowOnError>({
+    url: '/api/v1/admin/ethical-templates/{domain}',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * List Jobs
+ *
+ * Supervision : la table jobs alimentée par le worker (ARCH §6.2).
+ */
+export const adminListJobs = <ThrowOnError extends boolean = false>(options?: Options<AdminListJobsData, ThrowOnError>): RequestResult<AdminListJobsResponses, AdminListJobsErrors, ThrowOnError> => (options?.client ?? client).get<AdminListJobsResponses, AdminListJobsErrors, ThrowOnError>({ url: '/api/v1/admin/jobs', ...options });
+
+/**
+ * List Users
+ */
+export const adminListUsers = <ThrowOnError extends boolean = false>(options?: Options<AdminListUsersData, ThrowOnError>): RequestResult<AdminListUsersResponses, AdminListUsersErrors, ThrowOnError> => (options?.client ?? client).get<AdminListUsersResponses, AdminListUsersErrors, ThrowOnError>({ url: '/api/v1/admin/users', ...options });
+
+/**
+ * Delete User
+ */
+export const adminDeleteUser = <ThrowOnError extends boolean = false>(options: Options<AdminDeleteUserData, ThrowOnError>): RequestResult<AdminDeleteUserResponses, AdminDeleteUserErrors, ThrowOnError> => (options.client ?? client).delete<AdminDeleteUserResponses, AdminDeleteUserErrors, ThrowOnError>({ url: '/api/v1/admin/users/{user_id}', ...options });
+
+/**
+ * Update User
+ *
+ * Rôle, activation, recharge de crédits — garde du DERNIER admin actif (CDC §11).
+ */
+export const adminUpdateUser = <ThrowOnError extends boolean = false>(options: Options<AdminUpdateUserData, ThrowOnError>): RequestResult<AdminUpdateUserResponses, AdminUpdateUserErrors, ThrowOnError> => (options.client ?? client).patch<AdminUpdateUserResponses, AdminUpdateUserErrors, ThrowOnError>({
+    url: '/api/v1/admin/users/{user_id}',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
 /**
  * List Algorithms

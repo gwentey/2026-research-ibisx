@@ -128,6 +128,7 @@ async def create_dataset(
         metadata=parsed,
         files=await read_upload_files(files),
         owner_id=claims.user_id,
+        apply_ethical_template=True,  # défauts M8 par domaine, sans écraser les valeurs saisies
     )
     return service.to_detail(dataset)
 

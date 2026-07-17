@@ -45,6 +45,21 @@ export type ActivityItem = {
 };
 
 /**
+ * AdminUserUpdate
+ */
+export type AdminUserUpdate = {
+    /**
+     * Add Credits
+     */
+    add_credits?: number | null;
+    /**
+     * Is Active
+     */
+    is_active?: boolean | null;
+    role?: UserRole | null;
+};
+
+/**
  * AiGuideJob
  */
 export type AiGuideJob = {
@@ -52,6 +67,34 @@ export type AiGuideJob = {
      * Job Id
      */
     job_id: string;
+};
+
+/**
+ * AuditRow
+ */
+export type AuditRow = {
+    /**
+     * Action
+     */
+    action: string;
+    /**
+     * Entity
+     */
+    entity: string;
+    /**
+     * Entity Id
+     */
+    entity_id: string;
+    /**
+     * Meta
+     */
+    meta: {
+        [key: string]: unknown;
+    };
+    /**
+     * Ts
+     */
+    ts: string;
 };
 
 /**
@@ -1742,6 +1785,52 @@ export type JobRead = {
 };
 
 /**
+ * JobRow
+ */
+export type JobRow = {
+    /**
+     * Created At
+     */
+    created_at: string;
+    /**
+     * Error Code
+     */
+    error_code: string | null;
+    /**
+     * Finished At
+     */
+    finished_at: string | null;
+    /**
+     * Id
+     */
+    id: string;
+    /**
+     * Kind
+     */
+    kind: string;
+    /**
+     * Progress
+     */
+    progress: number;
+    /**
+     * Queue
+     */
+    queue: string;
+    /**
+     * Ref Id
+     */
+    ref_id: string | null;
+    /**
+     * Status
+     */
+    status: string;
+    /**
+     * User Id
+     */
+    user_id: string | null;
+};
+
+/**
  * JobStatus
  */
 export type JobStatus = 'pending' | 'running' | 'completed' | 'failed' | 'cancelled';
@@ -2155,6 +2244,42 @@ export type SimilarDataset = {
 };
 
 /**
+ * TemplateRead
+ */
+export type TemplateRead = {
+    /**
+     * Defaults
+     */
+    defaults: {
+        [key: string]: unknown;
+    };
+    /**
+     * Domain
+     */
+    domain: string;
+    /**
+     * Id
+     */
+    id: string;
+    /**
+     * Updated At
+     */
+    updated_at: string;
+};
+
+/**
+ * TemplateUpsert
+ */
+export type TemplateUpsert = {
+    /**
+     * Defaults
+     */
+    defaults: {
+        [key: string]: boolean | null;
+    };
+};
+
+/**
  * TokenResponse
  */
 export type TokenResponse = {
@@ -2233,6 +2358,28 @@ export type UploadFileAnalysis = {
      * Row Count
      */
     row_count: number;
+};
+
+/**
+ * UserPage
+ */
+export type UserPage = {
+    /**
+     * Items
+     */
+    items: Array<UserRead>;
+    /**
+     * Page
+     */
+    page: number;
+    /**
+     * Total
+     */
+    total: number;
+    /**
+     * Total Pages
+     */
+    total_pages: number;
 };
 
 /**
@@ -2377,6 +2524,288 @@ export type WorkerHealthReport = {
  * XaiAudience
  */
 export type XaiAudience = 'novice' | 'intermediate' | 'expert';
+
+export type AdminListAuditData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Limit
+         */
+        limit?: number;
+    };
+    url: '/api/v1/admin/audit';
+};
+
+export type AdminListAuditErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type AdminListAuditError = AdminListAuditErrors[keyof AdminListAuditErrors];
+
+export type AdminListAuditResponses = {
+    /**
+     * Response Adminlistaudit
+     *
+     * Successful Response
+     */
+    200: Array<AuditRow>;
+};
+
+export type AdminListAuditResponse = AdminListAuditResponses[keyof AdminListAuditResponses];
+
+export type AdminReanalyzeDatasetData = {
+    body?: never;
+    path: {
+        /**
+         * Dataset Id
+         */
+        dataset_id: string;
+    };
+    query?: never;
+    url: '/api/v1/admin/datasets/{dataset_id}/reanalyze';
+};
+
+export type AdminReanalyzeDatasetErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type AdminReanalyzeDatasetError = AdminReanalyzeDatasetErrors[keyof AdminReanalyzeDatasetErrors];
+
+export type AdminReanalyzeDatasetResponses = {
+    /**
+     * Response Adminreanalyzedataset
+     *
+     * Successful Response
+     */
+    202: {
+        [key: string]: unknown;
+    };
+};
+
+export type AdminReanalyzeDatasetResponse = AdminReanalyzeDatasetResponses[keyof AdminReanalyzeDatasetResponses];
+
+export type AdminListTemplatesData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/v1/admin/ethical-templates';
+};
+
+export type AdminListTemplatesResponses = {
+    /**
+     * Response Adminlisttemplates
+     *
+     * Successful Response
+     */
+    200: Array<TemplateRead>;
+};
+
+export type AdminListTemplatesResponse = AdminListTemplatesResponses[keyof AdminListTemplatesResponses];
+
+export type AdminDeleteTemplateData = {
+    body?: never;
+    path: {
+        /**
+         * Domain
+         */
+        domain: string;
+    };
+    query?: never;
+    url: '/api/v1/admin/ethical-templates/{domain}';
+};
+
+export type AdminDeleteTemplateErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type AdminDeleteTemplateError = AdminDeleteTemplateErrors[keyof AdminDeleteTemplateErrors];
+
+export type AdminDeleteTemplateResponses = {
+    /**
+     * Successful Response
+     */
+    204: void;
+};
+
+export type AdminDeleteTemplateResponse = AdminDeleteTemplateResponses[keyof AdminDeleteTemplateResponses];
+
+export type AdminUpsertTemplateData = {
+    body: TemplateUpsert;
+    path: {
+        /**
+         * Domain
+         */
+        domain: string;
+    };
+    query?: never;
+    url: '/api/v1/admin/ethical-templates/{domain}';
+};
+
+export type AdminUpsertTemplateErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type AdminUpsertTemplateError = AdminUpsertTemplateErrors[keyof AdminUpsertTemplateErrors];
+
+export type AdminUpsertTemplateResponses = {
+    /**
+     * Successful Response
+     */
+    200: TemplateRead;
+};
+
+export type AdminUpsertTemplateResponse = AdminUpsertTemplateResponses[keyof AdminUpsertTemplateResponses];
+
+export type AdminListJobsData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Kind
+         */
+        kind?: string | null;
+        /**
+         * Status
+         */
+        status?: string | null;
+        /**
+         * Limit
+         */
+        limit?: number;
+    };
+    url: '/api/v1/admin/jobs';
+};
+
+export type AdminListJobsErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type AdminListJobsError = AdminListJobsErrors[keyof AdminListJobsErrors];
+
+export type AdminListJobsResponses = {
+    /**
+     * Response Adminlistjobs
+     *
+     * Successful Response
+     */
+    200: Array<JobRow>;
+};
+
+export type AdminListJobsResponse = AdminListJobsResponses[keyof AdminListJobsResponses];
+
+export type AdminListUsersData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Q
+         */
+        q?: string | null;
+        /**
+         * Page
+         */
+        page?: number;
+        /**
+         * Page Size
+         */
+        page_size?: number;
+    };
+    url: '/api/v1/admin/users';
+};
+
+export type AdminListUsersErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type AdminListUsersError = AdminListUsersErrors[keyof AdminListUsersErrors];
+
+export type AdminListUsersResponses = {
+    /**
+     * Successful Response
+     */
+    200: UserPage;
+};
+
+export type AdminListUsersResponse = AdminListUsersResponses[keyof AdminListUsersResponses];
+
+export type AdminDeleteUserData = {
+    body?: never;
+    path: {
+        /**
+         * User Id
+         */
+        user_id: string;
+    };
+    query?: never;
+    url: '/api/v1/admin/users/{user_id}';
+};
+
+export type AdminDeleteUserErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type AdminDeleteUserError = AdminDeleteUserErrors[keyof AdminDeleteUserErrors];
+
+export type AdminDeleteUserResponses = {
+    /**
+     * Successful Response
+     */
+    204: void;
+};
+
+export type AdminDeleteUserResponse = AdminDeleteUserResponses[keyof AdminDeleteUserResponses];
+
+export type AdminUpdateUserData = {
+    body: AdminUserUpdate;
+    path: {
+        /**
+         * User Id
+         */
+        user_id: string;
+    };
+    query?: never;
+    url: '/api/v1/admin/users/{user_id}';
+};
+
+export type AdminUpdateUserErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type AdminUpdateUserError = AdminUpdateUserErrors[keyof AdminUpdateUserErrors];
+
+export type AdminUpdateUserResponses = {
+    /**
+     * Successful Response
+     */
+    200: UserRead;
+};
+
+export type AdminUpdateUserResponse = AdminUpdateUserResponses[keyof AdminUpdateUserResponses];
 
 export type ListAlgorithmsData = {
     body?: never;

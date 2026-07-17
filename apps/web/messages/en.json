@@ -887,5 +887,136 @@
     "filterAlgo": "Algorithm",
     "any": "All",
     "empty": "No experiment. Start a training from a project."
+  },
+  "admin": {
+    "users": {
+      "title": "Users",
+      "subtitle": "Roles, activation, credits and account deletion.",
+      "search": "Search by email or pseudo…",
+      "empty": "No user found.",
+      "you": "you",
+      "active": "Active",
+      "inactive": "Deactivated",
+      "addCredits": "Credits",
+      "creditsAmount": "Credits to add (1–1000)",
+      "confirmCredits": "Add",
+      "activate": "Reactivate",
+      "deactivate": "Deactivate",
+      "delete": "Delete",
+      "deleteTitle": "Delete this account?",
+      "deleteBody": "Projects, experiments and explanations of {email} will be permanently deleted.",
+      "cancel": "Cancel",
+      "updated": "User updated.",
+      "deleted": "Account deleted.",
+      "error": "Action failed.",
+      "lastAdmin": "Not allowed: this is the last active administrator.",
+      "pagination": "Page {page} / {total}",
+      "previous": "Previous",
+      "next": "Next",
+      "table": {
+        "user": "User",
+        "role": "Role",
+        "status": "Status",
+        "credits": "Credits",
+        "created": "Joined",
+        "actions": "Actions"
+      },
+      "roles": {
+        "user": "User",
+        "contributor": "Contributor",
+        "admin": "Administrator"
+      }
+    },
+    "datasets": {
+      "title": "Datasets (administration)",
+      "subtitle": "Every dataset in the catalog, including system ones.",
+      "search": "Search a dataset…",
+      "empty": "No dataset.",
+      "system": "System",
+      "userOrigin": "Contributor",
+      "open": "Open",
+      "reanalyze": "Re-analyze",
+      "reanalyzed": "Analysis re-run — quality score {score}/100.",
+      "delete": "Delete",
+      "deleteTitle": "Delete this dataset?",
+      "deleteBody": "“{name}” and its files will be deleted. Linked experiments will lose their source.",
+      "deleted": "Dataset deleted.",
+      "error": "Action failed.",
+      "cancel": "Cancel",
+      "pagination": "Page {page} / {total}",
+      "previous": "Previous",
+      "next": "Next",
+      "table": {
+        "name": "Name",
+        "domain": "Domains",
+        "origin": "Origin",
+        "size": "Rows × columns",
+        "ethical": "Ethical score",
+        "actions": "Actions"
+      }
+    },
+    "templates": {
+      "title": "Ethical templates",
+      "subtitle": "Per-domain defaults applied at import when a criterion is unset (the “default” domain is the fallback).",
+      "newDomain": "Domain (e.g. health, education, default)",
+      "create": "Create / edit",
+      "edit": "Edit",
+      "delete": "Delete",
+      "saved": "Template saved.",
+      "deleted": "Template deleted.",
+      "error": "Saving failed.",
+      "empty": "No template yet — create the first one above.",
+      "dialogTitle": "Template “{domain}”",
+      "yes": "Yes",
+      "no": "No",
+      "unset": "Not set",
+      "save": "Save",
+      "cancel": "Cancel",
+      "definedCount": "{count} criteria set",
+      "deleteTitle": "Delete template “{domain}”?",
+      "deleteBody": "Future imports for this domain will no longer inherit any default.",
+      "table": {
+        "domain": "Domain",
+        "defined": "Criteria",
+        "updated": "Updated",
+        "actions": "Actions"
+      }
+    },
+    "jobs": {
+      "title": "Jobs supervision",
+      "subtitle": "Trainings, explanations and background tasks — jobs table fed by the worker.",
+      "workers": "Workers online",
+      "noWorkers": "No worker detected — trainings will stay pending.",
+      "empty": "No job.",
+      "filters": {
+        "kind": "Kind",
+        "status": "Status",
+        "any": "All"
+      },
+      "kinds": {
+        "training": "Training",
+        "explanation": "Explanation",
+        "chat": "XAI chat",
+        "import": "Import",
+        "guide": "AI guide",
+        "maintenance": "Maintenance"
+      },
+      "statuses": {
+        "pending": "Pending",
+        "running": "Running",
+        "completed": "Completed",
+        "failed": "Failed",
+        "cancelled": "Cancelled"
+      },
+      "table": {
+        "kind": "Kind",
+        "status": "Status",
+        "queue": "Queue",
+        "progress": "Progress",
+        "error": "Error",
+        "created": "Created",
+        "duration": "Duration"
+      }
+    }
   }
 }

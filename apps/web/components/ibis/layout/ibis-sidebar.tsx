@@ -22,8 +22,9 @@ import {
   useSidebar
 } from "@/components/ui/sidebar";
 import { useIsTablet } from "@/hooks/use-mobile";
-import { MAIN_NAV } from "@/components/ibis/layout/nav-config";
+import { ADMIN_NAV, MAIN_NAV } from "@/components/ibis/layout/nav-config";
 import { IbisNavUser } from "@/components/ibis/layout/ibis-nav-user";
+import { useAuthStore } from "@/lib/auth/store";
 
 export function IbisSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const t = useTranslations("nav");
@@ -31,6 +32,7 @@ export function IbisSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) 
   const pathname = usePathname();
   const { setOpen, setOpenMobile, isMobile } = useSidebar();
   const isTablet = useIsTablet();
+  const isAdmin = useAuthStore((state) => state.user?.role === "admin");
 
   useEffect(() => {
     if (isMobile) setOpenMobile(false);
@@ -78,6 +80,28 @@ export function IbisSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) 
               </SidebarMenu>
             </SidebarGroupContent>
           </SidebarGroup>
+          {isAdmin ? (
+            <SidebarGroup>
+              <SidebarGroupLabel>{t("administration")}</SidebarGroupLabel>
+              <SidebarGroupContent>
+                <SidebarMenu>
+                  {ADMIN_NAV.map((item) => (
+                    <SidebarMenuItem key={item.href}>
+                      <SidebarMenuButton
+                        asChild
+                        tooltip={t(item.labelKey)}
+                        isActive={pathname.startsWith(item.href)}>
+                        <Link href={item.href}>
+                          <item.icon />
+                          <span>{t(item.labelKey)}</span>
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  ))}
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </SidebarGroup>
+          ) : null}
         </ScrollArea>
       </SidebarContent>
       <SidebarFooter>

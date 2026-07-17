@@ -4,6 +4,9 @@ import {
   FlaskConicalIcon,
   FolderIcon,
   HomeIcon,
+  ListChecksIcon,
+  ScaleIcon,
+  UsersIcon,
   type LucideIcon
 } from "lucide-react";
 
@@ -23,4 +26,18 @@ export const MAIN_NAV: NavItem[] = [
   { labelKey: "projects", href: "/projects", icon: FolderIcon },
   { labelKey: "experiments", href: "/experiments", icon: FlaskConicalIcon },
   { labelKey: "systemStatus", href: "/status", icon: ActivityIcon }
+];
+
+export interface AdminNavItem {
+  labelKey: "adminUsers" | "adminDatasets" | "adminEthicalTemplates" | "adminJobs";
+  href: string;
+  icon: LucideIcon;
+}
+
+// Visible UNIQUEMENT pour le rôle admin — la sécurité reste côté backend (J8).
+export const ADMIN_NAV: AdminNavItem[] = [
+  { labelKey: "adminUsers", href: "/admin/users", icon: UsersIcon },
+  { labelKey: "adminDatasets", href: "/admin/datasets", icon: DatabaseIcon },
+  { labelKey: "adminEthicalTemplates", href: "/admin/ethical-templates", icon: ScaleIcon },
+  { labelKey: "adminJobs", href: "/admin/jobs", icon: ListChecksIcon }
 ];
