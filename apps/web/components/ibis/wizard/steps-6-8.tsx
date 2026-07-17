@@ -1,9 +1,24 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { BrainCircuitIcon, InfoIcon, TreesIcon } from "lucide-react";
+import {
+  BrainCircuitIcon,
+  CheckCircle2Icon,
+  CoinsIcon,
+  DatabaseIcon,
+  EraserIcon,
+  LightbulbIcon,
+  RocketIcon,
+  Settings2Icon,
+  SlidersHorizontalIcon,
+  SplitIcon,
+  TargetIcon,
+  TerminalIcon,
+  TreesIcon,
+  XCircleIcon
+} from "lucide-react";
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
@@ -13,12 +28,14 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
+import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import { getExperiment, getMe, startExperiment } from "@/lib/api/generated";
 import type { DatasetDetail } from "@/lib/api/generated";
 import type { QualityData } from "@/app/wizard/page";
 import { toExperimentCreate, useWizardStore } from "@/lib/wizard/store";
 import { useAuthStore } from "@/lib/auth/store";
+import { cn } from "@/lib/utils";
 
 interface AlgorithmCard {
   key: string;
@@ -36,15 +53,12 @@ interface AlgorithmCard {
 // ---------------------------------------------------------------- Étape 6
 export function Step6Algorithm({
   algorithms,
-  quality,
-  onNext
+  quality
 }: {
   algorithms: Record<string, unknown>[];
   quality: QualityData | null;
-  onNext: () => void;
 }) {
   const t = useTranslations("wizard.step6");
-  const tw = useTranslations("wizard");
   const store = useWizardStore();
   const cards = algorithms as unknown as AlgorithmCard[];
   const rows = quality?.analysis.row_count ?? 0;
@@ -61,7 +75,7 @@ export function Step6Algorithm({
   return (
     <div className="space-y-4">
       <Alert>
-        <InfoIcon />
+        <LightbulbIcon />
         <AlertDescription>
           {t("aiReco", {
             algo: t(`names.${recommended}` as never),
@@ -73,52 +87,59 @@ export function Step6Algorithm({
         </AlertDescription>
       </Alert>
       <div className="grid gap-4 sm:grid-cols-2">
-        {cards.map((card) => (
-          <button
-            key={card.key}
-            type="button"
-            onClick={() => choose(card.key, card.defaults)}
-            className={`rounded-lg border p-4 text-left ${
-              store.algorithm === card.key ? "border-primary bg-muted" : "hover:bg-muted"
-            }`}>
-            <div className="flex items-center gap-2">
-              {card.key === "decision_tree" ? (
-                <TreesIcon className="size-5" />
-              ) : (
-                <BrainCircuitIcon className="size-5" />
-              )}
-              <p className="font-semibold">{t(`names.${card.key}` as never)}</p>
-              <Badge variant="secondary" className="ml-auto">
-                {t(`badges.${card.badge}` as never)}
-              </Badge>
-            </div>
-            <p className="text-muted-foreground mt-2 text-sm">
-              {t(`descriptions.${card.key}` as never)}
-            </p>
-          </button>
-        ))}
+        {cards.map((card) => {
+          const active = store.algorithm === card.key;
+          return (
+            <button
+              key={card.key}
+              type="button"
+              onClick={() => choose(card.key, card.defaults)}
+              className={cn(
+                "bg-card rounded-lg border p-5 text-left transition-all",
+                active ? "border-primary ring-primary/30 ring-2" : "hover:border-primary/40"
+              )}>
+              <div className="flex items-center gap-3">
+                <div
+                  className={cn(
+                    "flex size-10 shrink-0 items-center justify-center rounded-lg",
+                    active ? "bg-primary text-primary-foreground" : "bg-primary/10 text-primary"
+                  )}>
+                  {card.key === "decision_tree" ? (
+                    <TreesIcon className="size-5" />
+                  ) : (
+                    <BrainCircuitIcon className="size-5" />
+                  )}
+                </div>
+                <p className="font-semibold">{t(`names.${card.key}` as never)}</p>
+                {card.key === recommended ? (
+                  <Badge className="ml-auto">{t(`badges.recommended` as never)}</Badge>
+                ) : card.badge !== "recommended" ? (
+                  <Badge variant="secondary" className="ml-auto">
+                    {t(`badges.${card.badge}` as never)}
+                  </Badge>
+                ) : null}
+              </div>
+              <p className="text-muted-foreground mt-3 text-sm leading-relaxed">
+                {t(`descriptions.${card.key}` as never)}
+              </p>
+              {active ? (
+                <p className="text-primary mt-3 flex items-center gap-1.5 text-xs font-medium">
+                  <CheckCircle2Icon className="size-3.5" /> {t("selected")}
+                </p>
+              ) : null}
+            </button>
+          );
+        })}
       </div>
-      <Button onClick={onNext} disabled={!store.algorithm}>
-        {tw("next")}
-      </Button>
     </div>
   );
 }
 
 // ---------------------------------------------------------------- Étape 7
-export function Step7Hyperparameters({
-  algorithms,
-  onNext
-}: {
-  algorithms: Record<string, unknown>[];
-  onNext: () => void;
-}) {
+export function Step7Hyperparameters({ algorithms }: { algorithms: Record<string, unknown>[] }) {
   const t = useTranslations("wizard.step7");
-  const tw = useTranslations("wizard");
   const store = useWizardStore();
-  const card = (algorithms as unknown as AlgorithmCard[]).find(
-    (c) => c.key === store.algorithm
-  );
+  const card = (algorithms as unknown as AlgorithmCard[]).find((c) => c.key === store.algorithm);
   if (!card) return null;
 
   const applyPreset = (preset: string) => {
@@ -135,71 +156,77 @@ export function Step7Hyperparameters({
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-wrap gap-1">
+      <div className="flex flex-wrap gap-2">
         {["balanced", "high_precision", "fast", "custom"].map((preset) => (
-          <Button
+          <button
             key={preset}
-            size="sm"
-            variant={store.preset === preset ? "secondary" : "outline"}
-            onClick={() => applyPreset(preset)}>
+            type="button"
+            onClick={() => applyPreset(preset)}
+            className={cn(
+              "rounded-full border px-4 py-1.5 text-sm transition-colors",
+              store.preset === preset
+                ? "border-primary bg-primary text-primary-foreground font-medium"
+                : "bg-card hover:border-primary/40"
+            )}>
             {t(`presets.${preset}` as never)}
-          </Button>
+          </button>
         ))}
       </div>
       <Card>
         <CardContent className="grid gap-4 pt-6 sm:grid-cols-2">
           {Object.entries(card.schema.properties).map(([name, spec]) => {
-          const value = store.hyperparameters[name] ?? spec.default;
-          if (spec.type === "boolean") {
-            return (
-              <div key={name} className="flex items-center justify-between rounded-md border p-3">
-                <div>
-                  <Label className="font-mono text-sm">{name}</Label>
-                  <p className="text-muted-foreground text-xs">{t(`hints.${name}` as never)}</p>
+            const value = store.hyperparameters[name] ?? spec.default;
+            if (spec.type === "boolean") {
+              return (
+                <div
+                  key={name}
+                  className="flex items-center justify-between rounded-md border p-3">
+                  <div>
+                    <Label className="font-mono text-sm">{name}</Label>
+                    <p className="text-muted-foreground text-xs">{t(`hints.${name}` as never)}</p>
+                  </div>
+                  <Switch checked={Boolean(value)} onCheckedChange={(c) => setParam(name, c)} />
                 </div>
-                <Switch checked={Boolean(value)} onCheckedChange={(c) => setParam(name, c)} />
-              </div>
-            );
-          }
-          if (spec.enum) {
+              );
+            }
+            if (spec.enum) {
+              return (
+                <div key={name} className="rounded-md border p-3">
+                  <Label className="font-mono text-sm">{name}</Label>
+                  <div className="mt-2 flex flex-wrap gap-1">
+                    {spec.enum.map((option) => (
+                      <Button
+                        key={option}
+                        size="sm"
+                        variant={value === option ? "secondary" : "outline"}
+                        onClick={() => setParam(name, option)}>
+                        {option}
+                      </Button>
+                    ))}
+                  </div>
+                  <p className="text-muted-foreground mt-1 text-xs">{t(`hints.${name}` as never)}</p>
+                </div>
+              );
+            }
             return (
               <div key={name} className="rounded-md border p-3">
-                <Label className="font-mono text-sm">{name}</Label>
-                <div className="mt-2 flex gap-1">
-                  {spec.enum.map((option) => (
-                    <Button
-                      key={option}
-                      size="sm"
-                      variant={value === option ? "secondary" : "outline"}
-                      onClick={() => setParam(name, option)}>
-                      {option}
-                    </Button>
-                  ))}
-                </div>
+                <Label className="font-mono text-sm">
+                  {name} {spec.minimum !== undefined ? `(${spec.minimum}–${spec.maximum})` : ""}
+                </Label>
+                <Input
+                  type="number"
+                  className="mt-2 h-8"
+                  min={spec.minimum}
+                  max={spec.maximum}
+                  value={String(value ?? "")}
+                  onChange={(event) => setParam(name, Number(event.target.value))}
+                />
                 <p className="text-muted-foreground mt-1 text-xs">{t(`hints.${name}` as never)}</p>
               </div>
             );
-          }
-          return (
-            <div key={name} className="rounded-md border p-3">
-              <Label className="font-mono text-sm">
-                {name} {spec.minimum !== undefined ? `(${spec.minimum}–${spec.maximum})` : ""}
-              </Label>
-              <Input
-                type="number"
-                className="mt-2 h-8"
-                min={spec.minimum}
-                max={spec.maximum}
-                value={String(value ?? "")}
-                onChange={(event) => setParam(name, Number(event.target.value))}
-              />
-              <p className="text-muted-foreground mt-1 text-xs">{t(`hints.${name}` as never)}</p>
-            </div>
-          );
-        })}
+          })}
         </CardContent>
       </Card>
-      <Button onClick={onNext}>{tw("next")}</Button>
     </div>
   );
 }
@@ -207,7 +234,13 @@ export function Step7Hyperparameters({
 // ---------------------------------------------------------------- Étape 8 (+ 9 : transition)
 type LaunchState = "idle" | "starting" | "running" | "completed" | "failed" | "cancelled";
 
-export function Step8Launch({ dataset }: { dataset: DatasetDetail }) {
+export function Step8Launch({
+  dataset,
+  onLockChange
+}: {
+  dataset: DatasetDetail;
+  onLockChange: (locked: boolean) => void;
+}) {
   const t = useTranslations("wizard.step8");
   const tErrors = useTranslations("wizard.errors");
   const router = useRouter();
@@ -223,10 +256,17 @@ export function Step8Launch({ dataset }: { dataset: DatasetDetail }) {
   const sourceRef = useRef<EventSource | null>(null);
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  useEffect(() => () => {
-    sourceRef.current?.close();
-    if (pollRef.current) clearInterval(pollRef.current);
-  }, []);
+  useEffect(
+    () => () => {
+      sourceRef.current?.close();
+      if (pollRef.current) clearInterval(pollRef.current);
+    },
+    []
+  );
+
+  useEffect(() => {
+    onLockChange(state === "starting" || state === "running");
+  }, [state, onLockChange]);
 
   const finish = async (status: string) => {
     sourceRef.current?.close();
@@ -318,17 +358,30 @@ export function Step8Launch({ dataset }: { dataset: DatasetDetail }) {
     });
   };
 
-  const recap: [string, string][] = [
-    [t("dataset"), dataset.display_name],
-    [t("target"), store.targetColumn ?? ""],
-    [t("task"), store.taskType ?? ""],
-    [t("cleaning"), t("cleaningValue", { count: Object.keys(store.columnStrategies).length })],
-    [t("split"), `${Math.round((1 - store.testSize) * 100)} / ${Math.round(store.testSize * 100)} · random_state=42`],
-    [
-      t("prep"),
-      `${store.scalingEnabled ? store.scalingMethod : "—"} · ${store.encoding}`
-    ],
-    [t("algo"), `${store.algorithm} (${store.preset})`]
+  const recap: { icon: typeof DatabaseIcon; label: string; value: string }[] = [
+    { icon: DatabaseIcon, label: t("dataset"), value: dataset.display_name },
+    { icon: TargetIcon, label: t("target"), value: store.targetColumn ?? "" },
+    { icon: LightbulbIcon, label: t("task"), value: store.taskType ?? "" },
+    {
+      icon: EraserIcon,
+      label: t("cleaning"),
+      value: t("cleaningValue", { count: Object.keys(store.columnStrategies).length })
+    },
+    {
+      icon: SplitIcon,
+      label: t("split"),
+      value: `${Math.round((1 - store.testSize) * 100)} / ${Math.round(store.testSize * 100)} · random_state=42`
+    },
+    {
+      icon: SlidersHorizontalIcon,
+      label: t("prep"),
+      value: `${store.scalingEnabled ? store.scalingMethod : "—"} · ${store.encoding}`
+    },
+    {
+      icon: Settings2Icon,
+      label: t("algo"),
+      value: `${store.algorithm} (${store.preset})`
+    }
   ];
 
   return (
@@ -337,50 +390,78 @@ export function Step8Launch({ dataset }: { dataset: DatasetDetail }) {
         <CardHeader>
           <CardTitle className="text-base">{t("recap")}</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-2">
-          {recap.map(([label, value]) => (
-            <div key={label} className="flex justify-between gap-4 text-sm">
-              <span className="text-muted-foreground">{label}</span>
-              <span className="text-right font-medium">{value}</span>
-            </div>
-          ))}
-          <p className="text-muted-foreground pt-2 text-sm">
+        <CardContent>
+          <div className="grid gap-x-8 gap-y-3 sm:grid-cols-2">
+            {recap.map((row) => (
+              <div key={row.label} className="flex items-center gap-3 text-sm">
+                <div className="bg-muted text-muted-foreground flex size-8 shrink-0 items-center justify-center rounded-md">
+                  <row.icon className="size-4" />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-muted-foreground text-xs">{row.label}</p>
+                  <p className="truncate font-medium">{row.value}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+          <Separator className="my-4" />
+          <p className="flex items-center gap-2 text-sm">
+            <CoinsIcon className="text-primary size-4" />
             {t("cost", { credits: user?.credits ?? 0 })}
           </p>
         </CardContent>
       </Card>
 
       {state === "idle" || state === "starting" ? (
-        <div className="space-y-3">
-          <label className="flex items-center gap-2 text-sm">
-            <Checkbox checked={confirmed} onCheckedChange={(c) => setConfirmed(c === true)} />
-            {t("confirm")}
-          </label>
-          <Button onClick={() => void launch()} disabled={!confirmed || state === "starting"}>
-            {state === "starting" ? t("launching") : t("launch")}
-          </Button>
-        </div>
+        <Card>
+          <CardContent className="space-y-4 pt-6">
+            <label className="flex items-center gap-2.5 text-sm">
+              <Checkbox checked={confirmed} onCheckedChange={(c) => setConfirmed(c === true)} />
+              {t("confirm")}
+            </label>
+            <div className="flex justify-center">
+              <Button
+                size="lg"
+                onClick={() => void launch()}
+                disabled={!confirmed || state === "starting"}>
+                <RocketIcon />
+                {state === "starting" ? t("launching") : t("launch")}
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
       ) : null}
 
       {state === "running" || state === "completed" ? (
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center justify-between text-base">
-              {t("console")}
+              <span className="flex items-center gap-2">
+                <TerminalIcon className="text-muted-foreground size-4" />
+                {t("console")}
+              </span>
               {queuePosition !== null && queuePosition > 0 ? (
                 <Badge variant="outline">{t("queued", { position: queuePosition })}</Badge>
               ) : null}
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
-            <Progress value={progress} />
-            <ul className="bg-muted max-h-56 overflow-auto rounded-md p-3 font-mono text-xs leading-relaxed">
+            <div className="flex items-center gap-3">
+              <Progress value={progress} className="h-2" />
+              <span className="text-muted-foreground w-10 text-right font-mono text-xs">
+                {progress}%
+              </span>
+            </div>
+            <ul className="bg-muted max-h-56 space-y-0.5 overflow-auto rounded-md p-3 font-mono text-xs leading-relaxed">
               {logs.map((line, index) => (
-                <li key={index}>{line}</li>
+                <li key={index} className={index === logs.length - 1 ? "" : "text-muted-foreground"}>
+                  {line}
+                </li>
               ))}
             </ul>
             {state === "running" ? (
               <Button variant="outline" size="sm" onClick={() => void cancel()}>
+                <XCircleIcon />
                 {t("cancel")}
               </Button>
             ) : null}
@@ -388,16 +469,24 @@ export function Step8Launch({ dataset }: { dataset: DatasetDetail }) {
         </Card>
       ) : null}
 
-      {state === "cancelled" ? <Alert><AlertDescription>{t("cancelled")}</AlertDescription></Alert> : null}
+      {state === "cancelled" ? (
+        <Alert>
+          <AlertDescription>{t("cancelled")}</AlertDescription>
+        </Alert>
+      ) : null}
       {state === "failed" ? (
         <Alert variant="destructive">
+          <XCircleIcon />
           <AlertTitle>{t("failed", { message: errorMessage ?? "" })}</AlertTitle>
         </Alert>
       ) : null}
       {state === "completed" && experimentRef.current ? (
-        <Button onClick={() => router.push(`/experiments/${experimentRef.current}`)}>
-          {t("seeResults")}
-        </Button>
+        <div className="flex justify-center">
+          <Button size="lg" onClick={() => router.push(`/experiments/${experimentRef.current}`)}>
+            <CheckCircle2Icon />
+            {t("seeResults")}
+          </Button>
+        </div>
       ) : null}
     </div>
   );

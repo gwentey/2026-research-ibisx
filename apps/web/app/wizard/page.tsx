@@ -10,15 +10,21 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AppGuard } from "@/components/ibis/auth-guard";
-import { MissionStepper } from "@/components/ibis/mission-stepper";
+import { WizardShell } from "@/components/ibis/wizard/wizard-shell";
 import {
   Step1Overview,
   Step2Target,
   Step3Cleaning,
   Step4Split,
-  Step5Prep
+  Step5Prep,
+  cleaningBlockingColumns,
+  targetMeta
 } from "@/components/ibis/wizard/steps-1-5";
-import { Step6Algorithm, Step7Hyperparameters, Step8Launch } from "@/components/ibis/wizard/steps-6-8";
+import {
+  Step6Algorithm,
+  Step7Hyperparameters,
+  Step8Launch
+} from "@/components/ibis/wizard/steps-6-8";
 import {
   getDataset,
   getDraft,
@@ -29,7 +35,6 @@ import {
 } from "@/lib/api/generated";
 import type { DatasetDetail, DatasetPreview } from "@/lib/api/generated";
 import { serializeDraft, useWizardStore } from "@/lib/wizard/store";
-import { cn } from "@/lib/utils";
 
 export interface QualityData {
   quality_score: number;
@@ -62,6 +67,7 @@ function WizardInner() {
   const [quality, setQuality] = useState<QualityData | null>(null);
   const [algorithms, setAlgorithms] = useState<Record<string, unknown>[]>([]);
   const [ready, setReady] = useState(false);
+  const [navLocked, setNavLocked] = useState(false);
   const hydratedRef = useRef(false);
 
   useEffect(() => {
@@ -93,7 +99,6 @@ function WizardInner() {
       setReady(true);
     };
     void load();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [projectId, datasetId]);
 
   const saveDraft = useCallback(async () => {
@@ -128,64 +133,62 @@ function WizardInner() {
   }
   if (!ready || !dataset) {
     return (
-      <div className="mx-auto mt-10 max-w-4xl space-y-4 px-4">
-        <Skeleton className="h-10 w-1/2" />
-        <Skeleton className="h-96 w-full" />
+      <div className="bg-muted/30 flex min-h-screen">
+        <div className="bg-background hidden w-64 shrink-0 border-r p-5 lg:block">
+          <Skeleton className="h-8 w-full" />
+          <div className="mt-8 space-y-3">
+            {[...Array(9)].map((_, index) => (
+              <Skeleton key={index} className="h-8 w-full" />
+            ))}
+          </div>
+        </div>
+        <div className="mx-auto mt-10 w-full max-w-4xl space-y-4 px-4">
+          <Skeleton className="h-12 w-1/2" />
+          <Skeleton className="h-96 w-full" />
+        </div>
       </div>
     );
   }
 
-  const steps = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+  // Validation centralisée : pilote le bouton « Étape suivante » de la barre basse
+  const canNext = (() => {
+    switch (store.step) {
+      case 2: {
+        const meta = targetMeta(dataset, quality, store);
+        return Boolean(store.targetColumn) && Boolean(store.taskType) && !meta.blocking;
+      }
+      case 3:
+        return cleaningBlockingColumns(quality, store).length === 0;
+      case 6:
+        return Boolean(store.algorithm);
+      default:
+        return true;
+    }
+  })();
 
   return (
-    <div className="mx-auto max-w-5xl space-y-6 px-4 py-8">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <MissionStepper current="training" />
-        <Button variant="ghost" size="sm" asChild>
-          <Link href={`/projects/${projectId}`}>{t("backToProject")}</Link>
-        </Button>
-      </div>
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight">{t("title")}</h1>
-        <p className="text-muted-foreground mt-1 text-sm">{dataset.display_name}</p>
-      </div>
-
-      {/* Stepper horizontal persistant — navigation libre sur les étapes déjà validées */}
-      <nav className="flex flex-wrap gap-1">
-        {steps.map((step) => (
-          <button
-            key={step}
-            type="button"
-            disabled={step > store.maxReachedStep}
-            onClick={() => store.goTo(step)}
-            className={cn(
-              "rounded-full border px-3 py-1 text-xs transition-colors",
-              step === store.step
-                ? "border-primary bg-primary text-primary-foreground font-medium"
-                : step <= store.maxReachedStep
-                  ? "hover:bg-muted"
-                  : "text-muted-foreground/50 cursor-not-allowed"
-            )}>
-            {step}. {t(`steps.${step}` as never)}
-          </button>
-        ))}
-      </nav>
-
+    <WizardShell
+      step={store.step}
+      maxReachedStep={store.maxReachedStep}
+      datasetName={dataset.display_name}
+      projectId={projectId}
+      canNext={canNext}
+      navLocked={navLocked}
+      onGoTo={(step) => store.goTo(step)}
+      onNext={advance}>
       {store.step === 1 ? (
         <Step1Overview dataset={dataset} preview={preview} quality={quality} onNext={advance} />
       ) : null}
       {store.step === 2 ? (
-        <Step2Target dataset={dataset} preview={preview} quality={quality} onNext={advance} />
+        <Step2Target dataset={dataset} preview={preview} quality={quality} />
       ) : null}
-      {store.step === 3 ? <Step3Cleaning quality={quality} onNext={advance} /> : null}
-      {store.step === 4 ? <Step4Split quality={quality} onNext={advance} /> : null}
-      {store.step === 5 ? <Step5Prep quality={quality} onNext={advance} /> : null}
-      {store.step === 6 ? (
-        <Step6Algorithm algorithms={algorithms} quality={quality} onNext={advance} />
-      ) : null}
-      {store.step === 7 ? <Step7Hyperparameters algorithms={algorithms} onNext={advance} /> : null}
-      {store.step >= 8 ? <Step8Launch dataset={dataset} /> : null}
-    </div>
+      {store.step === 3 ? <Step3Cleaning quality={quality} /> : null}
+      {store.step === 4 ? <Step4Split quality={quality} /> : null}
+      {store.step === 5 ? <Step5Prep quality={quality} /> : null}
+      {store.step === 6 ? <Step6Algorithm algorithms={algorithms} quality={quality} /> : null}
+      {store.step === 7 ? <Step7Hyperparameters algorithms={algorithms} /> : null}
+      {store.step >= 8 ? <Step8Launch dataset={dataset} onLockChange={setNavLocked} /> : null}
+    </WizardShell>
   );
 }
 

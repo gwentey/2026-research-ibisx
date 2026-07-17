@@ -1,14 +1,30 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
-import { CheckCircle2Icon, InfoIcon, TriangleAlertIcon } from "lucide-react";
+import {
+  CheckCircle2Icon,
+  CheckIcon,
+  Columns3Icon,
+  GaugeIcon,
+  InfoIcon,
+  LightbulbIcon,
+  ListIcon,
+  Rows3Icon,
+  SparklesIcon,
+  TableIcon,
+  TrendingUpIcon,
+  TriangleAlertIcon,
+  XCircleIcon,
+  XIcon
+} from "lucide-react";
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
+import { Progress } from "@/components/ui/progress";
 import {
   Select,
   SelectContent,
@@ -28,8 +44,9 @@ import {
 } from "@/components/ui/table";
 import type { DatasetDetail, DatasetPreview } from "@/lib/api/generated";
 import type { QualityData } from "@/app/wizard/page";
-import { useWizardStore } from "@/lib/wizard/store";
+import { useWizardStore, type WizardState } from "@/lib/wizard/store";
 import { formatCount } from "@/lib/datasets/constants";
+import { cn } from "@/lib/utils";
 
 const STRATEGIES = [
   "mean",
@@ -52,6 +69,49 @@ function Understand({ title, body }: { title: string; body: string }) {
   );
 }
 
+// ---------------------------------------------------------------- Validité (partagée avec la coquille)
+
+export function targetMeta(dataset: DatasetDetail, quality: QualityData | null, state: WizardState) {
+  const columns = dataset.files[0]?.columns ?? [];
+  const selected = columns.find((column) => column.name === state.targetColumn);
+  const qualityColumn = quality?.analysis.columns.find((c) => c.name === state.targetColumn);
+  const isCategorical =
+    selected !== undefined &&
+    (selected.dtype_interpreted === "categorical" ||
+      selected.dtype_interpreted === "text" ||
+      selected.dtype_interpreted === "boolean" ||
+      (qualityColumn !== undefined && !qualityColumn.is_numeric));
+  const uniqueCount = Number(
+    qualityColumn?.unique_count ??
+      (selected?.stats as { unique_count?: number } | undefined)?.unique_count ??
+      0
+  );
+  // Heuristique déterministe locale (CDC É2) : catégoriel/petite cardinalité → classification
+  const recommendedTask: "classification" | "regression" =
+    isCategorical || (typeof uniqueCount === "number" && uniqueCount <= 10)
+      ? "classification"
+      : "regression";
+  return {
+    selected,
+    isCategorical,
+    uniqueCount,
+    recommendedTask,
+    blocking: state.taskType === "regression" && isCategorical
+  };
+}
+
+export function cleaningBlockingColumns(quality: QualityData | null, state: WizardState): string[] {
+  return (quality?.analysis.columns ?? [])
+    .filter(
+      (c) =>
+        c.name !== state.targetColumn &&
+        c.missing_count > 0 &&
+        c.missing_percentage > 30 &&
+        !state.columnStrategies[c.name]
+    )
+    .map((c) => c.name);
+}
+
 // ---------------------------------------------------------------- Étape 1
 export function Step1Overview({
   dataset,
@@ -65,44 +125,81 @@ export function Step1Overview({
   onNext: () => void;
 }) {
   const t = useTranslations("wizard.step1");
+
+  const stats = [
+    {
+      icon: Rows3Icon,
+      value: formatCount(dataset.instances_number),
+      label: t("rows")
+    },
+    {
+      icon: Columns3Icon,
+      value: formatCount(dataset.features_number),
+      label: t("cols")
+    }
+  ];
+
   return (
     <div className="space-y-4">
       <div className="grid gap-4 sm:grid-cols-3">
+        {stats.map((stat) => (
+          <Card key={stat.label}>
+            <CardContent className="flex items-center gap-3 pt-6">
+              <div className="bg-primary/10 text-primary flex size-10 shrink-0 items-center justify-center rounded-lg">
+                <stat.icon className="size-5" />
+              </div>
+              <div>
+                <p className="text-2xl font-semibold tabular-nums">{stat.value}</p>
+                <p className="text-muted-foreground text-sm">{stat.label}</p>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
         <Card>
           <CardContent className="pt-6">
-            <p className="text-2xl font-semibold">{formatCount(dataset.instances_number)}</p>
-            <p className="text-muted-foreground text-sm">{t("rows")}</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <p className="text-2xl font-semibold">{formatCount(dataset.features_number)}</p>
-            <p className="text-muted-foreground text-sm">{t("cols")}</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <p className="text-2xl font-semibold">
-              {quality ? `${quality.quality_score}/100` : "…"}
-            </p>
-            <p className="text-muted-foreground text-sm" title={t("qualityHint")}>
-              {t("quality")}
-            </p>
+            <div className="flex items-center gap-3">
+              <div className="bg-primary/10 text-primary flex size-10 shrink-0 items-center justify-center rounded-lg">
+                <GaugeIcon className="size-5" />
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="text-2xl font-semibold tabular-nums">
+                  {quality ? `${quality.quality_score}` : "…"}
+                  <span className="text-muted-foreground text-sm font-normal">/100</span>
+                </p>
+                <p className="text-muted-foreground text-sm" title={t("qualityHint")}>
+                  {t("quality")}
+                </p>
+              </div>
+            </div>
+            {quality ? <Progress value={quality.quality_score} className="mt-3 h-1.5" /> : null}
           </CardContent>
         </Card>
       </div>
+
       {dataset.objective ? (
-        <p className="text-muted-foreground text-sm">{dataset.objective}</p>
+        <div className="border-primary bg-card rounded-md border border-l-4 p-4">
+          <p className="text-sm leading-relaxed">{dataset.objective}</p>
+        </div>
       ) : null}
+
       <Understand title={t("understand")} body={t("understandBody")} />
+
       {preview ? (
-        <Card className="py-0">
+        <Card className="gap-0 py-0">
+          <CardHeader className="border-b py-3!">
+            <CardTitle className="flex items-center gap-2 text-sm font-medium">
+              <TableIcon className="text-muted-foreground size-4" />
+              {t("preview")}
+            </CardTitle>
+          </CardHeader>
           <CardContent className="max-h-72 overflow-auto px-0">
             <Table>
               <TableHeader>
                 <TableRow>
                   {preview.displayed_columns.slice(0, 10).map((column) => (
-                    <TableHead key={column}>{column}</TableHead>
+                    <TableHead key={column} className="text-xs">
+                      {column}
+                    </TableHead>
                   ))}
                 </TableRow>
               </TableHeader>
@@ -121,7 +218,13 @@ export function Step1Overview({
           </CardContent>
         </Card>
       ) : null}
-      <Button onClick={onNext}>{t("confirm")}</Button>
+
+      <div className="flex justify-center pt-2">
+        <Button size="lg" onClick={onNext}>
+          <CheckIcon />
+          {t("confirm")}
+        </Button>
+      </div>
     </div>
   );
 }
@@ -132,17 +235,15 @@ const TARGET_HINTS = ["target", "label", "class", "outcome", "species", "quality
 export function Step2Target({
   dataset,
   preview,
-  quality,
-  onNext
+  quality
 }: {
   dataset: DatasetDetail;
   preview: DatasetPreview | null;
   quality: QualityData | null;
-  onNext: () => void;
 }) {
   const t = useTranslations("wizard.step2");
-  const tw = useTranslations("wizard");
   const store = useWizardStore();
+  const [assistOpen, setAssistOpen] = useState(true);
   const columns = dataset.files[0]?.columns ?? [];
 
   const suggested = useMemo(
@@ -153,26 +254,106 @@ export function Step2Target({
     [columns]
   );
 
-  const selected = columns.find((column) => column.name === store.targetColumn);
-  const qualityColumn = quality?.analysis.columns.find((c) => c.name === store.targetColumn);
-  const isCategoricalTarget =
-    selected !== undefined &&
-    (selected.dtype_interpreted === "categorical" ||
-      selected.dtype_interpreted === "text" ||
-      selected.dtype_interpreted === "boolean" ||
-      (qualityColumn !== undefined && !qualityColumn.is_numeric));
-  const uniqueCount = Number(qualityColumn?.unique_count ?? (selected?.stats as { unique_count?: number } | undefined)?.unique_count ?? 0);
-  // Heuristique déterministe locale (CDC É2) : catégoriel/petite cardinalité → classification
-  const recommendedTask: "classification" | "regression" =
-    isCategoricalTarget || (typeof uniqueCount === "number" && uniqueCount <= 10)
-      ? "classification"
-      : "regression";
-  const blocking = store.taskType === "regression" && isCategoricalTarget;
+  const meta = targetMeta(dataset, quality, store);
+  const target = store.targetColumn;
+
+  // P1 : exemples ancrés sur les VRAIES valeurs observées dans l'aperçu (jamais inventés)
+  const observedValues = useMemo(() => {
+    if (!target || !preview) return [];
+    const values = new Set<string>();
+    for (const row of preview.rows) {
+      const value = (row as Record<string, unknown>)[target];
+      if (value !== null && value !== undefined && String(value).trim() !== "") {
+        values.add(String(value));
+      }
+      if (values.size >= 4) break;
+    }
+    return [...values];
+  }, [preview, target]);
+
+  const recommendedLabel =
+    meta.recommendedTask === "classification" ? t("classification") : t("regression");
+
+  const taskCard = (task: "classification" | "regression") => {
+    const isRecommended = target !== null && meta.recommendedTask === task;
+    const inappropriate = task === "regression" && target !== null && meta.isCategorical;
+    const active = store.taskType === task;
+    const Icon = task === "classification" ? ListIcon : TrendingUpIcon;
+    return (
+      <button
+        type="button"
+        onClick={() => store.set("taskType", task)}
+        className={cn(
+          "bg-card rounded-lg border p-4 text-left transition-all",
+          active ? "border-primary ring-primary/30 ring-2" : "hover:border-primary/40"
+        )}>
+        <div className="flex items-center gap-2">
+          <Icon className={cn("size-4", inappropriate ? "text-muted-foreground" : "text-primary")} />
+          <p className="font-semibold">{t(task)}</p>
+          {isRecommended && !inappropriate ? (
+            <Badge className="ml-auto">{t("recommendedBadge")}</Badge>
+          ) : active ? (
+            <CheckCircle2Icon className="text-primary ml-auto size-4" />
+          ) : null}
+        </div>
+
+        <p className="text-muted-foreground mt-3 text-xs font-medium uppercase tracking-wide">
+          {t("forDataset")}
+        </p>
+        {inappropriate ? (
+          <p className="text-destructive mt-1 flex items-start gap-1.5 text-sm">
+            <XCircleIcon className="mt-0.5 size-3.5 shrink-0" />
+            {t("notAppropriateBody", { column: target ?? "" })}
+          </p>
+        ) : (
+          <p className="mt-1 text-sm leading-relaxed">
+            {target
+              ? task === "classification"
+                ? t("classificationFor", { column: target })
+                : t("regressionFor", { column: target })
+              : t(`${task}Hint`)}
+          </p>
+        )}
+
+        {target ? (
+          <>
+            <p className="text-muted-foreground mt-3 text-xs font-medium uppercase tracking-wide">
+              {t("examples")}
+            </p>
+            <p className="text-muted-foreground mt-1 text-xs">
+              {inappropriate ? (
+                <span className="flex items-center gap-1.5">
+                  <XIcon className="size-3" /> {t("notApplicable")}
+                </span>
+              ) : task === "classification" && observedValues.length > 0 ? (
+                t("observedValues", { values: observedValues.join(" · ") })
+              ) : task === "regression" ? (
+                t("continuousValues", { column: target })
+              ) : (
+                t(`${task}Hint`)
+              )}
+            </p>
+          </>
+        ) : null}
+      </button>
+    );
+  };
 
   return (
     <div className="space-y-4">
+      {/* Panneau d'assistance (disposition v1 : analyse → cartes comparatives → reco finale) */}
       <Card>
-        <CardContent className="space-y-4 pt-6">
+        <CardHeader className="flex flex-row items-center justify-between">
+          <CardTitle className="flex items-center gap-2 text-base">
+            <SparklesIcon className="text-primary size-4" />
+            {t("aiTitle")}
+          </CardTitle>
+          <Button variant="ghost" size="sm" onClick={() => setAssistOpen((open) => !open)}>
+            {assistOpen ? <XIcon /> : <SparklesIcon />}
+            {assistOpen ? t("closeAssist") : t("openAssist")}
+          </Button>
+        </CardHeader>
+        <CardContent className="space-y-4">
           <div>
             <Label>{t("targetLabel")}</Label>
             <Select
@@ -192,82 +373,90 @@ export function Step2Target({
             </Select>
           </div>
 
-          {store.targetColumn ? (
-            <Alert>
-              <InfoIcon />
-              <AlertTitle>{t("aiTitle")}</AlertTitle>
-              <AlertDescription className="space-y-2">
-                <p>
-                  {t("aiReco", {
-                    task:
-                      recommendedTask === "classification"
-                        ? t("classification")
-                        : t("regression"),
-                    reason: t(
-                      recommendedTask === "classification"
-                        ? "reasonCategorical"
-                        : "reasonNumeric",
-                      { column: store.targetColumn, count: uniqueCount }
-                    )
-                  })}
-                </p>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={() => store.set("taskType", recommendedTask)}>
-                  {t("aiApply")}
-                </Button>
-              </AlertDescription>
-            </Alert>
+          {assistOpen ? (
+            <div className="border-primary bg-muted/50 space-y-3 rounded-md border border-l-4 p-4">
+              <p className="text-sm">
+                {t("analysisOf", { name: dataset.display_name })}
+                {dataset.objective ? (
+                  <span className="text-muted-foreground"> — {dataset.objective}</span>
+                ) : null}
+              </p>
+              {target ? (
+                <div className="flex flex-wrap gap-x-6 gap-y-1.5 text-sm">
+                  <span className="flex items-center gap-1.5">
+                    <ListIcon className="text-primary size-3.5" />
+                    <span className="text-muted-foreground">{t("targetInfo")} :</span>
+                    <span className="font-medium">{target}</span>
+                  </span>
+                  <span className="flex items-center gap-1.5">
+                    <GaugeIcon className="text-primary size-3.5" />
+                    <span className="text-muted-foreground">{t("dtypeInfo")} :</span>
+                    <span className="font-medium">
+                      {meta.isCategorical ? t("dtypeCategorical") : t("dtypeNumeric")}
+                    </span>
+                  </span>
+                </div>
+              ) : null}
+            </div>
           ) : null}
 
           <div>
             <Label>{t("taskLabel")}</Label>
-            <div className="mt-2 grid gap-2 sm:grid-cols-2">
-              {(["classification", "regression"] as const).map((task) => (
-                <button
-                  key={task}
-                  type="button"
-                  onClick={() => store.set("taskType", task)}
-                  className={`rounded-md border p-3 text-left text-sm ${
-                    store.taskType === task ? "border-primary bg-muted" : "hover:bg-muted"
-                  }`}>
-                  <p className="font-medium">{t(task)}</p>
-                  <p className="text-muted-foreground text-xs">{t(`${task}Hint`)}</p>
-                </button>
-              ))}
+            <div className="mt-2 grid gap-3 sm:grid-cols-2">
+              {taskCard("classification")}
+              {taskCard("regression")}
             </div>
           </div>
 
-          {blocking ? (
+          {assistOpen && target ? (
+            <Alert>
+              <LightbulbIcon />
+              <AlertTitle>{t("finalTitle")}</AlertTitle>
+              <AlertDescription>
+                {t("aiReco", {
+                  task: recommendedLabel,
+                  reason: t(
+                    meta.recommendedTask === "classification"
+                      ? "reasonCategorical"
+                      : "reasonNumeric",
+                    { column: target, count: meta.uniqueCount }
+                  )
+                })}
+              </AlertDescription>
+            </Alert>
+          ) : null}
+
+          {assistOpen && target ? (
+            <div className="flex flex-wrap justify-center gap-2 pt-1">
+              <Button onClick={() => store.set("taskType", meta.recommendedTask)}>
+                <CheckCircle2Icon />
+                {t("applyFinal", { task: recommendedLabel })}
+              </Button>
+              <Button variant="outline" onClick={() => setAssistOpen(false)}>
+                <XIcon />
+                {t("chooseMyself")}
+              </Button>
+            </div>
+          ) : null}
+
+          {meta.blocking ? (
             <Alert variant="destructive">
               <TriangleAlertIcon />
               <AlertTitle>{t("blockTitle")}</AlertTitle>
-              <AlertDescription>
-                {t("blockBody", { column: store.targetColumn ?? "" })}
-              </AlertDescription>
+              <AlertDescription>{t("blockBody", { column: target ?? "" })}</AlertDescription>
             </Alert>
           ) : null}
         </CardContent>
       </Card>
+
       <Understand title={t("understand")} body={t("understandBody")} />
-      <Button onClick={onNext} disabled={!store.targetColumn || !store.taskType || blocking}>
-        {tw("next")}
-      </Button>
     </div>
   );
 }
 
 // ---------------------------------------------------------------- Étape 3
-export function Step3Cleaning({
-  quality,
-  onNext
-}: {
-  quality: QualityData | null;
-  onNext: () => void;
-}) {
+export function Step3Cleaning({ quality }: { quality: QualityData | null }) {
   const t = useTranslations("wizard.step3");
-  const tw = useTranslations("wizard");
   const store = useWizardStore();
   const columns = (quality?.analysis.columns ?? []).filter(
     (column) => column.missing_count > 0 && column.name !== store.targetColumn
@@ -290,97 +479,111 @@ export function Step3Cleaning({
   return (
     <div className="space-y-4">
       {columns.length === 0 ? (
-        <Alert>
-          <CheckCircle2Icon />
-          <AlertTitle>{t("cleanTitle")}</AlertTitle>
-          <AlertDescription>{t("cleanBody")}</AlertDescription>
-        </Alert>
+        <Card>
+          <CardContent className="flex flex-col items-center gap-2 py-12 text-center">
+            <div className="bg-primary/10 text-primary flex size-12 items-center justify-center rounded-full">
+              <CheckCircle2Icon className="size-6" />
+            </div>
+            <p className="font-semibold">{t("cleanTitle")}</p>
+            <p className="text-muted-foreground max-w-md text-sm">{t("cleanBody")}</p>
+          </CardContent>
+        </Card>
       ) : (
-        <>
-          <div className="flex items-center justify-between gap-2">
+        <Card className="gap-0 py-0">
+          <CardHeader className="flex flex-row items-center justify-between border-b py-3!">
             <p className="text-muted-foreground text-sm">{t("intro")}</p>
             <Button variant="outline" size="sm" onClick={applyRecommendations}>
+              <SparklesIcon />
               {t("applyReco")}
             </Button>
-          </div>
-          <Card className="py-0">
-            <CardContent className="overflow-x-auto px-0">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>{t("column")}</TableHead>
-                    <TableHead>{t("missing")}</TableHead>
-                    <TableHead>{t("distribution")}</TableHead>
-                    <TableHead className="min-w-56">{t("strategy")}</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {columns.map((column) => {
-                    const current = store.columnStrategies[column.name]?.strategy;
-                    return (
-                      <TableRow key={column.name}>
-                        <TableCell className="font-medium">{column.name}</TableCell>
-                        <TableCell>
-                          <div className="flex items-center gap-2">
-                            <div className="bg-muted h-1.5 w-16 rounded">
-                              <div
-                                className="bg-primary h-1.5 rounded"
-                                style={{ width: `${Math.min(100, column.missing_percentage)}%` }}
-                              />
-                            </div>
-                            <span className="text-xs">{column.missing_percentage}%</span>
+          </CardHeader>
+          <CardContent className="overflow-x-auto px-0">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>{t("column")}</TableHead>
+                  <TableHead>{t("missing")}</TableHead>
+                  <TableHead>{t("distribution")}</TableHead>
+                  <TableHead className="min-w-56">{t("strategy")}</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {columns.map((column) => {
+                  const current = store.columnStrategies[column.name]?.strategy;
+                  return (
+                    <TableRow key={column.name}>
+                      <TableCell className="font-medium">{column.name}</TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-2">
+                          <div className="bg-muted h-1.5 w-16 rounded">
+                            <div
+                              className={cn(
+                                "h-1.5 rounded",
+                                column.missing_percentage > 30
+                                  ? "bg-destructive"
+                                  : "bg-primary"
+                              )}
+                              style={{ width: `${Math.min(100, column.missing_percentage)}%` }}
+                            />
                           </div>
-                          {column.outliers.percentage > 10 ? (
-                            <p className="text-muted-foreground mt-1 text-[10px]">
-                              {t("outliers", {
-                                count: column.outliers.count,
-                                pct: column.outliers.percentage
-                              })}
-                            </p>
-                          ) : null}
-                        </TableCell>
-                        <TableCell className="text-xs">
+                          <span className="text-xs tabular-nums">
+                            {column.missing_percentage}%
+                          </span>
+                        </div>
+                        {column.outliers.percentage > 10 ? (
+                          <p className="text-muted-foreground mt-1 text-[10px]">
+                            {t("outliers", {
+                              count: column.outliers.count,
+                              pct: column.outliers.percentage
+                            })}
+                          </p>
+                        ) : null}
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant="outline" className="text-xs font-normal">
                           {t(`distributions.${column.distribution}` as never)}
-                        </TableCell>
-                        <TableCell>
-                          <Select
-                            value={current ?? undefined}
-                            onValueChange={(value) =>
-                              store.setStrategy(column.name, { strategy: value as never })
-                            }>
-                            <SelectTrigger size="sm" className="w-full">
-                              <SelectValue
-                                placeholder={
-                                  column.recommended_strategy
-                                    ? `${t(`strategies.${column.recommended_strategy}` as never)} (${t("recommended")})`
-                                    : "—"
-                                }
-                              />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {STRATEGIES.filter(
-                                (s) =>
-                                  column.is_numeric ||
-                                  ["most_frequent", "constant", "drop_rows", "drop_column"].includes(s)
-                              ).map((strategy) => (
-                                <SelectItem key={strategy} value={strategy}>
-                                  {t(`strategies.${strategy}` as never)}
-                                  {strategy === column.recommended_strategy
-                                    ? ` — ${t("recommended")}`
-                                    : ""}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
-                </TableBody>
-              </Table>
-            </CardContent>
-          </Card>
-        </>
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <Select
+                          value={current ?? undefined}
+                          onValueChange={(value) =>
+                            store.setStrategy(column.name, { strategy: value as never })
+                          }>
+                          <SelectTrigger size="sm" className="w-full">
+                            <SelectValue
+                              placeholder={
+                                column.recommended_strategy
+                                  ? `${t(`strategies.${column.recommended_strategy}` as never)} (${t("recommended")})`
+                                  : "—"
+                              }
+                            />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {STRATEGIES.filter(
+                              (s) =>
+                                column.is_numeric ||
+                                ["most_frequent", "constant", "drop_rows", "drop_column"].includes(
+                                  s
+                                )
+                            ).map((strategy) => (
+                              <SelectItem key={strategy} value={strategy}>
+                                {t(`strategies.${strategy}` as never)}
+                                {strategy === column.recommended_strategy
+                                  ? ` — ${t("recommended")}`
+                                  : ""}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
       )}
 
       {targetQuality && targetQuality.missing_count > 0 ? (
@@ -402,136 +605,139 @@ export function Step3Cleaning({
           </AlertDescription>
         </Alert>
       ) : null}
-      <Button onClick={onNext} disabled={blockingColumns.length > 0}>
-        {tw("next")}
-      </Button>
     </div>
   );
 }
 
 // ---------------------------------------------------------------- Étape 4
-export function Step4Split({
-  quality,
-  onNext
-}: {
-  quality: QualityData | null;
-  onNext: () => void;
-}) {
+export function Step4Split({ quality }: { quality: QualityData | null }) {
   const t = useTranslations("wizard.step4");
-  const tw = useTranslations("wizard");
   const store = useWizardStore();
   const total = quality?.analysis.row_count ?? 0;
   const testRows = Math.round(total * store.testSize);
+  const trainPct = Math.round((1 - store.testSize) * 100);
 
   return (
     <div className="space-y-4">
       <Card>
-        <CardContent className="space-y-4 pt-6">
-          <Label>{t("testSize", { pct: Math.round(store.testSize * 100) })}</Label>
-          <Slider
-            value={[store.testSize * 100]}
-            min={10}
-            max={50}
-            step={5}
-            onValueChange={([value]) => store.set("testSize", value / 100)}
-          />
-          <div className="flex h-6 w-full overflow-hidden rounded-md text-[10px] text-white">
-            <div
-              className="bg-primary flex items-center justify-center"
-              style={{ width: `${100 - store.testSize * 100}%` }}>
-              {t("trainRows", { count: total - testRows })}
+        <CardContent className="space-y-6 pt-6">
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <Label>{t("testSize", { pct: Math.round(store.testSize * 100) })}</Label>
+              <Badge variant="outline" className="font-mono text-xs">
+                {trainPct} / {Math.round(store.testSize * 100)}
+              </Badge>
             </div>
-            <div
-              className="bg-muted-foreground flex items-center justify-center"
-              style={{ width: `${store.testSize * 100}%` }}>
-              {t("testRows", { count: testRows })}
-            </div>
+            <Slider
+              value={[store.testSize * 100]}
+              min={10}
+              max={50}
+              step={5}
+              onValueChange={([value]) => store.set("testSize", value / 100)}
+            />
           </div>
-          {store.taskType === "classification" ? (
-            <p className="text-muted-foreground text-sm">{t("stratified")}</p>
-          ) : null}
+
+          <div className="space-y-2">
+            <div className="flex h-9 w-full overflow-hidden rounded-md border">
+              <div
+                className="bg-primary text-primary-foreground flex items-center justify-center text-xs font-medium transition-all duration-300"
+                style={{ width: `${100 - store.testSize * 100}%` }}>
+                {t("trainRows", { count: total - testRows })}
+              </div>
+              <div
+                className="bg-muted text-foreground flex items-center justify-center text-xs transition-all duration-300"
+                style={{ width: `${store.testSize * 100}%` }}>
+                {t("testRows", { count: testRows })}
+              </div>
+            </div>
+            {store.taskType === "classification" ? (
+              <p className="text-muted-foreground text-sm">{t("stratified")}</p>
+            ) : null}
+          </div>
+
           <Badge variant="outline" className="font-mono">
             {t("seed")}
           </Badge>
         </CardContent>
       </Card>
       <Understand title={t("understand")} body={t("understandBody")} />
-      <Button onClick={onNext}>{tw("next")}</Button>
     </div>
   );
 }
 
 // ---------------------------------------------------------------- Étape 5
-export function Step5Prep({
-  quality,
-  onNext
-}: {
-  quality: QualityData | null;
-  onNext: () => void;
-}) {
+export function Step5Prep({ quality }: { quality: QualityData | null }) {
   const t = useTranslations("wizard.step5");
-  const tw = useTranslations("wizard");
   const store = useWizardStore();
   const hasOutliers = (quality?.analysis.columns ?? []).some(
     (column) => column.outliers.percentage > 10
   );
 
+  const optionCard = (key: string, active: boolean, onClick: () => void, label: string) => (
+    <button
+      key={key}
+      type="button"
+      onClick={onClick}
+      className={cn(
+        "bg-card flex items-center gap-2 rounded-lg border p-3 text-left text-sm transition-all",
+        active ? "border-primary ring-primary/30 ring-2 font-medium" : "hover:border-primary/40"
+      )}>
+      {active ? <CheckCircle2Icon className="text-primary size-4 shrink-0" /> : null}
+      {label}
+    </button>
+  );
+
   return (
     <div className="space-y-4">
       <Card>
-        <CardContent className="space-y-5 pt-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <Label>{t("scaling")}</Label>
-              <p className="text-muted-foreground text-xs">{t("scalingHint")}</p>
+        <CardContent className="space-y-6 pt-6">
+          <div>
+            <div className="flex items-center justify-between">
+              <div>
+                <Label>{t("scaling")}</Label>
+                <p className="text-muted-foreground text-xs">{t("scalingHint")}</p>
+              </div>
+              <Switch
+                checked={store.scalingEnabled}
+                onCheckedChange={(checked) => store.set("scalingEnabled", checked)}
+              />
             </div>
-            <Switch
-              checked={store.scalingEnabled}
-              onCheckedChange={(checked) => store.set("scalingEnabled", checked)}
-            />
+            {store.scalingEnabled ? (
+              <div className="mt-3 grid gap-2 sm:grid-cols-3">
+                {(["standard", "minmax", "robust"] as const).map((method) =>
+                  optionCard(
+                    method,
+                    store.scalingMethod === method,
+                    () => store.set("scalingMethod", method),
+                    t(`methods.${method}`)
+                  )
+                )}
+              </div>
+            ) : null}
+            {hasOutliers ? (
+              <Alert className="mt-3">
+                <InfoIcon />
+                <AlertDescription>{t("robustReco")}</AlertDescription>
+              </Alert>
+            ) : null}
           </div>
-          {store.scalingEnabled ? (
-            <div className="grid gap-2 sm:grid-cols-3">
-              {(["standard", "minmax", "robust"] as const).map((method) => (
-                <button
-                  key={method}
-                  type="button"
-                  onClick={() => store.set("scalingMethod", method)}
-                  className={`rounded-md border p-3 text-left text-sm ${
-                    store.scalingMethod === method ? "border-primary bg-muted" : "hover:bg-muted"
-                  }`}>
-                  {t(`methods.${method}`)}
-                </button>
-              ))}
-            </div>
-          ) : null}
-          {hasOutliers ? (
-            <Alert>
-              <InfoIcon />
-              <AlertDescription>{t("robustReco")}</AlertDescription>
-            </Alert>
-          ) : null}
 
           <div>
             <Label>{t("encoding")}</Label>
             <div className="mt-2 grid gap-2 sm:grid-cols-2">
-              {(["onehot", "ordinal"] as const).map((encoding) => (
-                <button
-                  key={encoding}
-                  type="button"
-                  onClick={() => store.set("encoding", encoding)}
-                  className={`rounded-md border p-3 text-left text-sm ${
-                    store.encoding === encoding ? "border-primary bg-muted" : "hover:bg-muted"
-                  }`}>
-                  {t(`encodings.${encoding}`)}
-                </button>
-              ))}
+              {(["onehot", "ordinal"] as const).map((encoding) =>
+                optionCard(
+                  encoding,
+                  store.encoding === encoding,
+                  () => store.set("encoding", encoding),
+                  t(`encodings.${encoding}`)
+                )
+              )}
             </div>
           </div>
           <Badge variant="secondary">{t("applied")}</Badge>
         </CardContent>
       </Card>
-      <Button onClick={onNext}>{tw("next")}</Button>
     </div>
   );
 }

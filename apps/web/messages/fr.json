@@ -573,7 +573,26 @@
       "blockTitle": "Incohérence détectée",
       "blockBody": "La cible « {column} » est catégorielle : une régression est impossible. Choisissez la classification, ou une autre cible numérique.",
       "understand": "Comprendre : classification ou régression ?",
-      "understandBody": "Classification = prédire une étiquette parmi des catégories. Régression = prédire une valeur numérique continue. Le choix dépend de la colonne cible."
+      "understandBody": "Classification = prédire une étiquette parmi des catégories. Régression = prédire une valeur numérique continue. Le choix dépend de la colonne cible.",
+      "closeAssist": "Fermer l'assistance",
+      "openAssist": "Assistance",
+      "analysisOf": "Analyse de votre dataset « {name} »",
+      "targetInfo": "Colonne cible",
+      "dtypeInfo": "Type de données",
+      "dtypeCategorical": "catégoriel",
+      "dtypeNumeric": "numérique",
+      "recommendedBadge": "Recommandé",
+      "forDataset": "Pour votre dataset",
+      "classificationFor": "Prédire la catégorie de « {column} » : chaque ligne sera classée dans l'un des groupes existants.",
+      "regressionFor": "Prédire la valeur numérique de « {column} » : le modèle estimera un nombre pour chaque ligne.",
+      "notAppropriateBody": "Non adapté : la colonne « {column} » représente des catégories, pas des valeurs continues.",
+      "examples": "Exemples de prédiction",
+      "observedValues": "Valeurs réelles observées : {values}",
+      "continuousValues": "Valeurs numériques continues de « {column} »",
+      "notApplicable": "Non applicable — variable non continue.",
+      "finalTitle": "Recommandation finale",
+      "applyFinal": "Appliquer la recommandation ({task})",
+      "chooseMyself": "Je choisis moi-même"
     },
     "step3": {
       "intro": "Colonnes à traiter : choisissez une stratégie pour chaque colonne ayant des valeurs manquantes. Ce qui est configuré ici sera RÉELLEMENT appliqué par l'entraînement.",
@@ -648,7 +667,8 @@
       },
       "aiReco": "Recommandation : {algo}. {reason}",
       "reasonSmall": "Dataset compact ({rows} lignes) : un arbre de décision restera lisible et suffisant.",
-      "reasonLarge": "{rows} lignes et {cols} variables : la forêt aléatoire encaissera mieux la complexité."
+      "reasonLarge": "{rows} lignes et {cols} variables : la forêt aléatoire encaissera mieux la complexité.",
+      "selected": "Sélectionné"
     },
     "step7": {
       "presets": {
@@ -691,6 +711,18 @@
       "MAX_CONCURRENT_TRAININGS": "Vous avez déjà 3 entraînements en cours — attendez la fin de l'un d'eux.",
       "MAX_DAILY_TRAININGS": "Limite quotidienne d'entraînements atteinte.",
       "INSUFFICIENT_CREDITS": "Crédits insuffisants : demandez une recharge à un administrateur."
+    },
+    "stepOf": "Étape {current} sur {total}",
+    "subtitles": {
+      "1": "Vérifiez les informations de votre dataset avant de commencer.",
+      "2": "Choisissez ce que vous voulez prédire et le type de problème.",
+      "3": "Décidez, colonne par colonne, du traitement des valeurs manquantes.",
+      "4": "Réservez une partie des données pour évaluer honnêtement le modèle.",
+      "5": "Normalisation et encodage — les derniers réglages avant l'algorithme.",
+      "6": "Choisissez l'algorithme adapté à vos données.",
+      "7": "Affinez les réglages, ou faites confiance aux presets.",
+      "8": "Relisez, confirmez, lancez — suivez l'entraînement en direct.",
+      "9": "Votre modèle est prêt — place aux résultats."
     }
   },
   "experiments": {

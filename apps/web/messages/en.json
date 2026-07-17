@@ -573,7 +573,26 @@
       "blockTitle": "Inconsistency detected",
       "blockBody": "Target “{column}” is categorical: regression is impossible. Choose classification, or a numeric target.",
       "understand": "Understand: classification or regression?",
-      "understandBody": "Classification = predict a label among categories. Regression = predict a continuous numeric value. It depends on the target column."
+      "understandBody": "Classification = predict a label among categories. Regression = predict a continuous numeric value. It depends on the target column.",
+      "closeAssist": "Close assistance",
+      "openAssist": "Assistance",
+      "analysisOf": "Analysis of your dataset “{name}”",
+      "targetInfo": "Target column",
+      "dtypeInfo": "Data type",
+      "dtypeCategorical": "categorical",
+      "dtypeNumeric": "numerical",
+      "recommendedBadge": "Recommended",
+      "forDataset": "For your dataset",
+      "classificationFor": "Predict the category of “{column}”: each row will be assigned to one of the existing groups.",
+      "regressionFor": "Predict the numeric value of “{column}”: the model will estimate a number for each row.",
+      "notAppropriateBody": "Not appropriate: the column “{column}” represents categories, not continuous values.",
+      "examples": "Prediction examples",
+      "observedValues": "Real observed values: {values}",
+      "continuousValues": "Continuous numeric values of “{column}”",
+      "notApplicable": "Not applicable — the variable is not continuous.",
+      "finalTitle": "Final recommendation",
+      "applyFinal": "Apply recommendation ({task})",
+      "chooseMyself": "I'll choose myself"
     },
     "step3": {
       "intro": "Columns to clean: choose a strategy for every column with missing values. What you configure here is REALLY applied during training.",
@@ -648,7 +667,8 @@
       },
       "aiReco": "Recommendation: {algo}. {reason}",
       "reasonSmall": "Compact dataset ({rows} rows): a decision tree stays readable and sufficient.",
-      "reasonLarge": "{rows} rows and {cols} features: the random forest will handle the complexity better."
+      "reasonLarge": "{rows} rows and {cols} features: the random forest will handle the complexity better.",
+      "selected": "Selected"
     },
     "step7": {
       "presets": {
@@ -691,6 +711,18 @@
       "MAX_CONCURRENT_TRAININGS": "You already have 3 trainings running — wait for one to finish.",
       "MAX_DAILY_TRAININGS": "Daily training limit reached.",
       "INSUFFICIENT_CREDITS": "Not enough credits: ask an administrator for a top-up."
+    },
+    "stepOf": "Step {current} of {total}",
+    "subtitles": {
+      "1": "Review your dataset before you begin.",
+      "2": "Choose what you want to predict and the type of problem.",
+      "3": "Decide, column by column, how to handle missing values.",
+      "4": "Hold out part of the data to evaluate the model honestly.",
+      "5": "Scaling and encoding — the last settings before the algorithm.",
+      "6": "Pick the algorithm that fits your data.",
+      "7": "Fine-tune the settings, or trust the presets.",
+      "8": "Review, confirm, launch — follow the training live.",
+      "9": "Your model is ready — on to the results."
     }
   },
   "experiments": {

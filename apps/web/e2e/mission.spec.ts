@@ -109,11 +109,9 @@ for (const locale of ["fr", "en"] as const) {
     await page.getByText(t(m, "wizard.step8.confirm")).click();
     await page.getByRole("button", { name: t(m, "wizard.step8.launch") }).click();
 
-    // Étape 9 — l'entraînement RÉEL aboutit (worker Celery) puis résultats
-    await page
-      .getByRole("button", { name: t(m, "wizard.step8.seeResults") })
-      .click({ timeout: 120_000 });
-    await page.waitForURL(/\/experiments\/[0-9a-f-]{36}/);
+    // Étape 9 — l'entraînement RÉEL aboutit (worker Celery) puis redirection automatique
+    // vers les résultats (le bouton « Voir les résultats » n'est qu'un secours humain).
+    await page.waitForURL(/\/experiments\/[0-9a-f-]{36}/, { timeout: 150_000 });
 
     // --- 6. Résultats -------------------------------------------------------------------
     await expect(page.getByText(t(m, "experiments.resultsTitle"))).toBeVisible();
