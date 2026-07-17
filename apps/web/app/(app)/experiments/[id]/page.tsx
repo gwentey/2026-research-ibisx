@@ -11,6 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { MissionStepper } from "@/components/ibis/mission-stepper";
+import { XaiTab } from "@/components/ibis/xai/xai-tab";
 import {
   ConfusionMatrix,
   ImportanceChart,
@@ -264,11 +265,7 @@ export default function ExperimentResultsPage({
         </TabsContent>
 
         <TabsContent value="xai">
-          <Card>
-            <CardContent className="py-10 text-center">
-              <p className="text-muted-foreground text-sm">{t("xaiSoon")}</p>
-            </CardContent>
-          </Card>
+          <XaiTab experimentId={id} />
         </TabsContent>
       </Tabs>
     </div>

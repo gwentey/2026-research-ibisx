@@ -751,5 +751,85 @@
     },
     "compareTitle": "Experiment comparison",
     "compareEmpty": "Select at least 2 completed experiments."
+  },
+  "xai": {
+    "title": "Explainability",
+    "request": {
+      "title": "Request an explanation",
+      "typeGlobal": "Global",
+      "typeGlobalHint": "Which features matter in general for this model?",
+      "typeLocal": "Local",
+      "typeLocalHint": "Why THIS prediction for THIS instance?",
+      "method": "Method",
+      "methodAuto": "Automatic (recommended)",
+      "methodShap": "SHAP",
+      "methodLime": "LIME",
+      "pickInstance": "Pick a test instance (sorted by decreasing error)",
+      "instanceActual": "Actual",
+      "instancePredicted": "Predicted",
+      "instanceError": "Error",
+      "launch": "Generate explanation",
+      "running": "Computing…",
+      "cost": "Cost: 1 credit",
+      "failed": "Generation failed: {message}"
+    },
+    "history": {
+      "title": "History",
+      "empty": "No explanation generated for this experiment yet.",
+      "view": "View"
+    },
+    "kpis": {
+      "title": "Explanation reliability",
+      "hint": "Every indicator is really computed — if not computable, it is absent.",
+      "completeness": "SHAP completeness",
+      "completenessHint": "Efficiency axiom: Σ contributions + base = prediction (gap < 1%).",
+      "stability": "Stability",
+      "stabilityHint": "Mean rank correlation over 5 resamples (seeds 42–46).",
+      "fidelity": "LIME fidelity",
+      "fidelityHint": "R² of the local linear model approximating the model.",
+      "agreement": "SHAP ↔ LIME agreement",
+      "agreementHint": "Rank correlation of top 10 between both methods.",
+      "parsimony": "Parsimony",
+      "parsimonyHint": "Number of features covering 80% of total importance.",
+      "time": "Computation time",
+      "satisfied": "Verified",
+      "violated": "Not verified",
+      "labels": {
+        "very_stable": "Very stable",
+        "stable": "Stable",
+        "unstable": "Unstable",
+        "high": "High",
+        "medium": "Medium",
+        "low": "Low"
+      },
+      "parsimonyValue": "{k} features / {total}"
+    },
+    "charts": {
+      "importance": "Global importance ({method})",
+      "waterfall": "Contributions to the prediction",
+      "beeswarm": "Contribution distribution (top features)",
+      "comparison": "SHAP ↔ LIME comparison",
+      "baseValue": "Base value: {value}",
+      "prediction": "Prediction: {value} {label}"
+    },
+    "text": {
+      "title": "Explanation",
+      "audience": "Level: {level}",
+      "fallbackBadge": "Generated without AI (deterministic fallback)",
+      "modelBadge": "Model: {model}",
+      "method": "Method: {method}",
+      "justification": "{justification}"
+    },
+    "chat": {
+      "title": "Discuss this explanation",
+      "start": "Start chat",
+      "placeholder": "Your question (500 chars max)…",
+      "send": "Send",
+      "remaining": "{count, plural, =0 {Quota reached (5 questions)} one {# question left} other {# questions left}}",
+      "suggested": "Suggested questions",
+      "expired": "Session expired — start a new chat.",
+      "waiting": "Answering…",
+      "fallbackNote": "Answer generated without AI (deterministic fallback)"
+    }
   }
 }

@@ -751,5 +751,85 @@
     },
     "compareTitle": "Comparaison d'expériences",
     "compareEmpty": "Sélectionnez au moins 2 expériences terminées."
+  },
+  "xai": {
+    "title": "Explicabilité",
+    "request": {
+      "title": "Demander une explication",
+      "typeGlobal": "Globale",
+      "typeGlobalHint": "Quelles variables comptent en général pour ce modèle ?",
+      "typeLocal": "Locale",
+      "typeLocalHint": "Pourquoi CETTE prédiction pour CETTE instance ?",
+      "method": "Méthode",
+      "methodAuto": "Automatique (recommandé)",
+      "methodShap": "SHAP",
+      "methodLime": "LIME",
+      "pickInstance": "Choisissez une instance de test (triées par erreur décroissante)",
+      "instanceActual": "Réel",
+      "instancePredicted": "Prédit",
+      "instanceError": "Erreur",
+      "launch": "Générer l'explication",
+      "running": "Calcul en cours…",
+      "cost": "Coût : 1 crédit",
+      "failed": "La génération a échoué : {message}"
+    },
+    "history": {
+      "title": "Historique",
+      "empty": "Aucune explication générée pour cette expérience.",
+      "view": "Voir"
+    },
+    "kpis": {
+      "title": "Fiabilité de l'explication",
+      "hint": "Chaque indicateur est réellement calculé — s'il n'est pas calculable, il est absent.",
+      "completeness": "Complétude SHAP",
+      "completenessHint": "Axiome d'efficience : Σ contributions + base = prédiction (écart < 1 %).",
+      "stability": "Stabilité",
+      "stabilityHint": "Corrélation moyenne des classements sur 5 ré-échantillonnages (seeds 42–46).",
+      "fidelity": "Fidélité LIME",
+      "fidelityHint": "R² du modèle linéaire local qui approxime le modèle.",
+      "agreement": "Accord SHAP ↔ LIME",
+      "agreementHint": "Corrélation des classements top 10 entre les deux méthodes.",
+      "parsimony": "Parcimonie",
+      "parsimonyHint": "Nombre de variables couvrant 80 % de l'importance totale.",
+      "time": "Temps de calcul",
+      "satisfied": "Vérifié",
+      "violated": "Non vérifié",
+      "labels": {
+        "very_stable": "Très stable",
+        "stable": "Stable",
+        "unstable": "Instable",
+        "high": "Haute",
+        "medium": "Moyenne",
+        "low": "Basse"
+      },
+      "parsimonyValue": "{k} variables / {total}"
+    },
+    "charts": {
+      "importance": "Importance globale ({method})",
+      "waterfall": "Contributions à la prédiction",
+      "beeswarm": "Distribution des contributions (top variables)",
+      "comparison": "Comparaison SHAP ↔ LIME",
+      "baseValue": "Valeur de base : {value}",
+      "prediction": "Prédiction : {value} {label}"
+    },
+    "text": {
+      "title": "Explication",
+      "audience": "Niveau : {level}",
+      "fallbackBadge": "Généré sans IA (repli déterministe)",
+      "modelBadge": "Modèle : {model}",
+      "method": "Méthode : {method}",
+      "justification": "{justification}"
+    },
+    "chat": {
+      "title": "Discuter de cette explication",
+      "start": "Démarrer le chat",
+      "placeholder": "Votre question (500 caractères max)…",
+      "send": "Envoyer",
+      "remaining": "{count, plural, =0 {Quota atteint (5 questions)} one {# question restante} other {# questions restantes}}",
+      "suggested": "Questions suggérées",
+      "expired": "Session expirée — redémarrez un chat.",
+      "waiting": "Réponse en cours…",
+      "fallbackNote": "Réponse générée sans IA (repli déterministe)"
+    }
   }
 }
