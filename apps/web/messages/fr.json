@@ -122,7 +122,33 @@
     "welcomeFallback": "Bonjour 👋",
     "placeholderTitle": "Votre espace de travail est prêt",
     "placeholderBody": "Le catalogue de datasets, les projets et le pipeline d'entraînement arrivent dans les prochains jalons. Votre tableau de bord affichera ici votre activité réelle — jamais de données fictives.",
-    "seeStatus": "Voir l'état du système"
+    "seeStatus": "Voir l'état du système",
+    "kpis": {
+      "experiments": "Expériences totales",
+      "projects": "Projets actifs",
+      "successRate": "Taux de succès",
+      "avgDuration": "Durée moyenne",
+      "noData": "—"
+    },
+    "activity": {
+      "title": "Activités récentes",
+      "empty": "Aucune activité pour l'instant — lancez votre premier entraînement depuis un projet.",
+      "experiment": "Entraînement",
+      "explanation": "Explication",
+      "view": "Voir"
+    },
+    "quickActions": {
+      "title": "Actions rapides",
+      "newProject": "Nouveau projet",
+      "exploreDatasets": "Explorer les datasets",
+      "resumeWizard": "Reprendre l'entraînement en cours",
+      "resumeHint": "Brouillon sur {dataset}"
+    },
+    "recentProjects": {
+      "title": "Projets récents",
+      "empty": "Aucun projet — créez le premier.",
+      "open": "Ouvrir"
+    }
   },
   "profile": {
     "title": "Profil",
@@ -831,5 +857,35 @@
       "waiting": "Réponse en cours…",
       "fallbackNote": "Réponse générée sans IA (repli déterministe)"
     }
+  },
+  "landing": {
+    "tagline": "Le Machine Learning de bout en bout, pour les non-experts",
+    "subtitle": "Choisissez un dataset selon des critères techniques ET éthiques, entraînez un modèle en 9 étapes guidées, puis comprenez ses décisions grâce à l'explicabilité.",
+    "cta": "Commencer",
+    "login": "Se connecter",
+    "open": "Ouvrir l'application",
+    "phase1": "Sélection éthique",
+    "phase1Body": "Un catalogue documenté, un scoring pondéré sur 12 critères et une heatmap comparative pour choisir en confiance.",
+    "phase2": "Entraînement guidé",
+    "phase2Body": "9 étapes pédagogiques, garde-fous méthodologiques, reproductibilité garantie (random_state=42).",
+    "phase3": "Explicabilité",
+    "phase3Body": "SHAP et LIME avec indicateurs de fiabilité calculés, explication adaptée à votre profil et chat.",
+    "research": "Issu d'un projet de recherche — M2 MIAGE, Université Paris 1 Panthéon-Sorbonne."
+  },
+  "states": {
+    "notFoundTitle": "Page introuvable",
+    "notFoundBody": "Cette page n'existe pas ou a été déplacée.",
+    "backHome": "Retour à l'accueil",
+    "errorTitle": "Une erreur est survenue",
+    "errorBody": "Réessayez ; si le problème persiste, contactez un administrateur.",
+    "retry": "Réessayer"
+  },
+  "experimentsPage": {
+    "title": "Expériences",
+    "subtitle": "Toutes vos expériences, tous projets confondus — les statuts en cours se mettent à jour automatiquement.",
+    "filterStatus": "Statut",
+    "filterAlgo": "Algorithme",
+    "any": "Tous",
+    "empty": "Aucune expérience. Lancez un entraînement depuis un projet."
   }
 }

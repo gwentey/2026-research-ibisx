@@ -27,8 +27,7 @@ AUDIENCE_SPECS = {
     },
     "expert": {
         "fr": (
-            "un expert : terminologie exacte (axiomes SHAP, OOB, macro-métriques), "
-            "environ 320 mots"
+            "un expert : terminologie exacte (axiomes SHAP, OOB, macro-métriques), environ 320 mots"
         ),
         "en": "an expert: exact terminology (SHAP axioms, OOB, macro metrics), about 320 words",
     },

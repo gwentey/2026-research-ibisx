@@ -16,6 +16,51 @@
         "title": "AccountDeleteRequest",
         "type": "object"
       },
+      "ActivityItem": {
+        "properties": {
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "experiment_id": {
+            "format": "uuid",
+            "title": "Experiment Id",
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "experiment",
+              "explanation"
+            ],
+            "title": "Kind",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "ref_id": {
+            "format": "uuid",
+            "title": "Ref Id",
+            "type": "string"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "kind",
+          "ref_id",
+          "experiment_id",
+          "label",
+          "status",
+          "created_at"
+        ],
+        "title": "ActivityItem",
+        "type": "object"
+      },
       "AiGuideJob": {
         "properties": {
           "job_id": {
@@ -508,6 +553,87 @@
           "weight"
         ],
         "title": "CriterionWeight",
+        "type": "object"
+      },
+      "DashboardKpis": {
+        "properties": {
+          "active_projects": {
+            "title": "Active Projects",
+            "type": "integer"
+          },
+          "average_duration_seconds": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Average Duration Seconds"
+          },
+          "success_rate": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Success Rate"
+          },
+          "total_experiments": {
+            "title": "Total Experiments",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "total_experiments",
+          "active_projects",
+          "success_rate",
+          "average_duration_seconds"
+        ],
+        "title": "DashboardKpis",
+        "type": "object"
+      },
+      "DashboardResponse": {
+        "properties": {
+          "kpis": {
+            "$ref": "#/components/schemas/DashboardKpis"
+          },
+          "pending_draft": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/WizardDraftPointer"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "recent_activity": {
+            "items": {
+              "$ref": "#/components/schemas/ActivityItem"
+            },
+            "title": "Recent Activity",
+            "type": "array"
+          },
+          "recent_projects": {
+            "items": {
+              "$ref": "#/components/schemas/RecentProject"
+            },
+            "title": "Recent Projects",
+            "type": "array"
+          }
+        },
+        "required": [
+          "kpis",
+          "recent_activity",
+          "recent_projects",
+          "pending_draft"
+        ],
+        "title": "DashboardResponse",
         "type": "object"
       },
       "DatasetCard": {
@@ -3804,6 +3930,31 @@
         "title": "ProjectRead",
         "type": "object"
       },
+      "RecentProject": {
+        "properties": {
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "updated_at": {
+            "format": "date-time",
+            "title": "Updated At",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "updated_at"
+        ],
+        "title": "RecentProject",
+        "type": "object"
+      },
       "RegisterRequest": {
         "additionalProperties": false,
         "properties": {
@@ -4300,6 +4451,43 @@
         "title": "ValidationError",
         "type": "object"
       },
+      "WizardDraftPointer": {
+        "properties": {
+          "dataset_id": {
+            "format": "uuid",
+            "title": "Dataset Id",
+            "type": "string"
+          },
+          "dataset_name": {
+            "title": "Dataset Name",
+            "type": "string"
+          },
+          "experiment_id": {
+            "format": "uuid",
+            "title": "Experiment Id",
+            "type": "string"
+          },
+          "project_id": {
+            "format": "uuid",
+            "title": "Project Id",
+            "type": "string"
+          },
+          "updated_at": {
+            "format": "date-time",
+            "title": "Updated At",
+            "type": "string"
+          }
+        },
+        "required": [
+          "experiment_id",
+          "project_id",
+          "dataset_id",
+          "dataset_name",
+          "updated_at"
+        ],
+        "title": "WizardDraftPointer",
+        "type": "object"
+      },
       "WorkerHealthReport": {
         "properties": {
           "status": {
@@ -4717,6 +4905,27 @@
         "summary": "Ask Chat Question",
         "tags": [
           "xai"
+        ]
+      }
+    },
+    "/api/v1/dashboard": {
+      "get": {
+        "operationId": "getDashboard",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DashboardResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Get Dashboard",
+        "tags": [
+          "dashboard"
         ]
       }
     },
@@ -5932,6 +6141,93 @@
       }
     },
     "/api/v1/experiments": {
+      "get": {
+        "description": "Liste globale des expériences de l'utilisateur (CDC §10) — filtres simples.",
+        "operationId": "listExperiments",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "status",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maxLength": 20,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Status"
+            }
+          },
+          {
+            "in": "query",
+            "name": "project_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Project Id"
+            }
+          },
+          {
+            "in": "query",
+            "name": "algorithm",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maxLength": 50,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Algorithm"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ExperimentSummary"
+                  },
+                  "title": "Response Listexperiments",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Experiments",
+        "tags": [
+          "experiments"
+        ]
+      },
       "post": {
         "description": "Lancement : validation registre + quotas + débit 1 crédit → file `training`.",
         "operationId": "startExperiment",

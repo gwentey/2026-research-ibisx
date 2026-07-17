@@ -156,6 +156,20 @@ def compare_experiments(
     return service.compare(db, claims.user_id, payload.experiment_ids)
 
 
+@router.get("/experiments", response_model=list[ExperimentSummary], operation_id="listExperiments")
+def list_experiments(
+    db: DbDep,
+    claims: CurrentClaims,
+    status: Annotated[str | None, Query(max_length=20)] = None,
+    project_id: Annotated[uuid.UUID | None, Query()] = None,
+    algorithm: Annotated[str | None, Query(max_length=50)] = None,
+) -> list[ExperimentSummary]:
+    """Liste globale des expériences de l'utilisateur (CDC §10) — filtres simples."""
+    return service.list_all(
+        db, claims.user_id, status=status, project_id=project_id, algorithm=algorithm
+    )
+
+
 @router.get(
     "/projects/{project_id}/experiments",
     response_model=list[ExperimentSummary],

@@ -15,6 +15,36 @@ export type AccountDeleteRequest = {
 };
 
 /**
+ * ActivityItem
+ */
+export type ActivityItem = {
+    /**
+     * Created At
+     */
+    created_at: string;
+    /**
+     * Experiment Id
+     */
+    experiment_id: string;
+    /**
+     * Kind
+     */
+    kind: 'experiment' | 'explanation';
+    /**
+     * Label
+     */
+    label: string;
+    /**
+     * Ref Id
+     */
+    ref_id: string;
+    /**
+     * Status
+     */
+    status: string;
+};
+
+/**
  * AiGuideJob
  */
 export type AiGuideJob = {
@@ -328,6 +358,44 @@ export type CriterionWeight = {
      * Weight
      */
     weight: number;
+};
+
+/**
+ * DashboardKpis
+ */
+export type DashboardKpis = {
+    /**
+     * Active Projects
+     */
+    active_projects: number;
+    /**
+     * Average Duration Seconds
+     */
+    average_duration_seconds: number | null;
+    /**
+     * Success Rate
+     */
+    success_rate: number | null;
+    /**
+     * Total Experiments
+     */
+    total_experiments: number;
+};
+
+/**
+ * DashboardResponse
+ */
+export type DashboardResponse = {
+    kpis: DashboardKpis;
+    pending_draft: WizardDraftPointer | null;
+    /**
+     * Recent Activity
+     */
+    recent_activity: Array<ActivityItem>;
+    /**
+     * Recent Projects
+     */
+    recent_projects: Array<RecentProject>;
 };
 
 /**
@@ -1948,6 +2016,24 @@ export type ProjectRead = {
 };
 
 /**
+ * RecentProject
+ */
+export type RecentProject = {
+    /**
+     * Id
+     */
+    id: string;
+    /**
+     * Name
+     */
+    name: string;
+    /**
+     * Updated At
+     */
+    updated_at: string;
+};
+
+/**
  * RegisterRequest
  */
 export type RegisterRequest = {
@@ -2248,6 +2334,32 @@ export type ValidationError = {
 };
 
 /**
+ * WizardDraftPointer
+ */
+export type WizardDraftPointer = {
+    /**
+     * Dataset Id
+     */
+    dataset_id: string;
+    /**
+     * Dataset Name
+     */
+    dataset_name: string;
+    /**
+     * Experiment Id
+     */
+    experiment_id: string;
+    /**
+     * Project Id
+     */
+    project_id: string;
+    /**
+     * Updated At
+     */
+    updated_at: string;
+};
+
+/**
  * WorkerHealthReport
  */
 export type WorkerHealthReport = {
@@ -2520,6 +2632,22 @@ export type AskChatQuestionResponses = {
 };
 
 export type AskChatQuestionResponse = AskChatQuestionResponses[keyof AskChatQuestionResponses];
+
+export type GetDashboardData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/v1/dashboard';
+};
+
+export type GetDashboardResponses = {
+    /**
+     * Successful Response
+     */
+    200: DashboardResponse;
+};
+
+export type GetDashboardResponse = GetDashboardResponses[keyof GetDashboardResponses];
 
 export type ListDatasetsData = {
     body?: never;
@@ -3106,6 +3234,46 @@ export type GetSimilarDatasetsResponses = {
 };
 
 export type GetSimilarDatasetsResponse = GetSimilarDatasetsResponses[keyof GetSimilarDatasetsResponses];
+
+export type ListExperimentsData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Status
+         */
+        status?: string | null;
+        /**
+         * Project Id
+         */
+        project_id?: string | null;
+        /**
+         * Algorithm
+         */
+        algorithm?: string | null;
+    };
+    url: '/api/v1/experiments';
+};
+
+export type ListExperimentsErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type ListExperimentsError = ListExperimentsErrors[keyof ListExperimentsErrors];
+
+export type ListExperimentsResponses = {
+    /**
+     * Response Listexperiments
+     *
+     * Successful Response
+     */
+    200: Array<ExperimentSummary>;
+};
+
+export type ListExperimentsResponse = ListExperimentsResponses[keyof ListExperimentsResponses];
 
 export type StartExperimentData = {
     body: ExperimentCreate;

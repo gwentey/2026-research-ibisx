@@ -122,7 +122,33 @@
     "welcomeFallback": "Hello 👋",
     "placeholderTitle": "Your workspace is ready",
     "placeholderBody": "The dataset catalog, projects and training pipeline arrive in the next milestones. Your dashboard will show your real activity here — never mock data.",
-    "seeStatus": "View system status"
+    "seeStatus": "View system status",
+    "kpis": {
+      "experiments": "Total experiments",
+      "projects": "Active projects",
+      "successRate": "Success rate",
+      "avgDuration": "Average duration",
+      "noData": "—"
+    },
+    "activity": {
+      "title": "Recent activity",
+      "empty": "No activity yet — start your first training from a project.",
+      "experiment": "Training",
+      "explanation": "Explanation",
+      "view": "View"
+    },
+    "quickActions": {
+      "title": "Quick actions",
+      "newProject": "New project",
+      "exploreDatasets": "Explore datasets",
+      "resumeWizard": "Resume ongoing training",
+      "resumeHint": "Draft on {dataset}"
+    },
+    "recentProjects": {
+      "title": "Recent projects",
+      "empty": "No project — create the first one.",
+      "open": "Open"
+    }
   },
   "profile": {
     "title": "Profile",
@@ -831,5 +857,35 @@
       "waiting": "Answering…",
       "fallbackNote": "Answer generated without AI (deterministic fallback)"
     }
+  },
+  "landing": {
+    "tagline": "End-to-end Machine Learning, for non-experts",
+    "subtitle": "Pick a dataset on technical AND ethical criteria, train a model through 9 guided steps, then understand its decisions with explainability.",
+    "cta": "Get started",
+    "login": "Sign in",
+    "open": "Open the app",
+    "phase1": "Ethical selection",
+    "phase1Body": "A documented catalog, a weighted 12-criteria score and a comparative heatmap to choose with confidence.",
+    "phase2": "Guided training",
+    "phase2Body": "9 pedagogical steps, methodological guardrails, guaranteed reproducibility (random_state=42).",
+    "phase3": "Explainability",
+    "phase3Body": "SHAP and LIME with computed reliability indicators, profile-adapted explanation and chat.",
+    "research": "Born from a research project — M2 MIAGE, Université Paris 1 Panthéon-Sorbonne."
+  },
+  "states": {
+    "notFoundTitle": "Page not found",
+    "notFoundBody": "This page does not exist or was moved.",
+    "backHome": "Back home",
+    "errorTitle": "Something went wrong",
+    "errorBody": "Try again; if the problem persists, contact an administrator.",
+    "retry": "Retry"
+  },
+  "experimentsPage": {
+    "title": "Experiments",
+    "subtitle": "All your experiments across projects — running statuses update automatically.",
+    "filterStatus": "Status",
+    "filterAlgo": "Algorithm",
+    "any": "All",
+    "empty": "No experiment. Start a training from a project."
   }
 }

@@ -286,6 +286,47 @@ def project_experiments(
     return summaries
 
 
+def list_all(
+    db: Session,
+    user_id: uuid.UUID,
+    *,
+    status: str | None = None,
+    project_id: uuid.UUID | None = None,
+    algorithm: str | None = None,
+) -> list[ExperimentSummary]:
+    """Liste globale (CDC §10) — brouillons exclus, filtres statut/projet/algo."""
+    query = (
+        select(Experiment, Dataset.display_name)
+        .join(Dataset, Dataset.id == Experiment.dataset_id)
+        .where(Experiment.user_id == user_id, Experiment.status != ExperimentStatus.draft)
+    )
+    if status:
+        query = query.where(Experiment.status == status)
+    if project_id:
+        query = query.where(Experiment.project_id == project_id)
+    if algorithm:
+        query = query.where(Experiment.algorithm == algorithm)
+    rows = db.execute(query.order_by(Experiment.created_at.desc()).limit(200)).all()
+    summaries = []
+    for experiment, dataset_name in rows:
+        name, value = primary_metric(experiment)
+        summaries.append(
+            ExperimentSummary(
+                id=experiment.id,
+                dataset_id=experiment.dataset_id,
+                dataset_name=dataset_name,
+                algorithm=experiment.algorithm,
+                status=experiment.status.value,
+                progress=experiment.progress,
+                primary_metric_name=name,
+                primary_metric_value=value,
+                duration_seconds=experiment.duration_seconds,
+                created_at=experiment.created_at,
+            )
+        )
+    return summaries
+
+
 def compare(db: Session, user_id: uuid.UUID, experiment_ids: list[uuid.UUID]) -> CompareResponse:
     """Benchmarking (CDC §7.2) : métriques alignées de N expériences terminées."""
     rows: list[CompareRow] = []
