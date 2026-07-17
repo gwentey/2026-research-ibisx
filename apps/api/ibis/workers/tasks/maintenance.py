@@ -20,3 +20,18 @@ def purge_stale_running() -> int:
         return count
     finally:
         db.close()
+
+
+@celery_app.task(name="ibis.workers.tasks.maintenance.purge_expired_chats")
+def purge_expired_chats() -> int:
+    """Sessions de chat inactives depuis 24 h → is_active=False (ADR-004)."""
+    from ibis.modules.xai.service import purge_expired_chat_sessions
+
+    db = open_session()
+    try:
+        count = purge_expired_chat_sessions(db)
+        if count:
+            logger.info("maintenance.chat_sessions_purged", count=count)
+        return count
+    finally:
+        db.close()

@@ -19,6 +19,7 @@ celery_app = Celery(
         "ibis.workers.tasks.guide",
         "ibis.workers.tasks.train",
         "ibis.workers.tasks.maintenance",
+        "ibis.workers.tasks.explain",
     ],
 )
 
@@ -40,12 +41,19 @@ celery_app.conf.update(
         "ibis.workers.tasks.guide.*": {"queue": "llm"},
         "ibis.workers.tasks.train.*": {"queue": "training"},
         "ibis.workers.tasks.maintenance.*": {"queue": "maintenance"},
+        "ibis.workers.tasks.explain.generate_explanation": {"queue": "xai"},
+        "ibis.workers.tasks.explain.answer_chat_question": {"queue": "llm"},
     },
     beat_schedule={
         # Détection de worker perdu : running sans battement > 10 min → WORKER_LOST
         "purge-stale-running": {
             "task": "ibis.workers.tasks.maintenance.purge_stale_running",
             "schedule": 300.0,
+        },
+        # Sessions de chat inactives depuis 24 h → désactivées (CDC §9.6)
+        "purge-expired-chat-sessions": {
+            "task": "ibis.workers.tasks.maintenance.purge_expired_chats",
+            "schedule": 3600.0,
         },
     },
     # Hors du bind mount du code (dev) — fichier d'état interne de beat

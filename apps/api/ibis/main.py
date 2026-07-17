@@ -18,6 +18,7 @@ from ibis.modules.jobs.routes import router as jobs_router
 from ibis.modules.projects.routes import router as projects_router
 from ibis.modules.scoring.routes import router as scoring_router
 from ibis.modules.users.routes import router as users_router
+from ibis.modules.xai.routes import router as xai_router
 
 API_PREFIX = "/api/v1"
 
@@ -69,6 +70,7 @@ def create_app() -> FastAPI:
     app.include_router(scoring_router, prefix=API_PREFIX)  # avant datasets (/datasets/score)
     app.include_router(projects_router, prefix=API_PREFIX)
     app.include_router(experiments_router, prefix=API_PREFIX)
+    app.include_router(xai_router, prefix=API_PREFIX)
     app.include_router(datasets_router, prefix=API_PREFIX)
 
     return app
