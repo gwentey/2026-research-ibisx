@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { FolderKanbanIcon, PlusIcon, SearchIcon } from "lucide-react";
+import { ArrowUpDownIcon, FolderKanbanIcon, PlusIcon, SearchIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -16,6 +16,13 @@ import {
   EmptyTitle
 } from "@/components/ui/empty";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ProjectCard } from "@/components/ibis/projects/project-card";
 import { listProjects } from "@/lib/api/generated";
@@ -28,6 +35,7 @@ export default function ProjectsPage() {
   const t = useTranslations("projects");
   const tCommon = useTranslations("common");
   const [search, setSearch] = useState("");
+  const [sort, setSort] = useState<"updated" | "name">("updated");
   const [page, setPage] = useState(1);
   const [data, setData] = useState<ProjectPage | null>(null);
   const [state, setState] = useState<"loading" | "ready" | "error">("loading");
@@ -52,6 +60,12 @@ export default function ProjectsPage() {
   }, [load]);
 
   const items = data?.items ?? [];
+  // Tri côté client sur les items déjà chargés (listProjects n'accepte que q/page/page_size).
+  const sortedItems = [...items].sort((a, b) =>
+    sort === "name"
+      ? a.name.localeCompare(b.name)
+      : new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime()
+  );
 
   return (
     <div className="space-y-6">
@@ -73,22 +87,33 @@ export default function ProjectsPage() {
         </Button>
       </div>
 
-      <div className="relative max-w-sm">
-        <SearchIcon className="text-muted-foreground absolute top-1/2 left-2.5 size-4 -translate-y-1/2" />
-        <Input
-          value={search}
-          onChange={(event) => {
-            setSearch(event.target.value);
-            setPage(1);
-          }}
-          placeholder={t("searchPlaceholder")}
-          className="pl-8"
-        />
+      <div className="flex flex-wrap items-center gap-2">
+        <div className="relative min-w-52 flex-1 sm:max-w-sm">
+          <SearchIcon className="text-muted-foreground absolute top-1/2 left-2.5 size-4 -translate-y-1/2" />
+          <Input
+            value={search}
+            onChange={(event) => {
+              setSearch(event.target.value);
+              setPage(1);
+            }}
+            placeholder={t("searchPlaceholder")}
+            className="pl-8"
+          />
+        </div>
+        <Select value={sort} onValueChange={(value) => setSort(value as "updated" | "name")}>
+          <SelectTrigger className="w-52" aria-label={t("sortBy")}>
+            <ArrowUpDownIcon />
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="updated">{t("sort.updated")}</SelectItem>
+            <SelectItem value="name">{t("sort.name")}</SelectItem>
+          </SelectContent>
+        </Select>
+        <p className="text-muted-foreground ml-auto text-sm">
+          {data ? t("results", { count: data.total }) : tCommon("loading")}
+        </p>
       </div>
-
-      <p className="text-muted-foreground text-sm">
-        {data ? t("results", { count: data.total }) : tCommon("loading")}
-      </p>
 
       {state === "error" ? (
         <Card>
@@ -122,7 +147,7 @@ export default function ProjectsPage() {
         </Empty>
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-          {items.map((project) => (
+          {sortedItems.map((project) => (
             <ProjectCard key={project.id} project={project} />
           ))}
         </div>

@@ -7,9 +7,24 @@ import { Bar, BarChart, CartesianGrid, Cell, XAxis, YAxis } from "recharts";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
+import { Markdown } from "@/components/ui/custom/prompt/markdown";
 import type { ExplanationResults } from "@/lib/api/generated";
 import { XaiChat } from "@/components/ibis/xai/xai-chat";
 import { cn } from "@/lib/utils";
+
+// Recette de style markdown (pas de plugin prose dans ce projet → sélecteurs utilitaires).
+const PROSE = cn(
+  "text-sm leading-relaxed [&>*:first-child]:mt-0",
+  "[&_p]:mb-3 [&_p:last-child]:mb-0",
+  "[&_ul]:my-3 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:my-3 [&_ol]:list-decimal [&_ol]:pl-5 [&_li]:mb-1",
+  "[&_strong]:font-semibold [&_a]:text-primary [&_a]:underline",
+  "[&_h1]:mt-4 [&_h1]:mb-2 [&_h1]:text-base [&_h1]:font-semibold",
+  "[&_h2]:mt-4 [&_h2]:mb-1.5 [&_h2]:text-sm [&_h2]:font-semibold",
+  "[&_h3]:mt-3 [&_h3]:text-sm [&_h3]:font-medium",
+  "[&_code]:text-xs",
+  "[&_table]:my-3 [&_table]:w-full [&_table]:text-xs [&_th]:border [&_th]:bg-muted [&_th]:px-2 [&_th]:py-1 [&_th]:text-left [&_td]:border [&_td]:px-2 [&_td]:py-1",
+  "[&_blockquote]:border-l-2 [&_blockquote]:pl-3 [&_blockquote]:text-muted-foreground [&_blockquote]:italic"
+);
 
 // Rendu d'une explication TERMINÉE : bandeau KPI, graphes viz_data, texte, chat.
 
@@ -41,15 +56,16 @@ function KpiTile({
   tone: KpiTone;
 }) {
   return (
-    <Card className="gap-1.5 py-3" title={hint}>
-      <CardContent className="space-y-1.5 px-3">
-        <p className="text-muted-foreground text-xs">{label}</p>
-        <Badge variant="outline" className={cn("gap-1.5 font-semibold", TONE_TEXT[tone])}>
-          <span className={cn("size-1.5 shrink-0 rounded-full", TONE_DOT[tone])} aria-hidden />
-          {value}
-        </Badge>
-      </CardContent>
-    </Card>
+    <div className="bg-muted/30 flex flex-col gap-1.5 rounded-lg border p-3" title={hint}>
+      <p className="text-muted-foreground text-xs leading-tight">{label}</p>
+      <p className={cn("flex items-start gap-1.5 text-sm leading-snug font-semibold", TONE_TEXT[tone])}>
+        <span
+          className={cn("mt-1.5 size-1.5 shrink-0 rounded-full", TONE_DOT[tone])}
+          aria-hidden
+        />
+        <span className="min-w-0">{value}</span>
+      </p>
+    </div>
   );
 }
 
@@ -72,7 +88,7 @@ function KpiBoard({ kpis }: { kpis: Record<string, never> }) {
         <CardTitle className="text-base">{t("title")}</CardTitle>
         <p className="text-muted-foreground text-xs">{t("hint")}</p>
       </CardHeader>
-      <CardContent className="grid gap-2 sm:grid-cols-3 lg:grid-cols-6">
+      <CardContent className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-6">
         {completeness ? (
           <KpiTile
             label={t("completeness")}
@@ -145,26 +161,33 @@ export function ExplanationView({ explanation }: { explanation: ExplanationResul
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-wrap items-center gap-2">
-        <Badge variant="outline">
-          {t("text.method", { method: explanation.method_used ?? "" })}
-        </Badge>
-        {explanation.is_fallback ? (
-          <Badge variant="secondary">{t("text.fallbackBadge")}</Badge>
-        ) : (
-          <Badge variant="outline">
-            {t("text.modelBadge", { model: explanation.model_used ?? "" })}
-          </Badge>
-        )}
-        <Badge variant="outline">{t("text.audience", { level: explanation.audience_level })}</Badge>
+      <div className="bg-muted/30 space-y-2 rounded-lg border px-4 py-3">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <h3 className="text-sm font-semibold">{t("result.title")}</h3>
+          <div className="flex flex-wrap items-center gap-1.5">
+            <Badge variant="outline">
+              {t("text.method", { method: explanation.method_used ?? "" })}
+            </Badge>
+            {explanation.is_fallback ? (
+              <Badge variant="secondary">{t("text.fallbackBadge")}</Badge>
+            ) : (
+              <Badge variant="outline">
+                {t("text.modelBadge", { model: explanation.model_used ?? "" })}
+              </Badge>
+            )}
+            <Badge variant="outline">
+              {t("text.audience", { level: explanation.audience_level })}
+            </Badge>
+          </div>
+        </div>
+        {explanation.method_justification ? (
+          <p className="text-muted-foreground text-xs">{explanation.method_justification}</p>
+        ) : null}
       </div>
-      {explanation.method_justification ? (
-        <p className="text-muted-foreground text-xs">{explanation.method_justification}</p>
-      ) : null}
 
       <KpiBoard kpis={(explanation.quality_kpis ?? {}) as never} />
 
-      <div className="grid gap-4 lg:grid-cols-2">
+      <div className="grid items-start gap-4 lg:grid-cols-2">
         {globalImportance ? (
           <Card>
             <CardHeader>
@@ -218,7 +241,9 @@ export function ExplanationView({ explanation }: { explanation: ExplanationResul
                     {[...waterfall].reverse().map((entry, index) => (
                       <Cell
                         key={index}
-                        fill={entry.contribution >= 0 ? "hsl(140 60% 40%)" : "hsl(0 65% 50%)"}
+                        fill={
+                          entry.contribution >= 0 ? "var(--score-4)" : "var(--destructive)"
+                        }
                       />
                     ))}
                   </Bar>
@@ -266,9 +291,9 @@ export function ExplanationView({ explanation }: { explanation: ExplanationResul
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="bg-muted/40 rounded-md border p-4 text-sm leading-relaxed whitespace-pre-line">
-              {explanation.text_explanation}
-            </p>
+            <div className="bg-muted/40 rounded-md border p-4">
+              <Markdown className={PROSE}>{explanation.text_explanation}</Markdown>
+            </div>
           </CardContent>
         </Card>
       ) : null}

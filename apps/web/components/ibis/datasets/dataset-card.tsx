@@ -26,9 +26,9 @@ import { primaryDomainVisual } from "@/lib/datasets/domain-visuals";
 import { cn } from "@/lib/utils";
 
 // Signature « cartes tonales texturées par domaine » (docs/refonte/05-catalogue.md) :
-// vignette gradient + motif SVG + tuile-icône + monogramme fantôme propres au domaine,
-// score éthique en médaillon chevauchant (ProgressRing des fondations), footer à
-// révélation hover. Card/CardHeader/CardContent/CardFooter conservés (data-slot="card").
+// vignette gradient + motif SVG + tuile-icône propres au domaine, score éthique en
+// médaillon chevauchant (ProgressRing des fondations), pied stable (date de MAJ +
+// action « Voir »). Card/CardHeader/CardContent/CardFooter conservés (data-slot="card").
 
 const MAX_TAGS = 3;
 
@@ -52,14 +52,6 @@ export function DatasetCard({ dataset }: { dataset: DatasetCardData }) {
           visual.tone.gradientFrom
         )}>
         <DomainPattern pattern={visual.pattern} className={visual.tone.patternText} />
-        <span
-          aria-hidden
-          className={cn(
-            "pointer-events-none absolute -top-3 -right-3 text-6xl leading-none font-black opacity-10 select-none",
-            visual.tone.text
-          )}>
-          {visual.monogram}
-        </span>
         <div
           className={cn(
             "absolute top-4 left-4 flex size-9 items-center justify-center rounded-lg",
@@ -122,7 +114,7 @@ export function DatasetCard({ dataset }: { dataset: DatasetCardData }) {
         </div>
       </CardHeader>
 
-      <CardContent className="flex-1 space-y-3">
+      <CardContent className="flex-1 space-y-3 pb-5">
         {dataset.objective ? (
           <p className="text-muted-foreground line-clamp-2 text-sm">{dataset.objective}</p>
         ) : null}
@@ -177,20 +169,22 @@ export function DatasetCard({ dataset }: { dataset: DatasetCardData }) {
         </div>
       </CardContent>
 
-      {/* Footer à révélation hover : date de MAJ → bouton "Voir" plein-largeur */}
-      <CardFooter className="relative h-10 border-t p-0">
-        <div className="text-muted-foreground absolute inset-0 flex items-center gap-1.5 px-5 text-xs transition-opacity duration-200 group-hover:opacity-0">
+      {/* Pied stable : date de MAJ à gauche, action « Voir » alignée à droite (toujours visible) */}
+      <CardFooter className="justify-between border-t">
+        <span className="text-muted-foreground flex items-center gap-1.5 text-xs">
           <ClockIcon className="size-3" />
           {t("updatedAgo", { date: new Date(dataset.updated_at).toLocaleDateString(locale) })}
-        </div>
-        <div className="absolute inset-0 flex items-center px-4 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
-          <Button asChild size="sm" className="w-full">
-            <Link href={`/datasets/${dataset.id}`}>
-              {t("view")}
-              <ArrowRightIcon className="size-3.5" />
-            </Link>
-          </Button>
-        </div>
+        </span>
+        <Button
+          asChild
+          size="sm"
+          variant="ghost"
+          className="text-muted-foreground group-hover:text-foreground -mr-2 gap-1">
+          <Link href={`/datasets/${dataset.id}`}>
+            {t("view")}
+            <ArrowRightIcon className="size-3.5" />
+          </Link>
+        </Button>
       </CardFooter>
     </Card>
   );

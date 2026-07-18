@@ -90,9 +90,31 @@ export default function DatasetsPage() {
           <h1 className="text-2xl font-semibold tracking-tight">{t("title")}</h1>
           <p className="text-muted-foreground mt-1 text-sm">{t("subtitle")}</p>
         </div>
-        <div className="flex gap-2">
+        {canUpload ? (
+          <Button asChild>
+            <Link href="/datasets/upload">
+              <PlusIcon />
+              {t("upload")}
+            </Link>
+          </Button>
+        ) : null}
+      </div>
+
+      {/* Barre-outil centrale : recherche proéminente + scoring de la sélection, puis
+          filtres / tri / affichage regroupés dans un panneau élevé (bg-card). */}
+      <div className="bg-card rounded-xl border p-3 shadow-sm sm:p-4">
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
+          <div className="relative flex-1">
+            <SearchIcon className="text-muted-foreground pointer-events-none absolute top-1/2 left-3.5 size-5 -translate-y-1/2" />
+            <Input
+              value={catalog.search}
+              onChange={(event) => catalog.setSearch(event.target.value)}
+              placeholder={t("searchPlaceholder")}
+              className="h-11 pl-11 md:text-base"
+            />
+          </div>
           <Button
-            variant="outline"
+            className="h-11 w-full lg:w-auto"
             onClick={() => {
               sessionStorage.setItem(
                 "ibis:score:filters",
@@ -103,68 +125,51 @@ export default function DatasetsPage() {
             <GaugeIcon />
             {tScoring("scoreSelection")}
           </Button>
-          {canUpload ? (
-            <Button asChild>
-              <Link href="/datasets/upload">
-                <PlusIcon />
-                {t("upload")}
-              </Link>
-            </Button>
-          ) : null}
         </div>
-      </div>
 
-      <div className="flex flex-wrap items-center gap-2">
-        <div className="relative min-w-52 flex-1 sm:max-w-sm">
-          <SearchIcon className="text-muted-foreground absolute top-1/2 left-2.5 size-4 -translate-y-1/2" />
-          <Input
-            value={catalog.search}
-            onChange={(event) => catalog.setSearch(event.target.value)}
-            placeholder={t("searchPlaceholder")}
-            className="pl-8"
+        <div className="mt-3 flex flex-wrap items-center gap-2 border-t pt-3">
+          <FiltersSheet
+            facets={facets}
+            value={catalog.filters}
+            activeCount={activeEntries.length}
+            onApply={catalog.applyFilters}
           />
-        </div>
-        <FiltersSheet
-          facets={facets}
-          value={catalog.filters}
-          activeCount={activeEntries.length}
-          onApply={catalog.applyFilters}
-        />
-        <Select
-          value={`${catalog.sortBy}:${catalog.sortOrder}`}
-          onValueChange={(value) => {
-            const [by, order] = value.split(":");
-            catalog.setSort(by as never, order as never);
-          }}>
-          <SelectTrigger className="w-44">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            {SORT_KEYS.flatMap((key) => [
-              <SelectItem key={`${key}:asc`} value={`${key}:asc`}>
-                {t(`sort.${key}`)} ↑
-              </SelectItem>,
-              <SelectItem key={`${key}:desc`} value={`${key}:desc`}>
-                {t(`sort.${key}`)} ↓
-              </SelectItem>
-            ])}
-          </SelectContent>
-        </Select>
-        <div className="ml-auto flex items-center gap-1">
-          <Button
-            size="icon-sm"
-            variant={view === "grid" ? "secondary" : "ghost"}
-            aria-label={t("viewGrid")}
-            onClick={() => setView("grid")}>
-            <LayoutGridIcon />
-          </Button>
-          <Button
-            size="icon-sm"
-            variant={view === "table" ? "secondary" : "ghost"}
-            aria-label={t("viewTable")}
-            onClick={() => setView("table")}>
-            <TableIcon />
-          </Button>
+          <Select
+            value={`${catalog.sortBy}:${catalog.sortOrder}`}
+            onValueChange={(value) => {
+              const [by, order] = value.split(":");
+              catalog.setSort(by as never, order as never);
+            }}>
+            <SelectTrigger className="w-44">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {SORT_KEYS.flatMap((key) => [
+                <SelectItem key={`${key}:asc`} value={`${key}:asc`}>
+                  {t(`sort.${key}`)} ↑
+                </SelectItem>,
+                <SelectItem key={`${key}:desc`} value={`${key}:desc`}>
+                  {t(`sort.${key}`)} ↓
+                </SelectItem>
+              ])}
+            </SelectContent>
+          </Select>
+          <div className="bg-background ml-auto flex items-center gap-0.5 rounded-md border p-0.5">
+            <Button
+              size="icon-sm"
+              variant={view === "grid" ? "secondary" : "ghost"}
+              aria-label={t("viewGrid")}
+              onClick={() => setView("grid")}>
+              <LayoutGridIcon />
+            </Button>
+            <Button
+              size="icon-sm"
+              variant={view === "table" ? "secondary" : "ghost"}
+              aria-label={t("viewTable")}
+              onClick={() => setView("table")}>
+              <TableIcon />
+            </Button>
+          </div>
         </div>
       </div>
 

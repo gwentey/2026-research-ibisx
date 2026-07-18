@@ -12,40 +12,22 @@ import {
 } from "@/components/ui/hover-card";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import type { ScoredDataset } from "@/lib/api/generated";
+import { scoreCellStyle, scoreMix, SCORE_STEPS } from "@/lib/viz/score-scale";
 import { cn } from "@/lib/utils";
 
-/** Plancher visuel (%) : même un score nul reste lisible comme cellule de la grille. */
-const INTENSITY_FLOOR = 6;
-/** Bascule du texte clair/sombre selon l'intensité du fond mélangé. */
-const TEXT_FLIP_THRESHOLD = 0.55;
-
-/** Intensité tonale monochrome : mélange du token `primary` avec le fond de carte,
- *  proportionnel au score (0 → fond neutre, 1 → `primary` plein). Remplace l'ancien
- *  dégradé `hsl()` rouge→vert codé en dur — la charte impose une charte monochrome. */
-function cellStyle(value: number): React.CSSProperties {
-  const clamped = Math.min(1, Math.max(0, value));
-  const intensity = Math.max(INTENSITY_FLOOR, Math.round(clamped * 100));
-  return {
-    backgroundColor: `color-mix(in oklch, var(--primary) ${intensity}%, var(--card))`
-  };
-}
-
-function cellTextClass(value: number): string {
-  return value >= TEXT_FLIP_THRESHOLD ? "text-primary-foreground" : "text-foreground";
-}
-
-/** Légende de l'échelle 0 → 100 : même formule de mélange que les cellules. */
+/** Légende de l'échelle 0 → 100 : les 5 paliers de la rampe partagée, du plus
+ *  neutre (faible) au plus émeraude (élevé). Même source que les cellules. */
 function HeatmapLegend({ label }: { label: string }) {
   return (
     <div className="flex items-center gap-2 text-xs" role="img" aria-label={label}>
       <span className="text-muted-foreground">{label}</span>
-      <span className="font-mono text-muted-foreground">0</span>
-      <div
-        className="h-2 w-24 rounded-full border"
-        style={{ background: "linear-gradient(to right, var(--card), var(--primary))" }}
-        aria-hidden="true"
-      />
-      <span className="font-mono text-muted-foreground">100</span>
+      <span className="text-muted-foreground font-mono">0</span>
+      <div className="flex overflow-hidden rounded-full border" aria-hidden="true">
+        {SCORE_STEPS.map((step) => (
+          <span key={step} className="h-2 w-5" style={{ backgroundColor: scoreMix(step, 58) }} />
+        ))}
+      </div>
+      <span className="text-muted-foreground font-mono">100</span>
     </div>
   );
 }
@@ -118,11 +100,8 @@ export function ScoreHeatmap({ results, criteria }: ScoreHeatmapProps) {
                     <HoverCard openDelay={150} closeDelay={100}>
                       <HoverCardTrigger asChild>
                         <span
-                          className={cn(
-                            "inline-block w-full cursor-help rounded px-1 py-1.5 text-center font-mono font-semibold transition-colors",
-                            cellTextClass(result.score)
-                          )}
-                          style={cellStyle(result.score)}>
+                          className="text-foreground inline-block w-full cursor-help rounded px-1 py-1.5 text-center font-mono font-semibold transition-colors"
+                          style={scoreCellStyle(result.score)}>
                           {Math.round(result.score * 100)}
                         </span>
                       </HoverCardTrigger>
@@ -176,11 +155,8 @@ export function ScoreHeatmap({ results, criteria }: ScoreHeatmapProps) {
                         <Tooltip>
                           <TooltipTrigger asChild>
                             <span
-                              className={cn(
-                                "inline-block w-full cursor-help rounded px-1 py-1.5 text-center font-mono transition-colors",
-                                cellTextClass(value)
-                              )}
-                              style={cellStyle(value)}>
+                              className="text-foreground inline-block w-full cursor-help rounded px-1 py-1.5 text-center font-mono transition-colors"
+                              style={scoreCellStyle(value)}>
                               {Math.round(value * 100)}
                             </span>
                           </TooltipTrigger>

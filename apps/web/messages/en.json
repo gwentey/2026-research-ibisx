@@ -426,7 +426,8 @@
       "previewSeedLabel": "sampling seed",
       "missingHandling": "Missing value handling",
       "addedOn": "Added on {date}",
-      "updatedOn": "Updated on {date}"
+      "updatedOn": "Updated on {date}",
+      "journeyLabel": "Where this dataset fits"
     },
     "uploadWizard": {
       "title": "Add a dataset to the catalog",
@@ -556,7 +557,8 @@
     "train": "Start a training",
     "heatmapLegend": "Legend — score intensity",
     "activeCriteria": "{count, plural, =0 {No active criterion} one {# active criterion} other {# active criteria}}",
-    "normalizedTotal": "Total weight {total} → normalized to 100%"
+    "normalizedTotal": "Total weight {total} → normalized to 100%",
+    "addCriteria": "Add a criterion"
   },
   "projects": {
     "title": "Projects",
@@ -611,13 +613,24 @@
       "weights": "Weights",
       "noCriteria": "No criteria: the whole catalog is considered.",
       "noWeights": "Default weights (ethics 40% · technical 40% · popularity 20%).",
-      "recommendationsHint": "These datasets match your criteria, ranked by your weights. Open the wizard on the one that suits you to start a training run."
+      "recommendationsHint": "These datasets match your criteria, ranked by your weights. Open the wizard on the one that suits you to start a training run.",
+      "missionLabel": "Mission thread"
     },
     "mission": {
       "project": "Project",
       "dataset": "Dataset",
       "training": "Training",
       "explanation": "Explanation"
+    },
+    "sortBy": "Sort projects",
+    "sort": {
+      "updated": "Last updated",
+      "name": "Name"
+    },
+    "kpi": {
+      "criteria": "Active criteria",
+      "weights": "Weightings",
+      "recommendations": "Recommendations"
     }
   },
   "wizard": {
@@ -868,7 +881,11 @@
       "residualsHist": "Residuals distribution",
       "predicted": "predicted",
       "actual": "actual",
-      "samples": "samples"
+      "samples": "samples",
+      "confusionRows": "Actual values",
+      "confusionCols": "Predicted values",
+      "confusionCorrect": "Correct",
+      "confusionError": "Error"
     },
     "appliedTitle": "Transformations really applied",
     "appliedBadge": "applied: true",
@@ -990,6 +1007,9 @@
       "expired": "Session expired — start a new chat.",
       "waiting": "Answering…",
       "fallbackNote": "Answer generated without AI (deterministic fallback)"
+    },
+    "result": {
+      "title": "Explanation result"
     }
   },
   "landing": {

@@ -426,7 +426,8 @@
       "previewSeedLabel": "graine d'échantillonnage",
       "missingHandling": "Traitement des valeurs manquantes",
       "addedOn": "Ajouté le {date}",
-      "updatedOn": "Mis à jour le {date}"
+      "updatedOn": "Mis à jour le {date}",
+      "journeyLabel": "Où situer ce dataset"
     },
     "uploadWizard": {
       "title": "Ajouter un dataset au catalogue",
@@ -556,7 +557,8 @@
     "train": "Lancer un entraînement",
     "heatmapLegend": "Légende — intensité du score",
     "activeCriteria": "{count, plural, =0 {Aucun critère actif} one {# critère actif} other {# critères actifs}}",
-    "normalizedTotal": "Pondération totale {total} → normalisée à 100 %"
+    "normalizedTotal": "Pondération totale {total} → normalisée à 100 %",
+    "addCriteria": "Ajouter un critère"
   },
   "projects": {
     "title": "Projets",
@@ -611,13 +613,24 @@
       "weights": "Pondérations",
       "noCriteria": "Aucun critère : tout le catalogue est considéré.",
       "noWeights": "Poids par défaut (éthique 40 % · technique 40 % · popularité 20 %).",
-      "recommendationsHint": "Ces datasets correspondent à vos critères, classés selon vos pondérations. Ouvrez le wizard sur celui qui vous convient pour lancer un entraînement."
+      "recommendationsHint": "Ces datasets correspondent à vos critères, classés selon vos pondérations. Ouvrez le wizard sur celui qui vous convient pour lancer un entraînement.",
+      "missionLabel": "Fil de mission"
     },
     "mission": {
       "project": "Projet",
       "dataset": "Dataset",
       "training": "Entraînement",
       "explanation": "Explication"
+    },
+    "sortBy": "Trier les projets",
+    "sort": {
+      "updated": "Date de mise à jour",
+      "name": "Nom"
+    },
+    "kpi": {
+      "criteria": "Critères actifs",
+      "weights": "Pondérations",
+      "recommendations": "Recommandations"
     }
   },
   "wizard": {
@@ -868,7 +881,11 @@
       "residualsHist": "Distribution des résidus",
       "predicted": "prédit",
       "actual": "réel",
-      "samples": "exemples"
+      "samples": "exemples",
+      "confusionRows": "Valeurs réelles",
+      "confusionCols": "Valeurs prédites",
+      "confusionCorrect": "Correct",
+      "confusionError": "Erreur"
     },
     "appliedTitle": "Transformations réellement appliquées",
     "appliedBadge": "applied: true",
@@ -990,6 +1007,9 @@
       "expired": "Session expirée — redémarrez un chat.",
       "waiting": "Réponse en cours…",
       "fallbackNote": "Réponse générée sans IA (repli déterministe)"
+    },
+    "result": {
+      "title": "Résultat de l'explication"
     }
   },
   "landing": {

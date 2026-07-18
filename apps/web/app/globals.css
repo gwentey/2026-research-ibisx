@@ -43,6 +43,16 @@
   --chart-3: var(--base-800);
   --chart-4: var(--base-400);
   --chart-5: var(--base-300);
+  /* Échelle de score — 5 déclinaisons UNIQUES réutilisées partout (heatmap scoring,
+     matrice de confusion, KPI). Rampe séquentielle « qualité » : neutre (score faible)
+     → émeraude (score élevé), pour que la couleur ne « monte » qu'en approchant 100 %.
+     Toujours mélangée à --card via lib/viz/score-scale.ts → le texte --foreground reste
+     lisible en clair ET sur le template sombre. Statut réel (score) ⇒ couleur légitime. */
+  --score-1: oklch(0.72 0.015 160);
+  --score-2: oklch(0.71 0.06 156);
+  --score-3: oklch(0.69 0.1 152);
+  --score-4: oklch(0.66 0.14 150);
+  --score-5: oklch(0.62 0.17 150);
   --radius: 0.5rem;
   --sidebar: var(--base-100);
   --sidebar-foreground: var(--base-500);
@@ -92,6 +102,13 @@
   --chart-3: var(--base-200);
   --chart-4: var(--base-600);
   --chart-5: var(--base-700);
+  /* Rampe de score calibrée pour le fond quasi-noir : lightness croissante pour
+     que l'émeraude ressorte, chroma croissant pour ne colorer que le haut de l'échelle. */
+  --score-1: oklch(0.5 0.02 160);
+  --score-2: oklch(0.56 0.07 156);
+  --score-3: oklch(0.62 0.11 153);
+  --score-4: oklch(0.7 0.14 151);
+  --score-5: oklch(0.76 0.17 150);
   --sidebar: var(--base-900);
   --sidebar-foreground: var(--base-200);
   --sidebar-primary: var(--base-50);
@@ -151,6 +168,11 @@
   --color-chart-3: var(--chart-3);
   --color-chart-4: var(--chart-4);
   --color-chart-5: var(--chart-5);
+  --color-score-1: var(--score-1);
+  --color-score-2: var(--score-2);
+  --color-score-3: var(--score-3);
+  --color-score-4: var(--score-4);
+  --color-score-5: var(--score-5);
   --color-sidebar: var(--sidebar);
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar-primary: var(--sidebar-primary);

@@ -37,7 +37,10 @@ export function ProjectCard({ project }: { project: ProjectRead }) {
             </p>
           ) : null}
         </div>
-        <MissionStepper current="project" />
+        {/* Fil de mission : colonne vertébrale de la carte (voir l'en-tête du fichier). */}
+        <div className="border-t pt-3">
+          <MissionStepper current="project" />
+        </div>
       </CardHeader>
       <CardContent className="flex-1 space-y-3">
         <div className="flex flex-wrap gap-1.5">

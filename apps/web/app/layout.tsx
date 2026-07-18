@@ -55,7 +55,7 @@ export default async function RootLayout({
             disableTransitionOnChange>
             <ActiveThemeProvider initialTheme={themeSettings}>
               {children}
-              <Toaster position="top-center" richColors />
+              <Toaster position="bottom-right" richColors />
               <NextTopLoader color="var(--primary)" showSpinner={false} height={2} shadow-sm="none" />
             </ActiveThemeProvider>
           </ThemeProvider>

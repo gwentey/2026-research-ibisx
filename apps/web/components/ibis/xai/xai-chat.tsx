@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Message, MessageContent } from "@/components/ui/custom/prompt/message";
+import { Markdown } from "@/components/ui/custom/prompt/markdown";
 import { TypingLoader } from "@/components/ui/custom/prompt/loader";
 import { Input } from "@/components/ui/input";
 import { useAvatarUrl, userInitials } from "@/components/ibis/use-avatar";
@@ -21,6 +22,17 @@ import {
 import type { ChatMessageRead, ChatSessionRead, ExplanationResults } from "@/lib/api/generated";
 import { useAuthStore } from "@/lib/auth/store";
 import { cn } from "@/lib/utils";
+
+// Style markdown compact pour les bulles assistant (pas de plugin prose → sélecteurs utilitaires).
+const CHAT_PROSE = cn(
+  "text-sm leading-relaxed [&>*:first-child]:mt-0",
+  "[&_p]:mb-2 [&_p:last-child]:mb-0",
+  "[&_ul]:my-2 [&_ul]:list-disc [&_ul]:pl-4 [&_ol]:my-2 [&_ol]:list-decimal [&_ol]:pl-4 [&_li]:mb-0.5",
+  "[&_strong]:font-semibold [&_a]:text-primary [&_a]:underline",
+  "[&_h1]:mt-2 [&_h1]:text-sm [&_h1]:font-semibold [&_h2]:mt-2 [&_h2]:text-sm [&_h2]:font-semibold [&_h3]:mt-2 [&_h3]:text-sm [&_h3]:font-medium",
+  "[&_code]:text-xs",
+  "[&_table]:my-2 [&_table]:w-full [&_table]:text-xs [&_th]:border [&_th]:px-1.5 [&_th]:py-0.5 [&_th]:text-left [&_td]:border [&_td]:px-1.5 [&_td]:py-0.5"
+);
 
 /** Avatar assistant : icône sur pastille tonale (chart-1) — jamais de couleur inventée. */
 function AssistantAvatar() {
@@ -162,13 +174,15 @@ export function XaiChat({ explanation }: { explanation: ExplanationResults }) {
                 className={cn("items-end gap-2", isUser ? "justify-end" : "justify-start")}>
                 {!isUser ? <AssistantAvatar /> : null}
                 <div className={cn("flex max-w-[85%] flex-col gap-1", isUser && "items-end")}>
-                  <MessageContent
-                    className={cn(
-                      "px-3 py-2 text-sm whitespace-pre-line",
-                      isUser ? "bg-primary text-primary-foreground" : "bg-muted border"
-                    )}>
-                    {message.content}
-                  </MessageContent>
+                  {isUser ? (
+                    <MessageContent className="bg-primary text-primary-foreground px-3 py-2 text-sm whitespace-pre-line">
+                      {message.content}
+                    </MessageContent>
+                  ) : (
+                    <div className="bg-muted min-w-0 rounded-lg border px-3 py-2 break-words">
+                      <Markdown className={CHAT_PROSE}>{message.content}</Markdown>
+                    </div>
+                  )}
                   {!isUser && message.is_fallback ? (
                     <p className="text-muted-foreground px-1 text-[10px]">{t("fallbackNote")}</p>
                   ) : null}

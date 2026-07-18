@@ -29,10 +29,10 @@ import {
   DialogTrigger
 } from "@/components/ui/dialog";
 import { Empty, EmptyDescription, EmptyMedia } from "@/components/ui/empty";
-import { Item, ItemContent, ItemMedia, ItemTitle } from "@/components/ui/item";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { MissionStepper } from "@/components/ibis/mission-stepper";
+import { StatTile } from "@/components/ibis/dashboard/stat-tile";
 import { ProjectExperimentsTab } from "@/components/ibis/experiments/project-experiments-tab";
 import { ResultsList } from "@/components/ibis/scoring/results-list";
 import { ScoreHeatmap } from "@/components/ibis/scoring/score-heatmap";
@@ -106,7 +106,7 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ id: st
   return (
     <div className="space-y-6">
       <div className="space-y-4">
-        <MissionStepper current="project" />
+        <MissionStepper current="project" label={td("missionLabel")} />
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div className="flex items-start gap-4">
             <div className="bg-primary/10 text-primary flex size-12 shrink-0 items-center justify-center rounded-xl">
@@ -152,37 +152,25 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ id: st
         </div>
 
         {/* Bandeau de pilotage : lecture instantanée de l'état réel du projet */}
-        <div className="flex flex-wrap gap-2">
-          <Item variant="outline" size="sm" className="w-fit gap-2 py-2">
-            <ItemMedia variant="icon" className="size-7 [&_svg:not([class*='size-'])]:size-3.5">
-              <ListChecksIcon />
-            </ItemMedia>
-            <ItemContent className="gap-0">
-              <ItemTitle className="text-xs font-medium">
-                {t("card.criteria", { count: project.active_criteria_count })}
-              </ItemTitle>
-            </ItemContent>
-          </Item>
-          <Item variant="outline" size="sm" className="w-fit gap-2 py-2">
-            <ItemMedia variant="icon" className="size-7 [&_svg:not([class*='size-'])]:size-3.5">
-              <ScaleIcon />
-            </ItemMedia>
-            <ItemContent className="gap-0">
-              <ItemTitle className="text-xs font-medium">
-                {t("card.weights", { count: Object.keys(project.weights).length })}
-              </ItemTitle>
-            </ItemContent>
-          </Item>
-          <Item variant="outline" size="sm" className="w-fit gap-2 py-2">
-            <ItemMedia variant="icon" className="size-7 [&_svg:not([class*='size-'])]:size-3.5">
-              <SparklesIcon />
-            </ItemMedia>
-            <ItemContent className="gap-0">
-              <ItemTitle className="text-xs font-medium">
-                {tScoring("resultsCount", { count: recommendations?.results.length ?? 0 })}
-              </ItemTitle>
-            </ItemContent>
-          </Item>
+        <div className="grid gap-4 sm:grid-cols-3">
+          <StatTile
+            icon={ListChecksIcon}
+            tone="chart-1"
+            label={t("kpi.criteria")}
+            value={String(project.active_criteria_count)}
+          />
+          <StatTile
+            icon={ScaleIcon}
+            tone="chart-2"
+            label={t("kpi.weights")}
+            value={String(Object.keys(project.weights).length)}
+          />
+          <StatTile
+            icon={SparklesIcon}
+            tone="chart-3"
+            label={t("kpi.recommendations")}
+            value={String(recommendations?.results.length ?? 0)}
+          />
         </div>
       </div>
 

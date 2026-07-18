@@ -75,7 +75,12 @@ export default function DatasetDetailPage({ params }: { params: Promise<{ id: st
     <div className="space-y-6">
       <DatasetDetailHeader dataset={dataset} canEdit={canEdit} />
 
-      <MissionStepper current="dataset" />
+      {/* Repère de parcours CADRÉ (page de consultation atteinte depuis le catalogue,
+          hors mission active) : panneau muted distinct + légende de tête pour lever la
+          confusion « stepper vs onglets ». Sépare visuellement en-tête → repère → onglets. */}
+      <div className="rounded-lg border bg-muted/30 px-4 py-3">
+        <MissionStepper current="dataset" label={td("journeyLabel")} />
+      </div>
 
       <Tabs defaultValue="overview" className="space-y-4">
         <TabsList>

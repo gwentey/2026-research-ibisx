@@ -152,10 +152,13 @@ export function XaiTab({ experimentId }: { experimentId: string }) {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">{t("request.title")}</CardTitle>
+          <CardTitle className="flex items-center gap-2 text-base">
+            <SparklesIcon className="text-muted-foreground size-4" />
+            {t("request.title")}
+          </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid gap-2 sm:grid-cols-2">
@@ -257,7 +260,10 @@ export function XaiTab({ experimentId }: { experimentId: string }) {
 
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">{t("history.title")}</CardTitle>
+          <CardTitle className="flex items-center gap-2 text-base">
+            <HistoryIcon className="text-muted-foreground size-4" />
+            {t("history.title")}
+          </CardTitle>
         </CardHeader>
         <CardContent>
           {history.length === 0 ? (

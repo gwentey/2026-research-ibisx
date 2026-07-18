@@ -234,7 +234,9 @@ export function WizardShell({
               })}
             </div>
 
-            {step < 8 ? (
+            {step > 1 && step < 8 ? (
+              // Étape 1 : le CTA « J'ai compris, commencer » (dans le contenu) est
+              // l'unique action pour avancer — pas de bouton « Suivant » redondant ici.
               <Button disabled={!canNext || navLocked} onClick={onNext}>
                 <span className="hidden sm:inline">{t("next")}</span>
                 <ArrowRightIcon />

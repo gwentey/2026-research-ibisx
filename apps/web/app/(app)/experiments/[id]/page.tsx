@@ -42,6 +42,7 @@ import {
   getExperimentResults
 } from "@/lib/api/generated";
 import type { ExperimentResults, ExperimentWithQueue, LogLine } from "@/lib/api/generated";
+import { cn } from "@/lib/utils";
 
 /** Pill de contexte (en-tête résultats) — pastille tonale + icône, données réelles uniquement. */
 function ContextPill({ icon: Icon, children }: { icon: LucideIcon; children: ReactNode }) {
@@ -131,6 +132,35 @@ export default function ExperimentResultsPage({
   const composite = results?.composite as
     | { value: number; label: string; method: string }
     | undefined;
+
+  const confusion = viz["confusion_matrix"] as
+    | { classes: string[]; matrix: number[][] }
+    | undefined;
+  const rocCurve = viz["roc_curve"] as
+    | { points: { fpr: number; tpr: number }[]; auc: number }
+    | undefined;
+  const prCurve = viz["pr_curve"] as
+    | { points: { precision: number; recall: number }[] }
+    | undefined;
+
+  // Graphiques compacts (hauteur ~ constante) : 1 tuile (multiclasse) ou 3 (binaire : + ROC/PR).
+  // Le compte étant impair, la dernière tuile prend toute la largeur → paires équilibrées, aucun trou.
+  const compactCharts: { id: string; node: ReactNode }[] = [];
+  if (confusion) {
+    compactCharts.push({
+      id: "confusion_matrix",
+      node: <ConfusionMatrix classes={confusion.classes} matrix={confusion.matrix} />
+    });
+  }
+  if (rocCurve) {
+    compactCharts.push({
+      id: "roc_curve",
+      node: <RocCurve points={rocCurve.points} auc={rocCurve.auc} />
+    });
+  }
+  if (prCurve) {
+    compactCharts.push({ id: "pr_curve", node: <PrCurve points={prCurve.points} /> });
+  }
 
   return (
     <div className="space-y-6">
@@ -235,27 +265,30 @@ export default function ExperimentResultsPage({
             </div>
           ) : null}
 
-          <div className="grid gap-4 lg:grid-cols-2">
-            {viz["confusion_matrix"] ? (
-              <ConfusionMatrix
-                classes={(viz["confusion_matrix"] as { classes: string[] }).classes}
-                matrix={(viz["confusion_matrix"] as { matrix: number[][] }).matrix}
-              />
-            ) : null}
-            {viz["roc_curve"] ? (
-              <RocCurve
-                points={(viz["roc_curve"] as { points: never[] }).points}
-                auc={(viz["roc_curve"] as { auc: number }).auc}
-              />
-            ) : null}
-            {viz["pr_curve"] ? (
-              <PrCurve points={(viz["pr_curve"] as { points: never[] }).points} />
-            ) : null}
-            {viz["feature_importance"] ? (
-              <ImportanceChart importance={viz["feature_importance"] as never[]} />
-            ) : null}
-            {viz["tree_structure"] ? <TreeView tree={viz["tree_structure"] as never} /> : null}
-          </div>
+          {compactCharts.length > 0 ? (
+            <div className="grid gap-4 lg:grid-cols-2">
+              {compactCharts.map((entry, index) => (
+                <div
+                  key={entry.id}
+                  className={cn(
+                    compactCharts.length % 2 === 1 &&
+                      index === compactCharts.length - 1 &&
+                      "lg:col-span-2"
+                  )}>
+                  {entry.node}
+                </div>
+              ))}
+            </div>
+          ) : null}
+
+          {viz["feature_importance"] || viz["tree_structure"] ? (
+            <div className="space-y-4">
+              {viz["feature_importance"] ? (
+                <ImportanceChart importance={viz["feature_importance"] as never[]} />
+              ) : null}
+              {viz["tree_structure"] ? <TreeView tree={viz["tree_structure"] as never} /> : null}
+            </div>
+          ) : null}
           {viz["predicted_vs_actual"] ? (
             <RegressionCharts
               predVsActual={viz["predicted_vs_actual"] as never[]}

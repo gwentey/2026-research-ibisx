@@ -18,6 +18,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { Progress } from "@/components/ui/progress";
+import { scoreCellStyle } from "@/lib/viz/score-scale";
 import { cn } from "@/lib/utils";
 
 // Rendu 100 % client des DONNÉES de visualisation (viz_data JSON) — Recharts (P6).
@@ -159,46 +160,104 @@ export function ConfusionMatrix({
 }) {
   const t = useTranslations("experiments.charts");
   const max = Math.max(1, ...matrix.flat());
+  const n = classes.length;
+
+  // Diagonale (prédiction correcte) : rampe verte du score, intensité relative au max.
+  // Hors diagonale (erreur) : rouge sémantique SOBRE, mélangé à --card, borné à 50 %.
+  // Aucune couleur en dur — tout passe par les tokens (lisible clair ET sombre).
+  const cellStyle = (value: number, correct: boolean): { backgroundColor: string } => {
+    if (correct) return scoreCellStyle(value / max);
+    const pct = value === 0 ? 0 : Math.min(50, 12 + 38 * (value / max));
+    return { backgroundColor: `color-mix(in oklch, var(--destructive) ${pct}%, var(--card))` };
+  };
+
   return (
     <Card>
       <CardHeader>
         <CardTitle className="text-base">{t("confusion")}</CardTitle>
       </CardHeader>
-      <CardContent className="overflow-x-auto">
-        <table className="text-xs">
-          <thead>
-            <tr>
-              <th className="p-1" />
-              {classes.map((name) => (
-                <th key={name} className="text-muted-foreground p-1 font-normal">
-                  {name}
+      <CardContent className="space-y-3">
+        <div className="text-muted-foreground flex flex-wrap items-center gap-x-4 gap-y-1 text-xs">
+          <span className="flex items-center gap-1.5">
+            <span
+              className="bg-score-4 ring-score-5/60 size-3 rounded-sm ring-1 ring-inset"
+              aria-hidden
+            />
+            {t("confusionCorrect")}
+          </span>
+          <span className="flex items-center gap-1.5">
+            <span
+              className="size-3 rounded-sm"
+              style={{ backgroundColor: "color-mix(in oklch, var(--destructive) 45%, var(--card))" }}
+              aria-hidden
+            />
+            {t("confusionError")}
+          </span>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="border-separate border-spacing-1 text-xs">
+            <thead>
+              <tr>
+                <th className="p-0" />
+                <th className="p-0" />
+                <th
+                  colSpan={n}
+                  className="text-muted-foreground pb-1 text-center text-[11px] font-medium">
+                  {t("confusionCols")}
                 </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {matrix.map((row, i) => (
-              <tr key={classes[i]}>
-                <th className="text-muted-foreground p-1 pr-2 text-right font-normal">
-                  {classes[i]}
-                </th>
-                {row.map((value, j) => (
-                  <td key={j} className="p-0.5">
-                    <div
-                      className="flex size-12 items-center justify-center rounded font-mono"
-                      style={{
-                        backgroundColor: `hsl(var(--chart-1, 220 70% 50%) / ${0.15 + 0.85 * (value / max)})`,
-                        color: value / max > 0.5 ? "white" : "inherit",
-                        border: i === j ? "2px solid hsl(140 60% 40%)" : "1px solid transparent"
-                      }}>
-                      {value}
-                    </div>
-                  </td>
+              </tr>
+              <tr>
+                <th className="p-0" />
+                <th className="p-0" />
+                {classes.map((name) => (
+                  <th
+                    key={name}
+                    className="text-muted-foreground max-w-20 truncate p-1 font-normal"
+                    title={name}>
+                    {name}
+                  </th>
                 ))}
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {matrix.map((row, i) => (
+                <tr key={classes[i]}>
+                  {i === 0 ? (
+                    <th
+                      rowSpan={n}
+                      className="text-muted-foreground p-0 align-middle text-[11px] font-medium">
+                      <span className="block rotate-180 whitespace-nowrap [writing-mode:vertical-rl]">
+                        {t("confusionRows")}
+                      </span>
+                    </th>
+                  ) : null}
+                  <th
+                    className="text-muted-foreground max-w-20 truncate p-1 pr-2 text-right font-normal"
+                    title={classes[i]}>
+                    {classes[i]}
+                  </th>
+                  {row.map((value, j) => {
+                    const correct = i === j;
+                    return (
+                      <td key={j} className="p-0">
+                        <div
+                          className={cn(
+                            "text-foreground flex size-12 items-center justify-center rounded font-mono text-sm tabular-nums",
+                            correct && "ring-score-4/60 font-semibold ring-1 ring-inset",
+                            value === 0 && !correct && "text-muted-foreground/50"
+                          )}
+                          style={cellStyle(value, correct)}
+                          title={`${classes[i]} → ${classes[j]} : ${value}`}>
+                          {value}
+                        </div>
+                      </td>
+                    );
+                  })}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </CardContent>
     </Card>
   );
@@ -293,19 +352,19 @@ interface TreeNode {
 function TreeNodeView({ node, depth }: { node: TreeNode; depth: number }) {
   if (node.type === "leaf") {
     return (
-      <div className="bg-muted rounded-md border px-2 py-1 text-xs">
+      <div className="bg-muted text-foreground w-fit max-w-full rounded-md border px-2.5 py-1.5 text-xs">
         <span className="font-semibold">{String(node.prediction)}</span>{" "}
         <span className="text-muted-foreground">({node.samples})</span>
       </div>
     );
   }
   return (
-    <div className="space-y-1">
-      <div className="border-primary/40 bg-background rounded-md border px-2 py-1 font-mono text-xs">
+    <div className="space-y-2">
+      <div className="border-primary/40 bg-background text-foreground w-fit max-w-full rounded-md border px-2.5 py-1.5 font-mono text-xs">
         {node.feature} ≤ {node.threshold}{" "}
         <span className="text-muted-foreground">({node.samples})</span>
       </div>
-      <div className="ml-4 space-y-1 border-l pl-3">
+      <div className="border-border/70 ml-5 space-y-2 border-l pl-4">
         {node.left ? <TreeNodeView node={node.left} depth={depth + 1} /> : null}
         {node.right ? <TreeNodeView node={node.right} depth={depth + 1} /> : null}
       </div>

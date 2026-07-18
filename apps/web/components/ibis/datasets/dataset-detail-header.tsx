@@ -92,6 +92,14 @@ export function DatasetDetailHeader({
           visual.tone.gradientFrom
         )}>
         <DomainPattern pattern={visual.pattern} className={visual.tone.patternText} />
+        {/* Voile de lisibilité : dégradé card→transparent (gauche→droite) posé SOUS le bloc
+            texte, AU-DESSUS du motif. Le titre/badges/description reposent sur un fond card
+            quasi opaque (contraste net, clair ET sombre) ; le motif reste pleinement visible
+            à droite, là où il n'y a pas de texte. On garde ainsi « joli ET lisible ». */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 bg-gradient-to-r from-card via-card/70 to-transparent"
+        />
         <div className="relative space-y-3 p-5">
           <div className="flex flex-wrap items-start gap-4">
             <div
