@@ -49,7 +49,9 @@ export function FilesTab({ dataset }: { dataset: DatasetDetail }) {
         <Card key={file.id}>
           <CardHeader>
             <CardTitle className="flex flex-wrap items-center gap-2 text-base">
-              <FileIcon className="size-4" />
+              <div className="bg-primary/10 rounded-lg p-1.5">
+                <FileIcon className="text-primary size-4" />
+              </div>
               {file.original_filename}
               <Badge variant="secondary">{t(`role.${file.logical_role}` as never)}</Badge>
               <Badge variant="outline">parquet</Badge>

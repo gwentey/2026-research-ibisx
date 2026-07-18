@@ -16,6 +16,8 @@ import {
 } from "@/components/ui/table";
 import { previewDataset } from "@/lib/api/generated";
 import type { DatasetPreview } from "@/lib/api/generated";
+import { formatCount } from "@/lib/datasets/constants";
+import { cn } from "@/lib/utils";
 
 export function PreviewTab({ datasetId }: { datasetId: string }) {
   const t = useTranslations("datasets.detail");
@@ -48,9 +50,30 @@ export function PreviewTab({ datasetId }: { datasetId: string }) {
 
   const stats = new Map(preview.column_stats.map((column) => [column.name, column]));
 
+  const tiles = [
+    { label: t("previewRowsLabel"), value: formatCount(preview.total_rows) },
+    {
+      label: t("previewColumnsLabel"),
+      value: `${preview.displayed_columns.length}/${preview.total_columns}`
+    },
+    ...(preview.sampled
+      ? [{ label: t("previewSeedLabel"), value: String(preview.random_state) }]
+      : [])
+  ];
+
   return (
     <div className="space-y-3">
-      <p className="text-muted-foreground text-sm">
+      <div className={cn("grid gap-3", tiles.length === 3 ? "sm:grid-cols-3" : "sm:grid-cols-2")}>
+        {tiles.map((tile) => (
+          <Card key={tile.label}>
+            <CardContent className="space-y-1 px-4 py-4">
+              <p className="text-muted-foreground text-sm">{tile.label}</p>
+              <p className="text-3xl font-semibold">{tile.value}</p>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+      <p className="text-muted-foreground text-xs">
         {preview.sampled
           ? t("previewSampled", {
               rows: preview.rows.length,

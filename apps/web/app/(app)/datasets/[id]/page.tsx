@@ -1,22 +1,21 @@
 "use client";
 
 import { use, useCallback, useEffect, useState } from "react";
-import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { PencilIcon } from "lucide-react";
+import { ClipboardListIcon, FolderIcon, SparklesIcon, TableIcon } from "lucide-react";
 
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { DatasetDetailHeader } from "@/components/ibis/datasets/dataset-detail-header";
 import { FilesTab } from "@/components/ibis/datasets/files-tab";
 import { GuideTab } from "@/components/ibis/datasets/guide-tab";
 import { OverviewTab } from "@/components/ibis/datasets/overview-tab";
 import { PreviewTab } from "@/components/ibis/datasets/preview-tab";
+import { MissionStepper } from "@/components/ibis/mission-stepper";
 import { getDataset, getSimilarDatasets } from "@/lib/api/generated";
 import type { DatasetDetail, SimilarDataset } from "@/lib/api/generated";
-import { formatCount, scoreColorClass } from "@/lib/datasets/constants";
 import { useAuthStore } from "@/lib/auth/store";
 
 export default function DatasetDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -69,55 +68,33 @@ export default function DatasetDetailPage({ params }: { params: Promise<{ id: st
     );
   }
 
-  const ethicalPercent = Math.round(dataset.ethical_score * 100);
   const canEdit =
     user?.role === "admin" || (user !== null && dataset.created_by === user.id);
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap items-start justify-between gap-4">
-        <div className="space-y-2">
-          <div className="flex flex-wrap items-center gap-2">
-            <h1 className="text-2xl font-semibold tracking-tight">{dataset.display_name}</h1>
-            <Badge variant="outline">
-              {dataset.access === "public" ? t("card.public") : t("card.private")}
-            </Badge>
-            <Badge variant="secondary" className={scoreColorClass(ethicalPercent)}>
-              {t("card.ethical")} {ethicalPercent}%
-            </Badge>
-          </div>
-          <p className="text-muted-foreground text-sm">
-            {dataset.year ? `${dataset.year} · ` : ""}
-            {formatCount(dataset.instances_number)} {t("card.instances")} ·{" "}
-            {formatCount(dataset.features_number)} {t("card.features")} ·{" "}
-            {dataset.global_missing_percentage ?? 0}% {t("card.missing")}
-          </p>
-          <div className="flex flex-wrap gap-1">
-            {[...dataset.domain, ...dataset.task].map((tag) => (
-              <Badge key={tag} variant="outline">
-                {tag}
-              </Badge>
-            ))}
-          </div>
-        </div>
-        <div className="flex gap-2">
-          {canEdit ? (
-            <Button variant="outline" asChild>
-              <Link href={`/datasets/${dataset.id}/complete`}>
-                <PencilIcon />
-                {td("edit")}
-              </Link>
-            </Button>
-          ) : null}
-        </div>
-      </div>
+      <DatasetDetailHeader dataset={dataset} canEdit={canEdit} />
+
+      <MissionStepper current="dataset" />
 
       <Tabs defaultValue="overview" className="space-y-4">
         <TabsList>
-          <TabsTrigger value="overview">{td("tabOverview")}</TabsTrigger>
-          <TabsTrigger value="files">{td("tabFiles")}</TabsTrigger>
-          <TabsTrigger value="preview">{td("tabPreview")}</TabsTrigger>
-          <TabsTrigger value="guide">{td("tabGuide")}</TabsTrigger>
+          <TabsTrigger value="overview">
+            <ClipboardListIcon />
+            {td("tabOverview")}
+          </TabsTrigger>
+          <TabsTrigger value="files">
+            <FolderIcon />
+            {td("tabFiles")}
+          </TabsTrigger>
+          <TabsTrigger value="preview">
+            <TableIcon />
+            {td("tabPreview")}
+          </TabsTrigger>
+          <TabsTrigger value="guide">
+            <SparklesIcon />
+            {td("tabGuide")}
+          </TabsTrigger>
         </TabsList>
         <TabsContent value="overview">
           <OverviewTab dataset={dataset} similar={similar} />

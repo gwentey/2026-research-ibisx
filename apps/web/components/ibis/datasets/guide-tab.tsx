@@ -98,11 +98,11 @@ export function GuideTab({
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-wrap items-center gap-3">
-        <Button onClick={() => void generate()} disabled={running}>
-          <SparklesIcon />
-          {running ? t("guideRunning") : guide ? t("guideRegenerate") : t("guideGenerate")}
-        </Button>
+      <div className="flex flex-wrap items-center gap-3 rounded-xl border p-4">
+        <div className="bg-primary/10 text-primary flex size-10 shrink-0 items-center justify-center rounded-xl">
+          <SparklesIcon className="size-5" />
+        </div>
+        <p className="mr-auto font-semibold">{t("tabGuide")}</p>
         {guide ? (
           guide.is_fallback ? (
             <Badge variant="secondary">{t("guideFallback")}</Badge>
@@ -110,6 +110,9 @@ export function GuideTab({
             <Badge variant="outline">{t("guideModel", { model: guide.model_used })}</Badge>
           )
         ) : null}
+        <Button onClick={() => void generate()} disabled={running}>
+          {running ? t("guideRunning") : guide ? t("guideRegenerate") : t("guideGenerate")}
+        </Button>
       </div>
 
       {running ? <Progress value={progress} /> : null}

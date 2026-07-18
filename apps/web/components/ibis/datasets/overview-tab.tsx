@@ -1,19 +1,42 @@
 "use client";
 
 import Link from "next/link";
-import { useTranslations } from "next-intl";
-import { CheckIcon, MinusIcon, XIcon } from "lucide-react";
+import { useLocale, useTranslations } from "next-intl";
+import { CheckIcon, ChevronRightIcon, MinusIcon, XIcon } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Item,
+  ItemActions,
+  ItemContent,
+  ItemDescription,
+  ItemGroup,
+  ItemMedia,
+  ItemSeparator,
+  ItemTitle
+} from "@/components/ui/item";
 import { Progress } from "@/components/ui/progress";
+import { Separator } from "@/components/ui/separator";
+import { EthicalCriteriaGrid } from "@/components/ibis/datasets/ethical-criteria-grid";
 import type { DatasetDetail, SimilarDataset } from "@/lib/api/generated";
-import { ETHICAL_KEYS, formatCount, scoreColorClass } from "@/lib/datasets/constants";
+import { formatCount, scoreColorClass } from "@/lib/datasets/constants";
+import { primaryDomainVisual } from "@/lib/datasets/domain-visuals";
+import { cn } from "@/lib/utils";
 
-function TristateIcon({ value }: { value: boolean | null }) {
-  if (value === true) return <CheckIcon className="size-4 text-green-600 dark:text-green-400" />;
-  if (value === false) return <XIcon className="size-4 text-red-600 dark:text-red-400" />;
-  return <MinusIcon className="text-muted-foreground size-4" />;
+function IndicatorRow({ label, value }: { label: string; value: boolean | null }) {
+  return (
+    <div className="flex items-center gap-2 text-sm">
+      {value === true ? (
+        <CheckIcon className="size-4 shrink-0 text-green-600 dark:text-green-400" />
+      ) : value === false ? (
+        <XIcon className="size-4 shrink-0 text-red-600 dark:text-red-400" />
+      ) : (
+        <MinusIcon className="text-muted-foreground size-4 shrink-0" />
+      )}
+      <span className={value === null ? "text-muted-foreground" : ""}>{label}</span>
+    </div>
+  );
 }
 
 export function OverviewTab({
@@ -24,7 +47,7 @@ export function OverviewTab({
   similar: SimilarDataset[];
 }) {
   const t = useTranslations("datasets.detail");
-  const te = useTranslations("datasets.ethics");
+  const locale = useLocale();
   const ethicalPercent = Math.round(dataset.ethical_score * 100);
 
   const infoRows: [string, string | null][] = [
@@ -33,13 +56,20 @@ export function OverviewTab({
     [t("availability"), dataset.availability]
   ];
 
+  const formatDate = (value: string) =>
+    new Date(value).toLocaleDateString(locale, { year: "numeric", month: "long", day: "numeric" });
+
   return (
     <div className="grid gap-4 lg:grid-cols-2">
+      <div className="lg:col-span-2">
+        <EthicalCriteriaGrid dataset={dataset} />
+      </div>
+
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">{t("generalInfo")}</CardTitle>
+          <CardTitle className="text-base">{t("technicalSheet")}</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-3 text-sm">
+        <CardContent className="space-y-4 text-sm">
           {infoRows.map(([label, value]) =>
             value ? (
               <div key={label}>
@@ -48,7 +78,7 @@ export function OverviewTab({
               </div>
             ) : null
           )}
-          <div className="flex flex-wrap gap-3 pt-1">
+          <div className="flex flex-wrap gap-3">
             {dataset.storage_uri ? (
               <a
                 href={dataset.storage_uri}
@@ -77,6 +107,87 @@ export function OverviewTab({
               </a>
             ) : null}
           </div>
+
+          {dataset.representativity_level || dataset.sample_balance_level ? (
+            <>
+              <Separator />
+              <div className="grid gap-3 sm:grid-cols-2">
+                {dataset.representativity_level ? (
+                  <div>
+                    <p className="text-muted-foreground text-xs font-medium uppercase">
+                      {t("representativity")}
+                    </p>
+                    <Badge variant="secondary" className="mt-1 capitalize">
+                      {dataset.representativity_level}
+                    </Badge>
+                    {dataset.representativity_description ? (
+                      <p className="text-muted-foreground mt-1 text-xs">
+                        {dataset.representativity_description}
+                      </p>
+                    ) : null}
+                  </div>
+                ) : null}
+                {dataset.sample_balance_level ? (
+                  <div>
+                    <p className="text-muted-foreground text-xs font-medium uppercase">
+                      {t("sampleBalance")}
+                    </p>
+                    <Badge variant="secondary" className="mt-1 capitalize">
+                      {dataset.sample_balance_level.replace(/_/g, " ")}
+                    </Badge>
+                    {dataset.sample_balance_description ? (
+                      <p className="text-muted-foreground mt-1 text-xs">
+                        {dataset.sample_balance_description}
+                      </p>
+                    ) : null}
+                  </div>
+                ) : null}
+              </div>
+            </>
+          ) : null}
+
+          <Separator />
+          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+            <IndicatorRow label={t("indicatorSplit")} value={dataset.split} />
+            <IndicatorRow label={t("indicatorAnonymized")} value={dataset.anonymization_applied} />
+            <IndicatorRow label={t("indicatorTemporal")} value={dataset.temporal_factors} />
+            <IndicatorRow
+              label={t("indicatorMetadata")}
+              value={dataset.metadata_provided_with_dataset}
+            />
+          </div>
+
+          {dataset.features_description ? (
+            <div>
+              <p className="text-muted-foreground text-xs font-medium uppercase">
+                {t("featuresDescription")}
+              </p>
+              <p className="mt-0.5">{dataset.features_description}</p>
+            </div>
+          ) : null}
+
+          {dataset.has_missing_values ? (
+            <div className="space-y-1">
+              {dataset.missing_values_handling_method ? (
+                <p>
+                  <span className="text-muted-foreground text-xs font-medium uppercase">
+                    {t("missingHandling")}
+                  </span>{" "}
+                  <span>{dataset.missing_values_handling_method}</span>
+                </p>
+              ) : null}
+              {dataset.missing_values_description ? (
+                <p className="text-muted-foreground text-xs">{dataset.missing_values_description}</p>
+              ) : null}
+            </div>
+          ) : null}
+
+          <p className="text-muted-foreground pt-1 text-xs">
+            {t("addedOn", { date: formatDate(dataset.created_at) })}
+            {dataset.updated_at !== dataset.created_at
+              ? ` · ${t("updatedOn", { date: formatDate(dataset.updated_at) })}`
+              : ""}
+          </p>
         </CardContent>
       </Card>
 
@@ -106,59 +217,43 @@ export function OverviewTab({
         </CardContent>
       </Card>
 
-      <Card className="lg:col-span-2">
-        <CardHeader>
-          <CardTitle className="text-base">{t("ethicalCompliance")}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-5">
-            {ETHICAL_KEYS.map((key) => {
-              const value = (dataset.ethical_criteria as Record<string, boolean | null>)[key];
-              return (
-                <div key={key} className="flex items-start gap-2 rounded-md border p-2">
-                  <TristateIcon value={value ?? null} />
-                  <div>
-                    <p className="text-sm leading-tight">{te(key)}</p>
-                    <p className="text-muted-foreground text-xs">
-                      {value === true
-                        ? te("present")
-                        : value === false
-                          ? te("absent")
-                          : te("unknown")}
-                    </p>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </CardContent>
-      </Card>
-
       {similar.length > 0 ? (
         <Card className="lg:col-span-2">
           <CardHeader>
             <CardTitle className="text-base">{t("similar")}</CardTitle>
           </CardHeader>
-          <CardContent className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-            {similar.map(({ dataset: candidate, reason }) => (
-              <Link
-                key={candidate.id}
-                href={`/datasets/${candidate.id}`}
-                className="hover:bg-muted rounded-md border p-3">
-                <p className="font-medium">{candidate.display_name}</p>
-                <p className="text-muted-foreground text-xs">
-                  {t(`reason.${reason}`)} · {formatCount(candidate.instances_number)} ·{" "}
-                  {Math.round(candidate.ethical_score * 100)}%
-                </p>
-                <div className="mt-1 flex flex-wrap gap-1">
-                  {candidate.domain.slice(0, 2).map((domain) => (
-                    <Badge key={domain} variant="outline">
-                      {domain}
-                    </Badge>
-                  ))}
-                </div>
-              </Link>
-            ))}
+          <CardContent className="px-2">
+            <ItemGroup>
+              {similar.map(({ dataset: candidate, reason }, index) => {
+                const visual = primaryDomainVisual(candidate.domain);
+                return (
+                  <div key={candidate.id}>
+                    <Item asChild>
+                      <Link href={`/datasets/${candidate.id}`}>
+                        <ItemMedia
+                          variant="icon"
+                          className={cn("rounded-lg border-0", visual.tone.bgTile, visual.tone.text)}>
+                          <visual.icon />
+                        </ItemMedia>
+                        <ItemContent>
+                          <ItemTitle>{candidate.display_name}</ItemTitle>
+                          <ItemDescription>
+                            {t(`reason.${reason}`)} · {formatCount(candidate.instances_number)} ·{" "}
+                            <span className={scoreColorClass(Math.round(candidate.ethical_score * 100))}>
+                              {Math.round(candidate.ethical_score * 100)}%
+                            </span>
+                          </ItemDescription>
+                        </ItemContent>
+                        <ItemActions>
+                          <ChevronRightIcon className="text-muted-foreground size-4" />
+                        </ItemActions>
+                      </Link>
+                    </Item>
+                    {index < similar.length - 1 ? <ItemSeparator /> : null}
+                  </div>
+                );
+              })}
+            </ItemGroup>
           </CardContent>
         </Card>
       ) : null}

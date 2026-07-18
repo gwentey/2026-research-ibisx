@@ -24,6 +24,7 @@ import Logo from "@/components/layout/logo";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { MissionStepper } from "@/components/ibis/mission-stepper";
+import { ProgressRing } from "@/components/ibis/progress-ring";
 import { useAuthStore } from "@/lib/auth/store";
 import { cn } from "@/lib/utils";
 
@@ -40,28 +41,6 @@ export const STEP_ICONS: Record<number, LucideIcon> = {
 };
 
 const STEPS = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-
-/** Anneau de progression du header (tokens du template uniquement). */
-function ProgressRing({ value }: { value: number }) {
-  const radius = 14;
-  const circumference = 2 * Math.PI * radius;
-  return (
-    <svg width="36" height="36" viewBox="0 0 36 36" className="-rotate-90">
-      <circle cx="18" cy="18" r={radius} fill="none" strokeWidth="3" className="stroke-border" />
-      <circle
-        cx="18"
-        cy="18"
-        r={radius}
-        fill="none"
-        strokeWidth="3"
-        strokeLinecap="round"
-        strokeDasharray={circumference}
-        strokeDashoffset={circumference - (circumference * value) / 100}
-        className="stroke-primary transition-all duration-500"
-      />
-    </svg>
-  );
-}
 
 export function WizardShell({
   step,

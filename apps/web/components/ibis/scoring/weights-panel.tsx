@@ -20,6 +20,34 @@ interface WeightsPanelProps {
   onChange: (weights: Weights, profile: string | null) => void;
 }
 
+/** Barre empilée à 100 % : chaque segment = le poids effectif d'un critère actif,
+ *  en nuances monochromes (même formule de mélange que la heatmap). */
+function NormalizedTotalBar({ criteria, weights }: { criteria: string[]; weights: Weights }) {
+  const active = criteria.filter((criterion) => criterion in weights);
+  const total = Object.values(weights).reduce((sum, w) => sum + w, 0);
+  if (active.length === 0 || total <= 0) {
+    return <div className="bg-muted h-2 w-full rounded-full" />;
+  }
+  return (
+    <div className="flex h-2 w-full overflow-hidden rounded-full">
+      {active.map((criterion, index) => {
+        const share = (weights[criterion] / total) * 100;
+        const intensity = 30 + ((index * 18) % 60);
+        return (
+          <div
+            key={criterion}
+            className="h-full first:rounded-l-full last:rounded-r-full"
+            style={{
+              width: `${share}%`,
+              backgroundColor: `color-mix(in oklch, var(--primary) ${intensity}%, var(--card))`
+            }}
+          />
+        );
+      })}
+    </div>
+  );
+}
+
 /** Panneau de pondération (CDC §6.4) : slider 0→1 pas 0.05 par critère activé,
  *  % effectif normalisé, profils en un clic, réinitialiser. */
 export function WeightsPanel({
@@ -32,6 +60,7 @@ export function WeightsPanel({
   const t = useTranslations("scoring");
 
   const totalWeight = Object.values(weights).reduce((sum, w) => sum + w, 0);
+  const activeCount = criteria.filter((criterion) => criterion in weights).length;
 
   const setWeight = (criterion: string, value: number) => {
     const next = { ...weights };
@@ -52,7 +81,12 @@ export function WeightsPanel({
   return (
     <Card>
       <CardHeader className="gap-3">
-        <CardTitle className="text-base">{t("weightsTitle")}</CardTitle>
+        <div className="flex items-center justify-between gap-2">
+          <CardTitle className="text-base">{t("weightsTitle")}</CardTitle>
+          <span className="text-muted-foreground text-xs">
+            {t("activeCriteria", { count: activeCount })}
+          </span>
+        </div>
         <div className="flex flex-wrap items-center gap-1">
           <span className="text-muted-foreground mr-1 text-xs">{t("profiles")} :</span>
           {(profiles?.profiles ?? []).map((profile) => (
@@ -68,14 +102,25 @@ export function WeightsPanel({
             {t("reset")}
           </Button>
         </div>
+        <div className="space-y-1.5">
+          <NormalizedTotalBar criteria={criteria} weights={weights} />
+          <p className="text-muted-foreground text-xs">
+            {t("normalizedTotal", { total: totalWeight.toFixed(2) })}
+          </p>
+        </div>
       </CardHeader>
-      <CardContent className="space-y-3">
+      <CardContent className="space-y-3 border-t pt-4">
         {criteria.map((criterion) => {
           const active = criterion in weights;
           const weight = weights[criterion] ?? 0;
           const effective = totalWeight > 0 ? Math.round((weight / totalWeight) * 100) : 0;
           return (
-            <div key={criterion} className={cn("space-y-1", !active && "opacity-60")}>
+            <div
+              key={criterion}
+              className={cn(
+                "space-y-1 rounded-md p-1.5 transition-colors",
+                active ? "hover:bg-muted/40" : "opacity-60"
+              )}>
               <div className="flex items-center justify-between gap-2">
                 <Label className="flex items-center gap-2 text-sm font-normal">
                   <Switch

@@ -253,7 +253,8 @@
       "public": "Public",
       "private": "Private",
       "view": "View",
-      "moreTags": "+{count}"
+      "moreTags": "+{count}",
+      "updatedAgo": "Updated {date}"
     },
     "empty": {
       "title": "Empty catalog",
@@ -365,7 +366,24 @@
       "guideFallback": "Generated without AI (deterministic fallback)",
       "guideModel": "Model: {model}",
       "guideDate": "Generated on {date}",
-      "guideFailed": "Guide generation failed."
+      "guideFailed": "Guide generation failed.",
+      "technicalSheet": "Technical sheet",
+      "representativity": "Representativeness",
+      "sampleBalance": "Sample balance",
+      "indicatorSplit": "Pre-split dataset (train / test)",
+      "indicatorAnonymized": "Anonymization applied",
+      "indicatorTemporal": "Temporal factors",
+      "indicatorMetadata": "Metadata provided",
+      "featuresDescription": "Feature description",
+      "ethicsSummary": "{confirmed} criteria confirmed out of 10",
+      "ethicsAbsentCount": "{count} absent",
+      "ethicsUnknownCount": "{count} not assessed",
+      "previewRowsLabel": "total rows",
+      "previewColumnsLabel": "displayed columns",
+      "previewSeedLabel": "sampling seed",
+      "missingHandling": "Missing value handling",
+      "addedOn": "Added on {date}",
+      "updatedOn": "Updated on {date}"
     },
     "uploadWizard": {
       "title": "Add a dataset to the catalog",
@@ -412,7 +430,21 @@
       "creating": "Creating…",
       "created": "Dataset created.",
       "addDomain": "Add a domain…",
-      "addTask": "Add a task…"
+      "addTask": "Add a task…",
+      "subtitle": "CSV, XLSX, JSON, Parquet — describe your data to enrich the catalog.",
+      "stepperFiles": "Files",
+      "stepperAnalysis": "Analysis",
+      "stepperMetadata": "Metadata",
+      "dropzoneCta": "Select files",
+      "previewTitle": "Data preview",
+      "previewRowsCaption": "First {count} rows out of {total}",
+      "summaryFiles": "Files",
+      "summaryRows": "Rows",
+      "summaryScore": "Indicative score",
+      "removeFile": "Remove file",
+      "sectionGeneral": "General information",
+      "sectionTechnical": "Quality & technical",
+      "sectionEthicalAdvanced": "Advanced ethics"
     },
     "completion": {
       "title": "Metadata completion",
@@ -425,7 +457,19 @@
       },
       "missingFields": "Missing fields",
       "humanReview": "Needs human review",
-      "backToDataset": "Back to dataset"
+      "backToDataset": "Back to dataset",
+      "jumpTo": "Quick navigation to a section"
+    },
+    "domains": {
+      "education": "Education",
+      "healthcare": "Healthcare",
+      "finance": "Finance",
+      "social": "Social",
+      "biology": "Biology",
+      "business": "Business",
+      "environment": "Environment",
+      "technology": "Technology",
+      "research": "Research"
     }
   },
   "scoring": {
@@ -466,7 +510,10 @@
     "scoreSelection": "Score this selection",
     "empty": "No dataset to score — adjust the catalog filters.",
     "loading": "Computing ranking…",
-    "train": "Start a training"
+    "train": "Start a training",
+    "heatmapLegend": "Legend — score intensity",
+    "activeCriteria": "{count, plural, =0 {No active criterion} one {# active criterion} other {# active criteria}}",
+    "normalizedTotal": "Total weight {total} → normalized to 100%"
   },
   "projects": {
     "title": "Projects",

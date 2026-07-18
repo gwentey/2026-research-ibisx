@@ -1,26 +1,58 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { FileUpIcon, UploadCloudIcon } from "lucide-react";
+import { FileStackIcon, GaugeIcon, Rows3Icon, UploadCloudIcon, type LucideIcon } from "lucide-react";
 import { toast } from "sonner";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
+import CountAnimation from "@/components/ui/custom/count-animation";
 import { MetadataForm, type MetadataFormValue } from "@/components/ibis/datasets/metadata-form";
+import { UploadDropzone } from "@/components/ibis/datasets/upload-dropzone";
+import { UploadPreviewTable } from "@/components/ibis/datasets/upload-preview-table";
+import { UploadStepper } from "@/components/ibis/datasets/upload-stepper";
 import { analyzeUpload, createDataset } from "@/lib/api/generated";
 import type { UploadAnalysis } from "@/lib/api/generated";
 
-const STEPS = 3;
+// Tuile-icône de résumé (étape 2) — motif "hospital-management/summary-cards" repris en
+// monochrome chart-2 (docs/refonte/07). Aucune donnée inventée : uniquement les 3 chiffres
+// réels de l'analyse (nb fichiers, total lignes, score indicatif).
+function SummaryChip({
+  icon: Icon,
+  label,
+  value,
+  suffix
+}: {
+  icon: LucideIcon;
+  label: string;
+  value: number;
+  suffix?: string;
+}) {
+  return (
+    <Card className="py-0">
+      <CardContent className="flex items-center gap-3 p-4">
+        <div className="bg-chart-2/10 text-chart-2 flex size-10 shrink-0 items-center justify-center rounded-full">
+          <Icon className="size-5" />
+        </div>
+        <div className="min-w-0">
+          <p className="text-muted-foreground truncate text-xs">{label}</p>
+          <p className="text-lg font-semibold tabular-nums">
+            <CountAnimation number={value} />
+            {suffix}
+          </p>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
 
 export default function UploadDatasetPage() {
   const t = useTranslations("datasets.uploadWizard");
   const tErrors = useTranslations("errors");
   const router = useRouter();
-  const inputRef = useRef<HTMLInputElement>(null);
   const [step, setStep] = useState(1);
   const [files, setFiles] = useState<File[]>([]);
   const [analysis, setAnalysis] = useState<UploadAnalysis | null>(null);
@@ -71,56 +103,33 @@ export default function UploadDatasetPage() {
     router.replace(`/datasets/${data.id}`);
   };
 
+  const totalRows = analysis?.files.reduce((sum, file) => sum + file.row_count, 0) ?? 0;
+
   return (
     <div className="mx-auto max-w-3xl space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight">{t("title")}</h1>
-        <p className="text-muted-foreground mt-1 text-sm">
-          {t("step1")} → {t("step2")} → {t("step3")}
-        </p>
+      <div className="flex items-start gap-4">
+        <div className="bg-primary/10 text-primary flex size-12 shrink-0 items-center justify-center rounded-xl">
+          <UploadCloudIcon className="size-6" />
+        </div>
+        <div>
+          <h1 className="text-xl font-semibold tracking-tight sm:text-2xl">{t("title")}</h1>
+          <p className="text-muted-foreground mt-0.5 text-sm">{t("subtitle")}</p>
+        </div>
       </div>
-      <Progress value={(step / STEPS) * 100} />
+
+      <UploadStepper step={step} onStepClick={setStep} />
 
       {step === 1 ? (
         <Card>
-          <CardContent className="pt-6">
-            <button
-              type="button"
-              onClick={() => inputRef.current?.click()}
-              onDragOver={(e) => e.preventDefault()}
-              onDrop={(e) => {
-                e.preventDefault();
-                setFiles(Array.from(e.dataTransfer.files));
-              }}
-              className="hover:bg-muted flex w-full flex-col items-center gap-2 rounded-lg border border-dashed p-10 text-center">
-              <UploadCloudIcon className="text-muted-foreground size-8" />
-              <p className="font-medium">{t("dropTitle")}</p>
-              <p className="text-muted-foreground text-xs">{t("dropHint")}</p>
-              <span className="text-sm underline">{t("browse")}</span>
-            </button>
-            <input
-              ref={inputRef}
-              type="file"
-              multiple
-              accept=".csv,.xlsx,.json,.parquet"
-              className="hidden"
-              onChange={(e) => setFiles(Array.from(e.target.files ?? []))}
-            />
+          <CardContent className="space-y-4 pt-6">
+            <UploadDropzone onFilesChange={setFiles} disabled={pending} />
             {files.length > 0 ? (
-              <div className="mt-4 space-y-2">
-                {files.map((file) => (
-                  <div key={file.name} className="flex items-center gap-2 text-sm">
-                    <FileUpIcon className="size-4" />
-                    {file.name}
-                    <span className="text-muted-foreground text-xs">
-                      {(file.size / 1024).toFixed(0)} Ko
-                    </span>
-                  </div>
-                ))}
-                <Button onClick={() => void runAnalysis()} disabled={pending}>
-                  {pending ? t("analyzing") : t("analyze")}
-                </Button>
-              </div>
+              <Button
+                onClick={() => void runAnalysis()}
+                disabled={pending}
+                className="w-full sm:w-auto">
+                {pending ? t("analyzing") : t("analyze")}
+              </Button>
             ) : null}
           </CardContent>
         </Card>
@@ -128,6 +137,22 @@ export default function UploadDatasetPage() {
 
       {step === 2 && analysis ? (
         <div className="space-y-4">
+          <div className="grid gap-3 sm:grid-cols-3">
+            <SummaryChip
+              icon={FileStackIcon}
+              label={t("summaryFiles")}
+              value={analysis.files.length}
+            />
+            <SummaryChip icon={Rows3Icon} label={t("summaryRows")} value={totalRows} />
+            <SummaryChip
+              icon={GaugeIcon}
+              label={t("summaryScore")}
+              value={analysis.indicative_quality_score}
+              suffix="/100"
+            />
+          </div>
+          <p className="text-muted-foreground text-xs">{t("suggestions")}</p>
+
           {analysis.files.map((file) => (
             <Card key={file.original_filename}>
               <CardHeader>
@@ -139,34 +164,31 @@ export default function UploadDatasetPage() {
                   </span>
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-3">
+              <CardContent className="space-y-4">
                 <div className="flex flex-wrap gap-1">
-                  {file.columns.map((column) => {
-                    const c = column as {
+                  {(
+                    file.columns as Array<{
                       name: string;
                       dtype_interpreted: string;
                       is_pii: boolean;
-                    };
-                    return (
-                      <Badge key={c.name} variant={c.is_pii ? "destructive" : "outline"}>
-                        {c.name} · {c.dtype_interpreted}
-                      </Badge>
-                    );
-                  })}
+                    }>
+                  ).map((column) => (
+                    <Badge key={column.name} variant={column.is_pii ? "destructive" : "outline"}>
+                      {column.name} · {column.dtype_interpreted}
+                    </Badge>
+                  ))}
+                </div>
+                <div>
+                  <p className="mb-2 text-sm font-medium">{t("previewTitle")}</p>
+                  <UploadPreviewTable file={file} />
                 </div>
               </CardContent>
             </Card>
           ))}
-          <Card>
-            <CardContent className="flex items-center justify-between pt-6">
-              <div>
-                <p className="text-sm font-medium">{t("suggestedIndicative")}</p>
-                <p className="text-2xl font-semibold">{analysis.indicative_quality_score}/100</p>
-                <p className="text-muted-foreground text-xs">{t("suggestions")}</p>
-              </div>
-              <Button onClick={() => setStep(3)}>{t("step3")} →</Button>
-            </CardContent>
-          </Card>
+
+          <Button onClick={() => setStep(3)} className="w-full sm:w-auto">
+            {t("step3")} →
+          </Button>
         </div>
       ) : null}
 

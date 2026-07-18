@@ -4,12 +4,28 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { GaugeIcon, LayoutGridIcon, PlusIcon, SearchIcon, TableIcon, XIcon } from "lucide-react";
+import {
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  GaugeIcon,
+  LayoutGridIcon,
+  PlusIcon,
+  SearchIcon,
+  TableIcon,
+  XIcon
+} from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink
+} from "@/components/ui/pagination";
 import {
   Select,
   SelectContent,
@@ -31,8 +47,23 @@ import { FiltersSheet } from "@/components/ibis/datasets/filters-sheet";
 import { getDatasetFacets } from "@/lib/api/generated";
 import type { DatasetFacets } from "@/lib/api/generated";
 import { PAGE_SIZES, SORT_KEYS, formatCount, scoreColorClass } from "@/lib/datasets/constants";
+import { primaryDomainVisual } from "@/lib/datasets/domain-visuals";
 import { activeFilterEntries, useCatalog } from "@/lib/datasets/use-catalog";
 import { useAuthStore } from "@/lib/auth/store";
+import { cn } from "@/lib/utils";
+
+// Numéros de page avec ellipses (repris de real-estate/filter/property-listing.tsx).
+function pageNumbers(current: number, total: number): (number | "ellipsis")[] {
+  if (total <= 5) return Array.from({ length: total }, (_, i) => i + 1);
+  const pages: (number | "ellipsis")[] = [1];
+  if (current > 3) pages.push("ellipsis");
+  for (let i = Math.max(2, current - 1); i <= Math.min(total - 1, current + 1); i += 1) {
+    pages.push(i);
+  }
+  if (current < total - 2) pages.push("ellipsis");
+  pages.push(total);
+  return pages;
+}
 
 export default function DatasetsPage() {
   const t = useTranslations("datasets");
@@ -212,10 +243,23 @@ export default function DatasetsPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {items.map((dataset) => (
+                {items.map((dataset) => {
+                  const visual = primaryDomainVisual(dataset.domain);
+                  return (
                   <TableRow key={dataset.id}>
                     <TableCell>
-                      <Link href={`/datasets/${dataset.id}`} className="font-medium hover:underline">
+                      <Link
+                        href={`/datasets/${dataset.id}`}
+                        className="flex items-center gap-2 font-medium hover:underline">
+                        <span
+                          aria-hidden
+                          className={cn(
+                            "flex size-5 shrink-0 items-center justify-center rounded-full text-[9px] font-bold",
+                            visual.tone.bgTile,
+                            visual.tone.text
+                          )}>
+                          {visual.monogram}
+                        </span>
                         {dataset.display_name}
                       </Link>
                     </TableCell>
@@ -234,50 +278,88 @@ export default function DatasetsPage() {
                       {Math.round(dataset.ethical_score * 100)}%
                     </TableCell>
                   </TableRow>
-                ))}
+                  );
+                })}
               </TableBody>
             </Table>
           </CardContent>
         </Card>
       )}
 
-      {catalog.data && catalog.data.total_pages > 1 ? (
-        <div className="flex flex-wrap items-center justify-between gap-2">
-          <Select
-            value={String(catalog.pageSize)}
-            onValueChange={(value) => catalog.setPageSize(Number(value))}>
-            <SelectTrigger className="w-36">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {PAGE_SIZES.map((size) => (
-                <SelectItem key={size} value={String(size)}>
-                  {t("perPage", { count: size })}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              disabled={catalog.page <= 1}
-              onClick={() => catalog.setPage(catalog.page - 1)}>
-              {t("pagePrev")}
-            </Button>
-            <span className="text-muted-foreground text-sm">
-              {t("pageOf", { page: catalog.page, total: catalog.data.total_pages })}
-            </span>
-            <Button
-              variant="outline"
-              size="sm"
-              disabled={catalog.page >= catalog.data.total_pages}
-              onClick={() => catalog.setPage(catalog.page + 1)}>
-              {t("pageNext")}
-            </Button>
-          </div>
-        </div>
-      ) : null}
+      {catalog.data && catalog.data.total_pages > 1
+        ? (() => {
+            const totalPages = catalog.data!.total_pages;
+            return (
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <Select
+                  value={String(catalog.pageSize)}
+                  onValueChange={(value) => catalog.setPageSize(Number(value))}>
+                  <SelectTrigger className="w-36">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {PAGE_SIZES.map((size) => (
+                      <SelectItem key={size} value={String(size)}>
+                        {t("perPage", { count: size })}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <Pagination className="mx-0 w-auto">
+                  <PaginationContent>
+                    <PaginationItem>
+                      <PaginationLink
+                        href="#"
+                        aria-label={t("pagePrev")}
+                        size="icon"
+                        className={cn(catalog.page <= 1 && "pointer-events-none opacity-50")}
+                        onClick={(event) => {
+                          event.preventDefault();
+                          catalog.setPage(Math.max(1, catalog.page - 1));
+                        }}>
+                        <ChevronLeftIcon className="size-4" />
+                      </PaginationLink>
+                    </PaginationItem>
+                    {pageNumbers(catalog.page, totalPages).map((page, index) =>
+                      page === "ellipsis" ? (
+                        <PaginationItem key={`ellipsis-${index}`}>
+                          <PaginationEllipsis />
+                        </PaginationItem>
+                      ) : (
+                        <PaginationItem key={page}>
+                          <PaginationLink
+                            href="#"
+                            isActive={page === catalog.page}
+                            onClick={(event) => {
+                              event.preventDefault();
+                              catalog.setPage(page);
+                            }}>
+                            {page}
+                          </PaginationLink>
+                        </PaginationItem>
+                      )
+                    )}
+                    <PaginationItem>
+                      <PaginationLink
+                        href="#"
+                        aria-label={t("pageNext")}
+                        size="icon"
+                        className={cn(
+                          catalog.page >= totalPages && "pointer-events-none opacity-50"
+                        )}
+                        onClick={(event) => {
+                          event.preventDefault();
+                          catalog.setPage(Math.min(totalPages, catalog.page + 1));
+                        }}>
+                        <ChevronRightIcon className="size-4" />
+                      </PaginationLink>
+                    </PaginationItem>
+                  </PaginationContent>
+                </Pagination>
+              </div>
+            );
+          })()
+        : null}
     </div>
   );
 }

@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
-import { LayoutListIcon, Grid3X3Icon } from "lucide-react";
+import { GaugeIcon, LayoutListIcon, Grid3X3Icon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -80,9 +80,14 @@ export default function ScorePage() {
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-start justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight">{t("title")}</h1>
-          <p className="text-muted-foreground mt-1 max-w-2xl text-sm">{t("subtitle")}</p>
+        <div className="flex items-start gap-3">
+          <div className="bg-primary/10 text-primary flex size-12 shrink-0 items-center justify-center rounded-xl">
+            <GaugeIcon className="size-6" />
+          </div>
+          <div>
+            <h1 className="text-xl font-semibold tracking-tight sm:text-2xl">{t("title")}</h1>
+            <p className="text-muted-foreground mt-1 max-w-2xl text-sm">{t("subtitle")}</p>
+          </div>
         </div>
         <div className="flex items-center gap-1">
           <Button
@@ -102,14 +107,16 @@ export default function ScorePage() {
         </div>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-[20rem_1fr]">
-        <WeightsPanel
-          criteria={profiles?.criteria ?? []}
-          profiles={profiles}
-          weights={weights}
-          activeProfile={activeProfile}
-          onChange={handleWeightsChange}
-        />
+      <div className="grid gap-6 lg:grid-cols-[20rem_1fr] lg:items-start">
+        <div className="h-fit lg:sticky lg:top-20">
+          <WeightsPanel
+            criteria={profiles?.criteria ?? []}
+            profiles={profiles}
+            weights={weights}
+            activeProfile={activeProfile}
+            onChange={handleWeightsChange}
+          />
+        </div>
 
         <div className="min-w-0 space-y-3">
           <p className="text-muted-foreground text-sm">

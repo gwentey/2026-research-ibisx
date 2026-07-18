@@ -29,6 +29,7 @@ import { Switch } from "@/components/ui/switch";
 import { listDatasets } from "@/lib/api/generated";
 import type { DatasetFacets } from "@/lib/api/generated";
 import { ETHICAL_KEYS } from "@/lib/datasets/constants";
+import { getDomainVisual } from "@/lib/datasets/domain-visuals";
 import type { CatalogFilters } from "@/lib/datasets/use-catalog";
 import { cn } from "@/lib/utils";
 
@@ -138,19 +139,25 @@ export function FiltersSheet({ facets, value, activeCount, onApply }: FiltersShe
           <div className="space-y-2">
             <Label className="text-sm">{tf("domains")}</Label>
             <div className="grid grid-cols-2 gap-2">
-              {(facets?.domains ?? []).map((facet) => (
-                <button
-                  key={facet.value}
-                  type="button"
-                  onClick={() => toggleInList("domains", facet.value)}
-                  className={cn(
-                    "hover:bg-muted flex items-center justify-between rounded-md border p-2 text-left text-sm",
-                    draft.domains?.includes(facet.value) && "border-primary bg-muted"
-                  )}>
-                  <span className="truncate">{facet.value}</span>
-                  <span className="text-muted-foreground text-xs">{facet.count}</span>
-                </button>
-              ))}
+              {(facets?.domains ?? []).map((facet) => {
+                const DomainIcon = getDomainVisual(facet.value).icon;
+                return (
+                  <button
+                    key={facet.value}
+                    type="button"
+                    onClick={() => toggleInList("domains", facet.value)}
+                    className={cn(
+                      "hover:bg-muted flex items-center justify-between rounded-md border p-2 text-left text-sm",
+                      draft.domains?.includes(facet.value) && "border-primary bg-muted"
+                    )}>
+                    <span className="flex min-w-0 items-center gap-1.5 truncate">
+                      <DomainIcon className="text-muted-foreground size-3.5 shrink-0" />
+                      <span className="truncate">{facet.value}</span>
+                    </span>
+                    <span className="text-muted-foreground text-xs">{facet.count}</span>
+                  </button>
+                );
+              })}
             </div>
           </div>
 

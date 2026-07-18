@@ -2,7 +2,14 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
-import { XIcon } from "lucide-react";
+import {
+  IdCardIcon,
+  InfoIcon,
+  ShieldCheckIcon,
+  SlidersHorizontalIcon,
+  XIcon,
+  type LucideIcon
+} from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -20,6 +27,41 @@ import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import type { DatasetMetadataUpdate } from "@/lib/api/generated";
 import { ETHICAL_KEYS, KNOWN_DOMAINS, KNOWN_TASKS } from "@/lib/datasets/constants";
+import { cn } from "@/lib/utils";
+
+// Mapping tonal partagé des 3 sections (repris par /datasets/[id]/complete pour la
+// nav d'ancrage — mêmes icônes/nuances que les tuiles ci-dessous, cf. docs/refonte/07).
+export const METADATA_SECTIONS: Record<
+  "general" | "technical" | "ethical",
+  { icon: LucideIcon; tile: string }
+> = {
+  general: { icon: IdCardIcon, tile: "bg-chart-3/10 text-chart-3" },
+  technical: { icon: SlidersHorizontalIcon, tile: "bg-chart-4/10 text-chart-4" },
+  ethical: {
+    icon: ShieldCheckIcon,
+    tile: "bg-chart-5/15 text-foreground border border-chart-5/40"
+  }
+};
+
+function SectionHeader({
+  section,
+  title
+}: {
+  section: keyof typeof METADATA_SECTIONS;
+  title: string;
+}) {
+  const { icon: Icon, tile } = METADATA_SECTIONS[section];
+  return (
+    <CardHeader>
+      <div className="flex items-center gap-3">
+        <div className={cn("flex size-10 shrink-0 items-center justify-center rounded-xl", tile)}>
+          <Icon className="size-5" />
+        </div>
+        <CardTitle className="text-base">{title}</CardTitle>
+      </div>
+    </CardHeader>
+  );
+}
 
 export type MetadataFormValue = DatasetMetadataUpdate;
 
@@ -129,10 +171,8 @@ export function MetadataForm({ value, onChange }: MetadataFormProps) {
 
   return (
     <div className="space-y-4">
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-base">{t("fields.displayName")}</CardTitle>
-        </CardHeader>
+      <Card id="section-general">
+        <SectionHeader section="general" title={t("sectionGeneral")} />
         <CardContent className="grid gap-4 sm:grid-cols-2">
           <div className="sm:col-span-2">
             <Label htmlFor="display_name">{t("fields.displayName")} *</Label>
@@ -207,10 +247,8 @@ export function MetadataForm({ value, onChange }: MetadataFormProps) {
         </CardContent>
       </Card>
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-base">{tf("quality")}</CardTitle>
-        </CardHeader>
+      <Card id="section-technical">
+        <SectionHeader section="technical" title={t("sectionTechnical")} />
         <CardContent className="space-y-4">
           <TagPicker
             label={t("fields.domains")}
@@ -302,12 +340,13 @@ export function MetadataForm({ value, onChange }: MetadataFormProps) {
         </CardContent>
       </Card>
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-base">{tf("advancedEthics")}</CardTitle>
-          <p className="text-muted-foreground text-sm">{t("ethicsHint")}</p>
-        </CardHeader>
+      <Card id="section-ethical">
+        <SectionHeader section="ethical" title={t("sectionEthicalAdvanced")} />
         <CardContent className="grid gap-2 sm:grid-cols-2">
+          <div className="bg-muted/50 flex items-start gap-2 rounded-md p-3 text-sm sm:col-span-2">
+            <InfoIcon className="text-muted-foreground mt-0.5 size-4 shrink-0" />
+            <p className="text-muted-foreground">{t("ethicsHint")}</p>
+          </div>
           {ETHICAL_KEYS.map((key) => (
             <TristateSelect
               key={key}
