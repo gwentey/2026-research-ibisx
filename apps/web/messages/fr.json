@@ -705,7 +705,9 @@
       "notApplicable": "Non applicable — variable non continue.",
       "finalTitle": "Recommandation finale",
       "applyFinal": "Appliquer la recommandation ({task})",
-      "chooseMyself": "Je choisis moi-même"
+      "chooseMyself": "Je choisis moi-même",
+      "objectiveCardTitle": "Cible et type de problème",
+      "aiGuide": "Guide-moi avec l’IA"
     },
     "step3": {
       "intro": "Colonnes à traiter : choisissez une stratégie pour chaque colonne ayant des valeurs manquantes. Ce qui est configuré ici sera RÉELLEMENT appliqué par l'entraînement.",

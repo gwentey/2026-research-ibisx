@@ -59,6 +59,10 @@
      border-ai, + bg-ai text-ai-foreground pour un CTA IA plein. Défini clair ET sombre. */
   --ai: oklch(0.5 0.16 274);
   --ai-foreground: oklch(0.985 0.002 275);
+  /* Dégradé « IA » violet → bleu (même famille que --ai), pour les panneaux d'aide IA
+     (carte pointillés + dégradé). Réutilisé partout via AiAssistPanel. */
+  --ai-violet: oklch(0.55 0.2 300);
+  --ai-blue: oklch(0.58 0.17 255);
   --radius: 0.5rem;
   --sidebar: var(--base-100);
   --sidebar-foreground: var(--base-500);
@@ -118,6 +122,8 @@
   /* Accent IA calibré pour le fond quasi-noir : indigo plus clair pour ressortir sobrement. */
   --ai: oklch(0.72 0.15 274);
   --ai-foreground: oklch(0.205 0.02 275);
+  --ai-violet: oklch(0.7 0.17 300);
+  --ai-blue: oklch(0.72 0.15 255);
   --sidebar: var(--base-900);
   --sidebar-foreground: var(--base-200);
   --sidebar-primary: var(--base-50);
@@ -184,6 +190,8 @@
   --color-score-5: var(--score-5);
   --color-ai: var(--ai);
   --color-ai-foreground: var(--ai-foreground);
+  --color-ai-violet: var(--ai-violet);
+  --color-ai-blue: var(--ai-blue);
   --color-sidebar: var(--sidebar);
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar-primary: var(--sidebar-primary);

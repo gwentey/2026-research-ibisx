@@ -5,8 +5,6 @@ import { useTranslations } from "next-intl";
 import {
   CheckCircle2Icon,
   CheckIcon,
-  ChevronDownIcon,
-  ChevronUpIcon,
   Columns3Icon,
   GaugeIcon,
   InfoIcon,
@@ -44,6 +42,7 @@ import {
   TableHeader,
   TableRow
 } from "@/components/ui/table";
+import { AiAssistButton, AiAssistPanel } from "@/components/ibis/ai-assist";
 import type { DatasetDetail, DatasetPreview } from "@/lib/api/generated";
 import type { QualityData } from "@/app/wizard/page";
 import { useWizardStore, type WizardState } from "@/lib/wizard/store";
@@ -351,10 +350,19 @@ export function Step2Target({
 
   return (
     <div className="space-y-4">
-      {/* Objectif de prédiction — décision de l'utilisateur : UI STANDARD monochrome,
-          aucune couleur IA (choisir la cible + le type de problème n'est pas de l'IA). */}
+      {/* Objectif de prédiction — UI STANDARD (choisir n'est pas de l'IA). L'aide IA
+          s'annonce partout de la même façon : déclencheur « Guide-moi avec l'IA » en HAUT
+          À DROITE (AiAssistButton) → panneau pointillé + dégradé violet/bleu (AiAssistPanel). */}
       <Card>
-        <CardContent className="space-y-5 pt-6">
+        <CardHeader className="flex flex-row items-center justify-between gap-3 space-y-0">
+          <CardTitle className="text-base">{t("objectiveCardTitle")}</CardTitle>
+          <AiAssistButton
+            open={assistOpen}
+            onToggle={() => setAssistOpen((open) => !open)}
+            label={t("aiGuide")}
+          />
+        </CardHeader>
+        <CardContent className="space-y-5">
           <div>
             <Label>{t("targetLabel")}</Label>
             <Select
@@ -382,38 +390,8 @@ export function Step2Target({
             </div>
           </div>
 
-          {meta.blocking ? (
-            <Alert variant="destructive">
-              <TriangleAlertIcon />
-              <AlertTitle>{t("blockTitle")}</AlertTitle>
-              <AlertDescription>{t("blockBody", { column: target ?? "" })}</AlertDescription>
-            </Alert>
-          ) : null}
-        </CardContent>
-      </Card>
-
-      {/* Assistance IA — SEULE zone assistée par IA, bordure indigo reconnaissable.
-          Analyse le dataset et suggère un type de problème ; l'utilisateur reste libre. */}
-      <Card className="border-ai/40 bg-ai/[0.04]">
-        <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle className="text-ai flex items-center gap-2 text-base">
-            <span className="bg-ai/15 text-ai flex size-7 shrink-0 items-center justify-center rounded-md">
-              <SparklesIcon className="size-4" />
-            </span>
-            {t("aiTitle")}
-          </CardTitle>
-          <Button
-            variant="outline"
-            size="sm"
-            aria-expanded={assistOpen}
-            onClick={() => setAssistOpen((open) => !open)}>
-            {assistOpen ? <ChevronUpIcon /> : <ChevronDownIcon />}
-            {assistOpen ? t("closeAssist") : t("openAssist")}
-          </Button>
-        </CardHeader>
-        {assistOpen ? (
-          <CardContent className="space-y-4">
-            <div className="bg-background space-y-3 rounded-md border p-4">
+          {assistOpen ? (
+            <AiAssistPanel title={t("aiTitle")}>
               <p className="text-sm">
                 {t("analysisOf", { name: dataset.display_name })}
                 {dataset.objective ? (
@@ -438,42 +416,50 @@ export function Step2Target({
               ) : (
                 <p className="text-muted-foreground text-sm">{t("targetPlaceholder")}</p>
               )}
-            </div>
 
-            {target ? (
-              <Alert className="border-ai/40">
-                <LightbulbIcon className="text-ai" />
-                <AlertTitle className="text-ai">{t("finalTitle")}</AlertTitle>
-                <AlertDescription>
-                  {t("aiReco", {
-                    task: recommendedLabel,
-                    reason: t(
-                      meta.recommendedTask === "classification"
-                        ? "reasonCategorical"
-                        : "reasonNumeric",
-                      { column: target, count: meta.uniqueCount }
-                    )
-                  })}
-                </AlertDescription>
-              </Alert>
-            ) : null}
+              {target ? (
+                <Alert className="border-ai/40 bg-background/70">
+                  <LightbulbIcon className="text-ai" />
+                  <AlertTitle className="text-ai">{t("finalTitle")}</AlertTitle>
+                  <AlertDescription>
+                    {t("aiReco", {
+                      task: recommendedLabel,
+                      reason: t(
+                        meta.recommendedTask === "classification"
+                          ? "reasonCategorical"
+                          : "reasonNumeric",
+                        { column: target, count: meta.uniqueCount }
+                      )
+                    })}
+                  </AlertDescription>
+                </Alert>
+              ) : null}
 
-            {target ? (
-              <div className="flex flex-wrap gap-2">
-                <Button
-                  className="bg-ai text-ai-foreground hover:bg-ai/90"
-                  onClick={() => store.set("taskType", meta.recommendedTask)}>
-                  <CheckCircle2Icon />
-                  {t("applyFinal", { task: recommendedLabel })}
-                </Button>
-                <Button variant="outline" onClick={() => setAssistOpen(false)}>
-                  <XIcon />
-                  {t("chooseMyself")}
-                </Button>
-              </div>
-            ) : null}
-          </CardContent>
-        ) : null}
+              {target ? (
+                <div className="flex flex-wrap gap-2">
+                  <Button
+                    className="bg-ai text-ai-foreground hover:bg-ai/90"
+                    onClick={() => store.set("taskType", meta.recommendedTask)}>
+                    <CheckCircle2Icon />
+                    {t("applyFinal", { task: recommendedLabel })}
+                  </Button>
+                  <Button variant="outline" onClick={() => setAssistOpen(false)}>
+                    <XIcon />
+                    {t("chooseMyself")}
+                  </Button>
+                </div>
+              ) : null}
+            </AiAssistPanel>
+          ) : null}
+
+          {meta.blocking ? (
+            <Alert variant="destructive">
+              <TriangleAlertIcon />
+              <AlertTitle>{t("blockTitle")}</AlertTitle>
+              <AlertDescription>{t("blockBody", { column: target ?? "" })}</AlertDescription>
+            </Alert>
+          ) : null}
+        </CardContent>
       </Card>
 
       <Understand title={t("understand")} body={t("understandBody")} />

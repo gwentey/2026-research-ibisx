@@ -705,7 +705,9 @@
       "notApplicable": "Not applicable — the variable is not continuous.",
       "finalTitle": "Final recommendation",
       "applyFinal": "Apply recommendation ({task})",
-      "chooseMyself": "I'll choose myself"
+      "chooseMyself": "I'll choose myself",
+      "objectiveCardTitle": "Target and problem type",
+      "aiGuide": "Guide me with AI"
     },
     "step3": {
       "intro": "Columns to clean: choose a strategy for every column with missing values. What you configure here is REALLY applied during training.",
