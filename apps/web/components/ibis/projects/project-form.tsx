@@ -36,18 +36,21 @@ const TOTAL_STEPS = 3;
 
 interface ProjectFormProps {
   existing?: ProjectRead;
+  /** Pré-remplissage (ex. « Utiliser dans un projet » depuis une fiche dataset) :
+   *  nom suggéré + critères (domaine/tâche du dataset) déjà cochés, tout reste éditable. */
+  prefill?: { name?: string; criteria?: CatalogFilters };
 }
 
-export function ProjectForm({ existing }: ProjectFormProps) {
+export function ProjectForm({ existing, prefill }: ProjectFormProps) {
   const t = useTranslations("projects.form");
   const tf = useTranslations("datasets.filterPanel");
   const router = useRouter();
 
   const [step, setStep] = useState(1);
-  const [name, setName] = useState(existing?.name ?? "");
+  const [name, setName] = useState(existing?.name ?? prefill?.name ?? "");
   const [description, setDescription] = useState(existing?.description ?? "");
   const [criteria, setCriteria] = useState<CatalogFilters>(
-    (existing?.criteria as CatalogFilters) ?? {}
+    (existing?.criteria as CatalogFilters) ?? prefill?.criteria ?? {}
   );
   const [weights, setWeights] = useState<Weights>(
     (existing?.weights as Weights) ?? {}

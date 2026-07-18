@@ -39,6 +39,16 @@ export function DatasetDetailHeader({
   const ethicalPercent = Math.round(dataset.ethical_score * 100);
   const firstFile = dataset.files.find((file) => file.logical_role === "data_file") ?? dataset.files[0];
 
+  // « Utiliser dans un projet » : pré-remplit le formulaire (nom suggéré + critères
+  // domaine/tâche du dataset déjà cochés) plutôt que de tout faire resélectionner.
+  const useInProjectHref = (() => {
+    const params = new URLSearchParams();
+    if (dataset.domain.length > 0) params.set("domains", dataset.domain.join(","));
+    if (dataset.task.length > 0) params.set("tasks", dataset.task.join(","));
+    params.set("name", td("projectFromDataset", { name: dataset.display_name }));
+    return `/projects/new?${params.toString()}`;
+  })();
+
   const download = async () => {
     if (!firstFile) return;
     // Téléchargement authentifié via le client généré (même logique que files-tab.tsx)
@@ -172,7 +182,7 @@ export function DatasetDetailHeader({
             </Button>
           ) : null}
           <Button asChild>
-            <Link href="/projects/new">
+            <Link href={useInProjectHref}>
               {td("useInProject")}
               <ArrowRightIcon />
             </Link>

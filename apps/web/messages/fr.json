@@ -432,7 +432,8 @@
       "missingHandling": "Traitement des valeurs manquantes",
       "addedOn": "Ajouté le {date}",
       "updatedOn": "Mis à jour le {date}",
-      "journeyLabel": "Où situer ce dataset"
+      "journeyLabel": "Où situer ce dataset",
+      "projectFromDataset": "Projet — {name}"
     },
     "uploadWizard": {
       "title": "Ajouter un dataset au catalogue",
