@@ -2,12 +2,16 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
-import { MessageCircleIcon, SendIcon } from "lucide-react";
+import { MessageCircleIcon, SendIcon, SparklesIcon } from "lucide-react";
 
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Message, MessageContent } from "@/components/ui/custom/prompt/message";
+import { TypingLoader } from "@/components/ui/custom/prompt/loader";
 import { Input } from "@/components/ui/input";
+import { useAvatarUrl, userInitials } from "@/components/ibis/use-avatar";
 import {
   askChatQuestion,
   createChatSession,
@@ -15,17 +19,31 @@ import {
   listChatMessages
 } from "@/lib/api/generated";
 import type { ChatMessageRead, ChatSessionRead, ExplanationResults } from "@/lib/api/generated";
+import { useAuthStore } from "@/lib/auth/store";
+import { cn } from "@/lib/utils";
+
+/** Avatar assistant : icône sur pastille tonale (chart-1) — jamais de couleur inventée. */
+function AssistantAvatar() {
+  return (
+    <div className="bg-chart-1/15 text-foreground flex size-8 shrink-0 items-center justify-center rounded-full">
+      <SparklesIcon className="size-4" />
+    </div>
+  );
+}
 
 /** Chat XAI (CDC §9.6) : 5 questions max, asynchrone (polling 1,5 s), fallback badgé. */
 export function XaiChat({ explanation }: { explanation: ExplanationResults }) {
   const t = useTranslations("xai.chat");
   const locale = useLocale();
+  const user = useAuthStore((state) => state.user);
+  const avatarUrl = useAvatarUrl();
   const [session, setSession] = useState<ChatSessionRead | null>(null);
   const [messages, setMessages] = useState<ChatMessageRead[]>([]);
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [question, setQuestion] = useState("");
   const [waiting, setWaiting] = useState(false);
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const userInitialsValue = user ? userInitials(user.pseudo, user.email) : "";
 
   useEffect(() => {
     getSuggestedQuestions({
@@ -89,8 +107,13 @@ export function XaiChat({ explanation }: { explanation: ExplanationResults }) {
   if (!session) {
     return (
       <Card>
-        <CardContent className="flex items-center justify-between pt-6">
-          <p className="text-sm font-medium">{t("title")}</p>
+        <CardContent className="flex flex-wrap items-center justify-between gap-3 pt-6">
+          <div className="flex items-center gap-3">
+            <div className="bg-chart-1/10 text-foreground flex size-10 shrink-0 items-center justify-center rounded-full">
+              <SparklesIcon className="size-4" />
+            </div>
+            <p className="text-sm font-medium">{t("title")}</p>
+          </div>
           <Button variant="outline" onClick={() => void start()}>
             <MessageCircleIcon />
             {t("start")}
@@ -130,22 +153,44 @@ export function XaiChat({ explanation }: { explanation: ExplanationResults }) {
           </div>
         ) : null}
 
-        <div className="max-h-80 space-y-2 overflow-auto">
-          {messages.map((message) => (
-            <div
-              key={message.id}
-              className={`max-w-[85%] rounded-lg px-3 py-2 text-sm ${
-                message.role === "user"
-                  ? "bg-primary text-primary-foreground ml-auto"
-                  : "bg-muted"
-              }`}>
-              <p className="whitespace-pre-line">{message.content}</p>
-              {message.role === "assistant" && message.is_fallback ? (
-                <p className="mt-1 text-[10px] opacity-70">{t("fallbackNote")}</p>
-              ) : null}
-            </div>
-          ))}
-          {waiting ? <p className="text-muted-foreground text-xs">{t("waiting")}</p> : null}
+        <div className="max-h-80 space-y-3 overflow-auto pr-1">
+          {messages.map((message) => {
+            const isUser = message.role === "user";
+            return (
+              <Message
+                key={message.id}
+                className={cn("items-end gap-2", isUser ? "justify-end" : "justify-start")}>
+                {!isUser ? <AssistantAvatar /> : null}
+                <div className={cn("flex max-w-[85%] flex-col gap-1", isUser && "items-end")}>
+                  <MessageContent
+                    className={cn(
+                      "px-3 py-2 text-sm whitespace-pre-line",
+                      isUser ? "bg-primary text-primary-foreground" : "bg-muted border"
+                    )}>
+                    {message.content}
+                  </MessageContent>
+                  {!isUser && message.is_fallback ? (
+                    <p className="text-muted-foreground px-1 text-[10px]">{t("fallbackNote")}</p>
+                  ) : null}
+                </div>
+                {isUser ? (
+                  <Avatar className="size-8 shrink-0">
+                    {avatarUrl ? <AvatarImage src={avatarUrl} alt={userInitialsValue} /> : null}
+                    <AvatarFallback>{userInitialsValue}</AvatarFallback>
+                  </Avatar>
+                ) : null}
+              </Message>
+            );
+          })}
+          {waiting ? (
+            <Message className="items-end gap-2">
+              <AssistantAvatar />
+              <div className="bg-muted flex items-center gap-2 rounded-lg border px-3 py-2">
+                <TypingLoader size="sm" />
+                <span className="text-muted-foreground text-xs">{t("waiting")}</span>
+              </div>
+            </Message>
+          ) : null}
         </div>
 
         {remaining > 0 && session.is_active ? (

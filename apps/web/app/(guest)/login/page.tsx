@@ -6,11 +6,17 @@ import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useTranslations } from "next-intl";
+import { EyeIcon, EyeOffIcon, LockIcon, MailIcon } from "lucide-react";
 import { z } from "zod";
 
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupButton,
+  InputGroupInput
+} from "@/components/ui/input-group";
 import { Label } from "@/components/ui/label";
 import { GoogleButton } from "@/components/ibis/google-button";
 import { GuestShell } from "@/components/ibis/guest-shell";
@@ -28,6 +34,7 @@ export default function LoginPage() {
   const tErrors = useTranslations("errors");
   const router = useRouter();
   const [errorCode, setErrorCode] = useState<string | null>(null);
+  const [showPassword, setShowPassword] = useState(false);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
@@ -64,14 +71,19 @@ export default function LoginPage() {
             <Label htmlFor="email" className="sr-only">
               {t("email")}
             </Label>
-            <Input
-              id="email"
-              type="email"
-              autoComplete="email"
-              placeholder={t("email")}
-              aria-invalid={!!form.formState.errors.email}
-              {...form.register("email")}
-            />
+            <InputGroup>
+              <InputGroupAddon>
+                <MailIcon />
+              </InputGroupAddon>
+              <InputGroupInput
+                id="email"
+                type="email"
+                autoComplete="email"
+                placeholder={t("email")}
+                aria-invalid={!!form.formState.errors.email}
+                {...form.register("email")}
+              />
+            </InputGroup>
             {form.formState.errors.email ? (
               <p className="text-destructive mt-1 text-xs">{t("emailInvalid")}</p>
             ) : null}
@@ -80,14 +92,28 @@ export default function LoginPage() {
             <Label htmlFor="password" className="sr-only">
               {t("password")}
             </Label>
-            <Input
-              id="password"
-              type="password"
-              autoComplete="current-password"
-              placeholder={t("password")}
-              aria-invalid={!!form.formState.errors.password}
-              {...form.register("password")}
-            />
+            <InputGroup>
+              <InputGroupAddon>
+                <LockIcon />
+              </InputGroupAddon>
+              <InputGroupInput
+                id="password"
+                type={showPassword ? "text" : "password"}
+                autoComplete="current-password"
+                placeholder={t("password")}
+                aria-invalid={!!form.formState.errors.password}
+                {...form.register("password")}
+              />
+              <InputGroupAddon align="inline-end">
+                <InputGroupButton
+                  type="button"
+                  size="icon-xs"
+                  aria-label={showPassword ? t("hidePassword") : t("showPassword")}
+                  onClick={() => setShowPassword((prev) => !prev)}>
+                  {showPassword ? <EyeOffIcon /> : <EyeIcon />}
+                </InputGroupButton>
+              </InputGroupAddon>
+            </InputGroup>
           </div>
           <div className="text-end">
             <Link href="/forgot-password" className="ml-auto inline-block text-sm underline">

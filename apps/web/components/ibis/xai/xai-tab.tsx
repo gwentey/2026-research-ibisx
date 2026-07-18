@@ -1,13 +1,24 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
-import { SparklesIcon } from "lucide-react";
+import { HistoryIcon, LayersIcon, SparklesIcon, TargetIcon } from "lucide-react";
 
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Empty, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
+import {
+  Item,
+  ItemActions,
+  ItemContent,
+  ItemDescription,
+  ItemGroup,
+  ItemMedia,
+  ItemSeparator,
+  ItemTitle
+} from "@/components/ui/item";
 import { Progress } from "@/components/ui/progress";
 import {
   Table,
@@ -250,31 +261,58 @@ export function XaiTab({ experimentId }: { experimentId: string }) {
         </CardHeader>
         <CardContent>
           {history.length === 0 ? (
-            <p className="text-muted-foreground text-sm">{t("history.empty")}</p>
+            <Empty>
+              <EmptyHeader>
+                <EmptyMedia variant="icon">
+                  <HistoryIcon />
+                </EmptyMedia>
+                <EmptyTitle>{t("history.empty")}</EmptyTitle>
+              </EmptyHeader>
+            </Empty>
           ) : (
-            <div className="space-y-1">
-              {history.map((item) => (
-                <div key={item.id} className="flex items-center gap-2 text-sm">
-                  <Badge variant="outline">{item.type}</Badge>
-                  <span className="font-mono text-xs">{item.method_used ?? item.status}</span>
-                  {item.is_fallback ? (
-                    <Badge variant="secondary" className="text-[10px]">
-                      fallback
-                    </Badge>
-                  ) : null}
-                  <span className="text-muted-foreground ml-auto text-xs">
-                    {new Date(item.created_at).toLocaleString(locale)}
-                  </span>
-                  {item.status === "completed" ? (
-                    <Button size="sm" variant="ghost" onClick={() => void view(item.id)}>
-                      {t("history.view")}
-                    </Button>
-                  ) : (
-                    <Badge variant="outline">{item.status}</Badge>
-                  )}
-                </div>
+            <ItemGroup>
+              {history.map((item, index) => (
+                <Fragment key={item.id}>
+                  {index > 0 ? <ItemSeparator /> : null}
+                  <Item
+                    size="sm"
+                    className={cn(
+                      item.status === "completed" &&
+                        "hover:border-primary/30 hover:bg-muted cursor-pointer"
+                    )}
+                    onClick={item.status === "completed" ? () => void view(item.id) : undefined}>
+                    <ItemMedia variant="icon">
+                      {item.type === "local" ? <TargetIcon /> : <LayersIcon />}
+                    </ItemMedia>
+                    <ItemContent>
+                      <ItemTitle>
+                        <Badge variant="outline">{item.type}</Badge>
+                        <span className="font-mono text-xs">
+                          {item.method_used ?? item.status}
+                        </span>
+                        {item.is_fallback ? (
+                          <Badge variant="secondary" className="text-[10px]">
+                            {t("history.fallback")}
+                          </Badge>
+                        ) : null}
+                      </ItemTitle>
+                      <ItemDescription>
+                        {new Date(item.created_at).toLocaleString(locale)}
+                      </ItemDescription>
+                    </ItemContent>
+                    <ItemActions>
+                      {item.status === "completed" ? (
+                        <Button size="sm" variant="ghost" onClick={() => void view(item.id)}>
+                          {t("history.view")}
+                        </Button>
+                      ) : (
+                        <Badge variant="outline">{item.status}</Badge>
+                      )}
+                    </ItemActions>
+                  </Item>
+                </Fragment>
               ))}
-            </div>
+            </ItemGroup>
           )}
         </CardContent>
       </Card>

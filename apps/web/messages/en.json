@@ -68,7 +68,18 @@
     "googleFinalizing": "Finalizing Google sign-in…",
     "googleError": "Google sign-in failed.",
     "passwordTooShort": "At least 8 characters",
-    "emailInvalid": "Invalid email address"
+    "emailInvalid": "Invalid email address",
+    "panel": {
+      "tagline": "Train a model, understand every choice.",
+      "subtitle": "IBIS-X guides you from the ethical choice of dataset to the model's explanation.",
+      "proofDatasets": "6 real, documented datasets",
+      "proofEthics": "10 evaluated ethical criteria",
+      "proofSteps": "9 guided steps, one at a time",
+      "researchNote": "From a research project — M2 MIAGE, Université Paris 1 Panthéon-Sorbonne.",
+      "compactLabel": "9 guided steps"
+    },
+    "showPassword": "Show password",
+    "hidePassword": "Hide password"
   },
   "onboarding": {
     "title": "Let's get to know you",
@@ -875,7 +886,15 @@
       "cancelled": "Cancelled"
     },
     "compareTitle": "Experiment comparison",
-    "compareEmpty": "Select at least 2 completed experiments."
+    "compareEmpty": "Select at least 2 completed experiments.",
+    "contextPills": {
+      "classes": "{count} classes"
+    },
+    "metricQuality": {
+      "good": "Good",
+      "medium": "Medium",
+      "low": "Low"
+    }
   },
   "xai": {
     "title": "Explainability",
@@ -901,7 +920,8 @@
     "history": {
       "title": "History",
       "empty": "No explanation generated for this experiment yet.",
-      "view": "View"
+      "view": "View",
+      "fallback": "Fallback"
     },
     "kpis": {
       "title": "Explanation reliability",
@@ -969,7 +989,35 @@
     "phase2Body": "9 pedagogical steps, methodological guardrails, guaranteed reproducibility (random_state=42).",
     "phase3": "Explainability",
     "phase3Body": "SHAP and LIME with computed reliability indicators, profile-adapted explanation and chat.",
-    "research": "Born from a research project — M2 MIAGE, Université Paris 1 Panthéon-Sorbonne."
+    "research": "Born from a research project — M2 MIAGE, Université Paris 1 Panthéon-Sorbonne.",
+    "preview": {
+      "caption": "Product preview — a faithful reconstruction in real components, not a screenshot.",
+      "exampleBadge": "Example"
+    },
+    "journey": {
+      "title": "The journey, in four steps",
+      "subtitle": "The same thread guides you through every stage of the application.",
+      "projectBody": "Describe your goal: the application then suggests datasets weighted against your priorities."
+    },
+    "ethics": {
+      "title": "How we assess data",
+      "subtitle": "Twelve technical and ethical criteria, visible before you pick a dataset."
+    },
+    "honesty": {
+      "title": "An AI that explains its limits",
+      "fallback": {
+        "title": "Fallback, made explicit",
+        "body": "If SHAP isn't available for your model, the application switches to LIME and says so plainly — never a disguised result."
+      },
+      "reproducibility": {
+        "title": "Reproducible",
+        "body": "Every training run fixes the random seed (random_state=42): same data, same result."
+      },
+      "kpis": {
+        "title": "Measured reliability",
+        "body": "SHAP completeness, stability, LIME fidelity: computed indicators, not promises."
+      }
+    }
   },
   "states": {
     "notFoundTitle": "Page not found",
@@ -985,7 +1033,13 @@
     "filterStatus": "Status",
     "filterAlgo": "Algorithm",
     "any": "All",
-    "empty": "No experiment. Start a training from a project."
+    "empty": "No experiment. Start a training from a project.",
+    "stats": {
+      "total": "Experiments",
+      "completed": "Completed",
+      "avgScore": "Average score",
+      "noData": "—"
+    }
   },
   "admin": {
     "users": {

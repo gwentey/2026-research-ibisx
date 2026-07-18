@@ -1,22 +1,15 @@
-import Image from "next/image";
 import React from "react";
 
-// Coquille des pages invité : reprend la mise en page login/v1 du template
-// (visuel plein écran à gauche, formulaire centré à droite) — P6.
+import { AuthBrandPanel } from "@/components/ibis/auth-brand-panel";
+
+// Coquille des pages invité : panneau de marque "sentier balisé" (desktop, w-1/2 pleine
+// hauteur) / bande compacte (mobile, en tête de page), formulaire centré en vis-à-vis — P6
+// (refonte 02 : remplace l'ancienne photo stock `/images/extra/image4.jpg`).
 export function GuestShell({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex pb-8 lg:h-screen lg:pb-0">
-      <div className="hidden w-1/2 bg-gray-100 lg:block">
-        <Image
-          width={1000}
-          height={1000}
-          src="/images/extra/image4.jpg"
-          alt=""
-          priority
-          className="h-full w-full object-cover"
-        />
-      </div>
-      <div className="flex w-full items-center justify-center lg:w-1/2">
+    <div className="flex flex-col pb-8 lg:h-screen lg:flex-row lg:pb-0">
+      <AuthBrandPanel />
+      <div className="flex w-full flex-1 items-center justify-center lg:w-1/2">
         <div className="w-full max-w-md space-y-8 px-4 py-10 lg:py-0">{children}</div>
       </div>
     </div>

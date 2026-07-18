@@ -1,24 +1,39 @@
 "use client";
 
-import { use, useCallback, useEffect, useState } from "react";
+import { Fragment, use, useCallback, useEffect, useState, type ReactNode } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { DownloadIcon, RotateCcwIcon } from "lucide-react";
+import {
+  BarChart3Icon,
+  BrainCircuitIcon,
+  DownloadIcon,
+  LayersIcon,
+  RotateCcwIcon,
+  TargetIcon,
+  TerminalIcon,
+  TimerIcon,
+  type LucideIcon
+} from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Item, ItemContent, ItemDescription, ItemGroup, ItemMedia, ItemSeparator } from "@/components/ui/item";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { MissionStepper } from "@/components/ibis/mission-stepper";
 import { XaiTab } from "@/components/ibis/xai/xai-tab";
 import {
+  CompositeScoreCard,
   ConfusionMatrix,
   ImportanceChart,
+  MetricTile,
   PrCurve,
   RegressionCharts,
   RocCurve,
-  TreeView
+  TreeView,
+  metricRatio,
+  metricTone
 } from "@/components/ibis/experiments/result-charts";
 import {
   downloadModel,
@@ -27,6 +42,16 @@ import {
   getExperimentResults
 } from "@/lib/api/generated";
 import type { ExperimentResults, ExperimentWithQueue, LogLine } from "@/lib/api/generated";
+
+/** Pill de contexte (en-tête résultats) — pastille tonale + icône, données réelles uniquement. */
+function ContextPill({ icon: Icon, children }: { icon: LucideIcon; children: ReactNode }) {
+  return (
+    <span className="bg-muted text-muted-foreground inline-flex items-center gap-1.5 rounded-md border px-2.5 py-1 text-xs">
+      <Icon className="size-3.5" />
+      {children}
+    </span>
+  );
+}
 
 const METRIC_ORDER = [
   "f1_macro",
@@ -111,26 +136,47 @@ export default function ExperimentResultsPage({
     <div className="space-y-6">
       <div className="space-y-3">
         <MissionStepper current="explanation" />
-        <div className="flex flex-wrap items-start justify-between gap-4">
-          <div>
-            <h1 className="text-2xl font-semibold tracking-tight">{t("resultsTitle")}</h1>
-            <p className="text-muted-foreground mt-1 text-sm">
-              {results?.algorithm} · {results?.task_type} ·{" "}
-              {experiment.duration_seconds ? `${experiment.duration_seconds}s` : ""}
-            </p>
+        <div className="flex items-start gap-4">
+          <div className="bg-primary/10 text-primary flex size-12 shrink-0 items-center justify-center rounded-xl">
+            <BarChart3Icon className="size-6" />
           </div>
-          <div className="flex flex-wrap gap-2">
-            <Button variant="outline" onClick={() => void download()}>
-              <DownloadIcon />
-              {t("actions.download")}
-            </Button>
-            <Button variant="outline" asChild>
-              <Link
-                href={`/wizard?projectId=${experiment.project_id}&datasetId=${experiment.dataset_id}`}>
-                <RotateCcwIcon />
-                {t("actions.rerun")}
-              </Link>
-            </Button>
+          <div className="min-w-0 flex-1">
+            <div className="flex flex-wrap items-start justify-between gap-4">
+              <div className="min-w-0">
+                <h1 className="text-xl font-semibold tracking-tight sm:text-2xl">
+                  {t("resultsTitle")}
+                </h1>
+                <div className="mt-2 flex flex-wrap gap-1.5">
+                  {results?.algorithm ? (
+                    <ContextPill icon={BrainCircuitIcon}>{results.algorithm}</ContextPill>
+                  ) : null}
+                  {results?.task_type ? (
+                    <ContextPill icon={TargetIcon}>{results.task_type}</ContextPill>
+                  ) : null}
+                  {results?.class_names && results.class_names.length > 0 ? (
+                    <ContextPill icon={LayersIcon}>
+                      {t("contextPills.classes", { count: results.class_names.length })}
+                    </ContextPill>
+                  ) : null}
+                  {experiment.duration_seconds ? (
+                    <ContextPill icon={TimerIcon}>{`${experiment.duration_seconds}s`}</ContextPill>
+                  ) : null}
+                </div>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                <Button variant="outline" onClick={() => void download()}>
+                  <DownloadIcon />
+                  {t("actions.download")}
+                </Button>
+                <Button variant="outline" asChild>
+                  <Link
+                    href={`/wizard?projectId=${experiment.project_id}&datasetId=${experiment.dataset_id}`}>
+                    <RotateCcwIcon />
+                    {t("actions.rerun")}
+                  </Link>
+                </Button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -143,56 +189,48 @@ export default function ExperimentResultsPage({
 
         <TabsContent value="performance" className="space-y-4">
           {composite ? (
-            <Card>
-              <CardContent className="flex items-center gap-6 pt-6">
-                <div
-                  className="relative flex size-24 shrink-0 items-center justify-center rounded-full"
-                  style={{
-                    background: `conic-gradient(var(--primary) ${composite.value * 3.6}deg, var(--muted) 0deg)`
-                  }}
-                  title={t("composite.method", { method: composite.method })}>
-                  <div className="bg-background flex size-19 items-center justify-center rounded-full">
-                    <span className="text-xl font-bold">{Math.round(composite.value)}</span>
-                  </div>
-                </div>
-                <div>
-                  <p className="text-lg font-semibold">
-                    {t(`composite.${composite.label}` as never)}
-                  </p>
-                  <p className="text-muted-foreground text-xs">
-                    {t("composite.method", { method: composite.method })}
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
+            <CompositeScoreCard
+              value={composite.value}
+              label={t(`composite.${composite.label}` as never)}
+              methodText={t("composite.method", { method: composite.method })}
+              primaryMetric={
+                results &&
+                typeof results.metrics.primary_metric === "string" &&
+                typeof results.metrics[results.metrics.primary_metric as string] === "number"
+                  ? {
+                      label: t(`metrics.${results.metrics.primary_metric}` as never),
+                      value: String(results.metrics[results.metrics.primary_metric as string])
+                    }
+                  : null
+              }
+            />
           ) : null}
 
           {results ? (
             <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-4">
               {METRIC_ORDER.filter((key) => typeof results.metrics[key] === "number").map(
-                (key) => (
-                  <Card key={key} className="py-4">
-                    <CardContent>
-                      <p className="text-muted-foreground flex items-center gap-1 text-xs">
-                        {t(`metrics.${key}` as never)}
-                        {results.metrics.primary_metric === key ? (
-                          <Badge variant="secondary" className="text-[9px]">
-                            {t("metrics.primary")}
-                          </Badge>
-                        ) : null}
-                      </p>
-                      <p
-                        className="text-xl font-semibold"
-                        title={
-                          t.has(`metricHints.${key}` as never)
-                            ? t(`metricHints.${key}` as never)
-                            : undefined
-                        }>
-                        {String(results.metrics[key])}
-                      </p>
-                    </CardContent>
-                  </Card>
-                )
+                (key) => {
+                  const numericValue = results.metrics[key] as number;
+                  const tone = metricTone(key, numericValue);
+                  const ratio = metricRatio(key, numericValue);
+                  return (
+                    <MetricTile
+                      key={key}
+                      label={t(`metrics.${key}` as never)}
+                      displayValue={String(numericValue)}
+                      tone={tone}
+                      ratio={ratio}
+                      qualityLabel={ratio !== null ? t(`metricQuality.${tone}` as never) : undefined}
+                      isPrimary={results.metrics.primary_metric === key}
+                      primaryLabel={t("metrics.primary")}
+                      hint={
+                        t.has(`metricHints.${key}` as never)
+                          ? t(`metricHints.${key}` as never)
+                          : undefined
+                      }
+                    />
+                  );
+                }
               )}
             </div>
           ) : null}
@@ -252,13 +290,26 @@ export default function ExperimentResultsPage({
                 <CardTitle className="text-base">{t("logs")}</CardTitle>
               </CardHeader>
               <CardContent>
-                <ul className="bg-muted max-h-48 overflow-auto rounded-md p-3 font-mono text-xs">
+                <ItemGroup className="max-h-64 overflow-auto rounded-md border">
                   {logs.map((line, index) => (
-                    <li key={index}>
-                      {new Date(line.ts).toLocaleTimeString()} — {line.message}
-                    </li>
+                    <Fragment key={index}>
+                      {index > 0 ? <ItemSeparator /> : null}
+                      <Item size="sm">
+                        <ItemMedia variant="icon">
+                          <TerminalIcon />
+                        </ItemMedia>
+                        <ItemContent>
+                          <ItemDescription className="text-foreground font-mono text-xs">
+                            {line.message}
+                          </ItemDescription>
+                        </ItemContent>
+                        <span className="text-muted-foreground shrink-0 font-mono text-[10px]">
+                          {new Date(line.ts).toLocaleTimeString()}
+                        </span>
+                      </Item>
+                    </Fragment>
                   ))}
-                </ul>
+                </ItemGroup>
               </CardContent>
             </Card>
           ) : null}

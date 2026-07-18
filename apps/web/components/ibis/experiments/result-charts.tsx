@@ -14,10 +14,141 @@ import {
   YAxis
 } from "recharts";
 
+import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
+import { Progress } from "@/components/ui/progress";
+import { cn } from "@/lib/utils";
 
 // Rendu 100 % client des DONNÉES de visualisation (viz_data JSON) — Recharts (P6).
+
+// Studio analytique (10-experiments-xai) : médaillon de score composite, réservé à cette
+// surface (cf. docs/refonte/00-synthese.md — signature exclusive experiments).
+export function CompositeScoreCard({
+  value,
+  label,
+  methodText,
+  primaryMetric
+}: {
+  value: number;
+  label: string;
+  methodText: string;
+  primaryMetric?: { label: string; value: string } | null;
+}) {
+  return (
+    <Card className="from-primary/8 to-chart-2/15 overflow-hidden border-0 bg-gradient-to-br py-0">
+      <CardContent className="flex flex-col gap-4 p-4 sm:flex-row sm:items-center sm:gap-6">
+        <div className="bg-background flex flex-1 items-center gap-4 rounded-lg p-4">
+          <div
+            className="relative flex size-24 shrink-0 items-center justify-center rounded-full"
+            style={{
+              background: `conic-gradient(var(--primary) ${value * 3.6}deg, var(--muted) 0deg)`
+            }}
+            title={methodText}>
+            <div className="bg-background flex size-19 items-center justify-center rounded-full">
+              <span className="text-xl font-bold">{Math.round(value)}</span>
+            </div>
+          </div>
+          <div className="min-w-0">
+            <p className="text-lg font-semibold">{label}</p>
+            <p className="text-muted-foreground text-xs">{methodText}</p>
+          </div>
+        </div>
+        {primaryMetric ? (
+          <div className="bg-muted flex shrink-0 flex-col items-center justify-center rounded-xl p-4 sm:w-40">
+            <span className="text-3xl font-semibold">{primaryMetric.value}</span>
+            <span className="text-muted-foreground text-center text-xs">{primaryMetric.label}</span>
+          </div>
+        ) : null}
+      </CardContent>
+    </Card>
+  );
+}
+
+export type MetricTone = "good" | "medium" | "low" | "neutral";
+
+/** Métriques bornées [0,1] où le seuil qualitatif a un sens (pas les métriques d'erreur). */
+const RATIO_METRIC_KEYS = new Set([
+  "accuracy",
+  "precision",
+  "recall",
+  "f1_score",
+  "precision_macro",
+  "recall_macro",
+  "f1_macro",
+  "roc_auc",
+  "pr_auc",
+  "oob_score",
+  "r2"
+]);
+
+/** Seuils dérivés de la donnée réelle (aucune valeur inventée) — même logique que scoreColorClass. */
+export function metricTone(key: string, value: number): MetricTone {
+  if (!RATIO_METRIC_KEYS.has(key)) return "neutral";
+  const ratio = Math.max(0, Math.min(1, value));
+  if (ratio >= 0.8) return "good";
+  if (ratio >= 0.6) return "medium";
+  return "low";
+}
+
+export function metricRatio(key: string, value: number): number | null {
+  if (!RATIO_METRIC_KEYS.has(key)) return null;
+  return Math.max(0, Math.min(1, value));
+}
+
+const TONE_DOT: Record<MetricTone, string> = {
+  good: "bg-chart-1",
+  medium: "bg-chart-3",
+  low: "bg-chart-4",
+  neutral: "bg-muted-foreground/40"
+};
+
+export function MetricTile({
+  label,
+  displayValue,
+  tone,
+  ratio,
+  qualityLabel,
+  isPrimary,
+  primaryLabel,
+  hint
+}: {
+  label: string;
+  displayValue: string;
+  tone: MetricTone;
+  ratio: number | null;
+  qualityLabel?: string;
+  isPrimary?: boolean;
+  primaryLabel?: string;
+  hint?: string;
+}) {
+  return (
+    <Card className={cn("gap-2 py-4", tone === "low" && "border-destructive/40")}>
+      <CardContent className="space-y-2">
+        <div className="flex items-center justify-between gap-2">
+          <p className="text-muted-foreground flex items-center gap-1.5 text-xs">
+            <span className={cn("size-1.5 shrink-0 rounded-full", TONE_DOT[tone])} aria-hidden />
+            {label}
+          </p>
+          {isPrimary ? (
+            <Badge variant="secondary" className="text-[9px]">
+              {primaryLabel}
+            </Badge>
+          ) : null}
+        </div>
+        <p className="text-xl font-semibold" title={hint}>
+          {displayValue}
+        </p>
+        {ratio !== null ? (
+          <div className="space-y-1">
+            <Progress value={ratio * 100} className="h-1.5" indicatorColor={TONE_DOT[tone]} />
+            {qualityLabel ? <p className="text-muted-foreground text-[10px]">{qualityLabel}</p> : null}
+          </div>
+        ) : null}
+      </CardContent>
+    </Card>
+  );
+}
 
 export function ConfusionMatrix({
   classes,

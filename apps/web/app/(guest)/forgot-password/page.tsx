@@ -5,11 +5,12 @@ import Link from "next/link";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useTranslations } from "next-intl";
+import { MailIcon } from "lucide-react";
 import { z } from "zod";
 
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
 import { Label } from "@/components/ui/label";
 import { GuestShell } from "@/components/ibis/guest-shell";
 import { forgotPassword } from "@/lib/api/generated";
@@ -49,14 +50,19 @@ export default function ForgotPasswordPage() {
             <Label htmlFor="email" className="sr-only">
               {t("email")}
             </Label>
-            <Input
-              id="email"
-              type="email"
-              autoComplete="email"
-              placeholder={t("email")}
-              aria-invalid={!!form.formState.errors.email}
-              {...form.register("email")}
-            />
+            <InputGroup>
+              <InputGroupAddon>
+                <MailIcon />
+              </InputGroupAddon>
+              <InputGroupInput
+                id="email"
+                type="email"
+                autoComplete="email"
+                placeholder={t("email")}
+                aria-invalid={!!form.formState.errors.email}
+                {...form.register("email")}
+              />
+            </InputGroup>
             {form.formState.errors.email ? (
               <p className="text-destructive mt-1 text-xs">{t("emailInvalid")}</p>
             ) : null}

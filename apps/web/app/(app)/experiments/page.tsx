@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
+import { CheckCircle2Icon, FlaskConicalIcon, GaugeIcon, type LucideIcon } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -25,6 +26,23 @@ import {
 } from "@/components/ui/table";
 import { listExperiments } from "@/lib/api/generated";
 import type { ExperimentSummary } from "@/lib/api/generated";
+
+/** Tuile stat sobre (bandeau /experiments) — calculée côté client, aucun appel réseau de plus. */
+function StatTile({ icon: Icon, label, value }: { icon: LucideIcon; label: string; value: string }) {
+  return (
+    <Card className="py-4">
+      <CardContent className="flex items-center gap-3">
+        <div className="bg-primary/10 text-primary flex size-10 shrink-0 items-center justify-center rounded-md">
+          <Icon className="size-4" />
+        </div>
+        <div className="min-w-0">
+          <p className="text-muted-foreground text-xs font-medium">{label}</p>
+          <p className="text-foreground text-xl font-semibold">{value}</p>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
 
 const STATUS_VARIANT: Record<string, "default" | "secondary" | "destructive" | "outline"> = {
   completed: "default",
@@ -62,12 +80,35 @@ export default function ExperimentsPage() {
     return () => clearInterval(timer);
   }, [load]);
 
+  const completedCount = items?.filter((item) => item.status === "completed").length ?? 0;
+  const scoreValues = (items ?? [])
+    .filter((item) => item.status === "completed" && typeof item.primary_metric_value === "number")
+    .map((item) => item.primary_metric_value as number);
+  const avgScore =
+    scoreValues.length > 0 ? scoreValues.reduce((sum, value) => sum + value, 0) / scoreValues.length : null;
+
   return (
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">{t("title")}</h1>
         <p className="text-muted-foreground mt-1 text-sm">{t("subtitle")}</p>
       </div>
+
+      {items !== null ? (
+        <div className="grid gap-3 sm:grid-cols-3">
+          <StatTile icon={FlaskConicalIcon} label={t("stats.total")} value={String(items.length)} />
+          <StatTile
+            icon={CheckCircle2Icon}
+            label={t("stats.completed")}
+            value={String(completedCount)}
+          />
+          <StatTile
+            icon={GaugeIcon}
+            label={t("stats.avgScore")}
+            value={avgScore !== null ? avgScore.toFixed(2) : t("stats.noData")}
+          />
+        </div>
+      ) : null}
 
       <div className="flex flex-wrap gap-2">
         <Select value={status} onValueChange={setStatus}>

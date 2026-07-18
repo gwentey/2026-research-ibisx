@@ -6,11 +6,17 @@ import { useSearchParams } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useTranslations } from "next-intl";
+import { EyeIcon, EyeOffIcon, LockIcon } from "lucide-react";
 import { z } from "zod";
 
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupButton,
+  InputGroupInput
+} from "@/components/ui/input-group";
 import { Label } from "@/components/ui/label";
 import { GuestShell } from "@/components/ibis/guest-shell";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -26,6 +32,7 @@ function ResetForm() {
   const searchParams = useSearchParams();
   const token = searchParams.get("token") ?? "";
   const [state, setState] = useState<"idle" | "done" | "error">("idle");
+  const [showPassword, setShowPassword] = useState(false);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
@@ -62,14 +69,28 @@ function ResetForm() {
             <Label htmlFor="new_password" className="sr-only">
               {t("newPassword")}
             </Label>
-            <Input
-              id="new_password"
-              type="password"
-              autoComplete="new-password"
-              placeholder={t("newPassword")}
-              aria-invalid={!!form.formState.errors.new_password}
-              {...form.register("new_password")}
-            />
+            <InputGroup>
+              <InputGroupAddon>
+                <LockIcon />
+              </InputGroupAddon>
+              <InputGroupInput
+                id="new_password"
+                type={showPassword ? "text" : "password"}
+                autoComplete="new-password"
+                placeholder={t("newPassword")}
+                aria-invalid={!!form.formState.errors.new_password}
+                {...form.register("new_password")}
+              />
+              <InputGroupAddon align="inline-end">
+                <InputGroupButton
+                  type="button"
+                  size="icon-xs"
+                  aria-label={showPassword ? t("hidePassword") : t("showPassword")}
+                  onClick={() => setShowPassword((prev) => !prev)}>
+                  {showPassword ? <EyeOffIcon /> : <EyeIcon />}
+                </InputGroupButton>
+              </InputGroupAddon>
+            </InputGroup>
             <p
               className={
                 form.formState.errors.new_password

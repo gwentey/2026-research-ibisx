@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { BookOpenIcon } from "lucide-react";
 import { Bar, BarChart, CartesianGrid, Cell, XAxis, YAxis } from "recharts";
 
 import { Badge } from "@/components/ui/badge";
@@ -8,8 +9,25 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import type { ExplanationResults } from "@/lib/api/generated";
 import { XaiChat } from "@/components/ibis/xai/xai-chat";
+import { cn } from "@/lib/utils";
 
 // Rendu d'une explication TERMINÉE : bandeau KPI, graphes viz_data, texte, chat.
+
+type KpiTone = "good" | "warn" | "bad" | "neutral";
+
+const TONE_TEXT: Record<KpiTone, string> = {
+  good: "text-green-600 dark:text-green-400",
+  warn: "text-amber-600 dark:text-amber-400",
+  bad: "text-red-600 dark:text-red-400",
+  neutral: ""
+};
+
+const TONE_DOT: Record<KpiTone, string> = {
+  good: "bg-green-600 dark:bg-green-400",
+  warn: "bg-amber-600 dark:bg-amber-400",
+  bad: "bg-red-600 dark:bg-red-400",
+  neutral: "bg-muted-foreground/40"
+};
 
 function KpiTile({
   label,
@@ -20,21 +38,18 @@ function KpiTile({
   label: string;
   hint: string;
   value: string;
-  tone: "good" | "warn" | "bad" | "neutral";
+  tone: KpiTone;
 }) {
-  const toneClass =
-    tone === "good"
-      ? "text-green-600 dark:text-green-400"
-      : tone === "warn"
-        ? "text-amber-600 dark:text-amber-400"
-        : tone === "bad"
-          ? "text-red-600 dark:text-red-400"
-          : "";
   return (
-    <div className="rounded-md border p-3" title={hint}>
-      <p className="text-muted-foreground text-xs">{label}</p>
-      <p className={`text-sm font-semibold ${toneClass}`}>{value}</p>
-    </div>
+    <Card className="gap-1.5 py-3" title={hint}>
+      <CardContent className="space-y-1.5 px-3">
+        <p className="text-muted-foreground text-xs">{label}</p>
+        <Badge variant="outline" className={cn("gap-1.5 font-semibold", TONE_TEXT[tone])}>
+          <span className={cn("size-1.5 shrink-0 rounded-full", TONE_DOT[tone])} aria-hidden />
+          {value}
+        </Badge>
+      </CardContent>
+    </Card>
   );
 }
 
@@ -57,7 +72,7 @@ function KpiBoard({ kpis }: { kpis: Record<string, never> }) {
         <CardTitle className="text-base">{t("title")}</CardTitle>
         <p className="text-muted-foreground text-xs">{t("hint")}</p>
       </CardHeader>
-      <CardContent className="grid gap-2 sm:grid-cols-3">
+      <CardContent className="grid gap-2 sm:grid-cols-3 lg:grid-cols-6">
         {completeness ? (
           <KpiTile
             label={t("completeness")}
@@ -245,10 +260,13 @@ export function ExplanationView({ explanation }: { explanation: ExplanationResul
       {explanation.text_explanation ? (
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">{t("text.title")}</CardTitle>
+            <CardTitle className="flex items-center gap-2 text-base">
+              <BookOpenIcon className="text-muted-foreground size-4" />
+              {t("text.title")}
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-sm leading-relaxed whitespace-pre-line">
+            <p className="bg-muted/40 rounded-md border p-4 text-sm leading-relaxed whitespace-pre-line">
               {explanation.text_explanation}
             </p>
           </CardContent>

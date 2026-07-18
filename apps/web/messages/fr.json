@@ -68,7 +68,18 @@
     "googleFinalizing": "Finalisation de la connexion Google…",
     "googleError": "La connexion Google a échoué.",
     "passwordTooShort": "8 caractères minimum",
-    "emailInvalid": "Adresse email invalide"
+    "emailInvalid": "Adresse email invalide",
+    "panel": {
+      "tagline": "Former un modèle, comprendre chaque choix.",
+      "subtitle": "IBIS-X vous accompagne du choix éthique du dataset jusqu'à l'explication du modèle.",
+      "proofDatasets": "6 jeux de données réels, documentés",
+      "proofEthics": "10 critères éthiques évalués",
+      "proofSteps": "9 étapes guidées, pas à pas",
+      "researchNote": "Issu d'un projet de recherche — M2 MIAGE, Université Paris 1 Panthéon-Sorbonne.",
+      "compactLabel": "9 étapes guidées"
+    },
+    "showPassword": "Afficher le mot de passe",
+    "hidePassword": "Masquer le mot de passe"
   },
   "onboarding": {
     "title": "Faisons connaissance",
@@ -875,7 +886,15 @@
       "cancelled": "Annulée"
     },
     "compareTitle": "Comparaison d'expériences",
-    "compareEmpty": "Sélectionnez au moins 2 expériences terminées."
+    "compareEmpty": "Sélectionnez au moins 2 expériences terminées.",
+    "contextPills": {
+      "classes": "{count} classes"
+    },
+    "metricQuality": {
+      "good": "Bon",
+      "medium": "Moyen",
+      "low": "Faible"
+    }
   },
   "xai": {
     "title": "Explicabilité",
@@ -901,7 +920,8 @@
     "history": {
       "title": "Historique",
       "empty": "Aucune explication générée pour cette expérience.",
-      "view": "Voir"
+      "view": "Voir",
+      "fallback": "Repli"
     },
     "kpis": {
       "title": "Fiabilité de l'explication",
@@ -969,7 +989,35 @@
     "phase2Body": "9 étapes pédagogiques, garde-fous méthodologiques, reproductibilité garantie (random_state=42).",
     "phase3": "Explicabilité",
     "phase3Body": "SHAP et LIME avec indicateurs de fiabilité calculés, explication adaptée à votre profil et chat.",
-    "research": "Issu d'un projet de recherche — M2 MIAGE, Université Paris 1 Panthéon-Sorbonne."
+    "research": "Issu d'un projet de recherche — M2 MIAGE, Université Paris 1 Panthéon-Sorbonne.",
+    "preview": {
+      "caption": "Aperçu du produit — reconstitution fidèle en composants, pas une capture d'écran.",
+      "exampleBadge": "Exemple"
+    },
+    "journey": {
+      "title": "Le parcours, en quatre temps",
+      "subtitle": "Le même fil vous accompagne à chaque étape de l'application.",
+      "projectBody": "Décrivez votre objectif : l'application propose ensuite des datasets pondérés selon vos priorités."
+    },
+    "ethics": {
+      "title": "Comment nous évaluons les données",
+      "subtitle": "Douze critères techniques et éthiques, visibles avant de choisir un dataset."
+    },
+    "honesty": {
+      "title": "Une IA qui explique ses limites",
+      "fallback": {
+        "title": "Fallback assumé",
+        "body": "Si SHAP n'est pas disponible pour votre modèle, l'application bascule sur LIME et le signale explicitement — jamais de résultat maquillé."
+      },
+      "reproducibility": {
+        "title": "Reproductible",
+        "body": "Chaque entraînement fixe la graine aléatoire (random_state=42) : mêmes données, même résultat."
+      },
+      "kpis": {
+        "title": "Fiabilité mesurée",
+        "body": "Complétude SHAP, stabilité, fidélité LIME : des indicateurs calculés, pas des promesses."
+      }
+    }
   },
   "states": {
     "notFoundTitle": "Page introuvable",
@@ -985,7 +1033,13 @@
     "filterStatus": "Statut",
     "filterAlgo": "Algorithme",
     "any": "Tous",
-    "empty": "Aucune expérience. Lancez un entraînement depuis un projet."
+    "empty": "Aucune expérience. Lancez un entraînement depuis un projet.",
+    "stats": {
+      "total": "Expériences",
+      "completed": "Terminées",
+      "avgScore": "Score moyen",
+      "noData": "—"
+    }
   },
   "admin": {
     "users": {
