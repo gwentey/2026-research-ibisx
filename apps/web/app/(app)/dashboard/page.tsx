@@ -2,40 +2,36 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import {
-  ActivityIcon,
   DatabaseIcon,
   FlaskConicalIcon,
   FolderIcon,
-  LightbulbIcon,
-  PlayIcon,
   PlusIcon,
   TimerIcon,
+  TrendingDownIcon,
   TrendingUpIcon
 } from "lucide-react";
 
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { MissionHeroCard } from "@/components/ibis/dashboard/mission-hero-card";
+import { RecentActivityTimeline } from "@/components/ibis/dashboard/recent-activity-timeline";
+import { RecentProjectsList } from "@/components/ibis/dashboard/recent-projects-list";
+import { StatTile, type StatTrend } from "@/components/ibis/dashboard/stat-tile";
 import { getDashboard } from "@/lib/api/generated";
 import type { DashboardResponse } from "@/lib/api/generated";
 import { useAuthStore } from "@/lib/auth/store";
 
-const STATUS_VARIANT: Record<string, "default" | "secondary" | "destructive" | "outline"> = {
-  completed: "default",
-  running: "secondary",
-  pending: "outline",
-  failed: "destructive",
-  cancelled: "outline"
-};
-
 // Dashboard M7 : chaque chiffre vient d'une agrégation SQL réelle (P1).
+// Refonte P6/lot 3 (docs/refonte/04-dashboard.md) : cockpit personnel — hero « reprendre
+// ma mission » (motif points chart-2, réservé à cette carte), stat tiles tonales,
+// timeline d'activité, liste de projets récents. Ordre de lecture volontaire :
+// salutation → où j'en suis → mes chiffres → ce qui vient de se passer → ce que je
+// peux faire ensuite. Aucun nouvel appel réseau : toujours un seul getDashboard().
 export default function DashboardPage() {
   const t = useTranslations("dashboardHome");
-  const tExp = useTranslations("experiments");
-  const locale = useLocale();
   const user = useAuthStore((state) => state.user);
   const [data, setData] = useState<DashboardResponse | null>(null);
 
@@ -47,8 +43,9 @@ export default function DashboardPage() {
 
   if (!data) {
     return (
-      <div className="space-y-4">
+      <div className="space-y-6">
         <Skeleton className="h-9 w-64" />
+        <Skeleton className="h-44 w-full" />
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           {Array.from({ length: 4 }).map((_, index) => (
             <Skeleton key={index} className="h-28 w-full" />
@@ -59,30 +56,51 @@ export default function DashboardPage() {
     );
   }
 
+  // Aucun delta temporel inventé : le seul signal qualitatif ajouté dérive d'une vraie
+  // valeur déjà exposée (success_rate), jamais d'un pourcentage fictif (P1).
+  const successTrend: StatTrend | null =
+    data.kpis.success_rate !== null && data.kpis.success_rate !== undefined
+      ? data.kpis.success_rate >= 0.5
+        ? { icon: TrendingUpIcon, label: t("kpis.successGood") }
+        : { icon: TrendingDownIcon, label: t("kpis.successLow") }
+      : null;
+
   const kpiTiles = [
     {
       icon: FlaskConicalIcon,
+      tone: "chart-1" as const,
       label: t("kpis.experiments"),
-      value: String(data.kpis.total_experiments)
+      value: String(data.kpis.total_experiments),
+      trend: null
     },
-    { icon: FolderIcon, label: t("kpis.projects"), value: String(data.kpis.active_projects) },
+    {
+      icon: FolderIcon,
+      tone: "chart-2" as const,
+      label: t("kpis.projects"),
+      value: String(data.kpis.active_projects),
+      trend: null
+    },
     {
       icon: TrendingUpIcon,
+      tone: "chart-3" as const,
       label: t("kpis.successRate"),
       // Taux ABSENT tant qu'aucune expérience terminée — jamais un faux 0 % (P1)
       value:
         data.kpis.success_rate !== null && data.kpis.success_rate !== undefined
           ? `${Math.round(data.kpis.success_rate * 100)}%`
-          : t("kpis.noData")
+          : t("kpis.noData"),
+      trend: successTrend
     },
     {
       icon: TimerIcon,
+      tone: "chart-4" as const,
       label: t("kpis.avgDuration"),
       value:
         data.kpis.average_duration_seconds !== null &&
         data.kpis.average_duration_seconds !== undefined
           ? `${data.kpis.average_duration_seconds}s`
-          : t("kpis.noData")
+          : t("kpis.noData"),
+      trend: null
     }
   ];
 
@@ -92,67 +110,23 @@ export default function DashboardPage() {
         {name ? t("welcome", { name }) : t("welcomeFallback")}
       </h1>
 
+      <MissionHeroCard pendingDraft={data.pending_draft} />
+
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {kpiTiles.map((tile) => (
-          <Card key={tile.label} className="py-4">
-            <CardContent className="flex items-center gap-3">
-              <tile.icon className="text-muted-foreground size-5 shrink-0" />
-              <div>
-                <p className="text-2xl font-semibold">{tile.value}</p>
-                <p className="text-muted-foreground text-xs">{tile.label}</p>
-              </div>
-            </CardContent>
-          </Card>
+          <StatTile
+            key={tile.label}
+            icon={tile.icon}
+            tone={tile.tone}
+            label={tile.label}
+            value={tile.value}
+            trend={tile.trend}
+          />
         ))}
       </div>
 
       <div className="grid gap-4 lg:grid-cols-3">
-        <Card className="lg:col-span-2">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-base">
-              <ActivityIcon className="size-4" />
-              {t("activity.title")}
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            {data.recent_activity.length === 0 ? (
-              <p className="text-muted-foreground text-sm">{t("activity.empty")}</p>
-            ) : (
-              <div className="space-y-2">
-                {data.recent_activity.map((item) => (
-                  <div
-                    key={`${item.kind}-${item.ref_id}`}
-                    className="flex items-center gap-2 text-sm">
-                    {item.kind === "experiment" ? (
-                      <FlaskConicalIcon className="text-muted-foreground size-4 shrink-0" />
-                    ) : (
-                      <LightbulbIcon className="text-muted-foreground size-4 shrink-0" />
-                    )}
-                    <span className="text-muted-foreground text-xs">
-                      {item.kind === "experiment"
-                        ? t("activity.experiment")
-                        : t("activity.explanation")}
-                    </span>
-                    <span className="min-w-0 flex-1 truncate font-medium">{item.label}</span>
-                    <Badge variant={STATUS_VARIANT[item.status] ?? "outline"}>
-                      {tExp.has(`status.${item.status}`)
-                        ? tExp(`status.${item.status}`)
-                        : item.status}
-                    </Badge>
-                    <span className="text-muted-foreground text-xs">
-                      {new Date(item.created_at).toLocaleString(locale)}
-                    </span>
-                    <Button size="sm" variant="ghost" asChild>
-                      <Link href={`/experiments/${item.experiment_id}`}>
-                        {t("activity.view")}
-                      </Link>
-                    </Button>
-                  </div>
-                ))}
-              </div>
-            )}
-          </CardContent>
-        </Card>
+        <RecentActivityTimeline items={data.recent_activity} />
 
         <div className="space-y-4">
           <Card>
@@ -172,42 +146,10 @@ export default function DashboardPage() {
                   {t("quickActions.exploreDatasets")}
                 </Link>
               </Button>
-              {data.pending_draft ? (
-                <Button className="w-full justify-start" asChild>
-                  <Link
-                    href={`/wizard?projectId=${data.pending_draft.project_id}&datasetId=${data.pending_draft.dataset_id}`}>
-                    <PlayIcon />
-                    <span className="truncate">
-                      {t("quickActions.resumeHint", {
-                        dataset: data.pending_draft.dataset_name
-                      })}
-                    </span>
-                  </Link>
-                </Button>
-              ) : null}
             </CardContent>
           </Card>
 
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-base">{t("recentProjects.title")}</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-2">
-              {data.recent_projects.length === 0 ? (
-                <p className="text-muted-foreground text-sm">{t("recentProjects.empty")}</p>
-              ) : (
-                data.recent_projects.map((project) => (
-                  <div key={project.id} className="flex items-center gap-2 text-sm">
-                    <FolderIcon className="text-muted-foreground size-4 shrink-0" />
-                    <span className="min-w-0 flex-1 truncate">{project.name}</span>
-                    <Button size="sm" variant="ghost" asChild>
-                      <Link href={`/projects/${project.id}`}>{t("recentProjects.open")}</Link>
-                    </Button>
-                  </div>
-                ))
-              )}
-            </CardContent>
-          </Card>
+          <RecentProjectsList projects={data.recent_projects} />
         </div>
       </div>
     </div>

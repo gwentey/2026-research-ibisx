@@ -7,8 +7,15 @@ import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Field,
+  FieldContent,
+  FieldDescription,
+  FieldGroup,
+  FieldLabel,
+  FieldSeparator
+} from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { useAvatarUrl, userInitials } from "@/components/ibis/use-avatar";
 import { updateMe, uploadAvatar } from "@/lib/api/generated";
 import type { UserRead } from "@/lib/api/generated";
@@ -68,61 +75,66 @@ export function ProfileTab({ user }: { user: UserRead }) {
       <CardHeader>
         <CardTitle className="text-base">{t("tabProfile")}</CardTitle>
       </CardHeader>
-      <CardContent className="space-y-6">
-        <div className="flex items-center gap-4">
-          <Avatar className="size-16">
-            {avatarUrl ? <AvatarImage src={avatarUrl} alt="" /> : null}
-            <AvatarFallback>{userInitials(user.pseudo, user.email)}</AvatarFallback>
-          </Avatar>
-          <div className="space-y-1">
-            <Button variant="outline" size="sm" onClick={() => fileInputRef.current?.click()}>
-              {t("changeAvatar")}
-            </Button>
-            <p className="text-muted-foreground text-xs">{t("avatarHelp")}</p>
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/png,image/jpeg,image/webp"
-              className="hidden"
-              onChange={(event) => void onAvatarChange(event.target.files?.[0])}
-            />
-          </div>
-        </div>
+      <CardContent>
+        <FieldGroup>
+          <Field orientation="horizontal">
+            <Avatar className="size-16">
+              {avatarUrl ? <AvatarImage src={avatarUrl} alt="" /> : null}
+              <AvatarFallback>{userInitials(user.pseudo, user.email)}</AvatarFallback>
+            </Avatar>
+            <FieldContent>
+              <Button
+                variant="outline"
+                size="sm"
+                className="w-fit"
+                onClick={() => fileInputRef.current?.click()}>
+                {t("changeAvatar")}
+              </Button>
+              <FieldDescription>{t("avatarHelp")}</FieldDescription>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/png,image/jpeg,image/webp"
+                className="hidden"
+                onChange={(event) => void onAvatarChange(event.target.files?.[0])}
+              />
+            </FieldContent>
+          </Field>
 
-        <div className="grid gap-4 sm:grid-cols-2">
-          <div className="sm:col-span-2">
-            <Label htmlFor="pseudo">{t("pseudo")}</Label>
-            <Input
-              id="pseudo"
-              value={pseudo}
-              maxLength={64}
-              onChange={(event) => setPseudo(event.target.value)}
-              className="mt-2"
-            />
-          </div>
-          <div>
-            <Label htmlFor="given_name">{t("givenName")}</Label>
-            <Input
-              id="given_name"
-              value={givenName}
-              maxLength={120}
-              onChange={(event) => setGivenName(event.target.value)}
-              className="mt-2"
-            />
-          </div>
-          <div>
-            <Label htmlFor="family_name">{t("familyName")}</Label>
-            <Input
-              id="family_name"
-              value={familyName}
-              maxLength={120}
-              onChange={(event) => setFamilyName(event.target.value)}
-              className="mt-2"
-            />
-          </div>
-        </div>
+          <FieldSeparator />
 
-        <Button onClick={() => void save()} disabled={saving}>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <Field className="sm:col-span-2">
+              <FieldLabel htmlFor="pseudo">{t("pseudo")}</FieldLabel>
+              <Input
+                id="pseudo"
+                value={pseudo}
+                maxLength={64}
+                onChange={(event) => setPseudo(event.target.value)}
+              />
+            </Field>
+            <Field>
+              <FieldLabel htmlFor="given_name">{t("givenName")}</FieldLabel>
+              <Input
+                id="given_name"
+                value={givenName}
+                maxLength={120}
+                onChange={(event) => setGivenName(event.target.value)}
+              />
+            </Field>
+            <Field>
+              <FieldLabel htmlFor="family_name">{t("familyName")}</FieldLabel>
+              <Input
+                id="family_name"
+                value={familyName}
+                maxLength={120}
+                onChange={(event) => setFamilyName(event.target.value)}
+              />
+            </Field>
+          </div>
+        </FieldGroup>
+
+        <Button className="mt-6" onClick={() => void save()} disabled={saving}>
           {saving ? tCommon("loading") : tCommon("save")}
         </Button>
       </CardContent>

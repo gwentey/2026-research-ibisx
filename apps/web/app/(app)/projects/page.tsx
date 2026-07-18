@@ -2,20 +2,31 @@
 
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
-import { useLocale, useTranslations } from "next-intl";
-import { FolderIcon, PlusIcon, SearchIcon } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { FolderKanbanIcon, PlusIcon, SearchIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle
+} from "@/components/ui/empty";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
+import { ProjectCard } from "@/components/ibis/projects/project-card";
 import { listProjects } from "@/lib/api/generated";
 import type { ProjectPage } from "@/lib/api/generated";
 
+// 09 — Projets : espace de pilotage. Chaque carte porte le MissionStepper
+// partagé comme colonne vertébrale (voir project-card.tsx) — signature
+// distincte du catalogue (05) et du dashboard (04).
 export default function ProjectsPage() {
   const t = useTranslations("projects");
   const tCommon = useTranslations("common");
-  const locale = useLocale();
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const [data, setData] = useState<ProjectPage | null>(null);
@@ -45,9 +56,14 @@ export default function ProjectsPage() {
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-start justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight">{t("title")}</h1>
-          <p className="text-muted-foreground mt-1 max-w-2xl text-sm">{t("subtitle")}</p>
+        <div className="flex items-start gap-4">
+          <div className="bg-primary/10 text-primary flex size-12 shrink-0 items-center justify-center rounded-xl">
+            <FolderKanbanIcon className="size-6" />
+          </div>
+          <div>
+            <h1 className="text-xl font-semibold tracking-tight sm:text-2xl">{t("title")}</h1>
+            <p className="text-muted-foreground mt-0.5 max-w-2xl text-sm">{t("subtitle")}</p>
+          </div>
         </div>
         <Button asChild>
           <Link href="/projects/new">
@@ -86,53 +102,28 @@ export default function ProjectsPage() {
       ) : state === "loading" && !data ? (
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
           {Array.from({ length: 3 }).map((_, index) => (
-            <Skeleton key={index} className="h-40 w-full" />
+            <Skeleton key={index} className="h-56 w-full" />
           ))}
         </div>
       ) : items.length === 0 ? (
-        <Card>
-          <CardContent className="space-y-3 py-10 text-center">
-            <FolderIcon className="text-muted-foreground mx-auto size-8" />
-            <p className="font-medium">{t("empty.title")}</p>
-            <p className="text-muted-foreground mx-auto max-w-md text-sm">{t("empty.body")}</p>
+        <Empty className="border">
+          <EmptyHeader>
+            <EmptyMedia variant="icon">
+              <FolderKanbanIcon />
+            </EmptyMedia>
+            <EmptyTitle>{t("empty.title")}</EmptyTitle>
+            <EmptyDescription className="mx-auto max-w-md">{t("empty.body")}</EmptyDescription>
+          </EmptyHeader>
+          <EmptyContent>
             <Button asChild>
               <Link href="/projects/new">{t("empty.cta")}</Link>
             </Button>
-          </CardContent>
-        </Card>
+          </EmptyContent>
+        </Empty>
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
           {items.map((project) => (
-            <Card key={project.id} className="flex flex-col">
-              <CardHeader>
-                <Link
-                  href={`/projects/${project.id}`}
-                  className="line-clamp-1 font-semibold hover:underline">
-                  {project.name}
-                </Link>
-                {project.description ? (
-                  <p className="text-muted-foreground line-clamp-2 text-sm">
-                    {project.description}
-                  </p>
-                ) : null}
-              </CardHeader>
-              <CardContent className="flex-1">
-                <p className="text-muted-foreground text-xs">
-                  {t("card.criteria", { count: project.active_criteria_count })} ·{" "}
-                  {t("card.weights", { count: Object.keys(project.weights).length })}
-                </p>
-                <p className="text-muted-foreground mt-1 text-xs">
-                  {t("card.updated", {
-                    date: new Date(project.updated_at).toLocaleDateString(locale)
-                  })}
-                </p>
-              </CardContent>
-              <CardFooter>
-                <Button variant="outline" size="sm" className="w-full" asChild>
-                  <Link href={`/projects/${project.id}`}>{t("card.open")}</Link>
-                </Button>
-              </CardFooter>
-            </Card>
+            <ProjectCard key={project.id} project={project} />
           ))}
         </div>
       )}

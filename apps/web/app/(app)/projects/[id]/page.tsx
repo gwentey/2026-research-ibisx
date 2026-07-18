@@ -4,7 +4,17 @@ import { use, useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { PencilIcon, PlayIcon, Trash2Icon } from "lucide-react";
+import {
+  FlaskConicalIcon,
+  ListChecksIcon,
+  PencilIcon,
+  PlayIcon,
+  RouteIcon,
+  ScaleIcon,
+  Settings2Icon,
+  SparklesIcon,
+  Trash2Icon
+} from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -18,6 +28,8 @@ import {
   DialogTitle,
   DialogTrigger
 } from "@/components/ui/dialog";
+import { Empty, EmptyDescription, EmptyMedia } from "@/components/ui/empty";
+import { Item, ItemContent, ItemMedia, ItemTitle } from "@/components/ui/item";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { MissionStepper } from "@/components/ibis/mission-stepper";
@@ -93,16 +105,23 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ id: st
 
   return (
     <div className="space-y-6">
-      <div className="space-y-3">
+      <div className="space-y-4">
         <MissionStepper current="project" />
         <div className="flex flex-wrap items-start justify-between gap-4">
-          <div>
-            <h1 className="text-2xl font-semibold tracking-tight">{project.name}</h1>
-            {project.description ? (
-              <p className="text-muted-foreground mt-1 max-w-2xl text-sm">
-                {project.description}
-              </p>
-            ) : null}
+          <div className="flex items-start gap-4">
+            <div className="bg-primary/10 text-primary flex size-12 shrink-0 items-center justify-center rounded-xl">
+              <RouteIcon className="size-6" />
+            </div>
+            <div>
+              <h1 className="text-xl font-semibold tracking-tight sm:text-2xl">
+                {project.name}
+              </h1>
+              {project.description ? (
+                <p className="text-muted-foreground mt-0.5 max-w-2xl text-sm">
+                  {project.description}
+                </p>
+              ) : null}
+            </div>
           </div>
           <div className="flex gap-2">
             <Button variant="outline" asChild>
@@ -131,16 +150,62 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ id: st
             </Dialog>
           </div>
         </div>
+
+        {/* Bandeau de pilotage : lecture instantanée de l'état réel du projet */}
+        <div className="flex flex-wrap gap-2">
+          <Item variant="outline" size="sm" className="w-fit gap-2 py-2">
+            <ItemMedia variant="icon" className="size-7 [&_svg:not([class*='size-'])]:size-3.5">
+              <ListChecksIcon />
+            </ItemMedia>
+            <ItemContent className="gap-0">
+              <ItemTitle className="text-xs font-medium">
+                {t("card.criteria", { count: project.active_criteria_count })}
+              </ItemTitle>
+            </ItemContent>
+          </Item>
+          <Item variant="outline" size="sm" className="w-fit gap-2 py-2">
+            <ItemMedia variant="icon" className="size-7 [&_svg:not([class*='size-'])]:size-3.5">
+              <ScaleIcon />
+            </ItemMedia>
+            <ItemContent className="gap-0">
+              <ItemTitle className="text-xs font-medium">
+                {t("card.weights", { count: Object.keys(project.weights).length })}
+              </ItemTitle>
+            </ItemContent>
+          </Item>
+          <Item variant="outline" size="sm" className="w-fit gap-2 py-2">
+            <ItemMedia variant="icon" className="size-7 [&_svg:not([class*='size-'])]:size-3.5">
+              <SparklesIcon />
+            </ItemMedia>
+            <ItemContent className="gap-0">
+              <ItemTitle className="text-xs font-medium">
+                {tScoring("resultsCount", { count: recommendations?.results.length ?? 0 })}
+              </ItemTitle>
+            </ItemContent>
+          </Item>
+        </div>
       </div>
 
       <Tabs defaultValue="recommendations" className="space-y-4">
         <TabsList>
-          <TabsTrigger value="recommendations">{td("tabRecommendations")}</TabsTrigger>
-          <TabsTrigger value="experiments">{td("tabExperiments")}</TabsTrigger>
-          <TabsTrigger value="config">{td("tabConfig")}</TabsTrigger>
+          <TabsTrigger value="recommendations" className="gap-1.5">
+            <SparklesIcon className="size-3.5" />
+            {td("tabRecommendations")}
+          </TabsTrigger>
+          <TabsTrigger value="experiments" className="gap-1.5">
+            <FlaskConicalIcon className="size-3.5" />
+            {td("tabExperiments")}
+          </TabsTrigger>
+          <TabsTrigger value="config" className="gap-1.5">
+            <Settings2Icon className="size-3.5" />
+            {td("tabConfig")}
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="recommendations" className="space-y-3">
+          <p className="text-muted-foreground max-w-2xl text-sm">
+            {td("recommendationsHint")}
+          </p>
           <div className="flex items-center justify-between">
             <p className="text-muted-foreground text-sm">
               {tScoring("resultsCount", { count: recommendations?.results.length ?? 0 })}
@@ -181,11 +246,12 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ id: st
               />
             )
           ) : (
-            <Card>
-              <CardContent className="py-10 text-center">
-                <p className="text-muted-foreground text-sm">{tScoring("empty")}</p>
-              </CardContent>
-            </Card>
+            <Empty className="border-dashed">
+              <EmptyMedia variant="icon">
+                <SparklesIcon />
+              </EmptyMedia>
+              <EmptyDescription>{tScoring("empty")}</EmptyDescription>
+            </Empty>
           )}
         </TabsContent>
 

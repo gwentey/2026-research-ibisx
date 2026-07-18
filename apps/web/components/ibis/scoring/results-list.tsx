@@ -10,10 +10,19 @@ import {
   TooltipProvider,
   TooltipTrigger
 } from "@/components/ui/tooltip";
+import { DomainPattern } from "@/components/ibis/datasets/domain-pattern";
 import type { ScoredDataset } from "@/lib/api/generated";
 import { scoreColorClass } from "@/lib/datasets/constants";
+import { primaryDomainVisual } from "@/lib/datasets/domain-visuals";
+import { cn } from "@/lib/utils";
 
-/** Liste classée (CDC §6.4) : rang, score % coloré, tooltip de décomposition. */
+// Cartes de recommandation (09 — projets) : rang, tuile de DOMAINE (icône +
+// motif SVG local, langage du catalogue 05 mais en composition compacte —
+// jamais de médaillon ni de vignette pleine largeur pour éviter la collision
+// avec les signatures 05/06/10), score % coloré, tooltip de décomposition.
+// ⚠️ Contrat e2e : Card = data-slot="card" ; le nom du dataset reste seul
+// texte de son élément (match exact `getByText(display_name, {exact:true})`);
+// `renderAction` fournit un lien role=link libellé scoring.train — inchangé.
 export function ResultsList({
   results,
   criteria,
@@ -24,27 +33,43 @@ export function ResultsList({
   renderAction?: (datasetId: string) => React.ReactNode;
 }) {
   const t = useTranslations("scoring");
+  const tDatasets = useTranslations("datasets");
 
   return (
     <TooltipProvider delayDuration={150}>
       <div className="space-y-2">
         {results.map((result) => {
           const percent = Math.round(result.score * 100);
+          const visual = primaryDomainVisual(result.dataset.domain);
+          const DomainIcon = visual.icon;
+          const tags = [...result.dataset.domain.slice(1), ...result.dataset.task];
           return (
-            <Card key={result.dataset.id} className="py-3">
+            <Card
+              key={result.dataset.id}
+              className="py-3 transition-shadow hover:shadow-sm">
               <CardContent className="flex items-center gap-4">
-                <span className="text-muted-foreground w-10 shrink-0 text-center font-mono text-sm">
+                <span className="text-muted-foreground w-8 shrink-0 text-center font-mono text-sm">
                   #{result.rank}
                 </span>
+                <div
+                  className={cn(
+                    "relative flex size-11 shrink-0 items-center justify-center overflow-hidden rounded-lg",
+                    visual.tone.bgTile,
+                    visual.tone.text
+                  )}>
+                  <DomainPattern pattern={visual.pattern} className={visual.tone.patternText} />
+                  <DomainIcon className="relative size-5" />
+                </div>
                 <div className="min-w-0 flex-1">
                   <Link
                     href={`/datasets/${result.dataset.id}`}
-                    className="truncate font-medium hover:underline">
+                    className="block truncate font-medium hover:underline">
                     {result.dataset.display_name}
                   </Link>
-                  <p className="text-muted-foreground truncate text-xs">
-                    {[...result.dataset.domain, ...result.dataset.task].join(" · ")}
-                  </p>
+                  <div className="text-muted-foreground mt-0.5 flex flex-wrap items-center gap-x-1.5 gap-y-0.5 truncate text-xs">
+                    <span>{tDatasets(visual.labelKey as never)}</span>
+                    {tags.length > 0 ? <span>· {tags.join(" · ")}</span> : null}
+                  </div>
                 </div>
                 {renderAction ? renderAction(result.dataset.id) : null}
                 <Tooltip>

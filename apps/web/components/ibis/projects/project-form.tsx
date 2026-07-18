@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { CheckIcon, SparklesIcon } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -27,6 +28,7 @@ import type {
   ProjectRead,
   ScoreResponse
 } from "@/lib/api/generated";
+import { getDomainVisual, primaryDomainVisual } from "@/lib/datasets/domain-visuals";
 import type { CatalogFilters } from "@/lib/datasets/use-catalog";
 import { cn } from "@/lib/utils";
 
@@ -56,16 +58,19 @@ export function ProjectForm({ existing }: ProjectFormProps) {
   const [preview, setPreview] = useState<ScoreResponse | null>(null);
   const [saving, setSaving] = useState(false);
 
+  // Chargement initial (facettes + profils). `existing` est stable après le premier rendu
+  // (prop figée côté page /new comme /edit) et `weights` est lu via l'updater fonctionnel
+  // ci-dessous : la dépendance déclarée reste donc exhaustive sans disable-next-line.
   useEffect(() => {
     getDatasetFacets({ throwOnError: false }).then(({ data }) => setFacets(data ?? null));
     getScoringProfiles({ throwOnError: false }).then(({ data }) => {
       setProfiles(data ?? null);
-      if (data && !existing && Object.keys(weights).length === 0) {
-        setWeights({ ...data.default_weights });
-      }
+      if (!data || existing) return;
+      setWeights((current) =>
+        Object.keys(current).length === 0 ? { ...data.default_weights } : current
+      );
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [existing]);
 
   // Aperçu temps réel des recommandations (debounce 500 ms — CDC §7.2)
   useEffect(() => {
@@ -126,10 +131,32 @@ export function ProjectForm({ existing }: ProjectFormProps) {
   return (
     <div className="grid gap-6 lg:grid-cols-[1fr_18rem]">
       <div className="space-y-4">
-        <Progress value={(step / TOTAL_STEPS) * 100} />
-        <p className="text-muted-foreground text-xs font-medium uppercase">
-          {step === 1 ? t("step1") : step === 2 ? t("step2") : t("step3")}
-        </p>
+        <div className="space-y-2.5">
+          <Progress value={(step / TOTAL_STEPS) * 100} />
+          <div className="flex flex-wrap items-center gap-1.5">
+            {([1, 2, 3] as const).map((candidate) => (
+              <span
+                key={candidate}
+                className={cn(
+                  "flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium transition-colors",
+                  candidate === step
+                    ? "border-primary bg-primary text-primary-foreground"
+                    : candidate < step
+                      ? "border-primary/40 text-primary"
+                      : "text-muted-foreground"
+                )}>
+                <span
+                  className={cn(
+                    "flex size-4 items-center justify-center rounded-full border text-[10px]",
+                    candidate === step && "border-primary-foreground/60"
+                  )}>
+                  {candidate < step ? <CheckIcon className="size-2.5" /> : candidate}
+                </span>
+                {candidate === 1 ? t("step1") : candidate === 2 ? t("step2") : t("step3")}
+              </span>
+            ))}
+          </div>
+        </div>
 
         {step === 1 ? (
           <Card>
@@ -167,18 +194,26 @@ export function ProjectForm({ existing }: ProjectFormProps) {
               <div className="space-y-2">
                 <Label className="text-sm">{tf("domains")}</Label>
                 <div className="flex flex-wrap gap-2">
-                  {(facets?.domains ?? []).map((facet) => (
-                    <button
-                      key={facet.value}
-                      type="button"
-                      onClick={() => toggleList("domains", facet.value)}
-                      className={cn(
-                        "hover:bg-muted rounded-md border px-2 py-1 text-sm",
-                        criteria.domains?.includes(facet.value) && "border-primary bg-muted"
-                      )}>
-                      {facet.value}
-                    </button>
-                  ))}
+                  {(facets?.domains ?? []).map((facet) => {
+                    const visual = getDomainVisual(facet.value);
+                    const DomainIcon = visual.icon;
+                    const active = criteria.domains?.includes(facet.value);
+                    return (
+                      <button
+                        key={facet.value}
+                        type="button"
+                        onClick={() => toggleList("domains", facet.value)}
+                        className={cn(
+                          "hover:bg-muted flex items-center gap-1.5 rounded-md border px-2 py-1 text-sm",
+                          active && "border-primary bg-muted"
+                        )}>
+                        <DomainIcon
+                          className={cn("size-3.5", active ? visual.tone.text : "text-muted-foreground")}
+                        />
+                        {facet.value}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
               <div className="space-y-2">
@@ -332,7 +367,10 @@ export function ProjectForm({ existing }: ProjectFormProps) {
 
       <Card className="h-fit lg:sticky lg:top-20">
         <CardHeader>
-          <CardTitle className="text-base">{t("preview")}</CardTitle>
+          <CardTitle className="flex items-center gap-2 text-base">
+            <SparklesIcon className="text-muted-foreground size-4" />
+            {t("preview")}
+          </CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
           <p className="text-sm font-medium">
@@ -343,19 +381,31 @@ export function ProjectForm({ existing }: ProjectFormProps) {
               <p className="text-muted-foreground text-xs font-medium uppercase">
                 {t("previewTop")}
               </p>
-              {preview.results.slice(0, 3).map((result) => (
-                <div key={result.dataset.id} className="flex items-center gap-2 text-sm">
-                  <span className="text-muted-foreground font-mono text-xs">
-                    #{result.rank}
-                  </span>
-                  <span className="min-w-0 flex-1 truncate">
-                    {result.dataset.display_name}
-                  </span>
-                  <span className="font-mono text-xs font-semibold">
-                    {Math.round(result.score * 100)}%
-                  </span>
-                </div>
-              ))}
+              {preview.results.slice(0, 3).map((result) => {
+                const visual = primaryDomainVisual(result.dataset.domain);
+                const DomainIcon = visual.icon;
+                return (
+                  <div key={result.dataset.id} className="flex items-center gap-2 text-sm">
+                    <span className="text-muted-foreground font-mono text-xs">
+                      #{result.rank}
+                    </span>
+                    <span
+                      className={cn(
+                        "flex size-5 shrink-0 items-center justify-center rounded",
+                        visual.tone.bgTile,
+                        visual.tone.text
+                      )}>
+                      <DomainIcon className="size-3" />
+                    </span>
+                    <span className="min-w-0 flex-1 truncate">
+                      {result.dataset.display_name}
+                    </span>
+                    <span className="font-mono text-xs font-semibold">
+                      {Math.round(result.score * 100)}%
+                    </span>
+                  </div>
+                );
+              })}
             </div>
           ) : null}
         </CardContent>

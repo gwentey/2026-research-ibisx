@@ -128,14 +128,18 @@
       "projects": "Active projects",
       "successRate": "Success rate",
       "avgDuration": "Average duration",
-      "noData": "—"
+      "noData": "—",
+      "successGood": "Good level",
+      "successLow": "Needs attention"
     },
     "activity": {
       "title": "Recent activity",
       "empty": "No activity yet — start your first training from a project.",
       "experiment": "Training",
       "explanation": "Explanation",
-      "view": "View"
+      "view": "View",
+      "emptyTitle": "No activity yet",
+      "viewAll": "View all experiments"
     },
     "quickActions": {
       "title": "Quick actions",
@@ -147,7 +151,14 @@
     "recentProjects": {
       "title": "Recent projects",
       "empty": "No project — create the first one.",
-      "open": "Open"
+      "open": "Open",
+      "emptyTitle": "No project yet",
+      "viewAll": "View all projects"
+    },
+    "hero": {
+      "title": "Your mission",
+      "emptyTitle": "No mission in progress",
+      "emptyBody": "Create a project to launch your first experiment."
     }
   },
   "profile": {
@@ -193,7 +204,13 @@
       "user": "User",
       "contributor": "Contributor",
       "admin": "Administrator"
-    }
+    },
+    "memberSince": "Member since {date}",
+    "statCredits": "Credits",
+    "statExpertise": "AI level",
+    "expertiseTitle": "Your expertise level",
+    "expertiseLevel": "Tier {level} of 5",
+    "adaptExplainability": "Adapt explainability"
   },
   "status": {
     "title": "System status",
@@ -550,7 +567,9 @@
       "save": "Save",
       "saving": "Saving…",
       "created": "Project created.",
-      "saved": "Project saved."
+      "saved": "Project saved.",
+      "createSubtitle": "Three steps: details, selection criteria, weights — your recommendations refine live in the preview.",
+      "editSubtitle": "Adjust the criteria or the weights: recommendations recompute live in the preview."
     },
     "detail": {
       "tabRecommendations": "Recommendations",
@@ -565,7 +584,8 @@
       "criteria": "Selection criteria",
       "weights": "Weights",
       "noCriteria": "No criteria: the whole catalog is considered.",
-      "noWeights": "Default weights (ethics 40% · technical 40% · popularity 20%)."
+      "noWeights": "Default weights (ethics 40% · technical 40% · popularity 20%).",
+      "recommendationsHint": "These datasets match your criteria, ranked by your weights. Open the wizard on the one that suits you to start a training run."
     },
     "mission": {
       "project": "Project",

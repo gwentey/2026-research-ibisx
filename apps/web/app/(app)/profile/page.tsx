@@ -3,13 +3,13 @@
 import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { CoinsIcon } from "lucide-react";
+import { CoinsIcon, CreditCardIcon, PaletteIcon, ShieldIcon, UserIcon } from "lucide-react";
 
-import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PreferencesTab } from "@/components/ibis/profile/preferences-tab";
+import { ProfileHeader } from "@/components/ibis/profile/profile-header";
 import { ProfileTab } from "@/components/ibis/profile/profile-tab";
 import { SecurityTab } from "@/components/ibis/profile/security-tab";
 import { useAuthStore } from "@/lib/auth/store";
@@ -29,20 +29,26 @@ function ProfileContent() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight">{t("title")}</h1>
-          <p className="text-muted-foreground mt-1 text-sm">{t("subtitle")}</p>
-        </div>
-        <Badge variant="outline">{t(`role.${user.role}`)}</Badge>
-      </div>
+      <ProfileHeader user={user} />
 
       <Tabs defaultValue={defaultTab} className="space-y-4">
         <TabsList>
-          <TabsTrigger value="profile">{t("tabProfile")}</TabsTrigger>
-          <TabsTrigger value="security">{t("tabSecurity")}</TabsTrigger>
-          <TabsTrigger value="preferences">{t("tabPreferences")}</TabsTrigger>
-          <TabsTrigger value="credits">{t("tabCredits")}</TabsTrigger>
+          <TabsTrigger value="profile">
+            <UserIcon />
+            {t("tabProfile")}
+          </TabsTrigger>
+          <TabsTrigger value="security">
+            <ShieldIcon />
+            {t("tabSecurity")}
+          </TabsTrigger>
+          <TabsTrigger value="preferences">
+            <PaletteIcon />
+            {t("tabPreferences")}
+          </TabsTrigger>
+          <TabsTrigger value="credits">
+            <CreditCardIcon />
+            {t("tabCredits")}
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="profile">
@@ -57,7 +63,7 @@ function ProfileContent() {
         <TabsContent value="credits">
           <Card>
             <CardHeader>
-              <CardTitle className="text-base">{t("tabCredits")}</CardTitle>
+              <CardTitle className="text-base">{t("creditsBalance")}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
               <div className="flex items-center gap-3">

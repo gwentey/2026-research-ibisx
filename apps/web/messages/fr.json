@@ -128,14 +128,18 @@
       "projects": "Projets actifs",
       "successRate": "Taux de succès",
       "avgDuration": "Durée moyenne",
-      "noData": "—"
+      "noData": "—",
+      "successGood": "Bon niveau",
+      "successLow": "À surveiller"
     },
     "activity": {
       "title": "Activités récentes",
       "empty": "Aucune activité pour l'instant — lancez votre premier entraînement depuis un projet.",
       "experiment": "Entraînement",
       "explanation": "Explication",
-      "view": "Voir"
+      "view": "Voir",
+      "emptyTitle": "Aucune activité pour l'instant",
+      "viewAll": "Voir toutes les expériences"
     },
     "quickActions": {
       "title": "Actions rapides",
@@ -147,7 +151,14 @@
     "recentProjects": {
       "title": "Projets récents",
       "empty": "Aucun projet — créez le premier.",
-      "open": "Ouvrir"
+      "open": "Ouvrir",
+      "emptyTitle": "Aucun projet pour l'instant",
+      "viewAll": "Voir tous les projets"
+    },
+    "hero": {
+      "title": "Votre mission",
+      "emptyTitle": "Aucune mission en cours",
+      "emptyBody": "Créez un projet pour lancer votre première expérience."
     }
   },
   "profile": {
@@ -193,7 +204,13 @@
       "user": "Utilisateur",
       "contributor": "Contributeur",
       "admin": "Administrateur"
-    }
+    },
+    "memberSince": "Membre depuis {date}",
+    "statCredits": "Crédits",
+    "statExpertise": "Niveau IA",
+    "expertiseTitle": "Votre niveau d'expertise",
+    "expertiseLevel": "Palier {level} sur 5",
+    "adaptExplainability": "Adapter l'explicabilité"
   },
   "status": {
     "title": "État du système",
@@ -550,7 +567,9 @@
       "save": "Enregistrer",
       "saving": "Enregistrement…",
       "created": "Projet créé.",
-      "saved": "Projet enregistré."
+      "saved": "Projet enregistré.",
+      "createSubtitle": "Trois temps : informations, critères de sélection, pondérations — vos recommandations s'affinent en direct dans l'aperçu.",
+      "editSubtitle": "Ajustez les critères ou les pondérations : les recommandations se recalculent en direct dans l'aperçu."
     },
     "detail": {
       "tabRecommendations": "Recommandations",
@@ -565,7 +584,8 @@
       "criteria": "Critères de sélection",
       "weights": "Pondérations",
       "noCriteria": "Aucun critère : tout le catalogue est considéré.",
-      "noWeights": "Poids par défaut (éthique 40 % · technique 40 % · popularité 20 %)."
+      "noWeights": "Poids par défaut (éthique 40 % · technique 40 % · popularité 20 %).",
+      "recommendationsHint": "Ces datasets correspondent à vos critères, classés selon vos pondérations. Ouvrez le wizard sur celui qui vous convient pour lancer un entraînement."
     },
     "mission": {
       "project": "Projet",

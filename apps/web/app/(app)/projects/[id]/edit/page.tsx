@@ -2,6 +2,7 @@
 
 import { use, useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
+import { FolderPenIcon } from "lucide-react";
 
 import { Skeleton } from "@/components/ui/skeleton";
 import { MissionStepper } from "@/components/ibis/mission-stepper";
@@ -26,7 +27,17 @@ export default function EditProjectPage({ params }: { params: Promise<{ id: stri
     <div className="space-y-6">
       <div className="space-y-3">
         <MissionStepper current="project" />
-        <h1 className="text-2xl font-semibold tracking-tight">{t("editTitle")}</h1>
+        <div className="flex items-start gap-4">
+          <div className="bg-primary/10 text-primary flex size-12 shrink-0 items-center justify-center rounded-xl">
+            <FolderPenIcon className="size-6" />
+          </div>
+          <div>
+            <h1 className="text-xl font-semibold tracking-tight sm:text-2xl">
+              {t("editTitle")}
+            </h1>
+            <p className="text-muted-foreground mt-0.5 text-sm">{t("editSubtitle")}</p>
+          </div>
+        </div>
       </div>
       <ProjectForm existing={project} />
     </div>

@@ -17,8 +17,8 @@ import {
   DialogTitle,
   DialogTrigger
 } from "@/components/ui/dialog";
+import { Field, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { changePassword, deleteAccount } from "@/lib/api/generated";
 import type { UserRead } from "@/lib/api/generated";
 import { useAuthStore } from "@/lib/auth/store";
@@ -90,29 +90,27 @@ export function SecurityTab({ user }: { user: UserRead }) {
             </Alert>
           ) : null}
           {user.has_password ? (
-            <div className="max-w-sm">
-              <Label htmlFor="current_password">{t("currentPassword")}</Label>
+            <Field className="max-w-sm">
+              <FieldLabel htmlFor="current_password">{t("currentPassword")}</FieldLabel>
               <Input
                 id="current_password"
                 type="password"
                 autoComplete="current-password"
                 value={currentPassword}
                 onChange={(event) => setCurrentPassword(event.target.value)}
-                className="mt-2"
               />
-            </div>
+            </Field>
           ) : null}
-          <div className="max-w-sm">
-            <Label htmlFor="new_password">{t("newPassword")}</Label>
+          <Field className="max-w-sm">
+            <FieldLabel htmlFor="new_password">{t("newPassword")}</FieldLabel>
             <Input
               id="new_password"
               type="password"
               autoComplete="new-password"
               value={newPassword}
               onChange={(event) => setNewPassword(event.target.value)}
-              className="mt-2"
             />
-          </div>
+          </Field>
           <Button
             onClick={() => void submitPassword()}
             disabled={
@@ -138,17 +136,16 @@ export function SecurityTab({ user }: { user: UserRead }) {
                 <DialogTitle>{t("deleteAccount")}</DialogTitle>
                 <DialogDescription>{t("deleteWarning")}</DialogDescription>
               </DialogHeader>
-              <div>
-                <Label htmlFor="confirm_email">{t("deleteConfirmLabel")}</Label>
+              <Field>
+                <FieldLabel htmlFor="confirm_email">{t("deleteConfirmLabel")}</FieldLabel>
                 <Input
                   id="confirm_email"
                   type="email"
                   value={confirmEmail}
                   onChange={(event) => setConfirmEmail(event.target.value)}
                   placeholder={user.email}
-                  className="mt-2"
                 />
-              </div>
+              </Field>
               <DialogFooter>
                 <Button
                   variant="destructive"
