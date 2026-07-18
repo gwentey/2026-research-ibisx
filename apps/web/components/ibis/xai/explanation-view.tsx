@@ -1,6 +1,5 @@
 "use client";
 
-import type { ReactNode } from "react";
 import { useTranslations } from "next-intl";
 import { BookOpenIcon } from "lucide-react";
 import { Bar, BarChart, CartesianGrid, Cell, XAxis, YAxis } from "recharts";
@@ -26,9 +25,7 @@ const PROSE = cn(
   "[&_blockquote]:border-l-2 [&_blockquote]:pl-3 [&_blockquote]:text-muted-foreground [&_blockquote]:italic"
 );
 
-// Squelette d'explication STABLE : le même petit jeu de 3 cartes est toujours rendu
-// (Fiabilité, Importance, Explication), rempli quand une explication existe, en
-// placeholder discret sinon. On ne disperse plus une carte par graphe.
+// Rendu d'une explication TERMINÉE : bandeau KPI, graphes viz_data, texte, chat.
 
 type KpiTone = "good" | "warn" | "bad" | "neutral";
 
@@ -45,15 +42,6 @@ const TONE_DOT: Record<KpiTone, string> = {
   bad: "bg-red-600 dark:bg-red-400",
   neutral: "bg-muted-foreground/40"
 };
-
-/** Placeholder discret, homogène pour toutes les cartes du squelette en état vide. */
-function CardPlaceholder({ children }: { children: ReactNode }) {
-  return (
-    <div className="text-muted-foreground flex min-h-24 items-center justify-center rounded-md border border-dashed px-4 py-6 text-center text-sm">
-      {children}
-    </div>
-  );
-}
 
 function KpiTile({
   label,
@@ -80,8 +68,7 @@ function KpiTile({
   );
 }
 
-/** Grille de KPI seule (sans carte) — s'intègre dans la carte « Fiabilité ». */
-function KpiGrid({ kpis }: { kpis: Record<string, never> }) {
+function KpiBoard({ kpis }: { kpis: Record<string, never> }) {
   const t = useTranslations("xai.kpis");
   const completeness = kpis["shap_completeness"] as
     | { error: number; satisfied: boolean }
@@ -95,67 +82,72 @@ function KpiGrid({ kpis }: { kpis: Record<string, never> }) {
   const seconds = kpis["computation_seconds"] as number | undefined;
 
   return (
-    <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-      {completeness ? (
-        <KpiTile
-          label={t("completeness")}
-          hint={t("completenessHint")}
-          value={`${completeness.satisfied ? t("satisfied") : t("violated")} (${(completeness.error * 100).toFixed(2)}%)`}
-          tone={completeness.satisfied ? "good" : "bad"}
-        />
-      ) : null}
-      {stability ? (
-        <KpiTile
-          label={t("stability")}
-          hint={t("stabilityHint")}
-          value={`${t(`labels.${stability.label}` as never)} (ρ=${stability.spearman_mean})`}
-          tone={
-            stability.label === "very_stable"
-              ? "good"
-              : stability.label === "stable"
-                ? "warn"
-                : "bad"
-          }
-        />
-      ) : null}
-      {fidelity ? (
-        <KpiTile
-          label={t("fidelity")}
-          hint={t("fidelityHint")}
-          value={`${t(`labels.${fidelity.label}` as never)} (R²=${fidelity.r2})`}
-          tone={fidelity.label === "high" ? "good" : fidelity.label === "medium" ? "warn" : "bad"}
-        />
-      ) : null}
-      {agreement ? (
-        <KpiTile
-          label={t("agreement")}
-          hint={t("agreementHint")}
-          value={`ρ=${agreement.spearman}`}
-          tone={agreement.spearman >= 0.7 ? "good" : agreement.spearman >= 0.4 ? "warn" : "bad"}
-        />
-      ) : null}
-      {parsimony ? (
-        <KpiTile
-          label={t("parsimony")}
-          hint={t("parsimonyHint")}
-          value={t("parsimonyValue", { k: parsimony.k, total: parsimony.total_features })}
-          tone="neutral"
-        />
-      ) : null}
-      {seconds !== undefined ? (
-        <KpiTile label={t("time")} hint="" value={`${seconds}s`} tone="neutral" />
-      ) : null}
-    </div>
+    <Card>
+      <CardHeader>
+        <CardTitle className="text-base">{t("title")}</CardTitle>
+        <p className="text-muted-foreground text-xs">{t("hint")}</p>
+      </CardHeader>
+      <CardContent className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+        {completeness ? (
+          <KpiTile
+            label={t("completeness")}
+            hint={t("completenessHint")}
+            value={`${completeness.satisfied ? t("satisfied") : t("violated")} (${(completeness.error * 100).toFixed(2)}%)`}
+            tone={completeness.satisfied ? "good" : "bad"}
+          />
+        ) : null}
+        {stability ? (
+          <KpiTile
+            label={t("stability")}
+            hint={t("stabilityHint")}
+            value={`${t(`labels.${stability.label}` as never)} (ρ=${stability.spearman_mean})`}
+            tone={
+              stability.label === "very_stable"
+                ? "good"
+                : stability.label === "stable"
+                  ? "warn"
+                  : "bad"
+            }
+          />
+        ) : null}
+        {fidelity ? (
+          <KpiTile
+            label={t("fidelity")}
+            hint={t("fidelityHint")}
+            value={`${t(`labels.${fidelity.label}` as never)} (R²=${fidelity.r2})`}
+            tone={fidelity.label === "high" ? "good" : fidelity.label === "medium" ? "warn" : "bad"}
+          />
+        ) : null}
+        {agreement ? (
+          <KpiTile
+            label={t("agreement")}
+            hint={t("agreementHint")}
+            value={`ρ=${agreement.spearman}`}
+            tone={agreement.spearman >= 0.7 ? "good" : agreement.spearman >= 0.4 ? "warn" : "bad"}
+          />
+        ) : null}
+        {parsimony ? (
+          <KpiTile
+            label={t("parsimony")}
+            hint={t("parsimonyHint")}
+            value={t("parsimonyValue", { k: parsimony.k, total: parsimony.total_features })}
+            tone="neutral"
+          />
+        ) : null}
+        {seconds !== undefined ? (
+          <KpiTile label={t("time")} hint="" value={`${seconds}s`} tone="neutral" />
+        ) : null}
+      </CardContent>
+    </Card>
   );
 }
 
 const chartConfig = { serie: { label: "", color: "var(--chart-1)" } };
 
-export function ExplanationView({ explanation }: { explanation: ExplanationResults | null }) {
+export function ExplanationView({ explanation }: { explanation: ExplanationResults }) {
   const t = useTranslations("xai");
-  const viz = (explanation?.viz_data ?? {}) as Record<string, never>;
-  const values = (explanation?.values ?? {}) as Record<string, never>;
-  const kpis = (explanation?.quality_kpis ?? {}) as Record<string, never>;
+  const viz = (explanation.viz_data ?? {}) as Record<string, never>;
+  const values = (explanation.values ?? {}) as Record<string, never>;
   const globalImportance = viz["global_importance"] as
     | { feature: string; value: number }[]
     | undefined;
@@ -166,180 +158,147 @@ export function ExplanationView({ explanation }: { explanation: ExplanationResul
     | { shap: { feature: string; value: number }[]; lime: { feature: string; value: number }[] }
     | undefined;
 
-  const hasKpis = Boolean(explanation) && Object.keys(kpis).length > 0;
-  const hasCharts = Boolean(globalImportance || waterfall || comparison);
-
   return (
-    <div className="space-y-4">
-      {/* 1. FIABILITÉ — badges méthode/modèle/niveau en tête, puis la grille de KPI. */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-base">{t("kpis.title")}</CardTitle>
-          <p className="text-muted-foreground text-xs">{t("kpis.hint")}</p>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {explanation ? (
-            <div className="space-y-2">
-              <div className="flex flex-wrap items-center gap-1.5">
-                <Badge variant="outline">
-                  {t("text.method", { method: explanation.method_used ?? "" })}
-                </Badge>
-                {explanation.is_fallback ? (
-                  <Badge variant="secondary">{t("text.fallbackBadge")}</Badge>
-                ) : (
-                  <Badge variant="outline" className="border-ai/40 text-ai">
-                    {t("text.modelBadge", { model: explanation.model_used ?? "" })}
-                  </Badge>
-                )}
-                <Badge variant="outline">
-                  {t("text.audience", { level: explanation.audience_level })}
-                </Badge>
-              </div>
-              {explanation.method_justification ? (
-                <p className="text-muted-foreground text-xs">{explanation.method_justification}</p>
-              ) : null}
-            </div>
-          ) : null}
+    <div className="space-y-6">
+      <div className="bg-muted/30 space-y-2 rounded-lg border px-4 py-3">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <h3 className="text-sm font-semibold">{t("result.title")}</h3>
+          <div className="flex flex-wrap items-center gap-1.5">
+            <Badge variant="outline">
+              {t("text.method", { method: explanation.method_used ?? "" })}
+            </Badge>
+            {explanation.is_fallback ? (
+              <Badge variant="secondary">{t("text.fallbackBadge")}</Badge>
+            ) : (
+              <Badge variant="outline" className="border-ai/40 text-ai">
+                {t("text.modelBadge", { model: explanation.model_used ?? "" })}
+              </Badge>
+            )}
+            <Badge variant="outline">
+              {t("text.audience", { level: explanation.audience_level })}
+            </Badge>
+          </div>
+        </div>
+        {explanation.method_justification ? (
+          <p className="text-muted-foreground text-xs">{explanation.method_justification}</p>
+        ) : null}
+      </div>
 
-          {hasKpis ? (
-            <KpiGrid kpis={kpis} />
-          ) : (
-            <CardPlaceholder>{t("skeleton.reliability")}</CardPlaceholder>
-          )}
-        </CardContent>
-      </Card>
+      <KpiBoard kpis={(explanation.quality_kpis ?? {}) as never} />
 
-      {/* 2. IMPORTANCE — une seule carte qui regroupe importance + waterfall + comparaison
-          (au lieu d'une carte par graphe). Placeholder discret quand rien n'est calculé. */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-base">
-            {explanation
-              ? t("charts.importance", { method: explanation.method_used ?? "" })
-              : t("skeleton.importanceTitle")}
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          {hasCharts ? (
-            <>
-              {globalImportance ? (
-                <ChartContainer
-                  config={chartConfig}
-                  className="w-full"
-                  style={{ height: globalImportance.length * 24 + 40 }}>
-                  <BarChart
-                    data={[...globalImportance].reverse()}
-                    layout="vertical"
-                    margin={{ left: 40 }}>
-                    <XAxis type="number" hide />
-                    <YAxis dataKey="feature" type="category" width={150} tick={{ fontSize: 10 }} />
-                    <ChartTooltip content={<ChartTooltipContent />} />
-                    <Bar dataKey="value" fill="var(--chart-1)" radius={3} />
-                  </BarChart>
-                </ChartContainer>
-              ) : null}
+      {/* Colonne principale étroite (écran − sidebar 22rem) : on empile en 1 colonne pour
+          garder des cartes homogènes et sans trou, quel que soit le type d'explication
+          (global : importance ; local : waterfall ; auto : importance + comparaison). */}
+      <div className="grid gap-4">
+        {globalImportance ? (
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base">
+                {t("charts.importance", { method: explanation.method_used ?? "" })}
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ChartContainer
+                config={chartConfig}
+                className="w-full"
+                style={{ height: globalImportance.length * 24 + 40 }}>
+                <BarChart data={[...globalImportance].reverse()} layout="vertical" margin={{ left: 40 }}>
+                  <XAxis type="number" hide />
+                  <YAxis dataKey="feature" type="category" width={150} tick={{ fontSize: 10 }} />
+                  <ChartTooltip content={<ChartTooltipContent />} />
+                  <Bar dataKey="value" fill="var(--chart-1)" radius={3} />
+                </BarChart>
+              </ChartContainer>
+            </CardContent>
+          </Card>
+        ) : null}
 
-              {waterfall ? (
-                <div
-                  className={cn(
-                    "space-y-2",
-                    globalImportance && "border-border/60 border-t pt-6"
-                  )}>
-                  <div>
-                    <p className="text-sm font-medium">{t("charts.waterfall")}</p>
-                    <p className="text-muted-foreground text-xs">
-                      {values["base_value"] !== undefined
-                        ? t("charts.baseValue", { value: String(values["base_value"]) })
-                        : null}{" "}
-                      {values["prediction"] !== undefined
-                        ? t("charts.prediction", {
-                            value: String(values["prediction"]),
-                            label: String(values["predicted_label"] ?? "")
-                          })
-                        : null}
-                    </p>
-                  </div>
-                  <ChartContainer
-                    config={chartConfig}
-                    className="w-full"
-                    style={{ height: waterfall.length * 26 + 40 }}>
-                    <BarChart
-                      data={[...waterfall].reverse()}
-                      layout="vertical"
-                      margin={{ left: 40 }}>
-                      <XAxis type="number" tick={{ fontSize: 10 }} />
-                      <YAxis dataKey="feature" type="category" width={150} tick={{ fontSize: 10 }} />
-                      <ChartTooltip content={<ChartTooltipContent />} />
-                      <CartesianGrid strokeDasharray="3 3" horizontal={false} />
-                      <Bar dataKey="contribution" radius={3}>
-                        {[...waterfall].reverse().map((entry, index) => (
-                          <Cell
-                            key={index}
-                            fill={
-                              entry.contribution >= 0 ? "var(--score-4)" : "var(--destructive)"
-                            }
-                          />
-                        ))}
-                      </Bar>
-                    </BarChart>
-                  </ChartContainer>
-                </div>
-              ) : null}
-
-              {comparison ? (
-                <div
-                  className={cn(
-                    "space-y-2",
-                    (globalImportance || waterfall) && "border-border/60 border-t pt-6"
-                  )}>
-                  <p className="text-sm font-medium">{t("charts.comparison")}</p>
-                  <div className="grid gap-4 sm:grid-cols-2">
-                    {(["shap", "lime"] as const).map((methodKey) => (
-                      <div key={methodKey}>
-                        <p className="mb-1 text-xs font-medium uppercase">{methodKey}</p>
-                        {comparison[methodKey].map((item) => (
-                          <div key={item.feature} className="flex items-center gap-2 text-xs">
-                            <span className="w-32 truncate">{item.feature}</span>
-                            <div className="bg-muted h-1.5 flex-1 rounded">
-                              <div
-                                className="bg-primary h-1.5 rounded"
-                                style={{
-                                  width: `${Math.min(100, (item.value / Math.max(...comparison[methodKey].map((i) => i.value), 1e-9)) * 100)}%`
-                                }}
-                              />
-                            </div>
-                          </div>
-                        ))}
-                      </div>
+        {waterfall ? (
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base">{t("charts.waterfall")}</CardTitle>
+              <p className="text-muted-foreground text-xs">
+                {values["base_value"] !== undefined
+                  ? t("charts.baseValue", { value: String(values["base_value"]) })
+                  : null}{" "}
+                {values["prediction"] !== undefined
+                  ? t("charts.prediction", {
+                      value: String(values["prediction"]),
+                      label: String(values["predicted_label"] ?? "")
+                    })
+                  : null}
+              </p>
+            </CardHeader>
+            <CardContent>
+              <ChartContainer
+                config={chartConfig}
+                className="w-full"
+                style={{ height: waterfall.length * 26 + 40 }}>
+                <BarChart data={[...waterfall].reverse()} layout="vertical" margin={{ left: 40 }}>
+                  <XAxis type="number" tick={{ fontSize: 10 }} />
+                  <YAxis dataKey="feature" type="category" width={150} tick={{ fontSize: 10 }} />
+                  <ChartTooltip content={<ChartTooltipContent />} />
+                  <CartesianGrid strokeDasharray="3 3" horizontal={false} />
+                  <Bar dataKey="contribution" radius={3}>
+                    {[...waterfall].reverse().map((entry, index) => (
+                      <Cell
+                        key={index}
+                        fill={
+                          entry.contribution >= 0 ? "var(--score-4)" : "var(--destructive)"
+                        }
+                      />
                     ))}
-                  </div>
-                </div>
-              ) : null}
-            </>
-          ) : (
-            <CardPlaceholder>{t("skeleton.importance")}</CardPlaceholder>
-          )}
-        </CardContent>
-      </Card>
+                  </Bar>
+                </BarChart>
+              </ChartContainer>
+            </CardContent>
+          </Card>
+        ) : null}
 
-      {/* 3. EXPLICATION — texte Markdown quand dispo, placeholder discret sinon. */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-base">
-            <BookOpenIcon className="text-muted-foreground size-4" />
-            {t("text.title")}
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          {explanation?.text_explanation ? (
+        {comparison ? (
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base">{t("charts.comparison")}</CardTitle>
+            </CardHeader>
+            <CardContent className="grid gap-4 sm:grid-cols-2">
+              {(["shap", "lime"] as const).map((method) => (
+                <div key={method}>
+                  <p className="mb-1 text-xs font-medium uppercase">{method}</p>
+                  {comparison[method].map((item) => (
+                    <div key={item.feature} className="flex items-center gap-2 text-xs">
+                      <span className="w-32 truncate">{item.feature}</span>
+                      <div className="bg-muted h-1.5 flex-1 rounded">
+                        <div
+                          className="bg-primary h-1.5 rounded"
+                          style={{
+                            width: `${Math.min(100, (item.value / Math.max(...comparison[method].map((i) => i.value), 1e-9)) * 100)}%`
+                          }}
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+        ) : null}
+      </div>
+
+      {explanation.text_explanation ? (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-base">
+              <BookOpenIcon className="text-muted-foreground size-4" />
+              {t("text.title")}
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
             <div className="bg-muted/40 rounded-md border p-4">
               <Markdown className={PROSE}>{explanation.text_explanation}</Markdown>
             </div>
-          ) : (
-            <CardPlaceholder>{t("skeleton.text")}</CardPlaceholder>
-          )}
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      ) : null}
     </div>
   );
 }
