@@ -48,9 +48,10 @@ function NormalizedTotalBar({ criteria, weights }: { criteria: string[]; weights
   );
 }
 
-/** Panneau de pondération (CDC §6.4) — version dense : résumé mis en valeur en tête,
- *  seuls les critères ACTIFS déploient leur slider, les inactifs se rangent en chips
- *  cliquables (un clic → poids 0.5). Profils prédéfinis + réinitialiser conservés. */
+/** Pupitre de pondération (CDC §6.4) — version PLEINE LARGEUR : un bandeau de tête
+ *  (titre + profils prédéfinis + réinitialiser, puis barre normalisée + total), les
+ *  critères ACTIFS déployés en GRILLE de cartes-sliders (2/3/4 colonnes), les INACTIFS
+ *  rangés en chips cliquables (un clic → poids 0.5). Logique inchangée. */
 export function WeightsPanel({
   criteria,
   profiles,
@@ -83,72 +84,87 @@ export function WeightsPanel({
 
   return (
     <Card>
-      <CardHeader className="gap-3">
-        <div className="flex items-center justify-between gap-2">
-          <CardTitle className="text-base">{t("weightsTitle")}</CardTitle>
-          <span className="text-muted-foreground text-xs">
-            {t("activeCriteria", { count: activeCount })}
-          </span>
-        </div>
+      <CardHeader className="gap-4">
+        {/* Rangée 1 : identité du pupitre + profils prédéfinis + réinitialiser. */}
+        <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-3">
+          <div className="flex items-baseline gap-3">
+            <CardTitle className="text-base">{t("weightsTitle")}</CardTitle>
+            <span className="text-muted-foreground text-xs">
+              {t("activeCriteria", { count: activeCount })}
+            </span>
+          </div>
 
-        <div className="flex flex-wrap items-center gap-1">
-          <span className="text-muted-foreground mr-1 text-xs">{t("profiles")} :</span>
-          {(profiles?.profiles ?? []).map((profile) => (
-            <Button
-              key={profile.name}
-              size="sm"
-              variant={activeProfile === profile.name ? "secondary" : "outline"}
-              onClick={() => applyProfile(profile.name)}>
-              {t(`profile.${profile.name}` as never)}
+          <div className="flex flex-wrap items-center gap-1">
+            <span className="text-muted-foreground mr-1 text-xs">{t("profiles")} :</span>
+            {(profiles?.profiles ?? []).map((profile) => (
+              <Button
+                key={profile.name}
+                size="sm"
+                variant={activeProfile === profile.name ? "secondary" : "outline"}
+                onClick={() => applyProfile(profile.name)}>
+                {t(`profile.${profile.name}` as never)}
+              </Button>
+            ))}
+            <Button size="sm" variant="ghost" onClick={reset}>
+              {t("reset")}
             </Button>
-          ))}
-          <Button size="sm" variant="ghost" onClick={reset}>
-            {t("reset")}
-          </Button>
+          </div>
         </div>
 
-        {/* Résumé mis en valeur : part normalisée de chaque critère + total. */}
-        <div className="bg-muted/40 space-y-1.5 rounded-lg border p-3">
-          <NormalizedTotalBar criteria={criteria} weights={weights} />
-          <p className="text-muted-foreground text-xs">
+        {/* Rangée 2 : résumé en bandeau — barre normalisée pleine largeur + total. */}
+        <div className="bg-muted/40 flex flex-wrap items-center gap-x-4 gap-y-2 rounded-lg border p-3">
+          <div className="min-w-0 flex-1 basis-64">
+            <NormalizedTotalBar criteria={criteria} weights={weights} />
+          </div>
+          <p className="text-muted-foreground shrink-0 font-mono text-xs">
             {t("normalizedTotal", { total: totalWeight.toFixed(2) })}
           </p>
         </div>
       </CardHeader>
 
-      <CardContent className="space-y-3 border-t pt-4">
-        {/* Critères actifs : sliders déployés. */}
-        {activeCriteria.map((criterion) => {
-          const weight = weights[criterion] ?? 0;
-          const effective = totalWeight > 0 ? Math.round((weight / totalWeight) * 100) : 0;
-          return (
-            <div key={criterion} className="border-border/60 space-y-2 rounded-md border p-2.5">
-              <div className="flex items-center justify-between gap-2">
-                <Label className="flex items-center gap-2 text-sm font-normal">
-                  <Switch
-                    checked
-                    onCheckedChange={(checked) => setWeight(criterion, checked ? 0.5 : 0)}
+      <CardContent className="space-y-4 border-t pt-4">
+        {/* Critères actifs : grille de cartes-sliders compactes (responsive 1/2/3/4). */}
+        {activeCriteria.length > 0 ? (
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {activeCriteria.map((criterion) => {
+              const weight = weights[criterion] ?? 0;
+              const effective = totalWeight > 0 ? Math.round((weight / totalWeight) * 100) : 0;
+              return (
+                <div
+                  key={criterion}
+                  className="border-border/60 bg-background/40 flex flex-col gap-2.5 rounded-lg border p-3">
+                  <Label className="flex min-w-0 items-center gap-2 text-sm font-normal">
+                    <Switch
+                      className="shrink-0"
+                      checked
+                      onCheckedChange={(checked) => setWeight(criterion, checked ? 0.5 : 0)}
+                    />
+                    <span className="truncate">{t(`criteria.${criterion}` as never)}</span>
+                  </Label>
+                  <div className="flex items-baseline justify-between gap-2">
+                    <span className="font-mono text-lg leading-none font-semibold tabular-nums">
+                      {weight.toFixed(2)}
+                    </span>
+                    <span className="text-muted-foreground shrink-0 font-mono text-xs">
+                      {effective}% {t("effective")}
+                    </span>
+                  </div>
+                  <Slider
+                    value={[weight]}
+                    min={0}
+                    max={1}
+                    step={0.05}
+                    onValueChange={([value]) => setWeight(criterion, value)}
                   />
-                  {t(`criteria.${criterion}` as never)}
-                </Label>
-                <span className="text-muted-foreground shrink-0 font-mono text-xs">
-                  {weight.toFixed(2)} · {effective}% {t("effective")}
-                </span>
-              </div>
-              <Slider
-                value={[weight]}
-                min={0}
-                max={1}
-                step={0.05}
-                onValueChange={([value]) => setWeight(criterion, value)}
-              />
-            </div>
-          );
-        })}
+                </div>
+              );
+            })}
+          </div>
+        ) : null}
 
         {/* Critères inactifs : chips compactes, un clic pour activer. */}
         {inactiveCriteria.length > 0 ? (
-          <div className="space-y-1.5">
+          <div className="space-y-2">
             <p className="text-muted-foreground text-xs">{t("addCriteria")}</p>
             <div className="flex flex-wrap gap-1.5">
               {inactiveCriteria.map((criterion) => (

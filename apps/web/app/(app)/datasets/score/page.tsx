@@ -107,37 +107,33 @@ export default function ScorePage() {
         </div>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-[20rem_1fr] lg:items-start">
-        <div className="h-fit lg:sticky lg:top-20">
-          <WeightsPanel
-            criteria={profiles?.criteria ?? []}
-            profiles={profiles}
-            weights={weights}
-            activeProfile={activeProfile}
-            onChange={handleWeightsChange}
-          />
-        </div>
+      {/* Pupitre de pondération — pleine largeur, en tête. */}
+      <WeightsPanel
+        criteria={profiles?.criteria ?? []}
+        profiles={profiles}
+        weights={weights}
+        activeProfile={activeProfile}
+        onChange={handleWeightsChange}
+      />
 
-        <div className="min-w-0 space-y-3">
-          <p className="text-muted-foreground text-sm">
-            {loading
-              ? t("loading")
-              : t("resultsCount", { count: response?.results.length ?? 0 })}
-          </p>
-          {loading && !response ? (
-            <Skeleton className="h-96 w-full" />
-          ) : !response || response.results.length === 0 ? (
-            <Card>
-              <CardContent className="py-10 text-center">
-                <p className="text-muted-foreground text-sm">{t("empty")}</p>
-              </CardContent>
-            </Card>
-          ) : view === "heatmap" ? (
-            <ScoreHeatmap results={response.results} criteria={response.criteria} />
-          ) : (
-            <ResultsList results={response.results} criteria={response.criteria} />
-          )}
-        </div>
+      {/* Résultats (heatmap / liste) — pleine largeur, en dessous : la matrice respire. */}
+      <div className="min-w-0 space-y-3">
+        <p className="text-muted-foreground text-sm">
+          {loading ? t("loading") : t("resultsCount", { count: response?.results.length ?? 0 })}
+        </p>
+        {loading && !response ? (
+          <Skeleton className="h-96 w-full" />
+        ) : !response || response.results.length === 0 ? (
+          <Card>
+            <CardContent className="py-10 text-center">
+              <p className="text-muted-foreground text-sm">{t("empty")}</p>
+            </CardContent>
+          </Card>
+        ) : view === "heatmap" ? (
+          <ScoreHeatmap results={response.results} criteria={response.criteria} />
+        ) : (
+          <ResultsList results={response.results} criteria={response.criteria} />
+        )}
       </div>
     </div>
   );

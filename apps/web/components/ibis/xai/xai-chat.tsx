@@ -119,14 +119,17 @@ export function XaiChat({ explanation }: { explanation: ExplanationResults }) {
   if (!session) {
     return (
       <Card>
-        <CardContent className="flex flex-wrap items-center justify-between gap-3 pt-6">
-          <div className="flex items-center gap-3">
-            <div className="bg-chart-1/10 text-foreground flex size-10 shrink-0 items-center justify-center rounded-full">
-              <SparklesIcon className="size-4" />
-            </div>
-            <p className="text-sm font-medium">{t("title")}</p>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-base">
+            <MessageCircleIcon className="text-muted-foreground size-4" />
+            {t("title")}
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="flex flex-col items-center gap-4 text-center">
+          <div className="bg-chart-1/10 text-foreground flex size-12 shrink-0 items-center justify-center rounded-full">
+            <SparklesIcon className="size-5" />
           </div>
-          <Button variant="outline" onClick={() => void start()}>
+          <Button variant="outline" className="w-full" onClick={() => void start()}>
             <MessageCircleIcon />
             {t("start")}
           </Button>
@@ -140,9 +143,14 @@ export function XaiChat({ explanation }: { explanation: ExplanationResults }) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center justify-between text-base">
-          {t("title")}
-          <Badge variant={remaining > 0 ? "outline" : "destructive"}>
+        <CardTitle className="flex items-center justify-between gap-2 text-base">
+          <span className="flex min-w-0 items-center gap-2">
+            <MessageCircleIcon className="text-muted-foreground size-4 shrink-0" />
+            <span className="truncate">{t("title")}</span>
+          </span>
+          <Badge
+            variant={remaining > 0 ? "outline" : "destructive"}
+            className="shrink-0 whitespace-nowrap">
             {t("remaining", { count: Math.max(0, remaining) })}
           </Badge>
         </CardTitle>

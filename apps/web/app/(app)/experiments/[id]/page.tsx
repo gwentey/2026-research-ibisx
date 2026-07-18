@@ -42,7 +42,6 @@ import {
   getExperimentResults
 } from "@/lib/api/generated";
 import type { ExperimentResults, ExperimentWithQueue, LogLine } from "@/lib/api/generated";
-import { cn } from "@/lib/utils";
 
 /** Pill de contexte (en-tête résultats) — pastille tonale + icône, données réelles uniquement. */
 function ContextPill({ icon: Icon, children }: { icon: LucideIcon; children: ReactNode }) {
@@ -143,24 +142,57 @@ export default function ExperimentResultsPage({
     | { points: { precision: number; recall: number }[] }
     | undefined;
 
-  // Graphiques compacts (hauteur ~ constante) : 1 tuile (multiclasse) ou 3 (binaire : + ROC/PR).
-  // Le compte étant impair, la dernière tuile prend toute la largeur → paires équilibrées, aucun trou.
-  const compactCharts: { id: string; node: ReactNode }[] = [];
-  if (confusion) {
-    compactCharts.push({
-      id: "confusion_matrix",
-      node: <ConfusionMatrix classes={confusion.classes} matrix={confusion.matrix} />
-    });
-  }
-  if (rocCurve) {
-    compactCharts.push({
-      id: "roc_curve",
-      node: <RocCurve points={rocCurve.points} auc={rocCurve.auc} />
-    });
-  }
-  if (prCurve) {
-    compactCharts.push({ id: "pr_curve", node: <PrCurve points={prCurve.points} /> });
-  }
+  // Cartes secondaires réutilisées à deux endroits (colonne droite de l'arbre, sinon pleine largeur).
+  const appliedCard = results?.applied_preprocessing ? (
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2 text-base">
+          {t("appliedTitle")}
+          <Badge variant="secondary" className="font-mono">
+            {t("appliedBadge")}
+          </Badge>
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <ul className="text-muted-foreground list-disc pl-5 font-mono text-xs leading-relaxed">
+          {((results.applied_preprocessing.steps as string[]) ?? []).map((step) => (
+            <li key={step}>{step}</li>
+          ))}
+        </ul>
+      </CardContent>
+    </Card>
+  ) : null;
+
+  const logsCard =
+    logs.length > 0 ? (
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base">{t("logs")}</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <ItemGroup className="max-h-64 overflow-auto rounded-md border">
+            {logs.map((line, index) => (
+              <Fragment key={index}>
+                {index > 0 ? <ItemSeparator /> : null}
+                <Item size="sm">
+                  <ItemMedia variant="icon">
+                    <TerminalIcon />
+                  </ItemMedia>
+                  <ItemContent>
+                    <ItemDescription className="text-foreground font-mono text-xs">
+                      {line.message}
+                    </ItemDescription>
+                  </ItemContent>
+                  <span className="text-muted-foreground shrink-0 font-mono text-[10px]">
+                    {new Date(line.ts).toLocaleTimeString()}
+                  </span>
+                </Item>
+              </Fragment>
+            ))}
+          </ItemGroup>
+        </CardContent>
+      </Card>
+    ) : null;
 
   return (
     <div className="space-y-6">
@@ -237,7 +269,7 @@ export default function ExperimentResultsPage({
           ) : null}
 
           {results ? (
-            <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-4">
+            <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-6">
               {METRIC_ORDER.filter((key) => typeof results.metrics[key] === "number").map(
                 (key) => {
                   const numericValue = results.metrics[key] as number;
@@ -265,30 +297,22 @@ export default function ExperimentResultsPage({
             </div>
           ) : null}
 
-          {compactCharts.length > 0 ? (
-            <div className="grid gap-4 lg:grid-cols-2">
-              {compactCharts.map((entry, index) => (
-                <div
-                  key={entry.id}
-                  className={cn(
-                    compactCharts.length % 2 === 1 &&
-                      index === compactCharts.length - 1 &&
-                      "lg:col-span-2"
-                  )}>
-                  {entry.node}
+          {confusion || rocCurve || prCurve ? (
+            <div className="grid items-start gap-4 lg:grid-cols-2">
+              {confusion ? (
+                <div className="lg:col-span-2">
+                  <ConfusionMatrix classes={confusion.classes} matrix={confusion.matrix} />
                 </div>
-              ))}
+              ) : null}
+              {rocCurve ? <RocCurve points={rocCurve.points} auc={rocCurve.auc} /> : null}
+              {prCurve ? <PrCurve points={prCurve.points} /> : null}
             </div>
           ) : null}
 
-          {viz["feature_importance"] || viz["tree_structure"] ? (
-            <div className="space-y-4">
-              {viz["feature_importance"] ? (
-                <ImportanceChart importance={viz["feature_importance"] as never[]} />
-              ) : null}
-              {viz["tree_structure"] ? <TreeView tree={viz["tree_structure"] as never} /> : null}
-            </div>
+          {viz["feature_importance"] ? (
+            <ImportanceChart importance={viz["feature_importance"] as never[]} />
           ) : null}
+
           {viz["predicted_vs_actual"] ? (
             <RegressionCharts
               predVsActual={viz["predicted_vs_actual"] as never[]}
@@ -297,55 +321,25 @@ export default function ExperimentResultsPage({
             />
           ) : null}
 
-          {results?.applied_preprocessing ? (
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-base">
-                  {t("appliedTitle")}
-                  <Badge variant="secondary" className="font-mono">
-                    {t("appliedBadge")}
-                  </Badge>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ul className="text-muted-foreground list-disc pl-5 font-mono text-xs leading-relaxed">
-                  {((results.applied_preprocessing.steps as string[]) ?? []).map((step) => (
-                    <li key={step}>{step}</li>
-                  ))}
-                </ul>
-              </CardContent>
-            </Card>
-          ) : null}
-
-          {logs.length > 0 ? (
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-base">{t("logs")}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ItemGroup className="max-h-64 overflow-auto rounded-md border">
-                  {logs.map((line, index) => (
-                    <Fragment key={index}>
-                      {index > 0 ? <ItemSeparator /> : null}
-                      <Item size="sm">
-                        <ItemMedia variant="icon">
-                          <TerminalIcon />
-                        </ItemMedia>
-                        <ItemContent>
-                          <ItemDescription className="text-foreground font-mono text-xs">
-                            {line.message}
-                          </ItemDescription>
-                        </ItemContent>
-                        <span className="text-muted-foreground shrink-0 font-mono text-[10px]">
-                          {new Date(line.ts).toLocaleTimeString()}
-                        </span>
-                      </Item>
-                    </Fragment>
-                  ))}
-                </ItemGroup>
-              </CardContent>
-            </Card>
-          ) : null}
+          {viz["tree_structure"] ? (
+            appliedCard || logsCard ? (
+              // Arbre étroit à gauche → on comble la largeur avec transformations + journal à droite.
+              <div className="grid items-start gap-4 lg:grid-cols-2">
+                <TreeView tree={viz["tree_structure"] as never} />
+                <div className="space-y-4">
+                  {appliedCard}
+                  {logsCard}
+                </div>
+              </div>
+            ) : (
+              <TreeView tree={viz["tree_structure"] as never} />
+            )
+          ) : (
+            <>
+              {appliedCard}
+              {logsCard}
+            </>
+          )}
         </TabsContent>
 
         <TabsContent value="xai">

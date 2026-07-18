@@ -9,7 +9,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { Markdown } from "@/components/ui/custom/prompt/markdown";
 import type { ExplanationResults } from "@/lib/api/generated";
-import { XaiChat } from "@/components/ibis/xai/xai-chat";
 import { cn } from "@/lib/utils";
 
 // Recette de style markdown (pas de plugin prose dans ce projet → sélecteurs utilitaires).
@@ -56,7 +55,7 @@ function KpiTile({
   tone: KpiTone;
 }) {
   return (
-    <div className="bg-muted/30 flex flex-col gap-1.5 rounded-lg border p-3" title={hint}>
+    <div className="bg-muted/30 flex h-full flex-col gap-1.5 rounded-lg border p-3" title={hint}>
       <p className="text-muted-foreground text-xs leading-tight">{label}</p>
       <p className={cn("flex items-start gap-1.5 text-sm leading-snug font-semibold", TONE_TEXT[tone])}>
         <span
@@ -88,7 +87,7 @@ function KpiBoard({ kpis }: { kpis: Record<string, never> }) {
         <CardTitle className="text-base">{t("title")}</CardTitle>
         <p className="text-muted-foreground text-xs">{t("hint")}</p>
       </CardHeader>
-      <CardContent className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-6">
+      <CardContent className="grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-6">
         {completeness ? (
           <KpiTile
             label={t("completeness")}
@@ -160,7 +159,7 @@ export function ExplanationView({ explanation }: { explanation: ExplanationResul
     | undefined;
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <div className="bg-muted/30 space-y-2 rounded-lg border px-4 py-3">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <h3 className="text-sm font-semibold">{t("result.title")}</h3>
@@ -187,7 +186,7 @@ export function ExplanationView({ explanation }: { explanation: ExplanationResul
 
       <KpiBoard kpis={(explanation.quality_kpis ?? {}) as never} />
 
-      <div className="grid items-start gap-4 lg:grid-cols-2">
+      <div className="grid items-start gap-4 xl:grid-cols-2">
         {globalImportance ? (
           <Card>
             <CardHeader>
@@ -254,7 +253,7 @@ export function ExplanationView({ explanation }: { explanation: ExplanationResul
         ) : null}
 
         {comparison ? (
-          <Card className="lg:col-span-2">
+          <Card className="xl:col-span-2">
             <CardHeader>
               <CardTitle className="text-base">{t("charts.comparison")}</CardTitle>
             </CardHeader>
@@ -297,8 +296,6 @@ export function ExplanationView({ explanation }: { explanation: ExplanationResul
           </CardContent>
         </Card>
       ) : null}
-
-      <XaiChat explanation={explanation} />
     </div>
   );
 }

@@ -64,25 +64,33 @@ export function ScoreHeatmap({ results, criteria }: ScoreHeatmapProps) {
           <table className="w-full border-collapse text-xs">
             <thead>
               <tr>
-                <th className="bg-muted/50 sticky left-0 min-w-40 p-2 text-left font-medium">
+                <th className="bg-muted/50 sticky left-0 z-10 min-w-40 p-2 text-left align-bottom font-medium">
                   {t("resultsTitle")}
                 </th>
-                <th className="bg-muted/50 p-2 font-medium">{t("score")}</th>
+                <th className="bg-muted/50 p-2 align-bottom font-medium">{t("score")}</th>
+                {/* En-têtes verticaux : le libellé complet tient sans troncature, les
+                    colonnes restent étroites → la matrice entière reste visible. */}
                 {criteria.map((criterion) => (
                   <th
                     key={criterion}
                     className={cn(
-                      "bg-muted/50 hover:bg-muted min-w-16 cursor-pointer p-2 align-bottom font-medium",
+                      "bg-muted/50 hover:bg-muted h-40 cursor-pointer p-0 align-bottom font-medium transition-colors",
                       sortBy === criterion && "text-primary"
                     )}
                     onClick={() => setSortBy(sortBy === criterion ? null : criterion)}
                     title={t(`criteria.${criterion}` as never)}>
-                    <span className="flex items-end justify-center gap-0.5">
-                      <span className="max-w-20 truncate">
+                    <div className="flex h-full flex-col items-center justify-end gap-1.5 px-1 pb-2">
+                      <ArrowDownIcon
+                        className={cn(
+                          "size-3 shrink-0 transition-opacity",
+                          sortBy === criterion ? "opacity-100" : "opacity-0"
+                        )}
+                        aria-hidden="true"
+                      />
+                      <span className="rotate-180 tracking-tight whitespace-nowrap [writing-mode:vertical-rl]">
                         {t(`criteria.${criterion}` as never)}
                       </span>
-                      {sortBy === criterion ? <ArrowDownIcon className="size-3" /> : null}
-                    </span>
+                    </div>
                   </th>
                 ))}
               </tr>
@@ -93,7 +101,7 @@ export function ScoreHeatmap({ results, criteria }: ScoreHeatmapProps) {
                   key={result.dataset.id}
                   className="hover:bg-muted/40 cursor-pointer border-t"
                   onClick={() => router.push(`/datasets/${result.dataset.id}`)}>
-                  <td className="bg-background sticky left-0 max-w-48 truncate p-2 font-medium">
+                  <td className="bg-background sticky left-0 z-10 max-w-48 truncate p-2 font-medium">
                     #{result.rank} {result.dataset.display_name}
                   </td>
                   <td className="p-1 text-center">

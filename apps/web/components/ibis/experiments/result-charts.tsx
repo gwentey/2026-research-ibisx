@@ -124,26 +124,28 @@ export function MetricTile({
   hint?: string;
 }) {
   return (
-    <Card className={cn("gap-2 py-4", tone === "low" && "border-destructive/40")}>
-      <CardContent className="space-y-2">
-        <div className="flex items-center justify-between gap-2">
-          <p className="text-muted-foreground flex items-center gap-1.5 text-xs">
+    <Card className={cn("gap-1.5 py-3", tone === "low" && "border-destructive/40")}>
+      <CardContent className="space-y-1.5 px-3">
+        <div className="flex items-center justify-between gap-1.5">
+          <p className="text-muted-foreground flex min-w-0 items-center gap-1 text-[11px]">
             <span className={cn("size-1.5 shrink-0 rounded-full", TONE_DOT[tone])} aria-hidden />
-            {label}
+            <span className="truncate">{label}</span>
           </p>
           {isPrimary ? (
-            <Badge variant="secondary" className="text-[9px]">
+            <Badge variant="secondary" className="shrink-0 px-1 py-0 text-[9px]">
               {primaryLabel}
             </Badge>
           ) : null}
         </div>
-        <p className="text-xl font-semibold" title={hint}>
+        <p className="text-lg leading-tight font-semibold" title={hint}>
           {displayValue}
         </p>
         {ratio !== null ? (
           <div className="space-y-1">
-            <Progress value={ratio * 100} className="h-1.5" indicatorColor={TONE_DOT[tone]} />
-            {qualityLabel ? <p className="text-muted-foreground text-[10px]">{qualityLabel}</p> : null}
+            <Progress value={ratio * 100} className="h-1" indicatorColor={TONE_DOT[tone]} />
+            {qualityLabel ? (
+              <p className="text-muted-foreground text-[10px] leading-tight">{qualityLabel}</p>
+            ) : null}
           </div>
         ) : null}
       </CardContent>
@@ -172,7 +174,7 @@ export function ConfusionMatrix({
   };
 
   return (
-    <Card>
+    <Card className="w-fit max-w-full">
       <CardHeader>
         <CardTitle className="text-base">{t("confusion")}</CardTitle>
       </CardHeader>

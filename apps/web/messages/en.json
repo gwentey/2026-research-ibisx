@@ -168,7 +168,11 @@
       "newProject": "New project",
       "exploreDatasets": "Explore datasets",
       "resumeWizard": "Resume ongoing training",
-      "resumeHint": "Draft on {dataset}"
+      "resumeHint": "Draft on {dataset}",
+      "newProjectDesc": "Set up a project and launch a first experiment.",
+      "exploreDatasetsDesc": "Browse the catalog and open a dataset page.",
+      "scoreDataset": "Score datasets",
+      "scoreDatasetDesc": "Weight your criteria and rank datasets."
     },
     "recentProjects": {
       "title": "Recent projects",
@@ -297,7 +301,8 @@
       "private": "Private",
       "view": "View",
       "moreTags": "+{count}",
-      "updatedAgo": "Updated {date}"
+      "updatedAgo": "Updated {date}",
+      "viewCard": "View dataset"
     },
     "empty": {
       "title": "Empty catalog",
@@ -558,7 +563,8 @@
     "heatmapLegend": "Legend — score intensity",
     "activeCriteria": "{count, plural, =0 {No active criterion} one {# active criterion} other {# active criteria}}",
     "normalizedTotal": "Total weight {total} → normalized to 100%",
-    "addCriteria": "Add a criterion"
+    "addCriteria": "Add a criterion",
+    "scoreSelectionCount": "{count, plural, one {Score this dataset} other {Score these # datasets}}"
   },
   "projects": {
     "title": "Projects",

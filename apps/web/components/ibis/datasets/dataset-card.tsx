@@ -28,7 +28,8 @@ import { cn } from "@/lib/utils";
 // Signature « cartes tonales texturées par domaine » (docs/refonte/05-catalogue.md) :
 // vignette gradient + motif SVG + tuile-icône propres au domaine, score éthique en
 // médaillon chevauchant (ProgressRing des fondations), pied stable (date de MAJ +
-// action « Voir »). Card/CardHeader/CardContent/CardFooter conservés (data-slot="card").
+// bouton « Voir la fiche » outline, flèche animée). Card/CardHeader/CardContent/CardFooter
+// conservés (data-slot="card").
 
 const MAX_TAGS = 3;
 
@@ -169,20 +170,17 @@ export function DatasetCard({ dataset }: { dataset: DatasetCardData }) {
         </div>
       </CardContent>
 
-      {/* Pied stable : date de MAJ à gauche, action « Voir » alignée à droite (toujours visible) */}
+      {/* Pied stable : date de MAJ à gauche, bouton « Voir la fiche » (outline) aligné à
+          droite sur le filet. Flèche qui se translate au survol de la carte. */}
       <CardFooter className="justify-between border-t">
         <span className="text-muted-foreground flex items-center gap-1.5 text-xs">
           <ClockIcon className="size-3" />
           {t("updatedAgo", { date: new Date(dataset.updated_at).toLocaleDateString(locale) })}
         </span>
-        <Button
-          asChild
-          size="sm"
-          variant="ghost"
-          className="text-muted-foreground group-hover:text-foreground -mr-2 gap-1">
+        <Button asChild size="sm" variant="outline" className="gap-1.5">
           <Link href={`/datasets/${dataset.id}`}>
-            {t("view")}
-            <ArrowRightIcon className="size-3.5" />
+            {t("viewCard")}
+            <ArrowRightIcon className="size-3.5 transition-transform duration-200 ease-out group-hover:translate-x-0.5" />
           </Link>
         </Button>
       </CardFooter>

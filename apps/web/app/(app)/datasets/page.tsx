@@ -100,31 +100,18 @@ export default function DatasetsPage() {
         ) : null}
       </div>
 
-      {/* Barre-outil centrale : recherche proéminente + scoring de la sélection, puis
-          filtres / tri / affichage regroupés dans un panneau élevé (bg-card). */}
+      {/* Barre-outil centrale : recherche proéminente, puis filtres / tri / affichage
+          regroupés dans un panneau élevé (bg-card). L'action « Scorer » vit dans la barre
+          de résultats ci-dessous, pour ne pas être confondue avec la recherche. */}
       <div className="bg-card rounded-xl border p-3 shadow-sm sm:p-4">
-        <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
-          <div className="relative flex-1">
-            <SearchIcon className="text-muted-foreground pointer-events-none absolute top-1/2 left-3.5 size-5 -translate-y-1/2" />
-            <Input
-              value={catalog.search}
-              onChange={(event) => catalog.setSearch(event.target.value)}
-              placeholder={t("searchPlaceholder")}
-              className="h-11 pl-11 md:text-base"
-            />
-          </div>
-          <Button
-            className="h-11 w-full lg:w-auto"
-            onClick={() => {
-              sessionStorage.setItem(
-                "ibis:score:filters",
-                JSON.stringify({ ...catalog.filters, q: catalog.search || undefined })
-              );
-              router.push("/datasets/score");
-            }}>
-            <GaugeIcon />
-            {tScoring("scoreSelection")}
-          </Button>
+        <div className="relative">
+          <SearchIcon className="text-muted-foreground pointer-events-none absolute top-1/2 left-3.5 size-5 -translate-y-1/2" />
+          <Input
+            value={catalog.search}
+            onChange={(event) => catalog.setSearch(event.target.value)}
+            placeholder={t("searchPlaceholder")}
+            className="h-11 pl-11 md:text-base"
+          />
         </div>
 
         <div className="mt-3 flex flex-wrap items-center gap-2 border-t pt-3">
@@ -192,9 +179,27 @@ export default function DatasetsPage() {
         </div>
       ) : null}
 
-      <p className="text-muted-foreground text-sm">
-        {catalog.data ? t("results", { count: catalog.data.total }) : tCommon("loading")}
-      </p>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <p className="text-muted-foreground text-sm">
+          {catalog.data ? t("results", { count: catalog.data.total }) : tCommon("loading")}
+        </p>
+        {catalog.data && catalog.data.total > 0 ? (
+          <Button
+            variant="outline"
+            size="sm"
+            className="gap-1.5"
+            onClick={() => {
+              sessionStorage.setItem(
+                "ibis:score:filters",
+                JSON.stringify({ ...catalog.filters, q: catalog.search || undefined })
+              );
+              router.push("/datasets/score");
+            }}>
+            <GaugeIcon />
+            {tScoring("scoreSelectionCount", { count: catalog.data.total })}
+          </Button>
+        ) : null}
+      </div>
 
       {catalog.state === "error" ? (
         <Card>
