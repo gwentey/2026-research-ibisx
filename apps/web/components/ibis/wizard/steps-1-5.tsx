@@ -5,6 +5,8 @@ import { useTranslations } from "next-intl";
 import {
   CheckCircle2Icon,
   CheckIcon,
+  ChevronDownIcon,
+  ChevronUpIcon,
   Columns3Icon,
   GaugeIcon,
   InfoIcon,
@@ -344,12 +346,18 @@ export function Step2Target({
       {/* Panneau d'assistance (disposition v1 : analyse → cartes comparatives → reco finale) */}
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle className="flex items-center gap-2 text-base">
-            <SparklesIcon className="text-primary size-4" />
+          <CardTitle className="text-ai flex items-center gap-2 text-base">
+            <span className="bg-ai/10 text-ai flex size-7 shrink-0 items-center justify-center rounded-md">
+              <SparklesIcon className="size-4" />
+            </span>
             {t("aiTitle")}
           </CardTitle>
-          <Button variant="ghost" size="sm" onClick={() => setAssistOpen((open) => !open)}>
-            {assistOpen ? <XIcon /> : <SparklesIcon />}
+          <Button
+            variant="outline"
+            size="sm"
+            aria-expanded={assistOpen}
+            onClick={() => setAssistOpen((open) => !open)}>
+            {assistOpen ? <ChevronUpIcon /> : <ChevronDownIcon />}
             {assistOpen ? t("closeAssist") : t("openAssist")}
           </Button>
         </CardHeader>
@@ -374,7 +382,7 @@ export function Step2Target({
           </div>
 
           {assistOpen ? (
-            <div className="border-primary bg-muted/50 space-y-3 rounded-md border border-l-4 p-4">
+            <div className="border-ai/30 bg-ai/5 space-y-3 rounded-md border p-4">
               <p className="text-sm">
                 {t("analysisOf", { name: dataset.display_name })}
                 {dataset.objective ? (
@@ -384,12 +392,12 @@ export function Step2Target({
               {target ? (
                 <div className="flex flex-wrap gap-x-6 gap-y-1.5 text-sm">
                   <span className="flex items-center gap-1.5">
-                    <ListIcon className="text-primary size-3.5" />
+                    <ListIcon className="text-ai size-3.5" />
                     <span className="text-muted-foreground">{t("targetInfo")} :</span>
                     <span className="font-medium">{target}</span>
                   </span>
                   <span className="flex items-center gap-1.5">
-                    <GaugeIcon className="text-primary size-3.5" />
+                    <GaugeIcon className="text-ai size-3.5" />
                     <span className="text-muted-foreground">{t("dtypeInfo")} :</span>
                     <span className="font-medium">
                       {meta.isCategorical ? t("dtypeCategorical") : t("dtypeNumeric")}
@@ -409,7 +417,7 @@ export function Step2Target({
           </div>
 
           {assistOpen && target ? (
-            <Alert>
+            <Alert className="border-ai/30 bg-ai/5 text-ai">
               <LightbulbIcon />
               <AlertTitle>{t("finalTitle")}</AlertTitle>
               <AlertDescription>
@@ -428,7 +436,9 @@ export function Step2Target({
 
           {assistOpen && target ? (
             <div className="flex flex-wrap justify-center gap-2 pt-1">
-              <Button onClick={() => store.set("taskType", meta.recommendedTask)}>
+              <Button
+                className="bg-ai text-ai-foreground hover:bg-ai/90"
+                onClick={() => store.set("taskType", meta.recommendedTask)}>
                 <CheckCircle2Icon />
                 {t("applyFinal", { task: recommendedLabel })}
               </Button>

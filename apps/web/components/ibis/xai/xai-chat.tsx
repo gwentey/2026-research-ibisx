@@ -34,10 +34,10 @@ const CHAT_PROSE = cn(
   "[&_table]:my-2 [&_table]:w-full [&_table]:text-xs [&_th]:border [&_th]:px-1.5 [&_th]:py-0.5 [&_th]:text-left [&_td]:border [&_td]:px-1.5 [&_td]:py-0.5"
 );
 
-/** Avatar assistant : icône sur pastille tonale (chart-1) — jamais de couleur inventée. */
+/** Avatar assistant : icône sur pastille accent IA (token --ai) — signale la réponse IA. */
 function AssistantAvatar() {
   return (
-    <div className="bg-chart-1/15 text-foreground flex size-8 shrink-0 items-center justify-center rounded-full">
+    <div className="bg-ai/15 text-ai flex size-8 shrink-0 items-center justify-center rounded-full">
       <SparklesIcon className="size-4" />
     </div>
   );
@@ -121,15 +121,18 @@ export function XaiChat({ explanation }: { explanation: ExplanationResults }) {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-base">
-            <MessageCircleIcon className="text-muted-foreground size-4" />
+            <MessageCircleIcon className="text-ai size-4" />
             {t("title")}
           </CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col items-center gap-4 text-center">
-          <div className="bg-chart-1/10 text-foreground flex size-12 shrink-0 items-center justify-center rounded-full">
+          <div className="bg-ai/10 text-ai flex size-12 shrink-0 items-center justify-center rounded-full">
             <SparklesIcon className="size-5" />
           </div>
-          <Button variant="outline" className="w-full" onClick={() => void start()}>
+          <Button
+            variant="outline"
+            className="border-ai dark:border-ai text-ai hover:bg-ai/10 hover:text-ai w-full"
+            onClick={() => void start()}>
             <MessageCircleIcon />
             {t("start")}
           </Button>
@@ -145,7 +148,7 @@ export function XaiChat({ explanation }: { explanation: ExplanationResults }) {
       <CardHeader>
         <CardTitle className="flex items-center justify-between gap-2 text-base">
           <span className="flex min-w-0 items-center gap-2">
-            <MessageCircleIcon className="text-muted-foreground size-4 shrink-0" />
+            <MessageCircleIcon className="text-ai size-4 shrink-0" />
             <span className="truncate">{t("title")}</span>
           </span>
           <Badge

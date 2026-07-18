@@ -67,14 +67,16 @@ export function RecentProjectsList({ projects }: { projects: RecentProject[] }) 
   const locale = useLocale();
 
   return (
-    <Card>
+    // pb-0 + overflow-hidden : footer flush au bas de la carte (même traitement que l'activité).
+    <Card className="overflow-hidden pb-0">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-base">
           <FolderIcon className="size-4" />
           {t("recentProjects.title")}
         </CardTitle>
       </CardHeader>
-      <CardContent>
+      {/* flex-1 : pousse le CardFooter tout en bas quand la grille étire la carte (plus de « Voir tout » au milieu). */}
+      <CardContent className="flex-1">
         {projects.length === 0 ? (
           <Empty className="border-none p-0 py-6">
             <EmptyMedia variant="icon">

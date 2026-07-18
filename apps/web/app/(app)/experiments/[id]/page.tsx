@@ -194,6 +194,17 @@ export default function ExperimentResultsPage({
       </Card>
     ) : null;
 
+  // Graphes de classification (matrice + courbes) — grille équilibrée : cartes de même
+  // hauteur par rangée ; l'orphelin d'une rangée impaire s'étend sur toute la largeur
+  // (pas de vide béant à droite de la matrice).
+  const classificationCharts = [
+    confusion ? (
+      <ConfusionMatrix key="cm" classes={confusion.classes} matrix={confusion.matrix} />
+    ) : null,
+    rocCurve ? <RocCurve key="roc" points={rocCurve.points} auc={rocCurve.auc} /> : null,
+    prCurve ? <PrCurve key="pr" points={prCurve.points} /> : null
+  ].filter(Boolean) as ReactNode[];
+
   return (
     <div className="space-y-6">
       <div className="space-y-3">
@@ -297,15 +308,18 @@ export default function ExperimentResultsPage({
             </div>
           ) : null}
 
-          {confusion || rocCurve || prCurve ? (
-            <div className="grid items-start gap-4 lg:grid-cols-2">
-              {confusion ? (
-                <div className="lg:col-span-2">
-                  <ConfusionMatrix classes={confusion.classes} matrix={confusion.matrix} />
-                </div>
-              ) : null}
-              {rocCurve ? <RocCurve points={rocCurve.points} auc={rocCurve.auc} /> : null}
-              {prCurve ? <PrCurve points={prCurve.points} /> : null}
+          {classificationCharts.length > 0 ? (
+            <div className="grid items-stretch gap-4 lg:grid-cols-2">
+              {classificationCharts.map((chart, index) => {
+                const spanFull =
+                  classificationCharts.length % 2 === 1 &&
+                  index === classificationCharts.length - 1;
+                return (
+                  <div key={index} className={spanFull ? "lg:col-span-2" : undefined}>
+                    {chart}
+                  </div>
+                );
+              })}
             </div>
           ) : null}
 

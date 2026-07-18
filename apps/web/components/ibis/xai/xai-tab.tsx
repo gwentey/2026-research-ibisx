@@ -170,7 +170,7 @@ export function XaiTab({ experimentId }: { experimentId: string }) {
               <Empty>
                 <EmptyHeader>
                   <EmptyMedia variant="icon">
-                    <SparklesIcon />
+                    <SparklesIcon className="text-ai" />
                   </EmptyMedia>
                   <EmptyTitle>{t("request.title")}</EmptyTitle>
                   <EmptyDescription>{t("history.empty")}</EmptyDescription>
@@ -187,7 +187,7 @@ export function XaiTab({ experimentId }: { experimentId: string }) {
         <Card className="order-1 lg:order-none">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-base">
-              <SparklesIcon className="text-muted-foreground size-4" />
+              <SparklesIcon className="text-ai size-4" />
               {t("request.title")}
             </CardTitle>
           </CardHeader>
@@ -270,7 +270,8 @@ export function XaiTab({ experimentId }: { experimentId: string }) {
             <div className="flex items-center gap-3">
               <Button
                 onClick={() => void launch()}
-                disabled={running || (type === "local" && instanceIndex === null)}>
+                disabled={running || (type === "local" && instanceIndex === null)}
+                className="bg-ai text-ai-foreground hover:bg-ai/90">
                 <SparklesIcon />
                 {running ? t("request.running") : t("request.launch")}
               </Button>

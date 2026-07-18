@@ -53,6 +53,12 @@
   --score-3: oklch(0.69 0.1 152);
   --score-4: oklch(0.66 0.14 150);
   --score-5: oklch(0.62 0.17 150);
+  /* Accent « IA » — indigo/violet SOBRE (pas néon). Marque UNIQUEMENT les fonctionnalités
+     assistées par IA (assistance wizard, explicabilité XAI, chat, génération d'explication)
+     pour les distinguer de l'UI standard monochrome. Classes : text-ai, bg-ai, bg-ai/10,
+     border-ai, + bg-ai text-ai-foreground pour un CTA IA plein. Défini clair ET sombre. */
+  --ai: oklch(0.5 0.16 274);
+  --ai-foreground: oklch(0.985 0.002 275);
   --radius: 0.5rem;
   --sidebar: var(--base-100);
   --sidebar-foreground: var(--base-500);
@@ -109,6 +115,9 @@
   --score-3: oklch(0.62 0.11 153);
   --score-4: oklch(0.7 0.14 151);
   --score-5: oklch(0.76 0.17 150);
+  /* Accent IA calibré pour le fond quasi-noir : indigo plus clair pour ressortir sobrement. */
+  --ai: oklch(0.72 0.15 274);
+  --ai-foreground: oklch(0.205 0.02 275);
   --sidebar: var(--base-900);
   --sidebar-foreground: var(--base-200);
   --sidebar-primary: var(--base-50);
@@ -173,6 +182,8 @@
   --color-score-3: var(--score-3);
   --color-score-4: var(--score-4);
   --color-score-5: var(--score-5);
+  --color-ai: var(--ai);
+  --color-ai-foreground: var(--ai-foreground);
   --color-sidebar: var(--sidebar);
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar-primary: var(--sidebar-primary);

@@ -174,12 +174,12 @@ export function ConfusionMatrix({
   };
 
   return (
-    <Card className="w-fit max-w-full">
+    <Card className="h-full">
       <CardHeader>
         <CardTitle className="text-base">{t("confusion")}</CardTitle>
       </CardHeader>
-      <CardContent className="space-y-3">
-        <div className="text-muted-foreground flex flex-wrap items-center gap-x-4 gap-y-1 text-xs">
+      <CardContent className="flex flex-1 flex-col items-center justify-center gap-3">
+        <div className="text-muted-foreground flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-xs">
           <span className="flex items-center gap-1.5">
             <span
               className="bg-score-4 ring-score-5/60 size-3 rounded-sm ring-1 ring-inset"
@@ -196,8 +196,8 @@ export function ConfusionMatrix({
             {t("confusionError")}
           </span>
         </div>
-        <div className="overflow-x-auto">
-          <table className="border-separate border-spacing-1 text-xs">
+        <div className="max-w-full overflow-x-auto">
+          <table className="mx-auto border-separate border-spacing-1 text-xs">
             <thead>
               <tr>
                 <th className="p-0" />
@@ -270,7 +270,7 @@ const lineConfig = { serie: { label: "", color: "var(--chart-1)" } };
 export function RocCurve({ points, auc }: { points: { fpr: number; tpr: number }[]; auc: number }) {
   const t = useTranslations("experiments.charts");
   return (
-    <Card>
+    <Card className="h-full">
       <CardHeader>
         <CardTitle className="text-base">
           {t("roc")} — AUC {auc}
@@ -295,7 +295,7 @@ export function RocCurve({ points, auc }: { points: { fpr: number; tpr: number }
 export function PrCurve({ points }: { points: { precision: number; recall: number }[] }) {
   const t = useTranslations("experiments.charts");
   return (
-    <Card>
+    <Card className="h-full">
       <CardHeader>
         <CardTitle className="text-base">{t("pr")}</CardTitle>
       </CardHeader>

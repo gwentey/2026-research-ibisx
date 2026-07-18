@@ -87,7 +87,7 @@ function KpiBoard({ kpis }: { kpis: Record<string, never> }) {
         <CardTitle className="text-base">{t("title")}</CardTitle>
         <p className="text-muted-foreground text-xs">{t("hint")}</p>
       </CardHeader>
-      <CardContent className="grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-6">
+      <CardContent className="grid grid-cols-2 gap-3 sm:grid-cols-3">
         {completeness ? (
           <KpiTile
             label={t("completeness")}
@@ -170,7 +170,7 @@ export function ExplanationView({ explanation }: { explanation: ExplanationResul
             {explanation.is_fallback ? (
               <Badge variant="secondary">{t("text.fallbackBadge")}</Badge>
             ) : (
-              <Badge variant="outline">
+              <Badge variant="outline" className="border-ai/40 text-ai">
                 {t("text.modelBadge", { model: explanation.model_used ?? "" })}
               </Badge>
             )}
@@ -186,7 +186,10 @@ export function ExplanationView({ explanation }: { explanation: ExplanationResul
 
       <KpiBoard kpis={(explanation.quality_kpis ?? {}) as never} />
 
-      <div className="grid items-start gap-4 xl:grid-cols-2">
+      {/* Colonne principale étroite (écran − sidebar 22rem) : on empile en 1 colonne pour
+          garder des cartes homogènes et sans trou, quel que soit le type d'explication
+          (global : importance ; local : waterfall ; auto : importance + comparaison). */}
+      <div className="grid gap-4">
         {globalImportance ? (
           <Card>
             <CardHeader>
@@ -253,7 +256,7 @@ export function ExplanationView({ explanation }: { explanation: ExplanationResul
         ) : null}
 
         {comparison ? (
-          <Card className="xl:col-span-2">
+          <Card>
             <CardHeader>
               <CardTitle className="text-base">{t("charts.comparison")}</CardTitle>
             </CardHeader>
