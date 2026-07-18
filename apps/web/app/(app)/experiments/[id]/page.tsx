@@ -337,8 +337,9 @@ export default function ExperimentResultsPage({
 
           {viz["tree_structure"] ? (
             appliedCard || logsCard ? (
-              // Arbre étroit à gauche → on comble la largeur avec transformations + journal à droite.
-              <div className="grid items-start gap-4 lg:grid-cols-2">
+              // Arbre à gauche, transformations + journal à droite. `items-stretch` : l'arbre
+              // s'étire à la hauteur de la colonne de droite (pas de vide sous une carte trop courte).
+              <div className="grid items-stretch gap-4 lg:grid-cols-2">
                 <TreeView tree={viz["tree_structure"] as never} />
                 <div className="space-y-4">
                   {appliedCard}

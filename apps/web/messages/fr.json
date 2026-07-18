@@ -1013,10 +1013,17 @@
       "suggested": "Questions suggérées",
       "expired": "Session expirée — redémarrez un chat.",
       "waiting": "Réponse en cours…",
-      "fallbackNote": "Réponse générée sans IA (repli déterministe)"
+      "fallbackNote": "Réponse générée sans IA (repli déterministe)",
+      "needExplanation": "Générez d'abord une explication pour pouvoir en discuter."
     },
     "result": {
       "title": "Résultat de l'explication"
+    },
+    "skeleton": {
+      "importanceTitle": "Importance globale",
+      "reliability": "Générez une explication pour afficher les indicateurs de fiabilité.",
+      "importance": "Générez une explication pour visualiser l'importance des variables.",
+      "text": "Générez une explication pour lire l'analyse en clair."
     }
   },
   "landing": {

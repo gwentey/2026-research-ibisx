@@ -1013,10 +1013,17 @@
       "suggested": "Suggested questions",
       "expired": "Session expired — start a new chat.",
       "waiting": "Answering…",
-      "fallbackNote": "Answer generated without AI (deterministic fallback)"
+      "fallbackNote": "Answer generated without AI (deterministic fallback)",
+      "needExplanation": "Generate an explanation first to discuss it."
     },
     "result": {
       "title": "Explanation result"
+    },
+    "skeleton": {
+      "importanceTitle": "Global importance",
+      "reliability": "Generate an explanation to display reliability indicators.",
+      "importance": "Generate an explanation to view feature importance.",
+      "text": "Generate an explanation to read the plain-language analysis."
     }
   },
   "landing": {

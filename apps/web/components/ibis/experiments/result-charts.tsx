@@ -381,14 +381,16 @@ export function TreeView({
 }) {
   const t = useTranslations("experiments.charts");
   return (
-    <Card>
+    // h-full + flex : la carte remplit la hauteur de sa rangée (à égalité avec la colonne
+    // transformations + journal à droite) ; le contenu scrolle si l'arbre est plus grand.
+    <Card className="flex h-full flex-col">
       <CardHeader>
         <CardTitle className="text-base">{t("tree")}</CardTitle>
         <p className="text-muted-foreground text-xs">
           {t("treeNote", { note: tree.note ?? "—", depth: tree.max_depth_exported })}
         </p>
       </CardHeader>
-      <CardContent className="max-h-96 overflow-auto">
+      <CardContent className="min-h-0 flex-1 overflow-auto">
         <TreeNodeView node={tree.root} depth={1} />
       </CardContent>
     </Card>

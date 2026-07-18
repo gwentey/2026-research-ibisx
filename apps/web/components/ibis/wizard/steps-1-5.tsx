@@ -287,13 +287,21 @@ export function Step2Target({
         onClick={() => store.set("taskType", task)}
         className={cn(
           "bg-card rounded-lg border p-4 text-left transition-all",
-          active ? "border-primary ring-primary/30 ring-2" : "hover:border-primary/40"
+          active
+            ? "border-primary ring-primary/30 ring-2"
+            : isRecommended && !inappropriate
+              ? "border-ai/50 hover:border-ai"
+              : "hover:border-primary/40"
         )}>
         <div className="flex items-center gap-2">
           <Icon className={cn("size-4", inappropriate ? "text-muted-foreground" : "text-primary")} />
           <p className="font-semibold">{t(task)}</p>
           {isRecommended && !inappropriate ? (
-            <Badge className="ml-auto">{t("recommendedBadge")}</Badge>
+            // Marqueur IA : c'est la suggestion de l'assistant, pas un choix « standard ».
+            <Badge className="bg-ai text-ai-foreground ml-auto gap-1">
+              <SparklesIcon className="size-3" />
+              {t("recommendedBadge")}
+            </Badge>
           ) : active ? (
             <CheckCircle2Icon className="text-primary ml-auto size-4" />
           ) : null}
@@ -343,25 +351,10 @@ export function Step2Target({
 
   return (
     <div className="space-y-4">
-      {/* Panneau d'assistance (disposition v1 : analyse → cartes comparatives → reco finale) */}
+      {/* Objectif de prédiction — décision de l'utilisateur : UI STANDARD monochrome,
+          aucune couleur IA (choisir la cible + le type de problème n'est pas de l'IA). */}
       <Card>
-        <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle className="text-ai flex items-center gap-2 text-base">
-            <span className="bg-ai/10 text-ai flex size-7 shrink-0 items-center justify-center rounded-md">
-              <SparklesIcon className="size-4" />
-            </span>
-            {t("aiTitle")}
-          </CardTitle>
-          <Button
-            variant="outline"
-            size="sm"
-            aria-expanded={assistOpen}
-            onClick={() => setAssistOpen((open) => !open)}>
-            {assistOpen ? <ChevronUpIcon /> : <ChevronDownIcon />}
-            {assistOpen ? t("closeAssist") : t("openAssist")}
-          </Button>
-        </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-5 pt-6">
           <div>
             <Label>{t("targetLabel")}</Label>
             <Select
@@ -381,8 +374,46 @@ export function Step2Target({
             </Select>
           </div>
 
-          {assistOpen ? (
-            <div className="border-ai/30 bg-ai/5 space-y-3 rounded-md border p-4">
+          <div>
+            <Label>{t("taskLabel")}</Label>
+            <div className="mt-2 grid gap-3 sm:grid-cols-2">
+              {taskCard("classification")}
+              {taskCard("regression")}
+            </div>
+          </div>
+
+          {meta.blocking ? (
+            <Alert variant="destructive">
+              <TriangleAlertIcon />
+              <AlertTitle>{t("blockTitle")}</AlertTitle>
+              <AlertDescription>{t("blockBody", { column: target ?? "" })}</AlertDescription>
+            </Alert>
+          ) : null}
+        </CardContent>
+      </Card>
+
+      {/* Assistance IA — SEULE zone assistée par IA, bordure indigo reconnaissable.
+          Analyse le dataset et suggère un type de problème ; l'utilisateur reste libre. */}
+      <Card className="border-ai/40 bg-ai/[0.04]">
+        <CardHeader className="flex flex-row items-center justify-between">
+          <CardTitle className="text-ai flex items-center gap-2 text-base">
+            <span className="bg-ai/15 text-ai flex size-7 shrink-0 items-center justify-center rounded-md">
+              <SparklesIcon className="size-4" />
+            </span>
+            {t("aiTitle")}
+          </CardTitle>
+          <Button
+            variant="outline"
+            size="sm"
+            aria-expanded={assistOpen}
+            onClick={() => setAssistOpen((open) => !open)}>
+            {assistOpen ? <ChevronUpIcon /> : <ChevronDownIcon />}
+            {assistOpen ? t("closeAssist") : t("openAssist")}
+          </Button>
+        </CardHeader>
+        {assistOpen ? (
+          <CardContent className="space-y-4">
+            <div className="bg-background space-y-3 rounded-md border p-4">
               <p className="text-sm">
                 {t("analysisOf", { name: dataset.display_name })}
                 {dataset.objective ? (
@@ -404,59 +435,45 @@ export function Step2Target({
                     </span>
                   </span>
                 </div>
-              ) : null}
+              ) : (
+                <p className="text-muted-foreground text-sm">{t("targetPlaceholder")}</p>
+              )}
             </div>
-          ) : null}
 
-          <div>
-            <Label>{t("taskLabel")}</Label>
-            <div className="mt-2 grid gap-3 sm:grid-cols-2">
-              {taskCard("classification")}
-              {taskCard("regression")}
-            </div>
-          </div>
+            {target ? (
+              <Alert className="border-ai/40">
+                <LightbulbIcon className="text-ai" />
+                <AlertTitle className="text-ai">{t("finalTitle")}</AlertTitle>
+                <AlertDescription>
+                  {t("aiReco", {
+                    task: recommendedLabel,
+                    reason: t(
+                      meta.recommendedTask === "classification"
+                        ? "reasonCategorical"
+                        : "reasonNumeric",
+                      { column: target, count: meta.uniqueCount }
+                    )
+                  })}
+                </AlertDescription>
+              </Alert>
+            ) : null}
 
-          {assistOpen && target ? (
-            <Alert className="border-ai/30 bg-ai/5 text-ai">
-              <LightbulbIcon />
-              <AlertTitle>{t("finalTitle")}</AlertTitle>
-              <AlertDescription>
-                {t("aiReco", {
-                  task: recommendedLabel,
-                  reason: t(
-                    meta.recommendedTask === "classification"
-                      ? "reasonCategorical"
-                      : "reasonNumeric",
-                    { column: target, count: meta.uniqueCount }
-                  )
-                })}
-              </AlertDescription>
-            </Alert>
-          ) : null}
-
-          {assistOpen && target ? (
-            <div className="flex flex-wrap justify-center gap-2 pt-1">
-              <Button
-                className="bg-ai text-ai-foreground hover:bg-ai/90"
-                onClick={() => store.set("taskType", meta.recommendedTask)}>
-                <CheckCircle2Icon />
-                {t("applyFinal", { task: recommendedLabel })}
-              </Button>
-              <Button variant="outline" onClick={() => setAssistOpen(false)}>
-                <XIcon />
-                {t("chooseMyself")}
-              </Button>
-            </div>
-          ) : null}
-
-          {meta.blocking ? (
-            <Alert variant="destructive">
-              <TriangleAlertIcon />
-              <AlertTitle>{t("blockTitle")}</AlertTitle>
-              <AlertDescription>{t("blockBody", { column: target ?? "" })}</AlertDescription>
-            </Alert>
-          ) : null}
-        </CardContent>
+            {target ? (
+              <div className="flex flex-wrap gap-2">
+                <Button
+                  className="bg-ai text-ai-foreground hover:bg-ai/90"
+                  onClick={() => store.set("taskType", meta.recommendedTask)}>
+                  <CheckCircle2Icon />
+                  {t("applyFinal", { task: recommendedLabel })}
+                </Button>
+                <Button variant="outline" onClick={() => setAssistOpen(false)}>
+                  <XIcon />
+                  {t("chooseMyself")}
+                </Button>
+              </div>
+            ) : null}
+          </CardContent>
+        ) : null}
       </Card>
 
       <Understand title={t("understand")} body={t("understandBody")} />

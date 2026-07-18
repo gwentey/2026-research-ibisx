@@ -160,14 +160,14 @@ export function XaiChat({ explanation }: { explanation: ExplanationResults }) {
       </CardHeader>
       <CardContent className="space-y-3">
         {messages.length === 0 && suggestions.length > 0 ? (
-          <div className="space-y-1">
+          <div className="space-y-2">
             <p className="text-muted-foreground text-xs">{t("suggested")}</p>
-            <div className="flex flex-wrap gap-1">
+            <div className="flex flex-wrap gap-2">
               {suggestions.map((suggestion) => (
                 <button
                   key={suggestion}
                   type="button"
-                  className="hover:bg-muted rounded-full border px-2.5 py-1 text-xs"
+                  className="hover:bg-muted max-w-full rounded-full border px-3 py-1 text-left text-xs leading-snug break-words whitespace-normal"
                   onClick={() => void send(suggestion)}>
                   {suggestion}
                 </button>
@@ -184,9 +184,9 @@ export function XaiChat({ explanation }: { explanation: ExplanationResults }) {
                 key={message.id}
                 className={cn("items-end gap-2", isUser ? "justify-end" : "justify-start")}>
                 {!isUser ? <AssistantAvatar /> : null}
-                <div className={cn("flex max-w-[85%] flex-col gap-1", isUser && "items-end")}>
+                <div className={cn("flex min-w-0 max-w-2xl flex-col gap-1", isUser && "items-end")}>
                   {isUser ? (
-                    <MessageContent className="bg-primary text-primary-foreground px-3 py-2 text-sm whitespace-pre-line">
+                    <MessageContent className="bg-primary text-primary-foreground px-3 py-2 text-sm break-words whitespace-pre-line">
                       {message.content}
                     </MessageContent>
                   ) : (
