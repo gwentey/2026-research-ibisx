@@ -4,22 +4,72 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
+import {
+  BookOpenIcon,
+  BrainCircuitIcon,
+  CalendarDaysIcon,
+  CompassIcon,
+  GaugeIcon,
+  GraduationCapIcon,
+  MicroscopeIcon,
+  PuzzleIcon,
+  RocketIcon,
+  SchoolIcon,
+  SparklesIcon,
+  SproutIcon,
+  type LucideIcon
+} from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Progress } from "@/components/ui/progress";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { RadioGroup } from "@/components/ui/radio-group";
+import Logo from "@/components/layout/logo";
 import { OnboardingGuard } from "@/components/ibis/auth-guard";
+import { AgeStepper } from "@/components/ibis/onboarding/age-stepper";
+import { CalibrationPattern } from "@/components/ibis/onboarding/calibration-pattern";
+import { ChoiceCard } from "@/components/ibis/onboarding/choice-card";
+import { OnboardingPath, type OnboardingPathStep } from "@/components/ibis/onboarding/onboarding-path";
 import { completeOnboarding } from "@/lib/api/generated";
 import type { EducationLevel } from "@/lib/api/generated";
 import { useAuthStore } from "@/lib/auth/store";
-import { cn } from "@/lib/utils";
 
 const EDUCATION_LEVELS: EducationLevel[] = ["lycee", "licence", "master", "doctorat", "autre"];
 const FAMILIARITY_LEVELS = [1, 2, 3, 4, 5] as const;
 const TOTAL_STEPS = 3;
+
+const STEP_ICONS: Record<number, LucideIcon> = {
+  1: GraduationCapIcon,
+  2: CalendarDaysIcon,
+  3: GaugeIcon
+};
+
+const EDUCATION_ICONS: Record<EducationLevel, LucideIcon> = {
+  lycee: SchoolIcon,
+  licence: BookOpenIcon,
+  master: GraduationCapIcon,
+  doctorat: MicroscopeIcon,
+  autre: SparklesIcon
+};
+
+// Icônes des 5 niveaux de familiarité — dégradé de gravité tonale (plan 03) : la forme
+// progresse de la pousse (novice) au circuit neuronal (expert), jamais une couleur inventée.
+const FAMILIARITY_ICONS: Record<number, LucideIcon> = {
+  1: SproutIcon,
+  2: PuzzleIcon,
+  3: CompassIcon,
+  4: RocketIcon,
+  5: BrainCircuitIcon
+};
+
+// Tuile qui s'assombrit avec le niveau : chart-5 (le plus clair) → chart-1 (le plus foncé).
+const FAMILIARITY_TONE: Record<number, string> = {
+  1: "bg-[var(--chart-5)]/15 text-[var(--chart-5)]",
+  2: "bg-[var(--chart-4)]/15 text-[var(--chart-4)]",
+  3: "bg-[var(--chart-3)]/15 text-[var(--chart-3)]",
+  4: "bg-[var(--chart-2)]/15 text-[var(--chart-2)]",
+  5: "bg-[var(--chart-1)]/15 text-[var(--chart-1)]"
+};
 
 function audienceFor(familiarity: number): "novice" | "intermediate" | "expert" {
   if (familiarity <= 2) return "novice";
@@ -45,6 +95,14 @@ function OnboardingWizard() {
   const canNext =
     (step === 1 && education !== null) || (step === 2 && ageValid) || (step === 3 && familiarity !== null);
 
+  const pathSteps: OnboardingPathStep[] = [
+    { icon: GraduationCapIcon, label: t("pathLabels.education") },
+    { icon: CalendarDaysIcon, label: t("pathLabels.age") },
+    { icon: GaugeIcon, label: t("pathLabels.familiarity") }
+  ];
+
+  const HeaderIcon = STEP_ICONS[step];
+
   const submit = async () => {
     if (!education || !ageValid || familiarity === null) return;
     setSubmitting(true);
@@ -63,103 +121,120 @@ function OnboardingWizard() {
   };
 
   return (
-    <main className="bg-muted/40 flex min-h-screen flex-col items-center justify-center px-4 py-10">
-      <div className="w-full max-w-xl space-y-6">
-        <div className="space-y-2 text-center">
-          <h1 className="text-3xl font-bold tracking-tight">{t("title")}</h1>
-          <p className="text-muted-foreground text-sm">{t("subtitle")}</p>
+    <main className="bg-muted/20 relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-4 py-10">
+      <CalibrationPattern />
+
+      <div className="relative z-10 w-full max-w-2xl space-y-6">
+        <div className="flex items-center justify-center gap-2">
+          <Logo />
+          <span className="text-sm font-semibold tracking-tight">{tCommon("appName")}</span>
         </div>
 
-        <div className="space-y-2">
-          <p className="text-muted-foreground text-xs font-medium uppercase">
-            {t("step", { current: step, total: TOTAL_STEPS })}
-          </p>
-          <Progress value={(step / TOTAL_STEPS) * 100} />
-        </div>
+        <OnboardingPath
+          steps={pathSteps}
+          current={step}
+          ariaLabel={t("step", { current: step, total: TOTAL_STEPS })}
+        />
 
-        <Card>
+        <Card className="overflow-hidden">
           <CardContent className="space-y-6 pt-6">
-            {step === 1 ? (
-              <div className="space-y-4">
-                <div>
-                  <h2 className="text-lg font-semibold">{t("educationTitle")}</h2>
-                  <p className="text-muted-foreground text-sm">{t("educationHelp")}</p>
-                </div>
-                <RadioGroup
-                  value={education ?? undefined}
-                  onValueChange={(value) => setEducation(value as EducationLevel)}
-                  className="grid gap-2">
-                  {EDUCATION_LEVELS.map((level) => (
-                    <Label
-                      key={level}
-                      htmlFor={`education-${level}`}
-                      className={cn(
-                        "hover:bg-muted flex cursor-pointer items-center gap-3 rounded-md border p-3",
-                        education === level && "border-primary bg-muted"
-                      )}>
-                      <RadioGroupItem value={level} id={`education-${level}`} />
-                      <span>{t(`education.${level}`)}</span>
-                    </Label>
-                  ))}
-                </RadioGroup>
+            <div className="flex items-start gap-4">
+              <div className="bg-primary/10 text-primary flex size-12 shrink-0 items-center justify-center rounded-xl">
+                <HeaderIcon className="size-6" aria-hidden="true" />
               </div>
-            ) : null}
-
-            {step === 2 ? (
-              <div className="space-y-4">
-                <div>
-                  <h2 className="text-lg font-semibold">{t("ageTitle")}</h2>
-                  <p className="text-muted-foreground text-sm">{t("ageHelp")}</p>
-                </div>
-                <div className="max-w-40">
-                  <Label htmlFor="age">{t("ageLabel")}</Label>
-                  <Input
-                    id="age"
-                    type="number"
-                    min={13}
-                    max={120}
-                    value={age}
-                    onChange={(event) => setAge(event.target.value)}
-                    className="mt-2"
-                    aria-invalid={age !== "" && !ageValid}
-                  />
-                </div>
+              <div>
+                <h1 className="text-xl font-semibold tracking-tight sm:text-2xl">{t("title")}</h1>
+                <p className="text-muted-foreground mt-0.5 text-sm">{t("subtitle")}</p>
               </div>
-            ) : null}
+            </div>
 
-            {step === 3 ? (
-              <div className="space-y-4">
-                <div>
-                  <h2 className="text-lg font-semibold">{t("familiarityTitle")}</h2>
-                  <p className="text-muted-foreground text-sm">{t("familiarityHelp")}</p>
+            <div className="space-y-4 border-t pt-6">
+              {step === 1 ? (
+                <div className="space-y-4">
+                  <div>
+                    <h2 className="text-base font-semibold">{t("educationTitle")}</h2>
+                    <p className="text-muted-foreground text-sm">{t("educationHelp")}</p>
+                  </div>
+                  <RadioGroup
+                    value={education ?? undefined}
+                    onValueChange={(value) => setEducation(value as EducationLevel)}
+                    className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                    {EDUCATION_LEVELS.map((level) => (
+                      <ChoiceCard
+                        key={level}
+                        id={`education-${level}`}
+                        value={level}
+                        icon={EDUCATION_ICONS[level]}
+                        title={t(`education.${level}`)}
+                        selected={education === level}
+                        orientation="grid"
+                      />
+                    ))}
+                  </RadioGroup>
                 </div>
-                <RadioGroup
-                  value={familiarity !== null ? String(familiarity) : undefined}
-                  onValueChange={(value) => setFamiliarity(Number(value))}
-                  className="grid gap-2">
-                  {FAMILIARITY_LEVELS.map((level) => (
-                    <Label
-                      key={level}
-                      htmlFor={`familiarity-${level}`}
-                      className={cn(
-                        "hover:bg-muted flex cursor-pointer items-center gap-3 rounded-md border p-3",
-                        familiarity === level && "border-primary bg-muted"
-                      )}>
-                      <RadioGroupItem value={String(level)} id={`familiarity-${level}`} />
-                      <span className="font-mono text-sm">{level}</span>
-                      <span>{t(`familiarity.${level}`)}</span>
-                    </Label>
-                  ))}
-                </RadioGroup>
-                {familiarity !== null ? (
-                  <p className="text-muted-foreground bg-muted rounded-md p-3 text-sm">
-                    {t(`audiencePreview.${audienceFor(familiarity)}`)}
-                  </p>
-                ) : null}
-              </div>
-            ) : null}
+              ) : null}
 
-            <div className="flex items-center justify-between pt-2">
+              {step === 2 ? (
+                <div className="space-y-4">
+                  <div>
+                    <h2 className="text-base font-semibold">{t("ageTitle")}</h2>
+                    <p className="text-muted-foreground text-sm">{t("ageHelp")}</p>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="age">{t("ageLabel")}</Label>
+                    <AgeStepper
+                      id="age"
+                      value={age}
+                      onChange={setAge}
+                      min={13}
+                      max={120}
+                      invalid={age !== "" && !ageValid}
+                      decrementLabel={t("ageStepper.decrement")}
+                      incrementLabel={t("ageStepper.increment")}
+                    />
+                    <p className="text-muted-foreground text-xs">{t("ageReassurance")}</p>
+                  </div>
+                </div>
+              ) : null}
+
+              {step === 3 ? (
+                <div className="space-y-4">
+                  <div>
+                    <h2 className="text-base font-semibold">{t("familiarityTitle")}</h2>
+                    <p className="text-muted-foreground text-sm">{t("familiarityHelp")}</p>
+                  </div>
+                  <RadioGroup
+                    value={familiarity !== null ? String(familiarity) : undefined}
+                    onValueChange={(value) => setFamiliarity(Number(value))}
+                    className="grid gap-2">
+                    {FAMILIARITY_LEVELS.map((level) => (
+                      <ChoiceCard
+                        key={level}
+                        id={`familiarity-${level}`}
+                        value={String(level)}
+                        icon={FAMILIARITY_ICONS[level]}
+                        title={t(`familiarity.${level}`)}
+                        selected={familiarity === level}
+                        orientation="row"
+                        mediaClassName={FAMILIARITY_TONE[level]}
+                        eyebrow={String(level)}
+                      />
+                    ))}
+                  </RadioGroup>
+                  {familiarity !== null ? (
+                    <div className="bg-muted space-y-1.5 rounded-md p-4">
+                      <div className="text-muted-foreground flex items-center gap-1.5 text-xs font-medium tracking-wide uppercase">
+                        <SparklesIcon className="size-3.5" aria-hidden="true" />
+                        {t("audiencePreviewEyebrow")}
+                      </div>
+                      <p className="text-sm">{t(`audiencePreview.${audienceFor(familiarity)}`)}</p>
+                    </div>
+                  ) : null}
+                </div>
+              ) : null}
+            </div>
+
+            <div className="flex items-center justify-between border-t pt-4">
               <Button
                 variant="ghost"
                 onClick={() => setStep((current) => Math.max(1, current - 1))}

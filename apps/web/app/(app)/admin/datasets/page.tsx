@@ -1,8 +1,15 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import Link from "next/link";
 import { useTranslations } from "next-intl";
+import {
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  DatabaseIcon,
+  ExternalLinkIcon,
+  RefreshCwIcon,
+  Trash2Icon
+} from "lucide-react";
 import { toast } from "sonner";
 
 import {
@@ -18,7 +25,6 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
@@ -28,6 +34,10 @@ import {
   TableHeader,
   TableRow
 } from "@/components/ui/table";
+import { AdminEmptyState } from "@/components/ibis/admin/admin-empty-state";
+import { AdminPageHeader } from "@/components/ibis/admin/admin-page-header";
+import { AdminSearchInput } from "@/components/ibis/admin/admin-search-input";
+import { RowActionsMenu, type RowAction } from "@/components/ibis/admin/row-actions-menu";
 import {
   adminReanalyzeDataset,
   deleteDataset,
@@ -38,6 +48,7 @@ import {
 
 export default function AdminDatasetsPage() {
   const t = useTranslations("admin.datasets");
+  const tCommon = useTranslations("admin.common");
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const [data, setData] = useState<DatasetPage | null>(null);
@@ -86,31 +97,52 @@ export default function AdminDatasetsPage() {
     void load();
   };
 
+  const actionsFor = (dataset: DatasetCard): RowAction[] => [
+    {
+      key: "open",
+      label: t("open"),
+      icon: ExternalLinkIcon,
+      href: `/datasets/${dataset.id}`
+    },
+    {
+      key: "reanalyze",
+      label: t("reanalyze"),
+      icon: RefreshCwIcon,
+      disabled: busyId === dataset.id,
+      onSelect: () => void reanalyze(dataset)
+    },
+    {
+      key: "delete",
+      label: t("delete"),
+      icon: Trash2Icon,
+      variant: "destructive",
+      separatorBefore: true,
+      onSelect: () => setDeleteTarget(dataset)
+    }
+  ];
+
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight">{t("title")}</h1>
-        <p className="text-muted-foreground mt-1 text-sm">{t("subtitle")}</p>
-      </div>
+      <AdminPageHeader
+        icon={DatabaseIcon}
+        title={t("title")}
+        count={data?.total}
+        subtitle={t("subtitle")}
+      />
 
-      <Input
+      <AdminSearchInput
         value={search}
-        onChange={(event) => {
-          setSearch(event.target.value);
+        onChange={(value) => {
+          setSearch(value);
           setPage(1);
         }}
         placeholder={t("search")}
-        className="max-w-sm"
       />
 
       {data === null ? (
         <Skeleton className="h-64 w-full" />
       ) : data.items.length === 0 ? (
-        <Card>
-          <CardContent className="py-10 text-center">
-            <p className="text-muted-foreground text-sm">{t("empty")}</p>
-          </CardContent>
-        </Card>
+        <AdminEmptyState icon={DatabaseIcon} title={t("empty")} />
       ) : (
         <Card className="py-0">
           <CardContent className="overflow-x-auto px-0">
@@ -150,23 +182,11 @@ export default function AdminDatasetsPage() {
                         ? `${Math.round(dataset.ethical_score * 100)}%`
                         : "—"}
                     </TableCell>
-                    <TableCell className="space-x-2 text-right whitespace-nowrap">
-                      <Button size="sm" variant="outline" asChild>
-                        <Link href={`/datasets/${dataset.id}`}>{t("open")}</Link>
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        disabled={busyId === dataset.id}
-                        onClick={() => void reanalyze(dataset)}>
-                        {t("reanalyze")}
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="destructive"
-                        onClick={() => setDeleteTarget(dataset)}>
-                        {t("delete")}
-                      </Button>
+                    <TableCell className="text-right">
+                      <RowActionsMenu
+                        actions={actionsFor(dataset)}
+                        label={tCommon("rowActions")}
+                      />
                     </TableCell>
                   </TableRow>
                 ))}
@@ -186,6 +206,7 @@ export default function AdminDatasetsPage() {
             variant="outline"
             disabled={page <= 1}
             onClick={() => setPage((current) => current - 1)}>
+            <ChevronLeftIcon />
             {t("previous")}
           </Button>
           <Button
@@ -194,6 +215,7 @@ export default function AdminDatasetsPage() {
             disabled={page >= data.total_pages}
             onClick={() => setPage((current) => current + 1)}>
             {t("next")}
+            <ChevronRightIcon />
           </Button>
         </div>
       ) : null}

@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
+import { ListChecksIcon } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -21,6 +22,8 @@ import {
   TableHeader,
   TableRow
 } from "@/components/ui/table";
+import { AdminEmptyState } from "@/components/ibis/admin/admin-empty-state";
+import { AdminPageHeader } from "@/components/ibis/admin/admin-page-header";
 import {
   adminListJobs,
   getWorkerHealth,
@@ -76,10 +79,7 @@ export default function AdminJobsPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight">{t("title")}</h1>
-        <p className="text-muted-foreground mt-1 text-sm">{t("subtitle")}</p>
-      </div>
+      <AdminPageHeader icon={ListChecksIcon} title={t("title")} count={jobs?.length} subtitle={t("subtitle")} />
 
       <Card>
         <CardHeader>
@@ -102,47 +102,45 @@ export default function AdminJobsPage() {
         </CardContent>
       </Card>
 
-      <div className="flex flex-wrap gap-2">
-        <Select value={kind} onValueChange={setKind}>
-          <SelectTrigger className="w-48">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="any">
-              {t("filters.kind")} : {t("filters.any")}
-            </SelectItem>
-            {KINDS.map((candidate) => (
-              <SelectItem key={candidate} value={candidate}>
-                {t(`kinds.${candidate}` as never)}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        <Select value={status} onValueChange={setStatus}>
-          <SelectTrigger className="w-48">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="any">
-              {t("filters.status")} : {t("filters.any")}
-            </SelectItem>
-            {STATUSES.map((candidate) => (
-              <SelectItem key={candidate} value={candidate}>
-                {t(`statuses.${candidate}` as never)}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+      <div className="flex flex-wrap items-end gap-3">
+        <div className="flex flex-col gap-1.5">
+          <span className="text-muted-foreground text-xs font-medium">{t("filters.kind")}</span>
+          <Select value={kind} onValueChange={setKind}>
+            <SelectTrigger className="w-48">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="any">{t("filters.any")}</SelectItem>
+              {KINDS.map((candidate) => (
+                <SelectItem key={candidate} value={candidate}>
+                  {t(`kinds.${candidate}` as never)}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="flex flex-col gap-1.5">
+          <span className="text-muted-foreground text-xs font-medium">{t("filters.status")}</span>
+          <Select value={status} onValueChange={setStatus}>
+            <SelectTrigger className="w-48">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="any">{t("filters.any")}</SelectItem>
+              {STATUSES.map((candidate) => (
+                <SelectItem key={candidate} value={candidate}>
+                  {t(`statuses.${candidate}` as never)}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
       {jobs === null ? (
         <Skeleton className="h-64 w-full" />
       ) : jobs.length === 0 ? (
-        <Card>
-          <CardContent className="py-10 text-center">
-            <p className="text-muted-foreground text-sm">{t("empty")}</p>
-          </CardContent>
-        </Card>
+        <AdminEmptyState icon={ListChecksIcon} title={t("empty")} />
       ) : (
         <Card className="py-0">
           <CardContent className="overflow-x-auto px-0">

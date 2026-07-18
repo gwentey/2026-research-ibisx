@@ -112,7 +112,18 @@
       "expert": "Your explanations will use exact technical terminology."
     },
     "submit": "Start with IBIS-X",
-    "submitting": "Saving…"
+    "submitting": "Saving…",
+    "ageReassurance": "Used only to adjust the tone of explanations — never shared.",
+    "ageStepper": {
+      "increment": "Increase age",
+      "decrement": "Decrease age"
+    },
+    "pathLabels": {
+      "education": "Education",
+      "age": "Age",
+      "familiarity": "AI level"
+    },
+    "audiencePreviewEyebrow": "Preview of your explanations"
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -243,7 +254,11 @@
     "smokeRunning": "Job running…",
     "smokeDone": "Job completed",
     "smokeFailed": "Job failed",
-    "smokeLogs": "Job log"
+    "smokeLogs": "Job log",
+    "overviewEyebrow": "Overview",
+    "liveEyebrow": "Live demonstration",
+    "smokeIdleTitle": "Waiting to start",
+    "smokeIdleDescription": "Launch the demonstration to follow the job's progress live, event by event."
   },
   "datasets": {
     "title": "Dataset catalog",
@@ -1025,7 +1040,8 @@
     "backHome": "Back home",
     "errorTitle": "Something went wrong",
     "errorBody": "Try again; if the problem persists, contact an administrator.",
-    "retry": "Retry"
+    "retry": "Retry",
+    "backDashboard": "Back to dashboard"
   },
   "experimentsPage": {
     "title": "Experiments",
@@ -1170,6 +1186,13 @@
         "created": "Created",
         "duration": "Duration"
       }
+    },
+    "layout": {
+      "subtitle": "Back office: accounts, catalogue, ethics and job supervision.",
+      "nav": "Administration sections"
+    },
+    "common": {
+      "rowActions": "Actions"
     }
   }
 }

@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
+import { ActivityIcon, CpuIcon, LoaderCircleIcon, RadioIcon, ServerIcon } from "lucide-react";
 
 import { getHealth, getWorkerHealth, startSmokeJob } from "@/lib/api/generated";
 import type { HealthReport, WorkerHealthReport } from "@/lib/api/generated";
@@ -9,19 +10,16 @@ import { LOCALE_COOKIE } from "@/i18n/config";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Empty, EmptyDescription, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
 import { Progress } from "@/components/ui/progress";
-import { Skeleton } from "@/components/ui/skeleton";
-
-type SmokeState = "idle" | "running" | "completed" | "failed";
+import { ServiceCard, ServiceSubRow } from "@/components/ibis/status/service-card";
+import { ServiceStatusDot, type ServiceHealthState } from "@/components/ibis/status/service-status-dot";
+import { SmokeTimeline, type SmokeState } from "@/components/ibis/status/smoke-timeline";
 
 interface SmokeEvent {
   status: string;
   progress: number;
   log_line?: string | null;
-}
-
-function StatusBadge({ ok, okLabel, koLabel }: { ok: boolean; okLabel: string; koLabel: string }) {
-  return <Badge variant={ok ? "default" : "destructive"}>{ok ? okLabel : koLabel}</Badge>;
 }
 
 export default function StatusPage() {
@@ -84,13 +82,42 @@ export default function StatusPage() {
     };
   };
 
+  // ------------------------------- Carte API : ratio de sous-vérifications réelles ---
+  const apiState: ServiceHealthState = !loaded ? "checking" : health ? (health.status === "ok" ? "ok" : "down") : "down";
+  const apiLabel = !loaded
+    ? t("checking")
+    : health
+      ? health.status === "ok"
+        ? t("ok")
+        : t("degraded")
+      : tCommon("error");
+  const apiRatio = health
+    ? ([health.database, health.redis, health.storage].filter((entry) => entry === "ok").length / 3) * 100
+    : 0;
+
+  // ------------------------------- Carte Worker ---------------------------------------
+  const workerState: ServiceHealthState = !loaded ? "checking" : worker ? (worker.status === "ok" ? "ok" : "down") : "down";
+  const workerLabel = !loaded
+    ? t("checking")
+    : worker
+      ? worker.status === "ok"
+        ? t("ok")
+        : t("unavailable")
+      : tCommon("error");
+  const workerRatio = worker ? (worker.status === "ok" ? 100 : 0) : 0;
+
   return (
     <main className="bg-background min-h-screen">
-      <div className="mx-auto flex max-w-3xl flex-col gap-6 px-4 py-12">
+      <div className="mx-auto flex max-w-3xl flex-col gap-8 px-4 py-12">
         <header className="flex items-start justify-between gap-4">
-          <div>
-            <h1 className="text-2xl font-semibold tracking-tight">{t("title")}</h1>
-            <p className="text-muted-foreground mt-1 text-sm">{t("subtitle")}</p>
+          <div className="flex items-start gap-4">
+            <div className="bg-primary/10 text-primary flex size-12 shrink-0 items-center justify-center rounded-xl">
+              <ActivityIcon className="size-6" />
+            </div>
+            <div>
+              <h1 className="text-xl font-semibold tracking-tight sm:text-2xl">{t("title")}</h1>
+              <p className="text-muted-foreground mt-0.5 text-sm">{t("subtitle")}</p>
+            </div>
           </div>
           <div className="flex gap-1">
             <Button variant="outline" size="sm" onClick={() => switchLocale("fr")}>
@@ -102,133 +129,131 @@ export default function StatusPage() {
           </div>
         </header>
 
-        <div className="grid gap-4 sm:grid-cols-2">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center justify-between text-base">
-                {t("apiHealth")}
-                {loaded ? (
-                  <StatusBadge
-                    ok={health?.status === "ok"}
-                    okLabel={t("ok")}
-                    koLabel={t("degraded")}
-                  />
-                ) : (
-                  <Badge variant="outline">{t("checking")}</Badge>
-                )}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-2 text-sm">
-              {!loaded ? (
-                <Skeleton className="h-16 w-full" />
-              ) : health ? (
+        <section className="space-y-3">
+          <p className="text-muted-foreground text-xs font-medium tracking-wide uppercase">
+            {t("overviewEyebrow")}
+          </p>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <ServiceCard
+              icon={ServerIcon}
+              title={t("apiHealth")}
+              state={apiState}
+              label={apiLabel}
+              checkingLabel={t("checking")}
+              loaded={loaded}
+              ratio={apiRatio}>
+              {health ? (
                 <>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">{t("database")}</span>
-                    <StatusBadge
-                      ok={health.database === "ok"}
-                      okLabel={t("ok")}
-                      koLabel={t("unavailable")}
-                    />
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">{t("redis")}</span>
-                    <StatusBadge
-                      ok={health.redis === "ok"}
-                      okLabel={t("ok")}
-                      koLabel={t("unavailable")}
-                    />
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">{t("storage")}</span>
-                    <StatusBadge
-                      ok={health.storage === "ok"}
-                      okLabel={t("ok")}
-                      koLabel={t("unavailable")}
-                    />
-                  </div>
-                  <div className="flex justify-between">
+                  <ServiceSubRow
+                    label={t("database")}
+                    state={health.database === "ok" ? "ok" : "down"}
+                    okLabel={t("ok")}
+                    koLabel={t("unavailable")}
+                  />
+                  <ServiceSubRow
+                    label={t("redis")}
+                    state={health.redis === "ok" ? "ok" : "down"}
+                    okLabel={t("ok")}
+                    koLabel={t("unavailable")}
+                  />
+                  <ServiceSubRow
+                    label={t("storage")}
+                    state={health.storage === "ok" ? "ok" : "down"}
+                    okLabel={t("ok")}
+                    koLabel={t("unavailable")}
+                  />
+                  <div className="flex items-center justify-between pt-1">
                     <span className="text-muted-foreground">{t("version")}</span>
-                    <span className="font-mono">{health.version}</span>
+                    <span className="font-mono text-xs">{health.version}</span>
                   </div>
                 </>
               ) : (
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between gap-2">
                   <span className="text-muted-foreground">{tCommon("error")}</span>
                   <Button variant="outline" size="sm" onClick={() => void refresh()}>
                     {tCommon("retry")}
                   </Button>
                 </div>
               )}
-            </CardContent>
-          </Card>
+            </ServiceCard>
 
+            <ServiceCard
+              icon={CpuIcon}
+              title={t("workerHealth")}
+              state={workerState}
+              label={workerLabel}
+              checkingLabel={t("checking")}
+              loaded={loaded}
+              ratio={workerRatio}>
+              <p className="text-muted-foreground mb-1.5 text-xs font-medium tracking-wide uppercase">
+                {t("workers")}
+              </p>
+              {worker && worker.workers.length > 0 ? (
+                <div className="space-y-1.5">
+                  {worker.workers.map((name) => (
+                    <div key={name} className="flex items-center gap-2 font-mono text-xs">
+                      <ServiceStatusDot state="ok" />
+                      {name}
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-muted-foreground text-xs">—</p>
+              )}
+            </ServiceCard>
+          </div>
+        </section>
+
+        <section className="space-y-3">
+          <p className="text-muted-foreground text-xs font-medium tracking-wide uppercase">
+            {t("liveEyebrow")}
+          </p>
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center justify-between text-base">
-                {t("workerHealth")}
-                {loaded ? (
-                  <StatusBadge
-                    ok={worker?.status === "ok"}
-                    okLabel={t("ok")}
-                    koLabel={t("unavailable")}
-                  />
-                ) : (
-                  <Badge variant="outline">{t("checking")}</Badge>
-                )}
-              </CardTitle>
+              <CardTitle className="text-base">{t("smokeTitle")}</CardTitle>
+              <CardDescription>{t("smokeDescription")}</CardDescription>
             </CardHeader>
-            <CardContent className="text-sm">
-              {!loaded ? (
-                <Skeleton className="h-16 w-full" />
+            <CardContent className="space-y-4">
+              <div className="flex items-center gap-3">
+                <Button onClick={() => void startSmoke()} disabled={smokeState === "running"}>
+                  {smokeState === "running" ? t("smokeRunning") : t("smokeStart")}
+                </Button>
+                {smokeState === "completed" ? (
+                  <Badge>{t("smokeDone")}</Badge>
+                ) : smokeState === "failed" ? (
+                  <Badge variant="destructive">{t("smokeFailed")}</Badge>
+                ) : null}
+              </div>
+
+              {smokeState === "idle" ? (
+                <Empty className="border-dashed py-8">
+                  <EmptyMedia variant="icon">
+                    <RadioIcon />
+                  </EmptyMedia>
+                  <EmptyTitle>{t("smokeIdleTitle")}</EmptyTitle>
+                  <EmptyDescription>{t("smokeIdleDescription")}</EmptyDescription>
+                </Empty>
               ) : (
-                <div className="space-y-2">
-                  <span className="text-muted-foreground">{t("workers")}</span>
-                  <ul className="font-mono text-xs">
-                    {(worker?.workers ?? []).map((name) => (
-                      <li key={name}>{name}</li>
-                    ))}
-                    {worker && worker.workers.length === 0 ? <li>—</li> : null}
-                  </ul>
+                <div className="space-y-3">
+                  <Progress value={progress} />
+                  <div>
+                    <p className="text-muted-foreground mb-2 text-xs font-medium tracking-wide uppercase">
+                      {t("smokeLogs")}
+                    </p>
+                    {logs.length > 0 ? (
+                      <SmokeTimeline state={smokeState} logs={logs} />
+                    ) : (
+                      <p className="text-muted-foreground flex items-center gap-2 text-xs">
+                        <LoaderCircleIcon className="size-3.5 animate-spin" />
+                        {t("smokeRunning")}
+                      </p>
+                    )}
+                  </div>
                 </div>
               )}
             </CardContent>
           </Card>
-        </div>
-
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-base">{t("smokeTitle")}</CardTitle>
-            <CardDescription>{t("smokeDescription")}</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex items-center gap-3">
-              <Button onClick={() => void startSmoke()} disabled={smokeState === "running"}>
-                {smokeState === "running" ? t("smokeRunning") : t("smokeStart")}
-              </Button>
-              {smokeState === "completed" ? (
-                <Badge>{t("smokeDone")}</Badge>
-              ) : smokeState === "failed" ? (
-                <Badge variant="destructive">{t("smokeFailed")}</Badge>
-              ) : null}
-            </div>
-            {smokeState !== "idle" ? (
-              <div className="space-y-3">
-                <Progress value={progress} />
-                <div>
-                  <p className="text-muted-foreground mb-1 text-xs font-medium uppercase">
-                    {t("smokeLogs")}
-                  </p>
-                  <ul className="bg-muted rounded-md p-3 font-mono text-xs leading-relaxed">
-                    {logs.map((line, index) => (
-                      <li key={index}>{line}</li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            ) : null}
-          </CardContent>
-        </Card>
+        </section>
       </div>
     </main>
   );

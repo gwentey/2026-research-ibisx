@@ -2,6 +2,15 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
+import {
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  CreditCardIcon,
+  PowerIcon,
+  PowerOffIcon,
+  Trash2Icon,
+  UsersIcon
+} from "lucide-react";
 import { toast } from "sonner";
 
 import {
@@ -42,6 +51,10 @@ import {
   TableHeader,
   TableRow
 } from "@/components/ui/table";
+import { AdminEmptyState } from "@/components/ibis/admin/admin-empty-state";
+import { AdminPageHeader } from "@/components/ibis/admin/admin-page-header";
+import { AdminSearchInput } from "@/components/ibis/admin/admin-search-input";
+import { RowActionsMenu, type RowAction } from "@/components/ibis/admin/row-actions-menu";
 import {
   adminDeleteUser,
   adminListUsers,
@@ -60,6 +73,7 @@ function errorCodeOf(error: unknown): string {
 
 export default function AdminUsersPage() {
   const t = useTranslations("admin.users");
+  const tCommon = useTranslations("admin.common");
   const locale = useLocale();
   const me = useAuthStore((state) => state.user);
   const [search, setSearch] = useState("");
@@ -109,31 +123,54 @@ export default function AdminUsersPage() {
     void load();
   };
 
+  const actionsFor = (user: UserRead): RowAction[] => [
+    {
+      key: "credits",
+      label: t("addCredits"),
+      icon: CreditCardIcon,
+      onSelect: () => {
+        setCreditsAmount("50");
+        setCreditsTarget(user);
+      }
+    },
+    {
+      key: "toggle",
+      label: user.is_active ? t("deactivate") : t("activate"),
+      icon: user.is_active ? PowerOffIcon : PowerIcon,
+      onSelect: () => void update(user, { is_active: !user.is_active })
+    },
+    {
+      key: "delete",
+      label: t("delete"),
+      icon: Trash2Icon,
+      variant: "destructive",
+      separatorBefore: true,
+      onSelect: () => setDeleteTarget(user)
+    }
+  ];
+
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight">{t("title")}</h1>
-        <p className="text-muted-foreground mt-1 text-sm">{t("subtitle")}</p>
-      </div>
+      <AdminPageHeader
+        icon={UsersIcon}
+        title={t("title")}
+        count={data?.total}
+        subtitle={t("subtitle")}
+      />
 
-      <Input
+      <AdminSearchInput
         value={search}
-        onChange={(event) => {
-          setSearch(event.target.value);
+        onChange={(value) => {
+          setSearch(value);
           setPage(1);
         }}
         placeholder={t("search")}
-        className="max-w-sm"
       />
 
       {data === null ? (
         <Skeleton className="h-64 w-full" />
       ) : data.items.length === 0 ? (
-        <Card>
-          <CardContent className="py-10 text-center">
-            <p className="text-muted-foreground text-sm">{t("empty")}</p>
-          </CardContent>
-        </Card>
+        <AdminEmptyState icon={UsersIcon} title={t("empty")} />
       ) : (
         <Card className="py-0">
           <CardContent className="overflow-x-auto px-0">
@@ -189,28 +226,8 @@ export default function AdminUsersPage() {
                     <TableCell className="text-xs">
                       {new Date(user.created_at).toLocaleDateString(locale)}
                     </TableCell>
-                    <TableCell className="space-x-2 text-right whitespace-nowrap">
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => {
-                          setCreditsAmount("50");
-                          setCreditsTarget(user);
-                        }}>
-                        {t("addCredits")}
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => void update(user, { is_active: !user.is_active })}>
-                        {user.is_active ? t("deactivate") : t("activate")}
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="destructive"
-                        onClick={() => setDeleteTarget(user)}>
-                        {t("delete")}
-                      </Button>
+                    <TableCell className="text-right">
+                      <RowActionsMenu actions={actionsFor(user)} label={tCommon("rowActions")} />
                     </TableCell>
                   </TableRow>
                 ))}
@@ -230,6 +247,7 @@ export default function AdminUsersPage() {
             variant="outline"
             disabled={page <= 1}
             onClick={() => setPage((current) => current - 1)}>
+            <ChevronLeftIcon />
             {t("previous")}
           </Button>
           <Button
@@ -238,6 +256,7 @@ export default function AdminUsersPage() {
             disabled={page >= data.total_pages}
             onClick={() => setPage((current) => current + 1)}>
             {t("next")}
+            <ChevronRightIcon />
           </Button>
         </div>
       ) : null}

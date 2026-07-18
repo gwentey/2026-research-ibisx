@@ -112,7 +112,18 @@
       "expert": "Vos explications utiliseront la terminologie technique exacte."
     },
     "submit": "Commencer avec IBIS-X",
-    "submitting": "Enregistrement…"
+    "submitting": "Enregistrement…",
+    "ageReassurance": "Sert uniquement à adapter le ton des explications — jamais partagé.",
+    "ageStepper": {
+      "increment": "Augmenter l'âge",
+      "decrement": "Diminuer l'âge"
+    },
+    "pathLabels": {
+      "education": "Études",
+      "age": "Âge",
+      "familiarity": "Niveau IA"
+    },
+    "audiencePreviewEyebrow": "Aperçu de vos explications"
   },
   "nav": {
     "dashboard": "Tableau de bord",
@@ -243,7 +254,11 @@
     "smokeRunning": "Job en cours…",
     "smokeDone": "Job terminé",
     "smokeFailed": "Job échoué",
-    "smokeLogs": "Journal du job"
+    "smokeLogs": "Journal du job",
+    "overviewEyebrow": "Vue d'ensemble",
+    "liveEyebrow": "Démonstration en direct",
+    "smokeIdleTitle": "En attente de lancement",
+    "smokeIdleDescription": "Lancez la démonstration pour suivre la progression du job en direct, événement par événement."
   },
   "datasets": {
     "title": "Catalogue de datasets",
@@ -1025,7 +1040,8 @@
     "backHome": "Retour à l'accueil",
     "errorTitle": "Une erreur est survenue",
     "errorBody": "Réessayez ; si le problème persiste, contactez un administrateur.",
-    "retry": "Réessayer"
+    "retry": "Réessayer",
+    "backDashboard": "Retour au tableau de bord"
   },
   "experimentsPage": {
     "title": "Expériences",
@@ -1170,6 +1186,13 @@
         "created": "Créé le",
         "duration": "Durée"
       }
+    },
+    "layout": {
+      "subtitle": "Back-office : comptes, catalogue, éthique et supervision des jobs.",
+      "nav": "Sections d'administration"
+    },
+    "common": {
+      "rowActions": "Actions"
     }
   }
 }

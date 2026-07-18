@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
+import { PencilIcon, ScaleIcon, Trash2Icon } from "lucide-react";
 import { toast } from "sonner";
 
 import {
@@ -41,6 +42,9 @@ import {
   TableHeader,
   TableRow
 } from "@/components/ui/table";
+import { AdminEmptyState } from "@/components/ibis/admin/admin-empty-state";
+import { AdminPageHeader } from "@/components/ibis/admin/admin-page-header";
+import { RowActionsMenu, type RowAction } from "@/components/ibis/admin/row-actions-menu";
 import {
   adminDeleteTemplate,
   adminListTemplates,
@@ -59,6 +63,7 @@ function toTristate(value: unknown): Tristate {
 
 export default function AdminEthicalTemplatesPage() {
   const t = useTranslations("admin.templates");
+  const tCommon = useTranslations("admin.common");
   const tEthics = useTranslations("datasets.ethics");
   const locale = useLocale();
   const [templates, setTemplates] = useState<TemplateRead[] | null>(null);
@@ -117,12 +122,31 @@ export default function AdminEthicalTemplatesPage() {
     void load();
   };
 
+  const actionsFor = (template: TemplateRead): RowAction[] => [
+    {
+      key: "edit",
+      label: t("edit"),
+      icon: PencilIcon,
+      onSelect: () => openEditor(template.domain, template.defaults)
+    },
+    {
+      key: "delete",
+      label: t("delete"),
+      icon: Trash2Icon,
+      variant: "destructive",
+      separatorBefore: true,
+      onSelect: () => setDeleteTarget(template.domain)
+    }
+  ];
+
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight">{t("title")}</h1>
-        <p className="text-muted-foreground mt-1 text-sm">{t("subtitle")}</p>
-      </div>
+      <AdminPageHeader
+        icon={ScaleIcon}
+        title={t("title")}
+        count={templates?.length}
+        subtitle={t("subtitle")}
+      />
 
       <div className="flex max-w-md gap-2">
         <Input
@@ -145,11 +169,7 @@ export default function AdminEthicalTemplatesPage() {
       {templates === null ? (
         <Skeleton className="h-48 w-full" />
       ) : templates.length === 0 ? (
-        <Card>
-          <CardContent className="py-10 text-center">
-            <p className="text-muted-foreground text-sm">{t("empty")}</p>
-          </CardContent>
-        </Card>
+        <AdminEmptyState icon={ScaleIcon} title={t("empty")} />
       ) : (
         <Card className="py-0">
           <CardContent className="overflow-x-auto px-0">
@@ -176,19 +196,11 @@ export default function AdminEthicalTemplatesPage() {
                     <TableCell className="text-xs">
                       {new Date(template.updated_at).toLocaleString(locale)}
                     </TableCell>
-                    <TableCell className="space-x-2 text-right whitespace-nowrap">
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => openEditor(template.domain, template.defaults)}>
-                        {t("edit")}
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="destructive"
-                        onClick={() => setDeleteTarget(template.domain)}>
-                        {t("delete")}
-                      </Button>
+                    <TableCell className="text-right">
+                      <RowActionsMenu
+                        actions={actionsFor(template)}
+                        label={tCommon("rowActions")}
+                      />
                     </TableCell>
                   </TableRow>
                 ))}
