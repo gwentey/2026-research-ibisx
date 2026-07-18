@@ -765,7 +765,9 @@
         "onehot": "One-hot (une colonne par catégorie) — recommandé",
         "ordinal": "Ordinal (un entier par catégorie)"
       },
-      "applied": "Cette configuration est réellement transmise et appliquée à l'entraînement."
+      "applied": "Cette configuration est réellement transmise et appliquée à l'entraînement.",
+      "aiReco": "D’après vos données, gardez la normalisation Standard (μ=0, σ=1) : elle met toutes les variables numériques à la même échelle. Pour les variables catégorielles, l’encodage One-hot crée une colonne par valeur, sans imposer d’ordre. Ce sont les réglages par défaut ci-dessous.",
+      "aiRecoOutliers": "Des valeurs aberrantes ont été détectées à l’étape 3 : préférez la normalisation Robuste, qui résiste à ces extrêmes, plutôt que Standard. Pour les variables catégorielles, l’encodage One-hot reste conseillé (une colonne par valeur, sans ordre imposé)."
     },
     "step6": {
       "badges": {
@@ -799,7 +801,8 @@
         "n_estimators": "Nombre d'arbres : plus = plus stable mais plus lent.",
         "criterion": "Mesure de pureté des divisions (gini/entropy).",
         "bootstrap": "Échantillonnage avec remise (active le score OOB)."
-      }
+      },
+      "aiReco": "Le preset « Équilibré » convient à la plupart des cas — un bon compromis entre précision et robustesse. Passez en « Personnalisé » pour ajuster chaque réglage vous-même."
     },
     "step8": {
       "recap": "Récapitulatif complet",
@@ -820,7 +823,8 @@
       "cancel": "Annuler l'entraînement",
       "cancelled": "Entraînement annulé.",
       "failed": "Échec : {message}",
-      "seeResults": "Voir les résultats"
+      "seeResults": "Voir les résultats",
+      "processing": "L’IA entraîne votre modèle…"
     },
     "errors": {
       "MAX_CONCURRENT_TRAININGS": "Vous avez déjà 3 entraînements en cours — attendez la fin de l'un d'eux.",
@@ -838,7 +842,9 @@
       "7": "Affinez les réglages, ou faites confiance aux presets.",
       "8": "Relisez, confirmez, lancez — suivez l'entraînement en direct.",
       "9": "Votre modèle est prêt — place aux résultats."
-    }
+    },
+    "aiGuide": "Guide-moi avec l’IA",
+    "aiTitle": "Assistance IA"
   },
   "experiments": {
     "resultsTitle": "Résultats de l'expérience",

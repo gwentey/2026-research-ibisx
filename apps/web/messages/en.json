@@ -765,7 +765,9 @@
         "onehot": "One-hot (one column per category) — recommended",
         "ordinal": "Ordinal (one integer per category)"
       },
-      "applied": "This configuration is really transmitted and applied during training."
+      "applied": "This configuration is really transmitted and applied during training.",
+      "aiReco": "Based on your data, keep Standard scaling (μ=0, σ=1): it brings every numeric feature to the same scale. For categorical features, One-hot encoding creates one column per value without imposing an order. These are the defaults below.",
+      "aiRecoOutliers": "Outliers were detected at step 3: prefer Robust scaling, which resists those extremes, over Standard. For categorical features, One-hot encoding is still recommended (one column per value, no imposed order)."
     },
     "step6": {
       "badges": {
@@ -799,7 +801,8 @@
         "n_estimators": "Number of trees: more = more stable but slower.",
         "criterion": "Split purity measure (gini/entropy).",
         "bootstrap": "Sampling with replacement (enables OOB score)."
-      }
+      },
+      "aiReco": "The « Balanced » preset fits most cases — a good trade-off between accuracy and robustness. Switch to « Custom » to tune each setting yourself."
     },
     "step8": {
       "recap": "Full recap",
@@ -820,7 +823,8 @@
       "cancel": "Cancel training",
       "cancelled": "Training cancelled.",
       "failed": "Failed: {message}",
-      "seeResults": "See results"
+      "seeResults": "See results",
+      "processing": "The AI is training your model…"
     },
     "errors": {
       "MAX_CONCURRENT_TRAININGS": "You already have 3 trainings running — wait for one to finish.",
@@ -838,7 +842,9 @@
       "7": "Fine-tune the settings, or trust the presets.",
       "8": "Review, confirm, launch — follow the training live.",
       "9": "Your model is ready — on to the results."
-    }
+    },
+    "aiGuide": "Guide me with AI",
+    "aiTitle": "AI assistance"
   },
   "experiments": {
     "resultsTitle": "Experiment results",

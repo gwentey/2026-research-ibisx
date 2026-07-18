@@ -681,7 +681,9 @@ export function Step4Split({ quality }: { quality: QualityData | null }) {
 // ---------------------------------------------------------------- Étape 5
 export function Step5Prep({ quality }: { quality: QualityData | null }) {
   const t = useTranslations("wizard.step5");
+  const tw = useTranslations("wizard");
   const store = useWizardStore();
+  const [aiOpen, setAiOpen] = useState(true);
   const hasOutliers = (quality?.analysis.columns ?? []).some(
     (column) => column.outliers.percentage > 10
   );
@@ -704,6 +706,27 @@ export function Step5Prep({ quality }: { quality: QualityData | null }) {
     <div className="space-y-4">
       <Card>
         <CardContent className="space-y-6 pt-6">
+          {/* Aide IA — même motif que l'étape 2 : déclencheur en HAUT À DROITE puis panneau
+              pointillé + dégradé violet/bleu, avec un conseil basé sur les données réelles. */}
+          <div className="flex justify-end">
+            <AiAssistButton
+              open={aiOpen}
+              onToggle={() => setAiOpen((open) => !open)}
+              label={tw("aiGuide")}
+            />
+          </div>
+
+          {aiOpen ? (
+            <AiAssistPanel title={tw("aiTitle")}>
+              <Alert className="border-ai/40 bg-background/70">
+                <LightbulbIcon className="text-ai" />
+                <AlertDescription>
+                  {hasOutliers ? t("aiRecoOutliers") : t("aiReco")}
+                </AlertDescription>
+              </Alert>
+            </AiAssistPanel>
+          ) : null}
+
           <div>
             <div className="flex items-center justify-between">
               <div>
@@ -726,12 +749,6 @@ export function Step5Prep({ quality }: { quality: QualityData | null }) {
                   )
                 )}
               </div>
-            ) : null}
-            {hasOutliers ? (
-              <Alert className="mt-3">
-                <InfoIcon />
-                <AlertDescription>{t("robustReco")}</AlertDescription>
-              </Alert>
             ) : null}
           </div>
 

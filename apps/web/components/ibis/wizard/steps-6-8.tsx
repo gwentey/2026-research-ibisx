@@ -10,9 +10,11 @@ import {
   DatabaseIcon,
   EraserIcon,
   LightbulbIcon,
+  Loader2Icon,
   RocketIcon,
   Settings2Icon,
   SlidersHorizontalIcon,
+  SparklesIcon,
   SplitIcon,
   TargetIcon,
   TerminalIcon,
@@ -27,9 +29,17 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Item,
+  ItemContent,
+  ItemDescription,
+  ItemGroup,
+  ItemMedia,
+  ItemTitle
+} from "@/components/ui/item";
 import { Progress } from "@/components/ui/progress";
-import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
+import { AiAssistButton, AiAssistPanel } from "@/components/ibis/ai-assist";
 import { getExperiment, getMe, startExperiment } from "@/lib/api/generated";
 import type { DatasetDetail } from "@/lib/api/generated";
 import type { QualityData } from "@/app/wizard/page";
@@ -59,7 +69,9 @@ export function Step6Algorithm({
   quality: QualityData | null;
 }) {
   const t = useTranslations("wizard.step6");
+  const tw = useTranslations("wizard");
   const store = useWizardStore();
+  const [aiOpen, setAiOpen] = useState(true);
   const cards = algorithms as unknown as AlgorithmCard[];
   const rows = quality?.analysis.row_count ?? 0;
   const cols = quality?.analysis.column_count ?? 0;
@@ -74,21 +86,31 @@ export function Step6Algorithm({
 
   return (
     <div className="space-y-4">
-      <Alert>
-        <LightbulbIcon />
-        <AlertDescription>
-          {t("aiReco", {
-            algo: t(`names.${recommended}` as never),
-            reason:
-              recommended === "decision_tree"
-                ? t("reasonSmall", { rows })
-                : t("reasonLarge", { rows, cols })
-          })}
-        </AlertDescription>
-      </Alert>
+      {/* Aide IA — même motif partout : déclencheur en haut à droite + panneau dégradé IA. */}
+      <div className="flex justify-end">
+        <AiAssistButton
+          open={aiOpen}
+          onToggle={() => setAiOpen((open) => !open)}
+          label={tw("aiGuide")}
+        />
+      </div>
+      {aiOpen ? (
+        <AiAssistPanel title={tw("aiTitle")}>
+          <p className="text-sm">
+            {t("aiReco", {
+              algo: t(`names.${recommended}` as never),
+              reason:
+                recommended === "decision_tree"
+                  ? t("reasonSmall", { rows })
+                  : t("reasonLarge", { rows, cols })
+            })}
+          </p>
+        </AiAssistPanel>
+      ) : null}
       <div className="grid gap-4 sm:grid-cols-2">
         {cards.map((card) => {
           const active = store.algorithm === card.key;
+          const isRecommended = card.key === recommended;
           return (
             <button
               key={card.key}
@@ -96,7 +118,11 @@ export function Step6Algorithm({
               onClick={() => choose(card.key, card.defaults)}
               className={cn(
                 "bg-card rounded-lg border p-5 text-left transition-all",
-                active ? "border-primary ring-primary/30 ring-2" : "hover:border-primary/40"
+                active
+                  ? "border-primary ring-primary/30 ring-2"
+                  : isRecommended
+                    ? "border-ai/50 hover:border-ai"
+                    : "hover:border-primary/40"
               )}>
               <div className="flex items-center gap-3">
                 <div
@@ -111,8 +137,11 @@ export function Step6Algorithm({
                   )}
                 </div>
                 <p className="font-semibold">{t(`names.${card.key}` as never)}</p>
-                {card.key === recommended ? (
-                  <Badge className="ml-auto">{t(`badges.recommended` as never)}</Badge>
+                {isRecommended ? (
+                  <Badge className="bg-ai text-ai-foreground ml-auto gap-1">
+                    <SparklesIcon className="size-3" />
+                    {t(`badges.recommended` as never)}
+                  </Badge>
                 ) : card.badge !== "recommended" ? (
                   <Badge variant="secondary" className="ml-auto">
                     {t(`badges.${card.badge}` as never)}
@@ -138,7 +167,9 @@ export function Step6Algorithm({
 // ---------------------------------------------------------------- Étape 7
 export function Step7Hyperparameters({ algorithms }: { algorithms: Record<string, unknown>[] }) {
   const t = useTranslations("wizard.step7");
+  const tw = useTranslations("wizard");
   const store = useWizardStore();
+  const [aiOpen, setAiOpen] = useState(true);
   const card = (algorithms as unknown as AlgorithmCard[]).find((c) => c.key === store.algorithm);
   if (!card) return null;
 
@@ -156,6 +187,19 @@ export function Step7Hyperparameters({ algorithms }: { algorithms: Record<string
 
   return (
     <div className="space-y-4">
+      {/* Aide IA — même motif partout : déclencheur en haut à droite + panneau dégradé IA. */}
+      <div className="flex justify-end">
+        <AiAssistButton
+          open={aiOpen}
+          onToggle={() => setAiOpen((open) => !open)}
+          label={tw("aiGuide")}
+        />
+      </div>
+      {aiOpen ? (
+        <AiAssistPanel title={tw("aiTitle")}>
+          <p className="text-sm">{t("aiReco")}</p>
+        </AiAssistPanel>
+      ) : null}
       <div className="flex flex-wrap gap-2">
         {["balanced", "high_precision", "fast", "custom"].map((preset) => (
           <button
@@ -234,6 +278,10 @@ export function Step7Hyperparameters({ algorithms }: { algorithms: Record<string
 // ---------------------------------------------------------------- Étape 8 (+ 9 : transition)
 type LaunchState = "idle" | "starting" | "running" | "completed" | "failed" | "cancelled";
 
+// Durée MINIMALE d'affichage de la console (montrer le « côté IA » : même si l'entraînement
+// réel est quasi instantané, on laisse voir le traitement ~2,6 s avant de basculer aux résultats).
+const MIN_CONSOLE_MS = 2600;
+
 export function Step8Launch({
   dataset,
   onLockChange
@@ -249,17 +297,22 @@ export function Step8Launch({
   const [confirmed, setConfirmed] = useState(false);
   const [state, setState] = useState<LaunchState>("idle");
   const [progress, setProgress] = useState(0);
+  // Progression AFFICHÉE : ramp client-side pour un « traitement » lisible (le résultat reste réel).
+  const [displayProgress, setDisplayProgress] = useState(0);
   const [logs, setLogs] = useState<string[]>([]);
   const [queuePosition, setQueuePosition] = useState<number | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const experimentRef = useRef<string | null>(null);
   const sourceRef = useRef<EventSource | null>(null);
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const rampRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const runStartRef = useRef<number | null>(null);
 
   useEffect(
     () => () => {
       sourceRef.current?.close();
       if (pollRef.current) clearInterval(pollRef.current);
+      if (rampRef.current) clearInterval(rampRef.current);
     },
     []
   );
@@ -271,7 +324,18 @@ export function Step8Launch({
   const finish = async (status: string) => {
     sourceRef.current?.close();
     if (pollRef.current) clearInterval(pollRef.current);
+    if (rampRef.current) {
+      clearInterval(rampRef.current);
+      rampRef.current = null;
+    }
     if (status === "completed" && experimentRef.current) {
+      setDisplayProgress(100);
+      // Laisse la console visible au moins MIN_CONSOLE_MS (montrer le traitement IA) avant
+      // de basculer aux résultats — le résultat est déjà réellement calculé côté worker.
+      const elapsed = runStartRef.current ? Date.now() - runStartRef.current : MIN_CONSOLE_MS;
+      if (elapsed < MIN_CONSOLE_MS) {
+        await new Promise((resolve) => setTimeout(resolve, MIN_CONSOLE_MS - elapsed));
+      }
       setState("completed");
       store.nextStep(); // étape 9 : transition automatique vers les résultats
       router.push(`/experiments/${experimentRef.current}`);
@@ -325,6 +389,14 @@ export function Step8Launch({
     });
     setState("running");
     setLogs([]);
+    // Ramp de progression client-side (~0 → 92 % en ~2,5 s) : rend le « traitement » visible
+    // même si l'entraînement réel est quasi instantané. La vraie progression SSE peut la dépasser.
+    runStartRef.current = Date.now();
+    setDisplayProgress(0);
+    if (rampRef.current) clearInterval(rampRef.current);
+    rampRef.current = setInterval(() => {
+      setDisplayProgress((p) => (p >= 92 ? 92 : p + Math.max(1, (92 - p) * 0.06)));
+    }, 120);
     if (data.job_id) {
       const source = new EventSource(`/api/v1/jobs/${data.job_id}/events`);
       sourceRef.current = source;
@@ -390,25 +462,24 @@ export function Step8Launch({
         <CardHeader>
           <CardTitle className="text-base">{t("recap")}</CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="grid gap-x-8 gap-y-3 sm:grid-cols-2">
+        <CardContent className="space-y-4">
+          <ItemGroup className="grid gap-2 sm:grid-cols-2">
             {recap.map((row) => (
-              <div key={row.label} className="flex items-center gap-3 text-sm">
-                <div className="bg-muted text-muted-foreground flex size-8 shrink-0 items-center justify-center rounded-md">
-                  <row.icon className="size-4" />
-                </div>
-                <div className="min-w-0">
-                  <p className="text-muted-foreground text-xs">{row.label}</p>
-                  <p className="truncate font-medium">{row.value}</p>
-                </div>
-              </div>
+              <Item key={row.label} variant="outline" size="sm">
+                <ItemMedia variant="icon">
+                  <row.icon />
+                </ItemMedia>
+                <ItemContent className="gap-0.5">
+                  <ItemDescription className="text-xs">{row.label}</ItemDescription>
+                  <ItemTitle className="truncate text-sm font-semibold">{row.value}</ItemTitle>
+                </ItemContent>
+              </Item>
             ))}
-          </div>
-          <Separator className="my-4" />
-          <p className="flex items-center gap-2 text-sm">
-            <CoinsIcon className="text-primary size-4" />
+          </ItemGroup>
+          <div className="bg-muted/40 flex items-center gap-2 rounded-lg border p-3 text-sm">
+            <CoinsIcon className="text-primary size-4 shrink-0" />
             {t("cost", { credits: user?.credits ?? 0 })}
-          </p>
+          </div>
         </CardContent>
       </Card>
 
@@ -447,11 +518,17 @@ export function Step8Launch({
           </CardHeader>
           <CardContent className="space-y-3">
             <div className="flex items-center gap-3">
-              <Progress value={progress} className="h-2" />
+              <Progress value={Math.max(displayProgress, progress)} className="h-2" />
               <span className="text-muted-foreground w-10 text-right font-mono text-xs">
-                {progress}%
+                {Math.round(Math.max(displayProgress, progress))}%
               </span>
             </div>
+            {state === "running" ? (
+              <p className="text-ai flex items-center gap-2 text-sm font-medium">
+                <Loader2Icon className="size-4 animate-spin" />
+                {t("processing")}
+              </p>
+            ) : null}
             <ul className="bg-muted max-h-56 space-y-0.5 overflow-auto rounded-md p-3 font-mono text-xs leading-relaxed">
               {logs.map((line, index) => (
                 <li key={index} className={index === logs.length - 1 ? "" : "text-muted-foreground"}>
