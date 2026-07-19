@@ -138,7 +138,8 @@
     "adminJobs": "Job monitoring",
     "platform": "Platform",
     "profile": "Profile",
-    "systemStatus": "System status"
+    "systemStatus": "System status",
+    "formation": "Learn"
   },
   "challenges": {
     "title": "Challenges",
@@ -1524,5 +1525,536 @@
   "causal": {
     "title": "Association, not causation",
     "body": "These variables are correlated with the target: the model uses them to predict. That does not prove they cause it. Establishing a causal effect requires an identification design (experiment, difference-in-differences, instrumental variable)."
+  },
+  "formation": {
+    "home": {
+      "title": "Learn AI",
+      "subtitle": "Understand artificial intelligence — the real thing, not just ChatGPT — and learn to use it, from the very first concept to your own trained model.",
+      "pitchLabel": "The promise",
+      "pitch": "You may arrive thinking AI means ChatGPT. You'll leave having trained, evaluated and explained your own model — and able to say why it decides.",
+      "globalProgress": "{done} / {total} lessons",
+      "moreSoon": "The Practitioner and Analyst tracks are coming soon.",
+      "recommendedAfter": "Up next",
+      "lessonCount": "{count, plural, one {# lesson} other {# lessons}}",
+      "cursusDone": "Completed",
+      "resume": "Resume",
+      "startCursus": "Start",
+      "moduleLabel": "Module {index}",
+      "practiceTag": "Practice",
+      "lessonPosition": "Lesson {index} / {total}",
+      "notFound": "This content doesn't exist (anymore).",
+      "backToAcademy": "Back to the Academy"
+    },
+    "blocks": {
+      "mythLabel": "Common myth",
+      "realityLabel": "In reality",
+      "notionLabel": "Concept card",
+      "notionExample": "Example:",
+      "quizLabel": "Quick quiz",
+      "quizCorrect": "Nailed it!",
+      "quizRetry": "Not quite — try again.",
+      "practiceLabel": "Hands-on",
+      "practiceCta": "Go hands-on",
+      "practiceTarget": "Challenge: {challenge}",
+      "readyToFinish": "You can complete the lesson.",
+      "answerToFinish": "Answer the quiz to complete the lesson.",
+      "finishLesson": "Complete the lesson"
+    },
+    "grades": {
+      "curieux": "Curious",
+      "eveille": "Awakened",
+      "apprenti": "Apprentice",
+      "praticien": "Practitioner",
+      "analyste": "Analyst"
+    },
+    "cursus": {
+      "eveil": {
+        "title": "Awakening",
+        "tagline": "Finally understand what artificial intelligence really is.",
+        "subtitle": "A gentle first step, with no math and no jargon. You'll discover that AI is far more than ChatGPT, and above all how predictive AI works — the kind you'll learn to build in IBIS-X."
+      },
+      "fondations": {
+        "title": "Foundations",
+        "tagline": "The concrete basics of Machine Learning",
+        "subtitle": "The essential vocabulary and moves, all the way to your first real hands-on: training a model on the Titanic dataset."
+      }
+    },
+    "modules": {
+      "ia-pas-que-chatgpt": {
+        "title": "AI is not just ChatGPT",
+        "tagline": "Tell the AI that chats apart from the crowd of quiet AIs predicting in the background."
+      },
+      "comment-une-machine-apprend": {
+        "title": "How a machine learns",
+        "tagline": "Examples, data, a learned recipe: the mechanism behind prediction."
+      },
+      "a-quoi-ca-sert": {
+        "title": "What it's actually for",
+        "tagline": "Where predictive AI already acts in your life — and where it gets things wrong."
+      },
+      "le-vocabulaire-du-ml": {
+        "title": "The vocabulary of ML",
+        "tagline": "Rows, columns, features, target: the basic words."
+      },
+      "le-jeu-de-donnees": {
+        "title": "The dataset",
+        "tagline": "Where data comes from, and how to prepare it honestly."
+      },
+      "entrainer-un-premier-modele": {
+        "title": "Training a first model",
+        "tagline": "What \"training\" means, the decision tree, and your first investigation."
+      }
+    },
+    "lessons": {
+      "le-grand-malentendu": {
+        "title": "The big misunderstanding",
+        "summary": "No, AI is not just ChatGPT. Let's start by telling apart two worlds that couldn't be more different: AI that generates and AI that predicts.",
+        "myth": {
+          "myth": "Artificial intelligence is ChatGPT: an AI you talk to and that talks back.",
+          "reality": "ChatGPT is just one AI among thousands. Most AIs don't chat at all: they predict, sort, detect, recommend — often without you ever seeing them."
+        },
+        "visual": {
+          "title": "Two great families",
+          "body": "On one side, generative AI makes brand-new content: text (ChatGPT), images, code. On the other, predictive AI answers a precise question from data: is this email spam? is this patient at risk? In IBIS-X, it's this second family that you'll learn to build yourself.",
+          "caption": "Generating content ≠ predicting an answer. Two different jobs."
+        },
+        "quiz": {
+          "question": "Which of these tasks belongs to predictive AI?",
+          "options": [
+            "Writing the summary of a long article",
+            "Estimating whether a customer will cancel their subscription",
+            "Generating an image from a sentence"
+          ],
+          "explanation": "Estimating an outcome (will cancel / won't cancel) from data is prediction. Writing a summary and generating an image, by contrast, are generative tasks."
+        }
+      },
+      "chatgpt-demystifie": {
+        "title": "ChatGPT demystified",
+        "summary": "Behind the conversation, ChatGPT does one very simple thing to grasp: guessing the next word, over and over.",
+        "myth": {
+          "myth": "ChatGPT understands my questions and knows things, like a very well-read person.",
+          "reality": "ChatGPT doesn't \"know\" anything. It has read enormous amounts of text and learned to predict which word is likely to come after the previous ones. It strings together plausible words, without understanding their meaning."
+        },
+        "visual": {
+          "title": "A next-word guesser",
+          "body": "Picture a game: I give you the start of a sentence, you offer the next word. \"The sky is…\" → \"blue\". ChatGPT plays this game at a huge scale, trained on billions of sentences. Each time it picks a likely word, then starts again with that new word. It's this repeated mechanism that gives the illusion of a conversation.",
+          "caption": "It doesn't think about the answer: it computes the most likely word."
+        },
+        "quiz": {
+          "question": "How does ChatGPT produce an answer?",
+          "options": [
+            "It looks up the truth in a database of verified facts",
+            "It feels the meaning of your question and thinks it over",
+            "It predicts, word after word, what is most likely to come next"
+          ],
+          "explanation": "ChatGPT is a text predictor: at each step it picks the most plausible word based on what it has read. It doesn't consult a database of truths and doesn't \"feel\" anything."
+        }
+      },
+      "lia-predictive": {
+        "title": "Predictive AI, the kind we build here",
+        "summary": "This is the heart of IBIS-X: teaching a machine to predict a category or a number from data.",
+        "visual": {
+          "title": "A question, some data, an answer",
+          "body": "Predictive AI starts from data you already have and answers a precise question. Two forms come up all the time. Predicting a category: is this email spam or not? Predicting a number: how much will this apartment cost? You provide past examples, the machine learns the link, then it answers on new cases.",
+          "caption": "Category or number: in both cases, we predict from the past."
+        },
+        "quiz": {
+          "question": "What do all predictive AIs have in common?",
+          "options": [
+            "They estimate an answer from past data",
+            "They invent brand-new text or images",
+            "They need to chat with a human to work"
+          ],
+          "explanation": "A predictive AI learns from past examples to estimate an answer on new cases. Creating content or holding a conversation is not its job."
+        }
+      },
+      "la-carte-des-ia": {
+        "title": "The map of AIs",
+        "summary": "Generative, predictive, but also recommendation and vision: a small map to put each AI in its place.",
+        "visual": {
+          "title": "Where does each AI belong?",
+          "body": "Think of a map with several continents. Generative makes new things: ChatGPT lives there. Predictive estimates an answer: your mailbox's spam filter is there. Other regions exist too, like recommendation (Netflix guessing the film you'll enjoy) or vision (recognizing a face in a photo). Many tools combine several regions.",
+          "caption": "One map, several continents: every AI has its address."
+        },
+        "quiz": {
+          "question": "Netflix suggesting a film mostly belongs to which family?",
+          "options": [
+            "Generative AI, because it creates a film for you",
+            "Recommendation, a cousin of predictive AI",
+            "None: these are just choices made by humans"
+          ],
+          "explanation": "Suggesting content based on your tastes is recommendation: a close relative of predictive AI. Netflix doesn't make the film and doesn't choose by hand for each subscriber."
+        }
+      },
+      "apprendre-par-lexemple": {
+        "title": "Learning by example",
+        "summary": "The secret isn't magic: we show the machine thousands of already-labeled examples, and it works out a rule.",
+        "visual": {
+          "title": "Thousands of labeled examples",
+          "body": "To learn to sort spam, we don't program rules by hand. We show the machine thousands of emails already marked \"spam\" or \"normal\". It gradually spots what tells the two apart, then applies what it has learned to an email it has never seen. It's like a child shown many cats until they can recognize an unfamiliar one.",
+          "caption": "Many corrected examples → a rule learned all on its own."
+        },
+        "quiz": {
+          "question": "What does the machine need in order to learn by example?",
+          "options": [
+            "A long list of rules written by an expert",
+            "Nothing: it figures it out on its own without data",
+            "Past examples already labeled with the right answer"
+          ],
+          "explanation": "Learning by example relies on past cases whose answer is already known. The machine derives the rule itself, without anyone writing it out."
+        }
+      },
+      "les-donnees-carburant": {
+        "title": "Data, the fuel",
+        "summary": "No data, no AI. But be careful: it's not quantity that matters most, it's quality.",
+        "myth": {
+          "myth": "To get a good AI, you just need to pile up as much data as possible.",
+          "reality": "More data doesn't mean a better AI. Data that is wrong, messy or unrepresentative can make results worse. A clean, well-chosen dataset beats a mountain of dubious data."
+        },
+        "visual": {
+          "title": "The machine's fuel",
+          "body": "Data is to AI what fuel is to a car: without it, nothing moves. But bad fuel damages the engine. Incomplete, biased or mislabeled data produces an AI that gets things wrong with confidence. So before training anything, we first check whether the data is clean and reliable.",
+          "caption": "Bad fuel, bad journey: quality comes before quantity."
+        },
+        "quiz": {
+          "question": "What matters most for training an AI well?",
+          "options": [
+            "The quality and reliability of the data",
+            "The largest possible volume of data, no exceptions",
+            "The speed of the computer doing the calculations"
+          ],
+          "explanation": "Clean, reliable, representative data matters more than raw quantity. A mountain of dubious data mostly leads to an AI that gets things wrong."
+        }
+      },
+      "un-modele-cest-quoi": {
+        "title": "What is a model?",
+        "summary": "The famous \"model\" is not a brain. It's a learned recipe, one you can inspect and reuse.",
+        "visual": {
+          "title": "A learned recipe, not a brain",
+          "body": "After training, everything the machine has learned is stored in one object: the model. See it as a cooking recipe drawn from thousands of trials. You give it ingredients (the data of a new case), it hands you a dish (the prediction). This model is a concrete file: you can download it, share it, reuse it and even inspect it to understand its choices.",
+          "caption": "A model = a learned recipe, stored in a file."
+        },
+        "quiz": {
+          "question": "What is an AI model, deep down?",
+          "options": [
+            "An electronic brain that is aware of what it does",
+            "A recipe learned from data, stored in a file",
+            "Just a copy of all the training data"
+          ],
+          "explanation": "A model is the outcome of learning: a recipe that turns inputs into a prediction. It's neither a conscious brain nor a mere copy of the data."
+        }
+      },
+      "lia-au-quotidien": {
+        "title": "AI in everyday life",
+        "summary": "Without realizing it, you cross paths with predictive AI several times a day. A quick tour.",
+        "visual": {
+          "title": "Already all around you",
+          "body": "Predictive AI works quietly throughout your day. Your mailbox filters out spam. Your bank blocks a payment that looks like fraud. A hospital flags the patients to watch first. A factory foresees that a machine is about to fail before it breaks. None of these AIs chat: they predict, silently, to help you.",
+          "caption": "The most useful AI is often the one you never see."
+        },
+        "quiz": {
+          "question": "Among these uses, which one relies on predictive AI?",
+          "options": [
+            "Software that writes a poem on request",
+            "A tool that generates an illustration for your presentation",
+            "A bank that blocks a suspicious payment in real time"
+          ],
+          "explanation": "Spotting a suspicious payment means estimating a risk from past data: that's prediction. Writing a poem or generating an illustration is generative work."
+        }
+      },
+      "ce-que-lia-ne-sait-pas": {
+        "title": "What AI doesn't know",
+        "summary": "AI is impressive, but it has real limits: no common sense, and mistakes as soon as you step outside what it has seen.",
+        "myth": {
+          "myth": "AI is neutral and infallible: if the machine says so, it must be true.",
+          "reality": "AI makes mistakes, sometimes with confidence. It has no common sense and generalizes poorly to situations too different from its examples. It also reflects the flaws in the data it learned from."
+        },
+        "visual": {
+          "title": "Solid in its lane, lost outside of it",
+          "body": "An AI trained on cases very close to reality can be excellent… as long as you stay in its lane. Take it out of what it has seen, and it still answers, often off the mark, never saying \"I don't know\". It has no common sense and no perspective: it applies a recipe. That's why a human must keep control over important decisions.",
+          "caption": "An AI doesn't doubt itself: it's up to you to keep a critical eye."
+        },
+        "quiz": {
+          "question": "What should you keep in mind when facing an AI's answer?",
+          "options": [
+            "It can be wrong, even when it sounds very sure",
+            "It is neutral and objective by nature",
+            "It always recognizes when it doesn't know the answer"
+          ],
+          "explanation": "An AI can be confident and wrong at the same time: it has no common sense and doesn't flag its own limits. A human eye remains essential."
+        }
+      },
+      "quand-lia-se-trompe": {
+        "title": "When AI gets it wrong",
+        "summary": "Its mistakes are not harmless: when an AI inherits the biases of its data, it can hurt real people.",
+        "visual": {
+          "title": "When data biases turn into injustices",
+          "body": "An AI learns from data produced by humans, with all their imbalances. A résumé-screening tool trained on an unbalanced past can unfairly reject certain profiles. A tool assisting in justice can reproduce the inequalities of past decisions. The AI then amplifies, at scale, biases that were already there. This is the starting point for thinking about ethics.",
+          "caption": "An AI doesn't invent its biases: it inherits them from the data."
+        },
+        "quiz": {
+          "question": "Where do an AI's biases most often come from?",
+          "options": [
+            "From the machine's own desire to do harm",
+            "From the unbalanced or unfair data it learned from",
+            "From a rare, purely technical calculation error"
+          ],
+          "explanation": "An AI reproduces the imbalances present in its training data. It has no will of its own: its biases reflect the past it was shown."
+        }
+      },
+      "lignes-et-colonnes": {
+        "title": "Rows and columns",
+        "summary": "A dataset is a table. Each row is an individual, each column a characteristic.",
+        "visual": {
+          "title": "The table, the basic building block",
+          "body": "Picture the passenger list of a ship. Each row describes one person: that's an observation. Each column describes the same characteristic for everyone: age, ticket class, sex. A dataset is nothing more than this table.",
+          "caption": "Rows = who / Columns = what."
+        },
+        "quiz": {
+          "question": "In a table of passengers, what does a row represent?",
+          "options": [
+            "A characteristic measured on everyone, such as age.",
+            "One passenger, with all of their characteristics.",
+            "The total number of passengers in the table."
+          ],
+          "explanation": "A row is one individual: an observation. Characteristics, on the other hand, are read down the columns."
+        }
+      },
+      "features-et-cible": {
+        "title": "Features and the target",
+        "summary": "Among the columns, some act as clues (the features) and one is the answer to guess (the target).",
+        "visual": {
+          "title": "The clues and the answer",
+          "body": "Back to the passenger table. Columns like age, class or sex are clues: we call them features. The column \"survived?\" is the answer we want to guess: that's the target. The model learns to link the clues to the answer.",
+          "caption": "Features = the clues / Target = the answer."
+        },
+        "quiz": {
+          "question": "We want to predict whether a passenger survived. Which column is the target?",
+          "options": [
+            "The \"survived?\" column, the answer to guess.",
+            "The \"age\" column, one clue among others.",
+            "All the columns at once, without distinction."
+          ],
+          "explanation": "The target is what we try to predict: here, survival. The other columns are the features that serve as clues."
+        }
+      },
+      "classification-vs-regression": {
+        "title": "Sort or measure?",
+        "summary": "Guessing a category (survives or not) is classification. Guessing a number (a price, a grade) is regression.",
+        "visual": {
+          "title": "Two ways to predict",
+          "body": "Sometimes we want to sort into boxes: did this passenger survive, yes or no? That answer is a category, and we call it classification. Other times we want a precise number: a ticket price, a student's grade. That's regression. The question you ask decides the type.",
+          "caption": "Category = sort / Number = measure."
+        },
+        "quiz": {
+          "question": "Predicting a student's exact grade out of 20, what kind of problem is that?",
+          "options": [
+            "Classification, because we're sorting students.",
+            "Neither one: a grade can't be predicted.",
+            "Regression, because the answer is a number."
+          ],
+          "explanation": "A grade out of 20 is a number: that's regression. If the answer were \"pass / fail\", it would be classification."
+        }
+      },
+      "dou-viennent-les-donnees": {
+        "title": "Where does data come from?",
+        "summary": "Before training anything, IBIS-X checks where the data comes from and scores it against ethical criteria.",
+        "visual": {
+          "title": "No data without a source",
+          "body": "Data doesn't fall from the sky: it comes from surveys, sensors, records. Before using it, IBIS-X gives it an ethics score. It looks at whether the sample truly represents the people concerned, whether consent was obtained, and whether biases exist. Poorly collected data yields an unfair model.",
+          "caption": "Judge the source before training."
+        },
+        "quiz": {
+          "question": "Why does IBIS-X score data against ethical criteria before using it?",
+          "options": [
+            "To make training faster.",
+            "Because biased or non-consented data leads to an unfair model.",
+            "Because it's required in order to open a file."
+          ],
+          "explanation": "The ethical quality of the source rubs off on the model: bias, representativeness and consent matter as much as the numbers."
+        }
+      },
+      "train-test": {
+        "title": "Training and testing",
+        "summary": "We hide part of the data to test the model on it, like an exam whose questions you haven't seen.",
+        "visual": {
+          "title": "The exam analogy",
+          "body": "We split the table in two. The larger part is used to train the model: that's its revision. The other part, which it has never seen, is used to test it: that's exam day. If we quizzed it on its revision, it would score full marks while proving nothing. Hiding a part is the only way to measure honestly.",
+          "caption": "You don't revise on the exam paper itself."
+        },
+        "quiz": {
+          "question": "Why keep test data that the model has never seen?",
+          "options": [
+            "To honestly check whether it can generalize to something new.",
+            "So it learns twice and remembers better.",
+            "Because a table is always too big to process fully."
+          ],
+          "explanation": "Testing on unseen data is like an exam: it measures what the model truly understood, not what it memorized."
+        }
+      },
+      "la-qualite-des-donnees": {
+        "title": "Data quality",
+        "summary": "Gaps, omissions, a badly chosen sample: the quality of the data decides everything.",
+        "myth": {
+          "myth": "Data is objective: it's numbers, so it's neutral.",
+          "reality": "No. Data reflects who collected it and about whom. A badly chosen sample or missing values introduce very real biases."
+        },
+        "visual": {
+          "title": "Data is never perfect",
+          "body": "In a real table, some cells are empty: an unrecorded age, a missing grade. These are called missing values. And if only some of the people were surveyed, the sample leans to one side. A model fed with shaky data learns, in turn, in a skewed way.",
+          "caption": "Shaky data, shaky model."
+        },
+        "quiz": {
+          "question": "A dataset contains only first-class passengers. What is the risk?",
+          "options": [
+            "None: the more alike the data, the better.",
+            "The model will just be slower to train.",
+            "The sample is biased: the model will generalize poorly to other classes."
+          ],
+          "explanation": "A sample that represents only part of the population biases the model. Quantity never replaces representativeness."
+        }
+      },
+      "quest-ce-quentrainer": {
+        "title": "What does training mean?",
+        "summary": "Training a model means gradually adjusting a recipe so it fits the examples, without cheating.",
+        "visual": {
+          "title": "Adjusting a recipe",
+          "body": "Training isn't magic. We show the model examples whose answers we know. With every mistake, it adjusts its recipe a little to be wrong less often next time. Bit by bit, the recipe fits the examples better. The goal isn't to memorize, but to draw out a rule that will work on new cases.",
+          "caption": "Be wrong less, example after example."
+        },
+        "quiz": {
+          "question": "What does a model do during training?",
+          "options": [
+            "It copies the table to find it again later.",
+            "It adjusts its recipe to reduce its errors on the examples.",
+            "It invents new columns on its own."
+          ],
+          "explanation": "Training means gradually correcting the recipe to be wrong less and less, rather than simply memorizing."
+        }
+      },
+      "larbre-de-decision": {
+        "title": "The decision tree",
+        "summary": "The decision tree is the most readable model: a simple series of yes/no questions. It's a real IBIS-X algorithm.",
+        "visual": {
+          "title": "A series of yes/no questions",
+          "body": "A decision tree asks questions in a cascade. Is this a woman? If yes, one branch; if no, another. Was she travelling in first class? Each answer leads to a new question, until a decision: survives or not. It's readable, you can follow the path with your finger. And it's no toy: IBIS-X trains real trees.",
+          "caption": "Follow the branches down to the answer."
+        },
+        "quiz": {
+          "question": "Why is the decision tree called a readable model?",
+          "options": [
+            "You can follow the series of yes/no questions leading to its decision.",
+            "Because it only ever uses a single column.",
+            "Because it always gives the right answer."
+          ],
+          "explanation": "A tree traces a path of simple questions you can reread step by step. That's what makes it transparent, unlike other models."
+        }
+      },
+      "ta-premiere-enquete": {
+        "title": "Your first investigation",
+        "summary": "You have the landmarks. It's time to train a real model on a real dataset.",
+        "visual": {
+          "title": "Your last landmarks",
+          "body": "Let's recap. A dataset is a table: rows (the individuals) and columns (the characteristics). Among them, the features are the clues and the target is the answer. We separate training and testing to stay honest. And the decision tree, readable, learns a series of questions. You have everything you need to get started.",
+          "caption": "Landmarks in hand, on to practice."
+        },
+        "practice": {
+          "title": "Run the Titanic investigation",
+          "body": "Move to practice with the Titanic challenge. From 891 real passengers, you'll train a real decision tree, get a real result, and discover what weighed most on survival. No simulation: the model is real, the training reproducible. Ready to run your first investigation?"
+        }
+      }
+    },
+    "notions": {
+      "ia-generative-vs-predictive": {
+        "term": "Generative AI vs predictive AI",
+        "definition": "Generative AI creates brand-new content (text, image, sound). Predictive AI estimates a value or a category from past examples.",
+        "example": "ChatGPT writes a poem (generative); your bank blocks a suspicious payment (predictive)."
+      },
+      "llm-predicteur": {
+        "term": "Language model (LLM)",
+        "definition": "A language model is an AI trained on huge amounts of text to predict the most likely word after the previous ones. It strings together plausible words without understanding their meaning.",
+        "example": "ChatGPT completes \"The sky is…\" with \"blue\" because that word is the most likely, not because it sees the sky."
+      },
+      "ia-predictive": {
+        "term": "Predictive AI",
+        "definition": "An AI that learns from past examples to estimate a category or a number on new cases. It's the family at the heart of IBIS-X.",
+        "example": "From past property listings, predicting the price of an apartment put up for sale today."
+      },
+      "familles-ia": {
+        "term": "Families of AI",
+        "definition": "The broad categories of AI based on what they do: generative (create), predictive (estimate), recommendation (suggest), vision (recognize images), and others still.",
+        "example": "ChatGPT is generative, the spam filter is predictive, Netflix's suggestions are recommendation."
+      },
+      "apprentissage-supervise": {
+        "term": "Learning by example",
+        "definition": "A way of training an AI by showing it many examples already labeled with the right answer. The machine works out a rule it can apply to new cases.",
+        "example": "Showing thousands of emails marked \"spam\" or \"normal\" so it learns to sort an unknown email."
+      },
+      "donnees-carburant": {
+        "term": "Data",
+        "definition": "The past examples used to train an AI. Without them no learning is possible; their quality matters more than their quantity.",
+        "example": "Several years of temperature readings used to predict tomorrow's weather."
+      },
+      "modele": {
+        "term": "Model",
+        "definition": "The concrete result of training: a learned recipe that turns a case's data into a prediction. It can be downloaded, shared and inspected.",
+        "example": "The spam-filter model file that, given an email, answers \"spam\" or \"normal\"."
+      },
+      "ia-quotidien": {
+        "term": "AI in everyday life",
+        "definition": "The concrete and often invisible uses of predictive AI in daily life: mailboxes, banking, health, industry.",
+        "example": "Your bank blocking, in real time, an unusual payment that looks like fraud."
+      },
+      "limites-ia": {
+        "term": "Limits of AI",
+        "definition": "What AI cannot do: it has no common sense, generalizes poorly outside its examples, and doesn't recognize its own mistakes.",
+        "example": "An AI very reliable on its training cases that answers nonsense, confidently, on a brand-new situation."
+      },
+      "biais-introduction": {
+        "term": "Bias",
+        "definition": "An unfair imbalance inherited from the training data, which the AI reproduces and then amplifies at scale. The starting point for ethical reflection.",
+        "example": "A résumé-screening tool trained on an unbalanced past that systematically rejects certain profiles."
+      },
+      "observations-variables": {
+        "term": "Observations and variables",
+        "definition": "In a tabular dataset, the observations are the rows (the individuals) and the variables are the columns (their characteristics).",
+        "example": "891 Titanic passengers (observations) described by their age, sex and class (variables)."
+      },
+      "features-cible": {
+        "term": "Features and target",
+        "definition": "The features are the columns that serve as clues for the model; the target is the column we try to predict.",
+        "example": "Age and class (features) to guess whether the passenger survived (target)."
+      },
+      "classification-vs-regression": {
+        "term": "Classification and regression",
+        "definition": "Classification predicts a category; regression predicts a number.",
+        "example": "\"Survives or not\" (classification); \"grade out of 20\" (regression)."
+      },
+      "catalogue-ethique": {
+        "term": "Catalogue ethics score",
+        "definition": "Before any use, IBIS-X scores a dataset against ethical criteria: representativeness, consent, bias.",
+        "example": "A dataset that represents only one social class gets a lower score."
+      },
+      "train-test": {
+        "term": "Training and testing",
+        "definition": "We split the data into one part to train the model and one part, never seen, to test it honestly.",
+        "example": "80% of the passengers to revise, 20% kept for the exam."
+      },
+      "qualite-donnees": {
+        "term": "Data quality",
+        "definition": "The real state of the data: missing values, errors, sample bias. It determines how reliable the model is.",
+        "example": "Unrecorded ages or an unrepresentative sample distort the predictions."
+      },
+      "entrainer": {
+        "term": "Training a model",
+        "definition": "Gradually adjusting the model's recipe on known examples to reduce its errors, rather than simply memorizing.",
+        "example": "Showing passengers whose survival is known, until the model predicts well."
+      },
+      "arbre-decision": {
+        "term": "Decision tree",
+        "definition": "A readable model that chains yes/no questions up to a decision. It's a real IBIS-X algorithm.",
+        "example": "\"Woman? In first class?\" then a survival prediction."
+      }
+    }
   }
 }

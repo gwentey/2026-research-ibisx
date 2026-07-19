@@ -138,7 +138,8 @@
     "adminJobs": "Supervision des jobs",
     "platform": "Plateforme",
     "profile": "Profil",
-    "systemStatus": "État du système"
+    "systemStatus": "État du système",
+    "formation": "Apprendre"
   },
   "challenges": {
     "title": "Défis",
@@ -1524,5 +1525,536 @@
   "causal": {
     "title": "Association, pas causalité",
     "body": "Ces variables sont corrélées à la cible : le modèle s'en sert pour prédire. Cela ne prouve pas qu'elles la causent. Établir un effet causal demande un design d'identification (expérience, différences-de-différences, variable instrumentale)."
+  },
+  "formation": {
+    "home": {
+      "title": "Apprendre l'IA",
+      "subtitle": "Comprends l'intelligence artificielle — la vraie, pas seulement ChatGPT — et apprends à t'en servir, du tout premier concept jusqu'à ton propre modèle entraîné.",
+      "pitchLabel": "La promesse",
+      "pitch": "Tu arrives peut-être en pensant que l'IA, c'est ChatGPT. Tu repartiras en ayant entraîné, évalué et expliqué ton propre modèle — et en sachant dire pourquoi il décide.",
+      "globalProgress": "{done} / {total} leçons",
+      "moreSoon": "Les cursus Praticien et Analyste arrivent bientôt.",
+      "recommendedAfter": "Conseillé ensuite",
+      "lessonCount": "{count, plural, one {# leçon} other {# leçons}}",
+      "cursusDone": "Terminé",
+      "resume": "Reprendre",
+      "startCursus": "Commencer",
+      "moduleLabel": "Module {index}",
+      "practiceTag": "Pratique",
+      "lessonPosition": "Leçon {index} / {total}",
+      "notFound": "Ce contenu n'existe pas (ou plus).",
+      "backToAcademy": "Retour à l'Académie"
+    },
+    "blocks": {
+      "mythLabel": "Idée reçue",
+      "realityLabel": "En réalité",
+      "notionLabel": "Carte-notion",
+      "notionExample": "Exemple :",
+      "quizLabel": "Quiz éclair",
+      "quizCorrect": "Bien vu !",
+      "quizRetry": "Pas tout à fait — réessaie.",
+      "practiceLabel": "Mise en pratique",
+      "practiceCta": "Passe à la pratique",
+      "practiceTarget": "Défi : {challenge}",
+      "readyToFinish": "Tu peux valider la leçon.",
+      "answerToFinish": "Réponds au quiz pour valider la leçon.",
+      "finishLesson": "Valider la leçon"
+    },
+    "grades": {
+      "curieux": "Curieux",
+      "eveille": "Éveillé",
+      "apprenti": "Apprenti",
+      "praticien": "Praticien",
+      "analyste": "Analyste"
+    },
+    "cursus": {
+      "eveil": {
+        "title": "Éveil",
+        "tagline": "Comprends enfin ce qu'est vraiment l'intelligence artificielle.",
+        "subtitle": "Un premier pas tout en douceur, sans maths ni jargon. Tu vas découvrir que l'IA ne se résume pas à ChatGPT, et surtout comment fonctionne l'IA qui prédit — celle que tu apprendras à construire dans IBIS-X."
+      },
+      "fondations": {
+        "title": "Fondations",
+        "tagline": "Les bases concrètes du Machine Learning",
+        "subtitle": "Le vocabulaire et les gestes essentiels, jusqu'à ta première vraie mise en pratique : entraîner un modèle sur le jeu de données Titanic."
+      }
+    },
+    "modules": {
+      "ia-pas-que-chatgpt": {
+        "title": "L'IA, ce n'est pas que ChatGPT",
+        "tagline": "Sépare l'IA qui discute de la foule d'IA discrètes qui prédisent en silence."
+      },
+      "comment-une-machine-apprend": {
+        "title": "Comment une machine apprend",
+        "tagline": "Des exemples, des données, une recette apprise : le mécanisme derrière la prédiction."
+      },
+      "a-quoi-ca-sert": {
+        "title": "À quoi ça sert vraiment",
+        "tagline": "Où l'IA prédictive agit déjà dans ta vie — et où elle se trompe."
+      },
+      "le-vocabulaire-du-ml": {
+        "title": "Le vocabulaire du ML",
+        "tagline": "Lignes, colonnes, features, cible : les mots de base."
+      },
+      "le-jeu-de-donnees": {
+        "title": "Le jeu de données",
+        "tagline": "D'où viennent les données, et comment on les prépare honnêtement."
+      },
+      "entrainer-un-premier-modele": {
+        "title": "Entraîner un premier modèle",
+        "tagline": "Ce que veut dire « entraîner », l'arbre de décision, et ta première enquête."
+      }
+    },
+    "lessons": {
+      "le-grand-malentendu": {
+        "title": "Le grand malentendu",
+        "summary": "Non, l'IA ne se résume pas à ChatGPT. Distinguons d'abord deux mondes que tout oppose : l'IA qui génère et l'IA qui prédit.",
+        "myth": {
+          "myth": "L'intelligence artificielle, c'est ChatGPT : une IA à qui on parle et qui répond.",
+          "reality": "ChatGPT n'est qu'une IA parmi des milliers. La plupart des IA ne discutent pas : elles prédisent, trient, détectent, recommandent — souvent sans qu'on les voie."
+        },
+        "visual": {
+          "title": "Deux grandes familles",
+          "body": "D'un côté, l'IA générative fabrique du contenu neuf : du texte (ChatGPT), des images, du code. De l'autre, l'IA prédictive répond à une question précise à partir de données : ce mail est-il un spam ? ce patient est-il à risque ? Dans IBIS-X, c'est cette seconde famille que tu vas apprendre à construire toi-même.",
+          "caption": "Générer du contenu ≠ prédire une réponse. Deux métiers différents."
+        },
+        "quiz": {
+          "question": "Laquelle de ces tâches relève de l'IA prédictive ?",
+          "options": [
+            "Écrire le résumé d'un long article",
+            "Estimer si un client va résilier son abonnement",
+            "Générer une image à partir d'une phrase"
+          ],
+          "explanation": "Estimer une issue (résiliera / ne résiliera pas) à partir de données, c'est de la prédiction. Rédiger un résumé et générer une image relèvent, eux, du génératif."
+        }
+      },
+      "chatgpt-demystifie": {
+        "title": "ChatGPT démystifié",
+        "summary": "Derrière la conversation, ChatGPT fait une chose très simple à comprendre : deviner le mot suivant, encore et encore.",
+        "myth": {
+          "myth": "ChatGPT comprend mes questions et sait des choses, comme une personne très cultivée.",
+          "reality": "ChatGPT ne « sait » rien. Il a lu énormément de textes et a appris à prédire quel mot vient probablement après les précédents. Il enchaîne des mots plausibles, sans comprendre leur sens."
+        },
+        "visual": {
+          "title": "Un devineur de mot suivant",
+          "body": "Imagine un jeu : je te donne un début de phrase, tu proposes le mot d'après. « Le ciel est… » → « bleu ». ChatGPT joue à ce jeu à grande échelle, entraîné sur des milliards de phrases. Il choisit à chaque fois un mot vraisemblable, puis recommence avec ce nouveau mot. C'est cette mécanique répétée qui donne l'illusion d'une conversation.",
+          "caption": "Il ne réfléchit pas à la réponse : il calcule le mot le plus probable."
+        },
+        "quiz": {
+          "question": "Comment ChatGPT produit-il une réponse ?",
+          "options": [
+            "Il cherche la vérité dans une base de données de faits vérifiés",
+            "Il ressent le sens de ta question et y réfléchit",
+            "Il prédit mot après mot ce qui est le plus probable de suivre"
+          ],
+          "explanation": "ChatGPT est un prédicteur de texte : il choisit à chaque étape le mot le plus plausible d'après ce qu'il a lu. Il ne consulte pas une base de vérités et ne « ressent » rien."
+        }
+      },
+      "lia-predictive": {
+        "title": "L'IA prédictive, celle qu'on construit ici",
+        "summary": "C'est le cœur d'IBIS-X : apprendre à une machine à prédire une catégorie ou un nombre à partir de données.",
+        "visual": {
+          "title": "Une question, des données, une réponse",
+          "body": "L'IA prédictive part de données que tu possèdes déjà et répond à une question précise. Deux formes reviennent tout le temps. Prédire une catégorie : ce mail est-il un spam ou non ? Prédire un nombre : combien coûtera cet appartement ? Tu fournis des exemples passés, la machine apprend le lien, puis elle répond sur des cas nouveaux.",
+          "caption": "Catégorie ou nombre : dans les deux cas, on prédit à partir du passé."
+        },
+        "quiz": {
+          "question": "Quel est le point commun de toutes les IA prédictives ?",
+          "options": [
+            "Elles estiment une réponse à partir de données passées",
+            "Elles inventent du texte ou des images inédites",
+            "Elles ont besoin de discuter avec un humain pour fonctionner"
+          ],
+          "explanation": "Une IA prédictive apprend sur des exemples passés pour estimer une réponse sur des cas nouveaux. Créer du contenu ou dialoguer n'est pas son rôle."
+        }
+      },
+      "la-carte-des-ia": {
+        "title": "La carte des IA",
+        "summary": "Générative, prédictive, mais aussi recommandation ou vision : une petite carte pour ranger chaque IA à sa place.",
+        "visual": {
+          "title": "Où se range chaque IA ?",
+          "body": "Pense à une carte avec plusieurs continents. Le génératif fabrique du neuf : ChatGPT y habite. Le prédictif estime une réponse : l'anti-spam de ta boîte mail s'y trouve. D'autres régions existent, comme la recommandation (Netflix qui devine le film que tu aimeras) ou la vision (reconnaître un visage sur une photo). Beaucoup d'outils combinent plusieurs régions.",
+          "caption": "Une même carte, plusieurs continents : chaque IA a son adresse."
+        },
+        "quiz": {
+          "question": "Netflix qui te suggère un film relève surtout de quelle famille ?",
+          "options": [
+            "L'IA générative, car il crée un film pour toi",
+            "La recommandation, une cousine de l'IA prédictive",
+            "Aucune : ce ne sont que des choix faits par des humains"
+          ],
+          "explanation": "Suggérer un contenu selon tes goûts, c'est de la recommandation : une proche parente du prédictif. Netflix ne fabrique pas le film et ne choisit pas à la main pour chaque abonné."
+        }
+      },
+      "apprendre-par-lexemple": {
+        "title": "Apprendre par l'exemple",
+        "summary": "Le secret n'est pas magique : on montre à la machine des milliers d'exemples déjà étiquetés, et elle en dégage une règle.",
+        "visual": {
+          "title": "Des milliers d'exemples étiquetés",
+          "body": "Pour apprendre à trier les spams, on ne programme pas de règles à la main. On montre à la machine des milliers de mails déjà marqués « spam » ou « normal ». Elle repère peu à peu ce qui distingue les deux, puis applique ce qu'elle a appris à un mail jamais vu. C'est comme un enfant à qui l'on montre beaucoup de chats jusqu'à ce qu'il reconnaisse un chat inconnu.",
+          "caption": "Beaucoup d'exemples corrigés → une règle apprise toute seule."
+        },
+        "quiz": {
+          "question": "De quoi la machine a-t-elle besoin pour apprendre par l'exemple ?",
+          "options": [
+            "D'une longue liste de règles écrites par un expert",
+            "De rien : elle devine toute seule sans données",
+            "D'exemples passés déjà étiquetés avec la bonne réponse"
+          ],
+          "explanation": "L'apprentissage par l'exemple repose sur des cas passés dont on connaît déjà la réponse. La machine en tire la règle elle-même, sans qu'on ait à l'écrire."
+        }
+      },
+      "les-donnees-carburant": {
+        "title": "Les données, le carburant",
+        "summary": "Sans données, pas d'IA. Mais attention : ce n'est pas la quantité qui compte le plus, c'est la qualité.",
+        "myth": {
+          "myth": "Pour avoir une bonne IA, il suffit d'accumuler le plus de données possible.",
+          "reality": "Plus de données ne veut pas dire meilleure IA. Des données fausses, mal rangées ou peu représentatives peuvent dégrader le résultat. Un jeu propre et bien choisi vaut mieux qu'une montagne de données douteuses."
+        },
+        "visual": {
+          "title": "Le carburant de la machine",
+          "body": "Les données sont à l'IA ce que l'essence est à une voiture : sans elles, rien ne roule. Mais un mauvais carburant abîme le moteur. Des données incomplètes, biaisées ou mal étiquetées produisent une IA qui se trompe avec assurance. Avant d'entraîner quoi que ce soit, on regarde donc d'abord si les données sont propres et fiables.",
+          "caption": "Mauvais carburant, mauvais trajet : la qualité passe avant la quantité."
+        },
+        "quiz": {
+          "question": "Qu'est-ce qui compte le plus pour bien entraîner une IA ?",
+          "options": [
+            "La qualité et la fiabilité des données",
+            "Le plus gros volume de données possible, sans exception",
+            "La vitesse de l'ordinateur qui fait les calculs"
+          ],
+          "explanation": "Des données propres, fiables et représentatives priment sur la quantité brute. Une montagne de données douteuses mène surtout à une IA qui se trompe."
+        }
+      },
+      "un-modele-cest-quoi": {
+        "title": "Un modèle, c'est quoi ?",
+        "summary": "Le fameux « modèle » n'est pas un cerveau. C'est une recette apprise, qu'on peut inspecter et réutiliser.",
+        "visual": {
+          "title": "Une recette apprise, pas un cerveau",
+          "body": "Après l'entraînement, tout ce que la machine a appris est rangé dans un objet : le modèle. Vois-le comme une recette de cuisine tirée de milliers d'essais. Tu lui donnes des ingrédients (les données d'un cas nouveau), il te rend un plat (la prédiction). Ce modèle est un fichier concret : on peut le télécharger, le partager, le réutiliser et même l'inspecter pour comprendre ses choix.",
+          "caption": "Un modèle = une recette apprise, rangée dans un fichier."
+        },
+        "quiz": {
+          "question": "Qu'est-ce qu'un modèle d'IA, au fond ?",
+          "options": [
+            "Un cerveau électronique conscient de ce qu'il fait",
+            "Une recette apprise à partir de données, rangée dans un fichier",
+            "Une simple copie de toutes les données d'entraînement"
+          ],
+          "explanation": "Un modèle est le résultat de l'apprentissage : une recette qui transforme des entrées en prédiction. Ce n'est ni un cerveau conscient ni une simple copie des données."
+        }
+      },
+      "lia-au-quotidien": {
+        "title": "L'IA au quotidien",
+        "summary": "Sans t'en rendre compte, tu croises l'IA prédictive plusieurs fois par jour. Petit tour d'horizon.",
+        "visual": {
+          "title": "Déjà partout autour de toi",
+          "body": "L'IA prédictive travaille discrètement dans ta journée. Ta messagerie écarte les spams. Ta banque bloque un paiement qui ressemble à une fraude. Un hôpital repère les patients à surveiller en priorité. Une usine prévoit qu'une machine va tomber en panne avant qu'elle ne casse. Aucune de ces IA ne discute : elles prédisent, silencieusement, pour t'aider.",
+          "caption": "L'IA la plus utile est souvent celle qu'on ne voit jamais."
+        },
+        "quiz": {
+          "question": "Parmi ces usages, lequel repose sur de l'IA prédictive ?",
+          "options": [
+            "Un logiciel qui écrit un poème sur commande",
+            "Un outil qui génère une illustration pour ta présentation",
+            "Une banque qui bloque un paiement suspect en temps réel"
+          ],
+          "explanation": "Repérer un paiement suspect, c'est estimer un risque à partir de données passées : de la prédiction. Écrire un poème ou générer une illustration relève du génératif."
+        }
+      },
+      "ce-que-lia-ne-sait-pas": {
+        "title": "Ce que l'IA ne sait pas",
+        "summary": "L'IA impressionne, mais elle a de vraies limites : pas de bon sens, et des ratés dès qu'on sort de ce qu'elle a vu.",
+        "myth": {
+          "myth": "L'IA est neutre et infaillible : si la machine le dit, c'est que c'est vrai.",
+          "reality": "L'IA se trompe, parfois avec assurance. Elle n'a pas de bon sens et généralise mal face à des situations trop différentes de ses exemples. Elle reflète aussi les défauts des données sur lesquelles elle a appris."
+        },
+        "visual": {
+          "title": "Solide dans son couloir, perdue en dehors",
+          "body": "Une IA entraînée sur des cas très proches de la réalité peut être excellente… tant qu'on reste dans son couloir. Sors-la de ce qu'elle a vu, et elle répond quand même, souvent à côté, sans jamais dire « je ne sais pas ». Elle n'a ni bon sens ni recul : elle applique une recette. C'est pourquoi un humain doit garder la main sur les décisions importantes.",
+          "caption": "Une IA ne doute pas d'elle-même : à toi de garder l'œil critique."
+        },
+        "quiz": {
+          "question": "Que faut-il garder en tête face à une réponse d'IA ?",
+          "options": [
+            "Elle peut se tromper, même quand elle a l'air très sûre",
+            "Elle est neutre et objective par nature",
+            "Elle reconnaît toujours quand elle ne sait pas répondre"
+          ],
+          "explanation": "Une IA peut être confiante et fausse à la fois : elle n'a pas de bon sens et ne signale pas ses propres limites. Un regard humain reste indispensable."
+        }
+      },
+      "quand-lia-se-trompe": {
+        "title": "Quand l'IA se trompe",
+        "summary": "Ses erreurs ne sont pas anodines : quand une IA hérite des biais de ses données, elle peut nuire à de vraies personnes.",
+        "visual": {
+          "title": "Quand les biais des données deviennent des injustices",
+          "body": "Une IA apprend sur des données produites par des humains, avec leurs déséquilibres. Un outil de tri de candidatures entraîné sur un passé déséquilibré peut écarter injustement certains profils. Un outil d'aide à la justice peut reproduire les inégalités des décisions passées. L'IA amplifie alors, à grande échelle, des biais déjà présents. C'est le point de départ de la réflexion sur l'éthique.",
+          "caption": "Une IA n'invente pas ses biais : elle hérite de ceux des données."
+        },
+        "quiz": {
+          "question": "D'où viennent le plus souvent les biais d'une IA ?",
+          "options": [
+            "D'une volonté propre de la machine de faire le mal",
+            "Des données déséquilibrées ou injustes sur lesquelles elle a appris",
+            "D'une erreur de calcul rare et purement technique"
+          ],
+          "explanation": "Une IA reproduit les déséquilibres présents dans ses données d'entraînement. Elle n'a pas de volonté propre : ses biais reflètent ceux du passé qu'on lui a montré."
+        }
+      },
+      "lignes-et-colonnes": {
+        "title": "Lignes et colonnes",
+        "summary": "Un jeu de données, c'est un tableau. Chaque ligne est un individu, chaque colonne une caractéristique.",
+        "visual": {
+          "title": "Le tableau, brique de base",
+          "body": "Imagine la liste des passagers d'un bateau. Chaque ligne décrit une personne : c'est une observation. Chaque colonne décrit une même caractéristique pour tout le monde : l'âge, la classe du billet, le sexe. Un jeu de données, ce n'est rien de plus que ce tableau.",
+          "caption": "Lignes = qui / Colonnes = quoi."
+        },
+        "quiz": {
+          "question": "Dans un tableau de passagers, que représente une ligne ?",
+          "options": [
+            "Une caractéristique mesurée sur tout le monde, comme l'âge.",
+            "Un passager, avec toutes ses caractéristiques.",
+            "Le total de tous les passagers du tableau."
+          ],
+          "explanation": "Une ligne, c'est un individu : une observation. Les caractéristiques, elles, se lisent en colonnes."
+        }
+      },
+      "features-et-cible": {
+        "title": "Les features et la cible",
+        "summary": "Parmi les colonnes, certaines servent d'indices (les features) et une seule est la réponse à deviner (la cible).",
+        "visual": {
+          "title": "Les indices et la réponse",
+          "body": "Reprenons le tableau des passagers. Les colonnes comme l'âge, la classe ou le sexe sont des indices : on les appelle les features. La colonne « a survécu ? » est la réponse qu'on veut deviner : c'est la cible. Le modèle apprend à relier les indices à la réponse.",
+          "caption": "Features = les indices / Cible = la réponse."
+        },
+        "quiz": {
+          "question": "On veut prédire si un passager a survécu. Quelle colonne est la cible ?",
+          "options": [
+            "La colonne « a survécu ? », la réponse à deviner.",
+            "La colonne « âge », un indice parmi d'autres.",
+            "Toutes les colonnes à la fois, sans distinction."
+          ],
+          "explanation": "La cible, c'est ce qu'on cherche à prédire : ici, la survie. Les autres colonnes sont les features qui servent d'indices."
+        }
+      },
+      "classification-vs-regression": {
+        "title": "Classer ou chiffrer ?",
+        "summary": "Deviner une catégorie (survivra ou non), c'est de la classification. Deviner un nombre (un prix, une note), c'est de la régression.",
+        "visual": {
+          "title": "Deux façons de prédire",
+          "body": "Parfois, on veut ranger dans des cases : ce passager a-t-il survécu, oui ou non ? Cette réponse est une catégorie, on parle de classification. D'autres fois, on veut un nombre précis : le prix d'un billet, la note d'un élève. Là, on parle de régression. La question qu'on pose décide du type.",
+          "caption": "Catégorie = classer / Nombre = chiffrer."
+        },
+        "quiz": {
+          "question": "Prédire la note exacte d'un élève sur 20, c'est quel type de problème ?",
+          "options": [
+            "De la classification, car on trie les élèves.",
+            "Ni l'un ni l'autre : une note ne se prédit pas.",
+            "De la régression, car la réponse est un nombre."
+          ],
+          "explanation": "Une note sur 20 est un nombre : c'est de la régression. Si la réponse était « reçu / recalé », ce serait de la classification."
+        }
+      },
+      "dou-viennent-les-donnees": {
+        "title": "D'où viennent les données ?",
+        "summary": "Avant d'entraîner quoi que ce soit, IBIS-X vérifie d'où viennent les données et les note sur des critères d'éthique.",
+        "visual": {
+          "title": "Pas de données sans provenance",
+          "body": "Les données ne tombent pas du ciel : elles viennent d'enquêtes, de capteurs, de registres. Avant de s'en servir, IBIS-X leur donne un score éthique. Il regarde si l'échantillon représente bien les gens concernés, si le consentement a été recueilli, et s'il existe des biais. Des données mal collectées donnent un modèle injuste.",
+          "caption": "On juge la source avant d'entraîner."
+        },
+        "quiz": {
+          "question": "Pourquoi IBIS-X note-t-il les données sur des critères d'éthique avant de les utiliser ?",
+          "options": [
+            "Pour rendre l'entraînement plus rapide.",
+            "Parce que des données biaisées ou non consenties mènent à un modèle injuste.",
+            "Parce que c'est obligatoire pour ouvrir un fichier."
+          ],
+          "explanation": "La qualité éthique de la source déteint sur le modèle : biais, représentativité et consentement comptent autant que les chiffres."
+        }
+      },
+      "train-test": {
+        "title": "Entraînement et test",
+        "summary": "On cache une partie des données pour tester le modèle dessus, comme un examen dont on n'a pas vu le sujet.",
+        "visual": {
+          "title": "L'analogie de l'examen",
+          "body": "On coupe le tableau en deux. La plus grande part sert à entraîner le modèle : ce sont ses révisions. L'autre part, qu'il n'a jamais vue, sert à le tester : c'est le jour de l'examen. Si on l'interrogeait sur ses révisions, il aurait 20/20 sans rien prouver. Cacher une partie, c'est la seule façon de mesurer honnêtement.",
+          "caption": "On ne révise pas sur le sujet du bac."
+        },
+        "quiz": {
+          "question": "Pourquoi garder des données de test que le modèle n'a jamais vues ?",
+          "options": [
+            "Pour vérifier honnêtement s'il sait généraliser à du nouveau.",
+            "Pour qu'il apprenne deux fois et retienne mieux.",
+            "Parce qu'un tableau est toujours trop grand pour tout traiter."
+          ],
+          "explanation": "Tester sur des données inédites, c'est comme un examen : ça mesure ce que le modèle a vraiment compris, pas ce qu'il a mémorisé."
+        }
+      },
+      "la-qualite-des-donnees": {
+        "title": "La qualité des données",
+        "summary": "Des trous, des oublis, un échantillon mal choisi : la qualité des données décide de tout.",
+        "myth": {
+          "myth": "Les données sont objectives : ce sont des chiffres, donc c'est neutre.",
+          "reality": "Non. Les données reflètent qui les a collectées et sur qui. Un échantillon mal choisi ou des valeurs manquantes introduisent des biais bien réels."
+        },
+        "visual": {
+          "title": "Des données jamais parfaites",
+          "body": "Dans un vrai tableau, des cases sont vides : un âge non renseigné, une note manquante. C'est ce qu'on appelle les valeurs manquantes. Et si on n'a interrogé qu'une partie des gens, l'échantillon penche d'un côté. Un modèle nourri de données bancales apprend, lui aussi, de travers.",
+          "caption": "Données bancales, modèle bancal."
+        },
+        "quiz": {
+          "question": "Un jeu de données ne contient que des passagers de première classe. Quel est le risque ?",
+          "options": [
+            "Aucun : plus les données se ressemblent, mieux c'est.",
+            "Le modèle sera juste plus lent à entraîner.",
+            "L'échantillon est biaisé : le modèle généralisera mal aux autres classes."
+          ],
+          "explanation": "Un échantillon qui ne représente qu'une partie des gens biaise le modèle. La quantité ne remplace jamais la représentativité."
+        }
+      },
+      "quest-ce-quentrainer": {
+        "title": "Qu'est-ce qu'entraîner ?",
+        "summary": "Entraîner un modèle, c'est ajuster peu à peu une recette pour qu'elle colle aux exemples, sans tricher.",
+        "visual": {
+          "title": "Ajuster une recette",
+          "body": "Entraîner, ce n'est pas magique. On montre au modèle des exemples dont on connaît la réponse. À chaque erreur, il ajuste un peu sa recette pour se tromper moins la fois d'après. Petit à petit, la recette colle mieux aux exemples. Le but n'est pas de mémoriser, mais de dégager une règle qui marchera sur du nouveau.",
+          "caption": "Se tromper moins, exemple après exemple."
+        },
+        "quiz": {
+          "question": "Que fait un modèle pendant l'entraînement ?",
+          "options": [
+            "Il recopie le tableau pour le retrouver plus tard.",
+            "Il ajuste sa recette pour réduire ses erreurs sur les exemples.",
+            "Il invente de nouvelles colonnes tout seul."
+          ],
+          "explanation": "Entraîner, c'est corriger peu à peu la recette pour se tromper de moins en moins, sans se contenter de mémoriser."
+        }
+      },
+      "larbre-de-decision": {
+        "title": "L'arbre de décision",
+        "summary": "L'arbre de décision est le modèle le plus lisible : une simple suite de questions oui/non. C'est un vrai algorithme d'IBIS-X.",
+        "visual": {
+          "title": "Une suite de questions oui/non",
+          "body": "Un arbre de décision pose des questions en cascade. Est-ce une femme ? Si oui, une branche ; si non, une autre. Voyageait-elle en première classe ? Chaque réponse mène à une nouvelle question, jusqu'à une décision : survivra ou non. C'est lisible, on peut suivre le chemin du doigt. Et ce n'est pas un jouet : IBIS-X entraîne de vrais arbres.",
+          "caption": "Descends les branches jusqu'à la réponse."
+        },
+        "quiz": {
+          "question": "Pourquoi dit-on que l'arbre de décision est un modèle lisible ?",
+          "options": [
+            "On peut suivre la suite de questions oui/non qui mène à sa décision.",
+            "Parce qu'il n'utilise jamais qu'une seule colonne.",
+            "Parce qu'il donne toujours la bonne réponse."
+          ],
+          "explanation": "Un arbre trace un chemin de questions simples qu'on peut relire pas à pas. C'est ce qui le rend transparent, contrairement à d'autres modèles."
+        }
+      },
+      "ta-premiere-enquete": {
+        "title": "Ta première enquête",
+        "summary": "Tu as les repères. Il est temps d'entraîner un vrai modèle sur un vrai jeu de données.",
+        "visual": {
+          "title": "Tes derniers repères",
+          "body": "Récapitulons. Un jeu de données est un tableau : des lignes (les individus) et des colonnes (les caractéristiques). Parmi elles, les features servent d'indices et la cible est la réponse. On sépare entraînement et test pour rester honnête. Et l'arbre de décision, lisible, apprend une suite de questions. Tu as tout pour te lancer.",
+          "caption": "Les repères en poche, direction la pratique."
+        },
+        "practice": {
+          "title": "Mène l'enquête Titanic",
+          "body": "Passe à la pratique avec le Défi Titanic. À partir de 891 passagers réels, tu vas entraîner un vrai arbre de décision, obtenir un vrai résultat et découvrir ce qui a le plus pesé sur la survie. Pas de simulation : le modèle est réel, l'entraînement reproductible. Prêt à mener ta première enquête ?"
+        }
+      }
+    },
+    "notions": {
+      "ia-generative-vs-predictive": {
+        "term": "IA générative vs IA prédictive",
+        "definition": "L'IA générative crée du contenu neuf (texte, image, son). L'IA prédictive estime une valeur ou une catégorie à partir d'exemples passés.",
+        "example": "ChatGPT rédige un poème (génératif) ; ta banque bloque un paiement suspect (prédictif)."
+      },
+      "llm-predicteur": {
+        "term": "Modèle de langage (LLM)",
+        "definition": "Un modèle de langage est une IA entraînée sur d'immenses quantités de texte pour prédire le mot le plus probable après les précédents. Il enchaîne des mots plausibles sans comprendre leur sens.",
+        "example": "ChatGPT complète « Le ciel est… » par « bleu » parce que ce mot est le plus probable, pas parce qu'il voit le ciel."
+      },
+      "ia-predictive": {
+        "term": "IA prédictive",
+        "definition": "Une IA qui apprend sur des exemples passés pour estimer une catégorie ou un nombre sur des cas nouveaux. C'est la famille au cœur d'IBIS-X.",
+        "example": "À partir d'annonces immobilières passées, prédire le prix d'un appartement mis en vente aujourd'hui."
+      },
+      "familles-ia": {
+        "term": "Familles d'IA",
+        "definition": "Les grandes catégories d'IA selon ce qu'elles font : générative (créer), prédictive (estimer), recommandation (suggérer), vision (reconnaître des images), et d'autres encore.",
+        "example": "ChatGPT est génératif, l'anti-spam est prédictif, les suggestions de Netflix relèvent de la recommandation."
+      },
+      "apprentissage-supervise": {
+        "term": "Apprentissage par l'exemple",
+        "definition": "Une façon d'entraîner une IA en lui montrant de nombreux exemples déjà étiquetés avec la bonne réponse. La machine en dégage elle-même une règle applicable à des cas nouveaux.",
+        "example": "Montrer des milliers de mails marqués « spam » ou « normal » pour qu'elle apprenne à trier un mail inconnu."
+      },
+      "donnees-carburant": {
+        "term": "Données",
+        "definition": "Les exemples passés qui servent à entraîner une IA. Sans elles, aucun apprentissage n'est possible ; leur qualité compte plus que leur quantité.",
+        "example": "Des relevés de température de plusieurs années servant à prédire la météo de demain."
+      },
+      "modele": {
+        "term": "Modèle",
+        "definition": "Le résultat concret de l'entraînement : une recette apprise qui transforme les données d'un cas en prédiction. On peut le télécharger, le partager et l'inspecter.",
+        "example": "Le fichier de modèle anti-spam qui, à partir d'un mail, répond « spam » ou « normal »."
+      },
+      "ia-quotidien": {
+        "term": "IA au quotidien",
+        "definition": "Les usages concrets et souvent invisibles de l'IA prédictive dans la vie de tous les jours : messagerie, banque, santé, industrie.",
+        "example": "Ta banque qui bloque en temps réel un paiement inhabituel qui ressemble à une fraude."
+      },
+      "limites-ia": {
+        "term": "Limites de l'IA",
+        "definition": "Ce que l'IA ne sait pas faire : elle n'a pas de bon sens, généralise mal hors de ses exemples et ne reconnaît pas ses propres erreurs.",
+        "example": "Une IA très fiable sur ses cas d'entraînement qui répond n'importe quoi, avec assurance, sur une situation inédite."
+      },
+      "biais-introduction": {
+        "term": "Biais",
+        "definition": "Un déséquilibre injuste hérité des données d'entraînement, que l'IA reproduit puis amplifie à grande échelle. Point de départ de la réflexion éthique.",
+        "example": "Un outil de tri de CV entraîné sur un passé déséquilibré qui écarte systématiquement certains profils."
+      },
+      "observations-variables": {
+        "term": "Observations et variables",
+        "definition": "Dans un jeu de données tabulaire, les observations sont les lignes (les individus) et les variables sont les colonnes (leurs caractéristiques).",
+        "example": "891 passagers du Titanic (observations) décrits par leur âge, leur sexe et leur classe (variables)."
+      },
+      "features-cible": {
+        "term": "Features et cible",
+        "definition": "Les features sont les colonnes qui servent d'indices au modèle ; la cible est la colonne qu'on cherche à prédire.",
+        "example": "L'âge et la classe (features) pour deviner si le passager a survécu (cible)."
+      },
+      "classification-vs-regression": {
+        "term": "Classification et régression",
+        "definition": "La classification prédit une catégorie ; la régression prédit un nombre.",
+        "example": "« Survivra ou non » (classification) ; « note sur 20 » (régression)."
+      },
+      "catalogue-ethique": {
+        "term": "Score éthique du catalogue",
+        "definition": "Avant tout usage, IBIS-X note un jeu de données sur des critères d'éthique : représentativité, consentement, biais.",
+        "example": "Un dataset qui ne représente qu'une seule classe sociale reçoit un score plus bas."
+      },
+      "train-test": {
+        "term": "Entraînement et test",
+        "definition": "On sépare les données en une partie pour entraîner le modèle et une partie, jamais vue, pour le tester honnêtement.",
+        "example": "80 % des passagers pour réviser, 20 % gardés pour l'examen."
+      },
+      "qualite-donnees": {
+        "term": "Qualité des données",
+        "definition": "L'état réel des données : valeurs manquantes, erreurs, biais d'échantillon. Elle conditionne la fiabilité du modèle.",
+        "example": "Des âges non renseignés ou un échantillon non représentatif faussent les prédictions."
+      },
+      "entrainer": {
+        "term": "Entraîner un modèle",
+        "definition": "Ajuster peu à peu la recette du modèle sur des exemples connus pour réduire ses erreurs, sans se contenter de mémoriser.",
+        "example": "Montrer des passagers dont on sait s'ils ont survécu, jusqu'à ce que le modèle prédise bien."
+      },
+      "arbre-decision": {
+        "term": "Arbre de décision",
+        "definition": "Un modèle lisible qui enchaîne des questions oui/non jusqu'à une décision. C'est un vrai algorithme d'IBIS-X.",
+        "example": "« Femme ? En première classe ? » puis prédiction de survie."
+      }
+    }
   }
 }
