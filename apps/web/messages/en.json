@@ -251,6 +251,20 @@
         "brief": "1936. Botanist Edgar Anderson measures irises; statistician Ronald Fisher turns them into the most famous dataset in history. Four measurements, three species. Your turn to repeat the founding gesture — on your own.",
         "stakes": "The absolute benchmark: perfect for comparing two algorithms and finding your bearings.",
         "reward": "You'll leave with a near-perfect classifier and a basis for comparing models."
+      },
+      "equite-revenus": {
+        "title": "Income: a matter of gender?",
+        "tagline": "Predict who earns over $50k — then hunt the bias.",
+        "brief": "48,000 Americans, 1994 census. Train a model to predict who earns more than $50k a year. Then ask the uncomfortable question: which variables does it truly rely on to decide — education and hours worked, or sex and origin? Run the audit yourself, on your own.",
+        "stakes": "This is the heart of algorithmic fairness: a high-performing model can encode — and amplify — the inequalities in its data.",
+        "reward": "You'll leave with a real model, and the XAI explanation that reveals which variables it actually relies on."
+      },
+      "equite-credit": {
+        "title": "A loan denied… because of what?",
+        "tagline": "Audit a real credit-scoring model.",
+        "brief": "1,000 German credit applications. Build a model that tells good from bad borrowers, then put on your auditor's hat: what truly drives the decision — repayment history, or the applicant's age and status? Run the investigation on your own.",
+        "stakes": "A credit score decides real lives. Understanding its levers means being able to challenge it — the very subject of responsible-AI research.",
+        "reward": "You'll leave with a real model, and an explanation that lays its decision criteria bare."
       }
     }
   },

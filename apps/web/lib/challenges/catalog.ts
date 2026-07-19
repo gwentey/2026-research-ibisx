@@ -68,6 +68,27 @@ export const CHALLENGES: Challenge[] = [
     entryMode: "dataset",
     order: 2,
     objectives: ["create_project", "launch_training", "read_results"]
+  },
+  // Défis « équité » (recherche) : entraîner un vrai modèle puis auditer son biais via la XAI.
+  {
+    slug: "equite-revenus",
+    datasetSlug: "adult_income",
+    level: "confirme",
+    domain: "social",
+    taskType: "classification",
+    entryMode: "dataset",
+    order: 3,
+    objectives: ["create_project", "launch_training", "read_results", "generate_explanation"]
+  },
+  {
+    slug: "equite-credit",
+    datasetSlug: "german_credit",
+    level: "confirme",
+    domain: "finance",
+    taskType: "classification",
+    entryMode: "dataset",
+    order: 4,
+    objectives: ["create_project", "launch_training", "read_results", "generate_explanation"]
   }
 ];
 

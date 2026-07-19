@@ -251,6 +251,20 @@
         "brief": "1936. Le botaniste Edgar Anderson mesure des iris ; le statisticien Ronald Fisher en fait le jeu de données le plus célèbre de l'histoire. Quatre mesures, trois espèces. À toi de refaire le geste fondateur — en autonomie.",
         "stakes": "La référence absolue : idéale pour comparer deux algorithmes et prendre tes repères.",
         "reward": "À la clé : un classifieur quasi parfait, et de quoi comparer les modèles."
+      },
+      "equite-revenus": {
+        "title": "Le revenu, une affaire de genre ?",
+        "tagline": "Prédire qui gagne plus de 50 000 $ — puis traquer le biais.",
+        "brief": "48 000 Américains, recensement de 1994. Entraîne un modèle à prédire qui gagne plus de 50 000 $ par an. Puis pose LA question qui fâche : sur quelles variables s'appuie-t-il vraiment pour décider — le diplôme et les heures travaillées, ou le sexe et l'origine ? À toi de mener l'audit, en autonomie.",
+        "stakes": "C'est le cœur de l'équité algorithmique : un modèle très performant peut encoder — et amplifier — les inégalités présentes dans ses données.",
+        "reward": "À la clé : un vrai modèle, et l'explication XAI qui révèle les variables sur lesquelles il s'appuie réellement."
+      },
+      "equite-credit": {
+        "title": "Un crédit refusé… à cause de quoi ?",
+        "tagline": "Auditer un vrai modèle de scoring de crédit.",
+        "brief": "1 000 dossiers de crédit allemands. Construis un modèle qui distingue bons et mauvais payeurs, puis enfile ta blouse d'auditeur : qu'est-ce qui pèse vraiment dans la décision — l'historique de remboursement, ou l'âge et le statut du demandeur ? Mène l'enquête seul.",
+        "stakes": "Un score de crédit décide de vies réelles. Comprendre ses ressorts, c'est pouvoir le contester — le sujet même de la recherche en IA responsable.",
+        "reward": "À la clé : un vrai modèle, et une explication qui met à nu ses critères de décision."
       }
     }
   },
