@@ -1198,6 +1198,20 @@
       "waiting": "Réponse en cours…",
       "fallbackNote": "Réponse générée sans IA (repli déterministe)"
     },
+    "copilot": {
+      "title": "Copilote d'explication",
+      "launcher": "Copilote",
+      "open": "Ouvrir le copilote d'explication",
+      "close": "Fermer",
+      "minimize": "Réduire",
+      "aboutGlobal": "à propos de la vue d'ensemble du modèle",
+      "aboutLocal": "à propos de l'exemple n°{index}",
+      "introTitle": "Posez vos questions sur cette explication",
+      "introBody": "Le copilote répond avec des réponses structurées — tableaux, points clés et couleurs — en s'appuyant uniquement sur les chiffres calculés.",
+      "placeholder": "Écrivez votre question…",
+      "hint": "Entrée pour envoyer · Maj+Entrée pour un retour à la ligne",
+      "disabled": "Générez d'abord une explication pour discuter avec le copilote."
+    },
     "result": {
       "title": "Résultat de l'explication",
       "localTitle": "Explication de cette prédiction",

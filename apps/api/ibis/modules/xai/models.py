@@ -95,7 +95,8 @@ class ChatMessage(UUIDPk, Base):
         UUID(as_uuid=True), ForeignKey("chat_sessions.id", ondelete="CASCADE"), index=True
     )
     role: Mapped[str] = mapped_column(String(10))  # user|assistant
-    content: Mapped[str] = mapped_column(Text)
+    content: Mapped[str] = mapped_column(Text)  # miroir texte (copie, recherche, a11y, repli)
+    blocks: Mapped[dict[str, Any] | None] = mapped_column(JSONB)  # réponse riche v2 (BlockDocument)
     model_used: Mapped[str | None] = mapped_column(String(120))
     is_fallback: Mapped[bool] = mapped_column(Boolean, default=False)
     tokens_used: Mapped[int] = mapped_column(Integer, default=0)

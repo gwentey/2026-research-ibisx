@@ -174,6 +174,12 @@ export type ChatAsk = {
  */
 export type ChatMessageRead = {
     /**
+     * Blocks
+     */
+    blocks?: {
+        [key: string]: unknown;
+    } | null;
+    /**
      * Content
      */
     content: string;

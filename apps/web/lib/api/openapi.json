@@ -269,6 +269,18 @@
       },
       "ChatMessageRead": {
         "properties": {
+          "blocks": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Blocks"
+          },
           "content": {
             "title": "Content",
             "type": "string"

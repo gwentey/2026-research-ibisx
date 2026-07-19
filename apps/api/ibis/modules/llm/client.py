@@ -38,6 +38,7 @@ def complete(
     user: str,
     temperature: float = 0.0,
     max_tokens: int | None = None,
+    json_mode: bool = False,
 ) -> LLMResult:
     settings = get_settings()
     if not settings.openrouter_api_key:
@@ -52,6 +53,10 @@ def complete(
         "temperature": temperature,
         "max_tokens": max_tokens or settings.llm_max_tokens,
     }
+    # json_mode : force une sortie JSON stricte (chat XAI v2 → blocs). Le contrat exact
+    # est validé en Pydantic côté appelant ; ici on incite juste le modèle au JSON pur.
+    if json_mode:
+        payload["response_format"] = {"type": "json_object"}
     try:
         response = httpx.post(
             f"{OPENROUTER_BASE_URL}/chat/completions",

@@ -192,6 +192,77 @@ def chat_prompt(
     )
 
 
+# ------------------------------------ Chat v2 : réponse en blocs (CDC copilote §4/§6) --------
+
+# Grammaire de blocs injectée au modèle. On la garde COURTE et fermée : plus le contrat est
+# explicite, moins le JSON dérive (→ moins de fallback). Le schéma exact est validé en Pydantic
+# côté worker (ibis.modules.xai.blocks) ; ici on décrit l'INTENTION d'usage des tonalités.
+_BLOCKS_GRAMMAR = (
+    'Réponds UNIQUEMENT par un objet JSON : {"schema_version":1,"blocks":[…]}. '
+    "Aucun texte hors du JSON. Types de blocs autorisés :\n"
+    '- {"type":"paragraph","text":"…"}  (markdown inline autorisé : **gras**, *italique*, '
+    "`code`, ==surligné==)\n"
+    '- {"type":"heading","text":"…","level":3}\n'
+    '- {"type":"list","ordered":false,"items":["…"]}\n'
+    '- {"type":"table","columns":["…"],"rows":[[{"text":"…","tone":"neutral"}]]}\n'
+    '- {"type":"callout","tone":"warning","title":"…","text":"…"}\n'
+    '- {"type":"keyValue","items":[{"label":"…","value":"…","tone":"accent"}]}\n'
+    '- {"type":"featureImpact","items":[{"feature":"…","weight":0.4,"direction":"up"}]}\n'
+    "Tonalités (tone) — sémantiques, JAMAIS décoratives : "
+    '"positive" = pousse vers / favorable, "negative" = pousse contre / risque, '
+    '"warning" = limite ou prudence, "accent" = point clé / variable dominante, '
+    '"neutral" = neutre. featureImpact.direction : "up" (favorable) ou "down" (défavorable).'
+)
+
+_BLOCKS_GRAMMAR_EN = (
+    'Answer ONLY with a JSON object: {"schema_version":1,"blocks":[…]}. '
+    "No text outside the JSON. Allowed block types:\n"
+    '- {"type":"paragraph","text":"…"}  (inline markdown allowed: **bold**, *italic*, '
+    "`code`, ==highlight==)\n"
+    '- {"type":"heading","text":"…","level":3}\n'
+    '- {"type":"list","ordered":false,"items":["…"]}\n'
+    '- {"type":"table","columns":["…"],"rows":[[{"text":"…","tone":"neutral"}]]}\n'
+    '- {"type":"callout","tone":"warning","title":"…","text":"…"}\n'
+    '- {"type":"keyValue","items":[{"label":"…","value":"…","tone":"accent"}]}\n'
+    '- {"type":"featureImpact","items":[{"feature":"…","weight":0.4,"direction":"up"}]}\n'
+    "Tones — semantic, NEVER decorative: "
+    '"positive" = pushes toward / favorable, "negative" = pushes against / risk, '
+    '"warning" = limitation or caution, "accent" = key point / dominant feature, '
+    '"neutral" = neutral. featureImpact.direction: "up" (favorable) or "down" (unfavorable).'
+)
+
+
+def chat_system_v2(language: str) -> str:
+    """Système chat v2 = honnêteté anti-hallucination + contrat de blocs."""
+    lang = "en" if language == "en" else "fr"
+    grammar = _BLOCKS_GRAMMAR_EN if lang == "en" else _BLOCKS_GRAMMAR
+    return SYSTEM[lang] + "\n\n" + grammar
+
+
+def chat_prompt_v2(
+    *, question: str, context: str, history: list[tuple[str, str]], language: str
+) -> str:
+    lang = "en" if language == "en" else "fr"
+    history_block = "\n".join(f"{role}: {content}" for role, content in history[-10:])
+    if lang == "fr":
+        return (
+            f"CONTEXTE (seules valeurs autorisées) :\n{context}\n\n"
+            f"HISTORIQUE :\n{history_block}\n\n"
+            f"QUESTION : {question}\n\n"
+            "Rédige une réponse claire et STRUCTURÉE en blocs (≤ 6 blocs, ≤ 120 mots au total). "
+            "Utilise un tableau ou featureImpact quand cela éclaire vraiment, un callout pour une "
+            "limite. Appuie-toi UNIQUEMENT sur le contexte."
+        )
+    return (
+        f"CONTEXT (only allowed values):\n{context}\n\n"
+        f"HISTORY:\n{history_block}\n\n"
+        f"QUESTION: {question}\n\n"
+        "Write a clear, STRUCTURED answer in blocks (≤ 6 blocks, ≤ 120 words total). "
+        "Use a table or featureImpact only when it truly helps, a callout for a limitation. "
+        "Rely ONLY on the context."
+    )
+
+
 def suggested_questions(task_type: str, language: str) -> list[str]:
     """Questions suggérées contextuelles — déterministes (pas de LLM requis)."""
     if language == "en":

@@ -76,6 +76,8 @@ class ChatMessageRead(BaseModel):
     id: uuid.UUID
     role: str
     content: str
+    # Réponse riche v2 (document de blocs typés) ; None pour les messages user / anciens.
+    blocks: dict[str, Any] | None = None
     model_used: str | None
     is_fallback: bool
     created_at: datetime
