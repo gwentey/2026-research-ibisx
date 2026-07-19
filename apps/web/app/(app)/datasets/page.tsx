@@ -91,17 +91,20 @@ export default function DatasetsPage() {
           <h1 className="text-2xl font-semibold tracking-tight">{t("title")}</h1>
           <p className="text-muted-foreground mt-1 text-sm">{t("subtitle")}</p>
         </div>
-        {canUpload ? (
-          <div className="flex flex-wrap items-center gap-2">
-            <KaggleImportDialog onImported={() => catalog.reload()} />
+        {/* L'import Kaggle est ouvert à TOUT compte connecté (source publique, licence
+            vérifiée, taille plafonnée, attribution nominative) ; l'upload libre, qui dépose
+            des octets arbitraires sur le serveur, reste réservé aux contributeurs. */}
+        <div className="flex flex-wrap items-center gap-2">
+          {user !== null ? <KaggleImportDialog onImported={() => catalog.reload()} /> : null}
+          {canUpload ? (
             <Button asChild>
               <Link href="/datasets/upload">
                 <PlusIcon />
                 {t("upload")}
               </Link>
             </Button>
-          </div>
-        ) : null}
+          ) : null}
+        </div>
       </div>
 
       {/* Barre-outil centrale : recherche proéminente, puis filtres / tri / affichage

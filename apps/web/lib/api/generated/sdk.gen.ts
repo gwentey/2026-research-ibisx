@@ -227,7 +227,13 @@ export const getDatasetFacets = <ThrowOnError extends boolean = false>(options?:
 /**
  * Import Kaggle Dataset
  *
- * Import depuis un lien Kaggle collé — contributor+.
+ * Import depuis un lien Kaggle collé — TOUT compte connecté.
+ *
+ * Volontairement plus ouvert que `POST /datasets` (contributor+) : l'import Kaggle est
+ * strictement plus contraint qu'un upload libre — la source est un jeu public identifié,
+ * la licence est vérifiée, la taille plafonnée, les doublons écartés et l'attribution
+ * nominative. L'utilisateur ne dépose aucun octet arbitraire sur le serveur.
+ * Contrepartie : un limiteur protège le stockage et le worker de la VM.
  *
  * Réponse immédiate : le lien est validé et dédupliqué ici (synchrone, donc l'utilisateur
  * sait tout de suite si son lien est mauvais) ; le téléchargement part au worker.

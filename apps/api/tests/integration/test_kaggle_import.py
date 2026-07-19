@@ -86,10 +86,15 @@ class TestImportRoute:
         )
         assert response.status_code in (401, 403)
 
-    def test_should_refuse_a_simple_reader(
+    def test_should_accept_a_plain_signed_in_account(
         self, client: TestClient, db_session: Session, no_celery: list[tuple]
     ) -> None:
-        headers = promote(client, db_session, "reader@ex.org", UserRole.user)
+        """Ouvert à TOUT compte connecté, contrairement à l'upload libre (contributor+).
+
+        L'import Kaggle est plus contraint qu'un upload : source publique identifiée,
+        licence vérifiée, taille plafonnée, attribution nominative.
+        """
+        headers = promote(client, db_session, "membre@ex.org", UserRole.user)
 
         response = client.post(
             "/api/v1/datasets/import/kaggle",
@@ -97,8 +102,23 @@ class TestImportRoute:
             headers=headers,
         )
 
+        assert response.status_code == 202
+        assert no_celery, "l'import doit partir pour un compte simple aussi"
+
+    def test_should_still_reserve_free_upload_to_contributors(
+        self, client: TestClient, db_session: Session
+    ) -> None:
+        """Garde-fou : ouvrir l'import ne doit PAS avoir ouvert l'upload libre."""
+        headers = promote(client, db_session, "membre2@ex.org", UserRole.user)
+
+        response = client.post(
+            "/api/v1/datasets",
+            files={"files": ("d.csv", b"a,b\n1,2\n", "text/csv")},
+            data={"metadata": '{"display_name": "Tentative"}'},
+            headers=headers,
+        )
+
         assert response.status_code == 403
-        assert not no_celery
 
 
 class TestDeduplication:
