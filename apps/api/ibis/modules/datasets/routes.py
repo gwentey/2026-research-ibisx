@@ -14,7 +14,7 @@ from ibis.core.errors import InvalidInputError, NotFoundError
 from ibis.db.engine import get_db
 from ibis.modules.auth.deps import CurrentClaims, require_owner_or_admin, require_role
 from ibis.modules.auth.models import UserRole
-from ibis.modules.datasets import service
+from ibis.modules.datasets import kaggle_import, service
 from ibis.modules.datasets.schemas import (
     AiGuideJob,
     CatalogStats,
@@ -26,13 +26,17 @@ from ibis.modules.datasets.schemas import (
     DatasetMetadataUpdate,
     DatasetPage,
     DatasetPreview,
+    EthicsReviewInput,
     FileRead,
+    KaggleImportRequest,
+    KaggleImportResponse,
     SimilarDataset,
     UploadAnalysis,
 )
 from ibis.modules.jobs import service as jobs_service
 from ibis.modules.jobs.models import JobKind
 from ibis.modules.jobs.schemas import JobRead
+from ibis.workers.tasks.kaggle import import_kaggle_dataset as import_kaggle_task
 
 router = APIRouter(prefix="/datasets", tags=["datasets"])
 
@@ -86,6 +90,43 @@ def get_facets(db: DbDep, _claims: CurrentClaims) -> DatasetFacets:
 @router.get("/stats", response_model=CatalogStats, operation_id="getCatalogStats")
 def get_stats(db: DbDep, _claims: CurrentClaims) -> CatalogStats:
     return service.get_stats(db)
+
+
+@router.post(
+    "/import/kaggle",
+    response_model=KaggleImportResponse,
+    status_code=202,
+    operation_id="importKaggleDataset",
+    dependencies=[ContributorDep],
+)
+def import_kaggle_dataset(
+    payload: KaggleImportRequest, db: DbDep, claims: CurrentClaims
+) -> KaggleImportResponse:
+    """Import depuis un lien Kaggle collé — contributor+.
+
+    Réponse immédiate : le lien est validé et dédupliqué ici (synchrone, donc l'utilisateur
+    sait tout de suite si son lien est mauvais) ; le téléchargement part au worker.
+    """
+    ticket = kaggle_import.prepare(db, url=payload.url, user_id=claims.user_id)
+
+    if ticket.existing_dataset_id is not None:
+        return KaggleImportResponse(
+            ref=ticket.ref.ref,
+            existing_dataset_id=ticket.existing_dataset_id,
+            duplicate_reason=ticket.duplicate_reason,
+        )
+
+    job = jobs_service.create_job(
+        db, kind=JobKind.import_, queue="maintenance", user_id=claims.user_id
+    )
+    import_kaggle_task.delay(
+        str(job.id),
+        ticket.ref.owner,
+        ticket.ref.slug,
+        payload.access,
+        str(claims.user_id) if claims.user_id else None,
+    )
+    return KaggleImportResponse(ref=ticket.ref.ref, job=JobRead.model_validate(job))
 
 
 @router.post(
@@ -151,6 +192,28 @@ def update_dataset(
     dataset = service.get_dataset(db, dataset_id)
     require_owner_or_admin(claims, dataset.created_by)
     return service.to_detail(service.update_dataset(db, dataset, payload))
+
+
+@router.post(
+    "/{dataset_id}/ethics-review",
+    response_model=DatasetDetail,
+    operation_id="reviewDatasetEthics",
+)
+def review_dataset_ethics(
+    dataset_id: uuid.UUID,
+    payload: EthicsReviewInput,
+    db: DbDep,
+    claims: CurrentClaims,
+) -> DatasetDetail:
+    """Validation humaine des critères éthiques — propriétaire ou admin.
+
+    C'est le SEUL chemin par lequel un critère peut devenir vrai et donc peser dans
+    `ethical_score` : les suggestions de l'IA restent inertes tant que personne n'a tranché.
+    """
+    dataset = service.get_dataset(db, dataset_id)
+    require_owner_or_admin(claims, dataset.created_by)
+    reviewed = service.review_ethics(db, dataset, payload.values, reviewer_id=claims.user_id)
+    return service.to_detail(reviewed)
 
 
 @router.delete("/{dataset_id}", status_code=204, operation_id="deleteDataset")

@@ -4,7 +4,10 @@ import uuid
 from datetime import datetime
 from typing import Any, Literal
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, field_validator
+
+from ibis.modules.datasets.ethics import ETHICAL_CRITERIA
+from ibis.modules.jobs.schemas import JobRead
 
 SortKey = Literal["name", "year", "instances", "features", "citations", "created", "updated"]
 SortOrder = Literal["asc", "desc"]
@@ -91,6 +94,16 @@ class FileWithColumns(FileRead):
     columns: list[ColumnRead]
 
 
+class DatasetOwner(BaseModel):
+    """Attribution publique d'un dataset importé — jamais l'email, seulement le pseudo."""
+
+    model_config = ConfigDict(from_attributes=True)
+
+    id: uuid.UUID
+    pseudo: str | None
+    has_avatar: bool
+
+
 class DatasetCard(BaseModel):
     """Résumé pour les cartes/tableau du catalogue."""
 
@@ -115,6 +128,11 @@ class DatasetCard(BaseModel):
     representativity_level: str | None
     ethical_score: float  # ∈ [0,1] — calculé backend, jamais recalculé au front (P3)
     created_by: uuid.UUID | None
+    # Qui a importé — l'attribution est le garde-fou social contre les imports fantaisistes.
+    owner: DatasetOwner | None = None
+    is_verified: bool = False  # badge « Vérifié IBIS-X » vs « Communauté »
+    source_kind: str = "upload"
+    license_name: str | None = None
     created_at: datetime
     updated_at: datetime
 
@@ -136,6 +154,11 @@ class DatasetDetail(DatasetCard):
     ethical_criteria: dict[str, bool | None]  # tristate VISIBLE (CDC §5.4)
     completeness: float | None  # 100 − % manquants (métrique réelle uniquement)
     ai_guide: dict[str, Any] | None
+    # Propositions de l'IA pour les 10 critères — SÉPARÉES des valeurs retenues ci-dessus,
+    # affichées comme « à confirmer » et jamais comptées dans `ethical_score`.
+    ethics_suggestions: dict[str, Any] | None = None
+    ethics_reviewed_at: datetime | None = None
+    source_ref: str | None = None
     files: list[FileWithColumns]
 
 
@@ -248,6 +271,42 @@ class DatasetMetadataInput(StrictModel):
     record_keeping_policy_exists: bool | None = None
     purpose_limitation_respected: bool | None = None
     accountability_defined: bool | None = None
+
+
+class KaggleImportRequest(StrictModel):
+    """Import depuis un lien Kaggle collé par l'utilisateur."""
+
+    url: str = Field(min_length=1, max_length=500)
+    #: Souhait de l'utilisateur — une licence non redistribuable peut le dégrader en `private`.
+    access: Literal["public", "private"] = "public"
+
+
+class KaggleImportResponse(BaseModel):
+    """Réponse immédiate : soit un job lancé, soit le dataset déjà présent."""
+
+    ref: str  # « uciml/iris »
+    job: JobRead | None = None
+    #: Renseignés quand le jeu existe déjà — le front redirige au lieu de créer un doublon.
+    existing_dataset_id: uuid.UUID | None = None
+    duplicate_reason: str | None = None
+
+
+class EthicsReviewInput(StrictModel):
+    """Validation HUMAINE des critères éthiques — seule à pouvoir peser sur le score.
+
+    Revue partielle : un critère absent du dictionnaire n'est pas touché (on n'écrase pas
+    en NULL ce que l'utilisateur n'a pas soumis). `None` explicite = « je ne tranche pas ».
+    """
+
+    values: dict[str, bool | None] = Field(default_factory=dict)
+
+    @field_validator("values")
+    @classmethod
+    def only_known_criteria(cls, value: dict[str, bool | None]) -> dict[str, bool | None]:
+        unknown = sorted(set(value) - set(ETHICAL_CRITERIA))
+        if unknown:
+            raise ValueError(f"Critère(s) éthique(s) inconnu(s) : {', '.join(unknown)}")
+        return value
 
 
 class DatasetMetadataUpdate(DatasetMetadataInput):

@@ -1,5 +1,6 @@
 """Routes /users/me : profil, onboarding, mot de passe, avatar, suppression (CDC §4)."""
 
+import uuid
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, File, Response, UploadFile
@@ -9,7 +10,8 @@ from sqlalchemy.orm import Session
 from ibis.core.config import Settings, get_settings
 from ibis.core.errors import NotFoundError
 from ibis.db.engine import get_db
-from ibis.modules.auth.deps import CurrentUser
+from ibis.modules.auth.deps import CurrentClaims, CurrentUser
+from ibis.modules.auth.models import User
 from ibis.modules.auth.routes import _clear_refresh_cookie
 from ibis.modules.auth.schemas import (
     AccountDeleteRequest,
@@ -60,6 +62,18 @@ async def upload_avatar(
 @router.get("/me/avatar", operation_id="getMyAvatar", response_class=StreamingResponse)
 def get_my_avatar(user: CurrentUser) -> StreamingResponse:
     if not user.avatar_path or not get_storage().exists(user.avatar_path):
+        raise NotFoundError("Aucun avatar", code="NO_AVATAR")
+    return StreamingResponse(get_storage().stream(user.avatar_path), media_type="image/webp")
+
+
+@router.get("/{user_id}/avatar", operation_id="getUserAvatar", response_class=StreamingResponse)
+def get_user_avatar(user_id: uuid.UUID, db: DbDep, _claims: CurrentClaims) -> StreamingResponse:
+    """Avatar public d'un contributeur — sert l'attribution « importé par » du catalogue.
+
+    Ne renvoie QUE l'image : aucune autre donnée de compte n'est exposée par cette route.
+    """
+    user = db.get(User, user_id)
+    if user is None or not user.avatar_path or not get_storage().exists(user.avatar_path):
         raise NotFoundError("Aucun avatar", code="NO_AVATAR")
     return StreamingResponse(get_storage().stream(user.avatar_path), media_type="image/webp")
 

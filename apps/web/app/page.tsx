@@ -21,6 +21,7 @@ import { JourneySection } from "@/components/ibis/landing/journey-section";
 export default async function LandingPage() {
   const t = await getTranslations("landing");
   const tCommon = await getTranslations("common");
+  const tLegal = await getTranslations("legal");
 
   return (
     <main className="bg-background min-h-screen">
@@ -75,8 +76,18 @@ export default async function LandingPage() {
       <EthicsBand />
       <HonestySection />
 
-      <footer className="text-muted-foreground mx-auto max-w-5xl border-t px-6 py-8 text-center text-xs">
-        {t("research")}
+      {/* Les liens légaux doivent rester atteignables sans compte : ils alimentent l'écran
+          de consentement OAuth Google (règles de confidentialité + CGU). */}
+      <footer className="text-muted-foreground mx-auto max-w-5xl space-y-3 border-t px-6 py-8 text-center text-xs">
+        <p>{t("research")}</p>
+        <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
+          <Link href="/legal/privacy" className="hover:text-foreground underline">
+            {tLegal("privacy.title")}
+          </Link>
+          <Link href="/legal/terms" className="hover:text-foreground underline">
+            {tLegal("terms.title")}
+          </Link>
+        </div>
       </footer>
     </main>
   );
