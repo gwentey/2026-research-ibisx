@@ -1,4 +1,4 @@
-# RETRO-api-scoring-01 — Scores de pertinence calculés à la demande (raw + compute-on-read) — non matérialisés en base
+# RETRO-005 — Scores de pertinence calculés à la demande (raw + compute-on-read) — non matérialisés en base
 
 | Champ      | Valeur                     |
 |------------|----------------------------|

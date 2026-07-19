@@ -19,7 +19,7 @@
 
 | ADR | Titre | Catégorie |
 |-----|-------|-----------|
-| [RETRO-api-dashboard-01](../../../adr/RETRO-api-dashboard-01.md) | `success_rate` absent (None) quand aucune expérience terminée | DATA-MODEL |
+| [RETRO-013](../../../adr/RETRO-013.md) | `success_rate` absent (None) quand aucune expérience terminée | DATA-MODEL |
 
 ---
 
@@ -35,7 +35,7 @@ Ce module sert de point d'entrée principal après connexion : l'utilisateur y v
 
 2. **Exclusion des brouillons des compteurs** : le `total_experiments` exclut les expériences au statut `draft`. Un brouillon en cours de wizard n'est pas une expérience au sens du reporting.
 
-3. **Taux de succès absent jusqu'à la première expérience terminée (P1)** : `success_rate` est `null` (pas `0.0`) tant qu'aucune expérience n'a le statut `completed` ou `failed`. Afficher 0 % pour un compte neuf serait mensonger. Voir ADR [RETRO-api-dashboard-01](../../../adr/RETRO-api-dashboard-01.md).
+3. **Taux de succès absent jusqu'à la première expérience terminée (P1)** : `success_rate` est `null` (pas `0.0`) tant qu'aucune expérience n'a le statut `completed` ou `failed`. Afficher 0 % pour un compte neuf serait mensonger. Voir ADR [RETRO-013](../../../adr/RETRO-013.md).
 
 4. **Calcul du taux de succès** : `completed / (completed + failed)`, arrondi à 4 décimales. Les expériences annulées (`cancelled`) ne sont pas comptabilisées comme « terminées » dans ce dénominateur.
 

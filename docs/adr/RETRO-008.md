@@ -1,4 +1,4 @@
-# RETRO-api-experiments-02 — Modèle crédit : débit à l'entraînement, remboursement conditionnel à l'annulation
+# RETRO-008 — Modèle crédit : débit à l'entraînement, remboursement conditionnel à l'annulation
 
 | Champ      | Valeur                          |
 |------------|---------------------------------|

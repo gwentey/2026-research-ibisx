@@ -19,8 +19,8 @@
 
 | ADR | Titre | Categorie | Statut |
 |-----|-------|-----------|--------|
-| [RETRO-api-admin-01](../../../adr/RETRO-api-admin-01.md) | Role admin reverifiee en base sur chaque route | SECURITY | Documente (retro) |
-| [RETRO-api-admin-02](../../../adr/RETRO-api-admin-02.md) | Templates ethiques stockes en base (pas en YAML) | DB-STRATEGY | Documente (retro) |
+| [RETRO-014](../../../adr/RETRO-014.md) | Role admin reverifiee en base sur chaque route | SECURITY | Documente (retro) |
+| [RETRO-015](../../../adr/RETRO-015.md) | Templates ethiques stockes en base (pas en YAML) | DB-STRATEGY | Documente (retro) |
 
 ---
 
@@ -34,7 +34,7 @@ asynchrones. Un journal d'audit immutable retrace toutes les actions de mutation
 
 La contrainte architecturale principale (ARCH §7.2) est que chaque route reverifiee
 le role `admin` directement en base de donnees — le claim JWT ne suffit pas pour les
-actions privilegiees (voir RETRO-api-admin-01).
+actions privilegiees (voir RETRO-014).
 
 ---
 

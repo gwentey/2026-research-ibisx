@@ -19,10 +19,8 @@
 
 | ADR | Titre | Statut |
 |-----|-------|--------|
-| [RETRO-api-experiments-01](../../../adr/RETRO-api-experiments-01.md) | Prohibition de tout repli sur données synthétiques lors de l'entraînement | Documenté (rétro) |
-| [RETRO-api-experiments-02](../../../adr/RETRO-api-experiments-02.md) | Modèle crédit : débit à l'entraînement, remboursement conditionnel à l'annulation | Documenté (rétro) |
-
-> *Note : l'adr-linker (v3.0.0) ne reconnaît pas le format de nommage `RETRO-app-feature-NN` — table construite manuellement.*
+| [RETRO-007](../../../adr/RETRO-007.md) | Prohibition de tout repli sur données synthétiques lors de l'entraînement | Documenté (rétro) |
+| [RETRO-008](../../../adr/RETRO-008.md) | Modèle crédit : débit à l'entraînement, remboursement conditionnel à l'annulation | Documenté (rétro) |
 
 ---
 

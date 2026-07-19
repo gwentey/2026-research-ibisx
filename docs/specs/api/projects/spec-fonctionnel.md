@@ -19,9 +19,7 @@
 
 | ADR | Catégorie | Titre | Statut |
 |-----|-----------|-------|--------|
-| [RETRO-api-projects-01](../../../adr/RETRO-api-projects-01.md) | DATA-MODEL | Recommandations déléguées à score_datasets() : invariant P3 | Documenté (rétro) |
-
-> *Table construite manuellement — le nommage `RETRO-api-*` n'est pas encore supporté par adr-linker.*
+| [RETRO-006](../../../adr/RETRO-006.md) | DATA-MODEL | Recommandations déléguées à score_datasets() : invariant P3 | Documenté (rétro) |
 
 ---
 

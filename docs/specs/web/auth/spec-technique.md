@@ -74,7 +74,7 @@ Toutes ces fonctions proviennent du client TypeScript généré dans `apps/web/l
 
 ## Patterns identifiés
 
-### Single-flight sur refresh et bootstrap (RETRO-web-auth-01)
+### Single-flight sur refresh et bootstrap (RETRO-016)
 
 `session.ts` maintient deux singletons de promesse :
 
@@ -107,7 +107,7 @@ function extractErrorCode(error: unknown): string {
 
 Les pages affichent les codes via `tErrors.has(code) ? tErrors(code) : tErrors("UNKNOWN_ERROR")` pour éviter les clés manquantes.
 
-### Guards React (UX-only, RETRO-web-auth-02)
+### Guards React (UX-only, RETRO-017)
 
 Trois composants wrappent les layouts Next.js :
 - `AppGuard` : exige `status === "authenticated"` et `user.onboarding_completed`. Sinon : loader skeleton.

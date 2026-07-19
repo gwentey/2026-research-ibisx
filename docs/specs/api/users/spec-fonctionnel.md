@@ -19,10 +19,8 @@
 
 | ADR | Titre | Statut |
 |-----|-------|--------|
-| [null](../../../adr/RETRO-api-users-01.md) |  | Documenté (rétro) |
-| [null](../../../adr/RETRO-web-onboarding-01.md) |  | Documenté (rétro) |
-
-> *Table auto-générée par adr-linker. Ne pas éditer manuellement.*
+| [null](../../../adr/RETRO-002.md) |  | Documenté (rétro) |
+| [null](../../../adr/RETRO-002.md) |  | Documenté (rétro) |
 
 ---
 

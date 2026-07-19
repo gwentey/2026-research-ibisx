@@ -19,9 +19,9 @@
 
 | ADR | Titre | Catégorie | Statut |
 |-----|-------|-----------|--------|
-| [RETRO-api-ml-01](../../../adr/RETRO-api-ml-01.md) | test_index dans PreprocessResult : alignement prédictions/attributs bruts | DATA-MODEL | Documenté (rétro) |
-| [RETRO-api-ml-02](../../../adr/RETRO-api-ml-02.md) | viz_data stocké en JSON pur, jamais en PNG/base64 | DATA-MODEL | Documenté (rétro) |
-| [RETRO-api-ml-03](../../../adr/RETRO-api-ml-03.md) | Vocabulaire canonique unique de nettoyage (vocab.py) | DATA-MODEL | Documenté (rétro) |
+| [RETRO-009](../../../adr/RETRO-009.md) | test_index dans PreprocessResult : alignement prédictions/attributs bruts | DATA-MODEL | Documenté (rétro) |
+| [RETRO-010](../../../adr/RETRO-010.md) | viz_data stocké en JSON pur, jamais en PNG/base64 | DATA-MODEL | Documenté (rétro) |
+| [RETRO-011](../../../adr/RETRO-011.md) | Vocabulaire canonique unique de nettoyage (vocab.py) | DATA-MODEL | Documenté (rétro) |
 
 ADRs existants (projet) directement liés à ce module :
 | ADR | Titre | Lien |

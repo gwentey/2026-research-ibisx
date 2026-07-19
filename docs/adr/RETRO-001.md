@@ -1,4 +1,4 @@
-# RETRO-api-auth-01 — Anti-énumération email : réponse opaque sur authenticate et forgot-password
+# RETRO-001 — Anti-énumération email : réponse opaque sur authenticate et forgot-password
 
 | Champ      | Valeur                |
 |------------|-----------------------|

@@ -19,7 +19,7 @@
 
 | ADR | Titre | Catégorie | Statut |
 |-----|-------|-----------|--------|
-| [RETRO-web-onboarding-01](../../../adr/RETRO-web-onboarding-01.md) | Règle de dérivation familiarity → xai\_audience dupliquée frontend + backend | DATA-MODEL | Documenté (rétro) |
+| [RETRO-002](../../../adr/RETRO-002.md) | Règle de dérivation familiarity → xai\_audience dupliquée frontend + backend | DATA-MODEL | Documenté (rétro) |
 
 ---
 

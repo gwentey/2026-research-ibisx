@@ -19,8 +19,8 @@
 
 | ADR | Catégorie | Titre | Statut |
 |-----|-----------|-------|--------|
-| [RETRO-api-datasets-01](../../../adr/RETRO-api-datasets-01.md) | DATA-MODEL | Taxonomie Khelifi 2024 — 10 critères éthiques tristate | Documenté (rétro) |
-| [RETRO-api-datasets-02](../../../adr/RETRO-api-datasets-02.md) | DB-STRATEGY | Score éthique compute-on-read — jamais persisté en colonne dédiée | Documenté (rétro) |
+| [RETRO-003](../../../adr/RETRO-003.md) | DATA-MODEL | Taxonomie Khelifi 2024 — 10 critères éthiques tristate | Documenté (rétro) |
+| [RETRO-004](../../../adr/RETRO-004.md) | DB-STRATEGY | Score éthique compute-on-read — jamais persisté en colonne dédiée | Documenté (rétro) |
 | [ADR-002](../../../adr/ADR-002-base-de-donnees.md) | STACK | PostgreSQL 16 — ARRAY GIN + JSONB | Accepté |
 | [ADR-005](../../../adr/ADR-005-stockage-fichiers.md) | DB-STRATEGY | Format canonique Parquet (Snappy) — conversion à l'ingestion | Accepté |
 

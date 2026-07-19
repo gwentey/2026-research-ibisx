@@ -19,8 +19,8 @@
 
 | ADR | Titre | Catégorie | Statut |
 |-----|-------|-----------|--------|
-| [RETRO-api-xai-01](../../../adr/RETRO-api-xai-01.md) | Niveau d'audience capturé immuablement par explication | DATA-MODEL | Documenté (rétro) |
-| [RETRO-api-xai-02](../../../adr/RETRO-api-xai-02.md) | Contrat BlockDocument pour les réponses de chat XAI | DATA-MODEL | Documenté (rétro) |
+| [RETRO-002](../../../adr/RETRO-002.md) | Niveau d'audience capturé immuablement par explication | DATA-MODEL | Documenté (rétro) |
+| [RETRO-012](../../../adr/RETRO-012.md) | Contrat BlockDocument pour les réponses de chat XAI | DATA-MODEL | Documenté (rétro) |
 
 ---
 

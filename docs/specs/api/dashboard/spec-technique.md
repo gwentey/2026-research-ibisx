@@ -86,7 +86,7 @@ Total : 8 requêtes SQL par appel, toutes synchrones sur la même session SQLAlc
 - **Module thin controller** : pas de couche service intermédiaire. La route est à la fois contrôleur et couche de requêtes. Acceptable pour un endpoint unique sans logique de mutation.
 - **Assembly en application layer** : la fusion des activités (experiments + explanations) est faite en Python après deux requêtes SQL séparées, plutôt qu'avec un UNION SQL. Cela simplifie le code au prix d'un double passage en DB.
 - **Schémas Pydantic co-localisés** : `DashboardKpis`, `ActivityItem`, `RecentProject`, `WizardDraftPointer`, `DashboardResponse` sont définis dans le même fichier que la route. Pas de `schemas.py` séparé.
-- **Guard P1 sur success_rate** : `success_rate = round(completed/finished, 4) if finished > 0 else None` — la condition sur `finished > 0` est l'invariant central du module (voir ADR RETRO-api-dashboard-01).
+- **Guard P1 sur success_rate** : `success_rate = round(completed/finished, 4) if finished > 0 else None` — la condition sur `finished > 0` est l'invariant central du module (voir ADR RETRO-013).
 - **Import défensif** : `_ = ExplanationStatus` en fin de fonction pour garantir que l'import est visible dans les outils d'analyse statique, même si la variable n'est pas directement utilisée dans la logique de la route.
 
 ## Décisions documentées ici (rejetées comme ADR)

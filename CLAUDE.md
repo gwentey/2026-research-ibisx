@@ -51,32 +51,32 @@ cd apps/api && uv run python -m ibis.export_openapi ../web/lib/api/openapi.json 
 ### api
 | Module | ADRs RETRO |
 |--------|---|
-| auth | RETRO-api-auth-01, -02 |
-| users | RETRO-api-users-01 |
-| datasets | RETRO-api-datasets-01, -02 |
-| scoring | RETRO-api-scoring-01 |
-| projects | RETRO-api-projects-01 |
-| experiments | RETRO-api-experiments-01, -02 |
-| ml | RETRO-api-ml-01, -02, -03 |
-| xai | RETRO-api-xai-01, -02 |
+| auth | RETRO-001, RETRO-002 |
+| users | RETRO-002 |
+| datasets | RETRO-003, RETRO-004 |
+| scoring | RETRO-005 |
+| projects | RETRO-006 |
+| experiments | RETRO-007, RETRO-008 |
+| ml | RETRO-009, RETRO-010, RETRO-011 |
+| xai | RETRO-002, RETRO-012 |
 | llm | — (cf. ADR-006) |
-| dashboard | RETRO-api-dashboard-01 |
-| admin | RETRO-api-admin-01, -02 |
+| dashboard | RETRO-013 |
+| admin | RETRO-014, RETRO-015 |
 | jobs | — (cf. ADR-004, ADR-007) |
 | health | — |
 
 ### web
 | Module | ADRs RETRO |
 |--------|---|
-| auth | RETRO-web-auth-01, -02 |
-| onboarding | RETRO-web-onboarding-01 |
-| datasets | RETRO-web-datasets-01, -02 |
+| auth | RETRO-016, RETRO-017 |
+| onboarding | RETRO-002 |
+| datasets | RETRO-018, RETRO-019 |
 | wizard | — |
-| experiments | RETRO-web-experiments-01 |
+| experiments | RETRO-020 |
 | fairness | — |
 | lenses | — |
 | challenges | — |
-| formation | RETRO-web-formation-01 |
+| formation | RETRO-021 |
 | dashboard | — |
 | admin | — |
 

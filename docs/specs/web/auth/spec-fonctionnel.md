@@ -20,9 +20,9 @@
 | Identifiant | Titre | Catégorie | Statut |
 |-------------|-------|-----------|--------|
 | [ADR-003](../../../adr/ADR-003-auth-rbac.md) | Authentification & RBAC | AUTH | Accepté |
-| [RETRO-api-auth-01](../../../adr/RETRO-api-auth-01.md) | Anti-énumération email | SECURITY | Documenté (rétro) |
-| [RETRO-web-auth-01](../../../adr/RETRO-web-auth-01.md) | Single-flight obligatoire sur refresh et bootstrap | AUTH | Documenté (rétro) |
-| [RETRO-web-auth-02](../../../adr/RETRO-web-auth-02.md) | Guards d'accès purement client-side (UX-only, pas de sécurité) | AUTH | Documenté (rétro) |
+| [RETRO-001](../../../adr/RETRO-001.md) | Anti-énumération email | SECURITY | Documenté (rétro) |
+| [RETRO-016](../../../adr/RETRO-016.md) | Single-flight obligatoire sur refresh et bootstrap | AUTH | Documenté (rétro) |
+| [RETRO-017](../../../adr/RETRO-017.md) | Guards d'accès purement client-side (UX-only, pas de sécurité) | AUTH | Documenté (rétro) |
 
 ---
 
@@ -37,7 +37,7 @@ Le module `web/auth` regroupe l'ensemble des surfaces frontales liées à l'iden
 3. **Accès aux pages applicatives** : les pages sous `(app)/` exigent une session authentifiée ET un onboarding complété. Un utilisateur non connecté est renvoyé à `/login`. Un utilisateur connecté mais n'ayant pas complété l'onboarding est renvoyé à `/onboarding`.
 4. **Rebond depuis les pages invité** : les pages sous `(guest)/` (login, register, forgot-password, reset-password) redirigent automatiquement un utilisateur déjà authentifié vers sa destination post-connexion.
 5. **Onboarding exclusif** : la page `/onboarding` est réservée aux utilisateurs connectés qui n'ont pas encore complété l'onboarding ; un onboarding déjà terminé renvoie vers `/dashboard`.
-6. **Anti-énumération côté UI** : la page « mot de passe oublié » affiche systématiquement le message « lien envoyé » après soumission, sans égard pour le code de retour de l'API. Ce comportement est le complément frontend de RETRO-api-auth-01.
+6. **Anti-énumération côté UI** : la page « mot de passe oublié » affiche systématiquement le message « lien envoyé » après soumission, sans égard pour le code de retour de l'API. Ce comportement est le complément frontend de RETRO-001.
 7. **Désactivation du formulaire de reset sans token** : le bouton de soumission de la page de réinitialisation est désactivé si le paramètre `token` est absent de l'URL.
 8. **Protection anti-double invocation Google callback** : le callback OIDC Google utilise un `useRef` booléen pour ne lancer l'échange de code qu'une seule fois, même en mode Strict React (double-invoke des effets en développement).
 9. **Access token en mémoire uniquement** : l'access token JWT n'est jamais persisté en localStorage ni en sessionStorage. La persistance de session repose sur le cookie `httpOnly` de refresh géré par le backend (ADR-003).

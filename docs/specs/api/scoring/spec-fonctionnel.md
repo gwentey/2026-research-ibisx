@@ -19,7 +19,7 @@
 
 | ADR | Catégorie | Titre | Statut |
 |-----|-----------|-------|--------|
-| [RETRO-api-scoring-01](../../../adr/RETRO-api-scoring-01.md) | DB-STRATEGY | Scores de pertinence calculés à la demande (raw + compute-on-read) — non matérialisés en base | Documenté (rétro) |
+| [RETRO-005](../../../adr/RETRO-005.md) | DB-STRATEGY | Scores de pertinence calculés à la demande (raw + compute-on-read) — non matérialisés en base | Documenté (rétro) |
 
 ---
 

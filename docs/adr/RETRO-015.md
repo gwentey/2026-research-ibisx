@@ -1,4 +1,4 @@
-# RETRO-api-admin-02 — Templates ethiques stockes en base (source autoritaire)
+# RETRO-015 — Templates ethiques stockes en base (source autoritaire)
 
 | Champ      | Valeur              |
 |------------|---------------------|

@@ -1,4 +1,4 @@
-# RETRO-api-experiments-01 — Prohibition de tout repli sur données synthétiques lors de l'entraînement
+# RETRO-007 — Prohibition de tout repli sur données synthétiques lors de l'entraînement
 
 | Champ      | Valeur                          |
 |------------|---------------------------------|

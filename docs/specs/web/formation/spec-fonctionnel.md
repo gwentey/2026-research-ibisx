@@ -19,7 +19,7 @@
 
 | ADR | Titre | Catégorie | Statut |
 |-----|-------|-----------|--------|
-| [RETRO-web-formation-01](../../../adr/RETRO-web-formation-01.md) | Intégrité référentielle : les blocs "practice" ne citent que des Défis existants | DATA-MODEL | Documenté (rétro) |
+| [RETRO-021](../../../adr/RETRO-021.md) | Intégrité référentielle : les blocs "practice" ne citent que des Défis existants | DATA-MODEL | Documenté (rétro) |
 
 ---
 

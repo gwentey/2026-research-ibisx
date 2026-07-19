@@ -20,8 +20,8 @@
 | ADR | Catégorie | Titre | Statut |
 |-----|-----------|-------|--------|
 | [ADR-003](../../../adr/ADR-003-auth-rbac.md) | AUTH | Authentification & RBAC | Accepté |
-| [RETRO-api-auth-01](../../../adr/RETRO-api-auth-01.md) | SECURITY | Anti-énumération email — réponse opaque sur authenticate et forgot-password | Documenté (rétro) |
-| [RETRO-api-auth-02](../../../adr/RETRO-api-auth-02.md) | DATA-MODEL | XaiAudience 3 niveaux dérivée à l'onboarding | Documenté (rétro) |
+| [RETRO-001](../../../adr/RETRO-001.md) | SECURITY | Anti-énumération email — réponse opaque sur authenticate et forgot-password | Documenté (rétro) |
+| [RETRO-002](../../../adr/RETRO-002.md) | DATA-MODEL | XaiAudience 3 niveaux dérivée à l'onboarding | Documenté (rétro) |
 
 ---
 

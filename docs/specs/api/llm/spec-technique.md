@@ -112,7 +112,7 @@ infrastructure.
 
 Deux dictionnaires `AUDIENCE_SPECS` et `AUDIENCE_CHAT_TONE` mappent `(audience, lang)` vers des
 instructions de ton et de longueur. Le niveau `audience` est lu depuis `explanation.audience_level`
-(capturé immuablement à la création de l'explication — voir RETRO-api-xai-01).
+(capturé immuablement à la création de l'explication — voir RETRO-002).
 
 Le fallback `fallback_text()` implémente 3 formulations distinctes :
 - Novice : analogie fruit + 3 variables max + badge "sans IA"
@@ -195,6 +195,6 @@ Rejet ADR : AP-3 (heuristique d'implémentation).
 - OpenRouter comme fournisseur exclusif, fallback `is_fallback: true` obligatoire, température 0 :
   couverts par **ADR-006** (`docs/adr/ADR-006-ia-xai-llm.md`).
 - Audience level capturé immuablement par explication, override éphémère sans mutation du profil :
-  couverts par **RETRO-api-xai-01** (`docs/adr/RETRO-api-xai-01.md`).
+  couverts par **RETRO-002** (`docs/adr/RETRO-002.md`).
 - Contrat BlockDocument (7 types de blocs, 5 tonalités sémantiques, extra="ignore") :
-  couvert par **RETRO-api-xai-02** (`docs/adr/RETRO-api-xai-02.md`).
+  couvert par **RETRO-012** (`docs/adr/RETRO-012.md`).

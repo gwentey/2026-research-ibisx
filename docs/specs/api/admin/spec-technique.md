@@ -22,7 +22,7 @@ deux verifications en cascade :
 2. Chargement de la ligne `User` en base et controle que `user.role == admin`
    ET `user.is_active == True` (rejet `403 FORBIDDEN` sinon)
 
-La dualite JWT + base est documentee dans RETRO-api-admin-01 et dans ADR-003.
+La dualite JWT + base est documentee dans RETRO-014 et dans ADR-003.
 
 ---
 
@@ -160,9 +160,9 @@ asynchrone) mais appelle `get_or_compute_quality(force=True)` de facon synchrone
 le cycle de la requete. Le code HTTP 202 suggere que cette route etait peut-etre
 prevue pour devenir asynchrone (lancement de job Celery).
 
-### Templates ethiques — DB-STRATEGY documente dans RETRO-api-admin-02
+### Templates ethiques — DB-STRATEGY documente dans RETRO-015
 
-Voir [RETRO-api-admin-02](../../../adr/RETRO-api-admin-02.md) : les templates ethiques
+Voir [RETRO-015](../../../adr/RETRO-015.md) : les templates ethiques
 sont l'autorite en base, pas dans un fichier YAML de configuration.
 
 ---

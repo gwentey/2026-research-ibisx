@@ -1,4 +1,4 @@
-# RETRO-api-projects-01 — Recommandations déléguées à score_datasets() : invariant P3
+# RETRO-006 — Recommandations déléguées à score_datasets() : invariant P3
 
 | Champ      | Valeur                          |
 |------------|---------------------------------|

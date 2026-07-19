@@ -171,7 +171,7 @@ Poids libres, non contraints à 1. Si `Σ poids = 0` ou liste vide → `DEFAULT_
 
 - **Module pur (pure module pattern)** : `formulas.py` ne réalise aucun I/O ; il est appelable directement dans les tests unitaires sans mock.
 - **Dataclass de découplage (DatasetFacts)** : le dataclass `frozen=True` isole les formules du modèle SQLAlchemy. Cela rend les formules testables indépendamment de la base.
-- **Compute-on-read** : les scores ne sont jamais stockés en base. Chaque appel `POST /datasets/score` recalcule l'intégralité depuis les champs bruts du `Dataset`. Décision documentée dans RETRO-api-scoring-01.
+- **Compute-on-read** : les scores ne sont jamais stockés en base. Chaque appel `POST /datasets/score` recalcule l'intégralité depuis les champs bruts du `Dataset`. Décision documentée dans RETRO-005.
 - **Normalisation dynamique** : le score technique s'adapte automatiquement aux datasets partiellement renseignés sans nécessiter de règle de gestion supplémentaire.
 - **Duplication contrôlée** : `ethical_score_expression()` dans `filters.py` est une réimplémentation SQL de la même formule, utilisée uniquement pour le filtrage en base (ne produit pas une valeur JSON). C'est la seule duplication admise — le commentaire dans `filters.py` l'explicite.
 

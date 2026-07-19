@@ -1,4 +1,4 @@
-# RETRO-api-xai-02 — Contrat BlockDocument pour les réponses de chat XAI
+# RETRO-012 — Contrat BlockDocument pour les réponses de chat XAI
 
 | Champ      | Valeur              |
 |------------|---------------------|

@@ -19,8 +19,8 @@
 
 | ADR | Titre | Catégorie | Statut |
 |-----|-------|-----------|--------|
-| [RETRO-web-datasets-01](../../../adr/RETRO-web-datasets-01.md) | Taxonomie éthique des datasets — 10 critères Khelifi 2024 | DATA-MODEL | Documenté (rétro) |
-| [RETRO-web-datasets-02](../../../adr/RETRO-web-datasets-02.md) | Téléchargement authentifié via API — jamais d'URL de stockage directe | SECURITY | Documenté (rétro) |
+| [RETRO-018](../../../adr/RETRO-018.md) | Taxonomie éthique des datasets — 10 critères Khelifi 2024 | DATA-MODEL | Documenté (rétro) |
+| [RETRO-019](../../../adr/RETRO-019.md) | Téléchargement authentifié via API — jamais d'URL de stockage directe | SECURITY | Documenté (rétro) |
 
 ---
 

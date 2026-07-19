@@ -19,7 +19,7 @@
 
 | # | Titre | Catégorie | Statut |
 |---|-------|-----------|--------|
-| [RETRO-web-experiments-01](../../../adr/RETRO-web-experiments-01.md) | Révélation progressive des blocs de résultats par niveau d'audience | DESIGN | Documenté (rétro) |
+| [RETRO-020](../../../adr/RETRO-020.md) | Révélation progressive des blocs de résultats par niveau d'audience | DESIGN | Documenté (rétro) |
 
 ---
 

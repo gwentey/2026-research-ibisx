@@ -21,8 +21,6 @@
 
 *Aucun ADR lié.*
 
-> *Table auto-générée par adr-linker. Ne pas éditer manuellement.*
-
 ---
 
 ## Contexte et objectif
