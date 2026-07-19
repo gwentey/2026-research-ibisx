@@ -1428,5 +1428,83 @@
     "common": {
       "rowActions": "Actions"
     }
+  },
+  "lenses": {
+    "switcher": {
+      "label": "Lens",
+      "classic": "Classic",
+      "learn": "Switch lenses to learn to read the same result differently."
+    },
+    "reading": {
+      "heading": "Through the eyes of {name}",
+      "tagline": "Same real numbers — only the reading angle changes.",
+      "spotlight": "What I look at",
+      "blindspot": "Blind spot",
+      "noSensitive": "No obviously sensitive variable detected by its name — but proxies may remain (e.g. ZIP code ↔ origin).",
+      "sensitiveList": "The model relies on potentially protected variables: {list}."
+    },
+    "sensitive": {
+      "sex": "sex",
+      "age": "age",
+      "race": "ethnic origin",
+      "origin": "nationality / origin",
+      "religion": "religion",
+      "disability": "disability",
+      "family": "family situation"
+    },
+    "profile": {
+      "title": "My discipline",
+      "description": "Choose the lens applied to your results by default. You can always switch, and browse the other lenses to learn.",
+      "none": "None — classic view"
+    },
+    "economist": {
+      "name": "the economist",
+      "short": "Economist",
+      "tagline": "What the variables say — and what they don't.",
+      "topFeature": "The variable most associated with the target is “{feature}” (importance {percent}%).",
+      "others": "Next come “{second}” and “{third}”.",
+      "metric": "Measured performance: {metric} = {value}.",
+      "caveat": "This is an association, not a causal effect — and an importance, not a coefficient with a confidence interval. A quantified, tested effect would require an identification design (OLS, DiD, instrumental variable)."
+    },
+    "jurist": {
+      "name": "the jurist",
+      "short": "Jurist",
+      "tagline": "What the model may — or may not — use.",
+      "automated": "An automated decision based on these variables falls under the right to explanation (GDPR, art. 22) and AI Act obligations.",
+      "caveat": "A high-performing model can still be discriminatory. Performance is not lawfulness: fairness across groups must be audited."
+    },
+    "politist": {
+      "name": "the political scientist",
+      "short": "Political scientist",
+      "tagline": "Who are we talking about, and can we generalize?",
+      "sampleClassification": "Result obtained on a sample split into {count} groups ({names}).",
+      "sampleGeneric": "Result obtained on a data sample.",
+      "representativeness": "The conclusion only holds if this sample represents the target population.",
+      "caveat": "Without survey weights or a sampling design (absent here), generalizing to the population must stay cautious."
+    },
+    "sociologist": {
+      "name": "the sociologist",
+      "short": "Sociologist",
+      "tagline": "What social relations lie behind the numbers?",
+      "mechanism": "Behind “{feature}”, what social mechanisms? The model captures a regularity, not an explanation.",
+      "structure": "Socio-demographic variables encode social positions, never individual fates.",
+      "caveat": "Risk of naturalizing inequalities: correlating is not explaining the social mechanism that produces the result."
+    },
+    "historian": {
+      "name": "the historian",
+      "short": "Historian",
+      "tagline": "Where does this data come from, and what does it silence?",
+      "provenance": "This data was produced at a specific time and in a specific context, to be questioned before any conclusion.",
+      "silence": "A model aggregates: it erases the singular case, the exception and the context the qualitative gaze seeks.",
+      "caveat": "Data is historically situated; numbers never speak for themselves."
+    },
+    "ethicist": {
+      "name": "the AI ethicist",
+      "short": "AI ethicist",
+      "tagline": "Can we — and should we — use this model?",
+      "honesty": "Is the explanation honest about what it knows? IBIS-X explicitly flags a no-AI fallback rather than inventing.",
+      "purpose": "Purpose and consent: was this data collected for this specific use?",
+      "caveat": "The real question goes beyond legality: is this model fair and acceptable?"
+    }
   }
 }

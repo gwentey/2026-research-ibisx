@@ -1428,5 +1428,83 @@
     "common": {
       "rowActions": "Actions"
     }
+  },
+  "lenses": {
+    "switcher": {
+      "label": "Regard",
+      "classic": "Classique",
+      "learn": "Change de regard pour apprendre à lire le même résultat autrement."
+    },
+    "reading": {
+      "heading": "À travers les yeux {name}",
+      "tagline": "Mêmes chiffres réels — seul l'angle de lecture change.",
+      "spotlight": "Ce que je regarde",
+      "blindspot": "Angle mort",
+      "noSensitive": "Aucune variable manifestement sensible détectée par son nom — mais des proxys peuvent subsister (ex. code postal ↔ origine).",
+      "sensitiveList": "Le modèle s'appuie sur des variables potentiellement protégées : {list}."
+    },
+    "sensitive": {
+      "sex": "le sexe",
+      "age": "l'âge",
+      "race": "l'origine ethnique",
+      "origin": "la nationalité / l'origine",
+      "religion": "la religion",
+      "disability": "le handicap",
+      "family": "la situation familiale"
+    },
+    "profile": {
+      "title": "Ma discipline",
+      "description": "Choisis le regard appliqué par défaut à tes résultats. Tu pourras toujours en changer, et parcourir les autres regards pour apprendre.",
+      "none": "Aucune — vue classique"
+    },
+    "economist": {
+      "name": "de l'économiste",
+      "short": "Économiste",
+      "tagline": "Ce que les variables disent — et ce qu'elles ne disent pas.",
+      "topFeature": "La variable la plus associée à la cible est « {feature} » (importance {percent} %).",
+      "others": "Viennent ensuite « {second} » et « {third} ».",
+      "metric": "Performance mesurée : {metric} = {value}.",
+      "caveat": "Ceci est une association, pas un effet causal — et une importance, pas un coefficient avec intervalle de confiance. Un effet chiffré et testé exigerait un design d'identification (MCO, DiD, variable instrumentale)."
+    },
+    "jurist": {
+      "name": "du juriste",
+      "short": "Juriste",
+      "tagline": "Ce que le modèle a le droit — ou non — d'utiliser.",
+      "automated": "Une décision automatisée fondée sur ces variables relève du droit à l'explication (RGPD, art. 22) et des obligations de l'AI Act.",
+      "caveat": "Un modèle performant peut être discriminatoire. La performance ne vaut pas licéité : il faut auditer l'équité entre groupes."
+    },
+    "politist": {
+      "name": "du politiste",
+      "short": "Politiste",
+      "tagline": "De qui parle-t-on, et peut-on généraliser ?",
+      "sampleClassification": "Résultat obtenu sur un échantillon réparti en {count} groupes ({names}).",
+      "sampleGeneric": "Résultat obtenu sur un échantillon de données.",
+      "representativeness": "La conclusion ne vaut que si cet échantillon représente la population visée.",
+      "caveat": "Sans poids de sondage ni plan d'échantillonnage (absents ici), la généralisation à la population doit rester prudente."
+    },
+    "sociologist": {
+      "name": "du sociologue",
+      "short": "Sociologue",
+      "tagline": "Quels rapports sociaux derrière les chiffres ?",
+      "mechanism": "Derrière « {feature} », quels mécanismes sociaux ? Le modèle capte une régularité, pas une explication.",
+      "structure": "Les variables socio-démographiques encodent des positions sociales, jamais des destins individuels.",
+      "caveat": "Risque de naturaliser des inégalités : corréler n'est pas expliquer le mécanisme social qui produit le résultat."
+    },
+    "historian": {
+      "name": "de l'historien",
+      "short": "Historien",
+      "tagline": "D'où viennent ces données, et que taisent-elles ?",
+      "provenance": "Ces données ont été produites à un moment et dans un contexte précis, à interroger avant toute conclusion.",
+      "silence": "Un modèle agrège : il efface le cas singulier, l'exception et le contexte que le regard qualitatif cherche.",
+      "caveat": "Les données sont situées historiquement ; les chiffres ne parlent jamais d'eux-mêmes."
+    },
+    "ethicist": {
+      "name": "de l'éthicien",
+      "short": "Éthicien IA",
+      "tagline": "Peut-on — et doit-on — utiliser ce modèle ?",
+      "honesty": "L'explication est-elle honnête sur ce qu'elle sait ? IBIS-X marque explicitement un repli sans IA plutôt que d'inventer.",
+      "purpose": "Finalité et consentement : ces données ont-elles été collectées pour cet usage précis ?",
+      "caveat": "La vraie question dépasse la légalité : ce modèle est-il juste et acceptable ?"
+    }
   }
 }

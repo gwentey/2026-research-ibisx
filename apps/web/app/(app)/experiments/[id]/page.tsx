@@ -1,6 +1,6 @@
 "use client";
 
-import { Fragment, use, useCallback, useEffect, useState, type ReactNode } from "react";
+import { Fragment, use, useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import {
@@ -23,7 +23,12 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { MissionStepper } from "@/components/ibis/mission-stepper";
 import { ChallengeDebrief } from "@/components/ibis/challenges/challenge-debrief";
+import { LensSwitcher } from "@/components/ibis/lenses/lens-switcher";
+import { LensReading } from "@/components/ibis/lenses/lens-reading";
 import { XaiTab } from "@/components/ibis/xai/xai-tab";
+import { extractInsights } from "@/lib/lenses/insights";
+import { useLensStore } from "@/lib/lenses/store";
+import type { LensId, RawResults } from "@/lib/lenses/types";
 import {
   CompositeScoreCard,
   ConfusionMatrix,
@@ -104,6 +109,20 @@ export default function ExperimentResultsPage({
     void load();
   }, [load]);
 
+  // Regard métier actif : par défaut celui choisi au profil (localStorage), jusqu'à ce que
+  // l'utilisateur bascule manuellement. Dimension orthogonale à XaiAudience — mêmes chiffres.
+  const storeDiscipline = useLensStore((state) => state.discipline);
+  const [activeLens, setActiveLens] = useState<LensId | null>(null);
+  const [lensTouched, setLensTouched] = useState(false);
+  useEffect(() => {
+    if (!lensTouched) setActiveLens(storeDiscipline);
+  }, [storeDiscipline, lensTouched]);
+
+  const insights = useMemo(
+    () => extractInsights((results ?? {}) as unknown as RawResults),
+    [results]
+  );
+
   const download = async () => {
     const { data } = await downloadModel({
       path: { experiment_id: id },
@@ -132,6 +151,13 @@ export default function ExperimentResultsPage({
   const composite = results?.composite as
     | { value: number; label: string; method: string }
     | undefined;
+
+  // Libellé humain de la métrique principale, transmis au regard « économiste ».
+  const primaryKey = insights.primaryMetric?.key;
+  const metricLabel =
+    primaryKey && t.has(`metrics.${primaryKey}` as never)
+      ? t(`metrics.${primaryKey}` as never)
+      : undefined;
 
   const confusion = viz["confusion_matrix"] as
     | { classes: string[]; matrix: number[][] }
@@ -256,6 +282,21 @@ export default function ExperimentResultsPage({
       </div>
 
       <ChallengeDebrief experiment={experiment} results={results} />
+
+      {results ? (
+        <div className="space-y-4">
+          <LensSwitcher
+            value={activeLens}
+            onChange={(value) => {
+              setLensTouched(true);
+              setActiveLens(value);
+            }}
+          />
+          {activeLens ? (
+            <LensReading lensId={activeLens} insights={insights} metricLabel={metricLabel} />
+          ) : null}
+        </div>
+      ) : null}
 
       <Tabs defaultValue="performance" className="space-y-4">
         <TabsList>
