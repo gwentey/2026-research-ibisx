@@ -172,6 +172,10 @@
     "taskLabel": "Tâche",
     "briefingTitle": "L'enquête",
     "objectivesTitle": "Tes objectifs",
+    "task": {
+      "classification": "Classification",
+      "regression": "Régression"
+    },
     "debriefTitle": "Enquête bouclée",
     "notFound": "Défi introuvable.",
     "resolveError": "Impossible d'ouvrir le jeu de données de ce défi pour le moment.",

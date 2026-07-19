@@ -172,6 +172,10 @@
     "taskLabel": "Task",
     "briefingTitle": "The investigation",
     "objectivesTitle": "Your objectives",
+    "task": {
+      "classification": "Classification",
+      "regression": "Regression"
+    },
     "debriefTitle": "Investigation complete",
     "notFound": "Challenge not found.",
     "resolveError": "Could not open this challenge's dataset right now.",
