@@ -5286,7 +5286,7 @@
     },
     "/api/v1/auth/forgot-password": {
       "post": {
-        "description": "Répond toujours 204 (pas d'énumération). Sans SMTP le lien est loggé (dev).",
+        "description": "Répond toujours 204 (pas d'énumération). Sans SMTP le lien n'est loggé qu'hors production.",
         "operationId": "forgotPassword",
         "requestBody": {
           "content": {
