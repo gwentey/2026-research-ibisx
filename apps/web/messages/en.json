@@ -616,7 +616,11 @@
       "created": "Project created.",
       "saved": "Project saved.",
       "createSubtitle": "Three steps: details, selection criteria, weights — your recommendations refine live in the preview.",
-      "editSubtitle": "Adjust the criteria or the weights: recommendations recompute live in the preview."
+      "editSubtitle": "Adjust the criteria or the weights: recommendations recompute live in the preview.",
+      "directSubtitle": "You already know which dataset to use — name your project, then start training right away.",
+      "selectedDataset": "Selected dataset",
+      "selectedDatasetHint": "No need for selection criteria or weightings here — your dataset is already chosen.",
+      "createAndTrain": "Create and start training"
     },
     "detail": {
       "tabRecommendations": "Recommendations",

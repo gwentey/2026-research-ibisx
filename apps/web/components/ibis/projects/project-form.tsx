@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { CheckIcon, SparklesIcon } from "lucide-react";
+import { CheckIcon, DatabaseIcon, RocketIcon, SparklesIcon } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -39,12 +39,18 @@ interface ProjectFormProps {
   /** Pré-remplissage (ex. « Utiliser dans un projet » depuis une fiche dataset) :
    *  nom suggéré + critères (domaine/tâche du dataset) déjà cochés, tout reste éditable. */
   prefill?: { name?: string; criteria?: CatalogFilters };
+  /** Mode DIRECT : le dataset est déjà choisi (venu d'une fiche dataset). On saute les étapes
+   *  « critères » et « pondérations » (qui servent à CHOISIR un dataset) et, à la création,
+   *  on enchaîne directement sur le wizard d'entraînement de ce dataset. */
+  directDataset?: { id: string; name: string };
 }
 
-export function ProjectForm({ existing, prefill }: ProjectFormProps) {
+export function ProjectForm({ existing, prefill, directDataset }: ProjectFormProps) {
   const t = useTranslations("projects.form");
   const tf = useTranslations("datasets.filterPanel");
   const router = useRouter();
+  // Mode direct : uniquement à la création (jamais en édition).
+  const direct = !existing && Boolean(directDataset);
 
   const [step, setStep] = useState(1);
   const [name, setName] = useState(existing?.name ?? prefill?.name ?? "");
@@ -75,8 +81,10 @@ export function ProjectForm({ existing, prefill }: ProjectFormProps) {
     });
   }, [existing]);
 
-  // Aperçu temps réel des recommandations (debounce 500 ms — CDC §7.2)
+  // Aperçu temps réel des recommandations (debounce 500 ms — CDC §7.2).
+  // Inutile en mode direct : le dataset est déjà choisi, aucune recommandation à calculer.
   useEffect(() => {
+    if (direct) return;
     const timer = setTimeout(async () => {
       const { data } = await scoreDatasets({
         body: {
@@ -91,7 +99,7 @@ export function ProjectForm({ existing, prefill }: ProjectFormProps) {
       setPreview(data ?? null);
     }, 500);
     return () => clearTimeout(timer);
-  }, [criteria, weights]);
+  }, [criteria, weights, direct]);
 
   const setCriterion = <K extends keyof CatalogFilters>(key: K, value: CatalogFilters[K]) =>
     setCriteria((current) => {
@@ -128,16 +136,23 @@ export function ProjectForm({ existing, prefill }: ProjectFormProps) {
       return;
     }
     toast.success(existing ? t("saved") : t("created"));
+    // Mode direct : on enchaîne directement sur l'entraînement du dataset déjà choisi,
+    // au lieu de renvoyer vers la page projet (recommandations).
+    if (direct && directDataset) {
+      router.replace(`/wizard?projectId=${result.data.id}&datasetId=${directDataset.id}`);
+      return;
+    }
     router.replace(`/projects/${result.data.id}`);
   };
 
   return (
     <div className="grid gap-6 lg:grid-cols-[1fr_18rem]">
       <div className="space-y-4">
-        <div className="space-y-2.5">
-          <Progress value={(step / TOTAL_STEPS) * 100} />
-          <div className="flex flex-wrap items-center gap-1.5">
-            {([1, 2, 3] as const).map((candidate) => (
+        {!direct ? (
+          <div className="space-y-2.5">
+            <Progress value={(step / TOTAL_STEPS) * 100} />
+            <div className="flex flex-wrap items-center gap-1.5">
+              {([1, 2, 3] as const).map((candidate) => (
               <span
                 key={candidate}
                 className={cn(
@@ -155,11 +170,12 @@ export function ProjectForm({ existing, prefill }: ProjectFormProps) {
                   )}>
                   {candidate < step ? <CheckIcon className="size-2.5" /> : candidate}
                 </span>
-                {candidate === 1 ? t("step1") : candidate === 2 ? t("step2") : t("step3")}
-              </span>
-            ))}
+                  {candidate === 1 ? t("step1") : candidate === 2 ? t("step2") : t("step3")}
+                </span>
+              ))}
+            </div>
           </div>
-        </div>
+        ) : null}
 
         {step === 1 ? (
           <Card>
@@ -349,36 +365,69 @@ export function ProjectForm({ existing, prefill }: ProjectFormProps) {
           />
         ) : null}
 
-        <div className="flex justify-between">
-          <Button
-            variant="ghost"
-            disabled={step === 1 || saving}
-            onClick={() => setStep((s) => s - 1)}>
-            ←
-          </Button>
-          {step < TOTAL_STEPS ? (
-            <Button disabled={step === 1 && !name.trim()} onClick={() => setStep((s) => s + 1)}>
-              →
+        {direct ? (
+          // Mode direct : une seule action — créer le projet puis filer au wizard du dataset.
+          <div className="flex justify-end">
+            <Button size="lg" disabled={!name.trim() || saving} onClick={() => void submit()}>
+              <RocketIcon />
+              {saving ? t("saving") : t("createAndTrain")}
             </Button>
-          ) : (
-            <Button disabled={!name.trim() || saving} onClick={() => void submit()}>
-              {saving ? t("saving") : existing ? t("save") : t("create")}
+          </div>
+        ) : (
+          <div className="flex justify-between">
+            <Button
+              variant="ghost"
+              disabled={step === 1 || saving}
+              onClick={() => setStep((s) => s - 1)}>
+              ←
             </Button>
-          )}
-        </div>
+            {step < TOTAL_STEPS ? (
+              <Button disabled={step === 1 && !name.trim()} onClick={() => setStep((s) => s + 1)}>
+                →
+              </Button>
+            ) : (
+              <Button disabled={!name.trim() || saving} onClick={() => void submit()}>
+                {saving ? t("saving") : existing ? t("save") : t("create")}
+              </Button>
+            )}
+          </div>
+        )}
       </div>
 
-      <Card className="h-fit lg:sticky lg:top-20">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-base">
-            <SparklesIcon className="text-muted-foreground size-4" />
-            {t("preview")}
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-3">
-          <p className="text-sm font-medium">
-            {t("previewCount", { count: preview?.results.length ?? 0 })}
-          </p>
+      {direct ? (
+        // Mode direct : pas de recommandations à afficher — on rappelle simplement le dataset
+        // déjà choisi et pourquoi les étapes de sélection sont sautées.
+        <Card className="h-fit lg:sticky lg:top-20">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-base">
+              <DatabaseIcon className="text-muted-foreground size-4" />
+              {t("selectedDataset")}
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <div className="bg-muted/40 flex items-center gap-2.5 rounded-lg border p-3">
+              <span className="bg-primary/10 text-primary flex size-9 shrink-0 items-center justify-center rounded-lg">
+                <DatabaseIcon className="size-4" />
+              </span>
+              <p className="min-w-0 flex-1 truncate text-sm font-semibold">
+                {directDataset?.name || "—"}
+              </p>
+            </div>
+            <p className="text-muted-foreground text-xs">{t("selectedDatasetHint")}</p>
+          </CardContent>
+        </Card>
+      ) : (
+        <Card className="h-fit lg:sticky lg:top-20">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-base">
+              <SparklesIcon className="text-muted-foreground size-4" />
+              {t("preview")}
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <p className="text-sm font-medium">
+              {t("previewCount", { count: preview?.results.length ?? 0 })}
+            </p>
           {preview && preview.results.length > 0 ? (
             <div className="space-y-2">
               <p className="text-muted-foreground text-xs font-medium uppercase">
@@ -411,8 +460,9 @@ export function ProjectForm({ existing, prefill }: ProjectFormProps) {
               })}
             </div>
           ) : null}
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 }

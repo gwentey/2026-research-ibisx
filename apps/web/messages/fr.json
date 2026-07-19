@@ -616,7 +616,11 @@
       "created": "Projet créé.",
       "saved": "Projet enregistré.",
       "createSubtitle": "Trois temps : informations, critères de sélection, pondérations — vos recommandations s'affinent en direct dans l'aperçu.",
-      "editSubtitle": "Ajustez les critères ou les pondérations : les recommandations se recalculent en direct dans l'aperçu."
+      "editSubtitle": "Ajustez les critères ou les pondérations : les recommandations se recalculent en direct dans l'aperçu.",
+      "directSubtitle": "Vous savez déjà quel dataset utiliser — nommez votre projet, puis lancez directement l’entraînement.",
+      "selectedDataset": "Dataset sélectionné",
+      "selectedDatasetHint": "Pas besoin de critères de sélection ni de pondérations ici : votre dataset est déjà choisi.",
+      "createAndTrain": "Créer et lancer l’entraînement"
     },
     "detail": {
       "tabRecommendations": "Recommandations",

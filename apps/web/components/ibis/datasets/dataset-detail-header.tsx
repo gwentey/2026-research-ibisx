@@ -40,13 +40,17 @@ export function DatasetDetailHeader({
   const ethicalPercent = Math.round(dataset.ethical_score * 100);
   const firstFile = dataset.files.find((file) => file.logical_role === "data_file") ?? dataset.files[0];
 
-  // « Utiliser dans un projet » : pré-remplit le formulaire (nom suggéré + critères
-  // domaine/tâche du dataset déjà cochés) plutôt que de tout faire resélectionner.
+  // « Utiliser dans un projet » : le dataset est DÉJÀ choisi → on transmet son id (et son
+  // nom) pour que la création de projet saute les étapes « critères » et « pondérations »
+  // (qui servent à CHOISIR un dataset) et enchaîne directement sur l'entraînement.
+  // On garde domaine/tâche/nom pour pré-remplir le projet créé.
   const useInProjectHref = (() => {
     const params = new URLSearchParams();
     if (dataset.domain.length > 0) params.set("domains", dataset.domain.join(","));
     if (dataset.task.length > 0) params.set("tasks", dataset.task.join(","));
     params.set("name", td("projectFromDataset", { name: dataset.display_name }));
+    params.set("datasetId", dataset.id);
+    params.set("datasetName", dataset.display_name);
     return `/projects/new?${params.toString()}`;
   })();
 

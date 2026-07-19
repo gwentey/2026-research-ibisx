@@ -9,13 +9,17 @@ import { MissionStepper } from "@/components/ibis/mission-stepper";
 import { ProjectForm } from "@/components/ibis/projects/project-form";
 import type { CatalogFilters } from "@/lib/datasets/use-catalog";
 
-/** Lit un éventuel pré-remplissage (?domains=&tasks=&name=) transmis par
- *  « Utiliser dans un projet » d'une fiche dataset, et le passe au formulaire. */
+/** Lit un éventuel pré-remplissage (?domains=&tasks=&name=&datasetId=&datasetName=) transmis
+ *  par « Utiliser dans un projet » d'une fiche dataset. Avec un datasetId → mode DIRECT
+ *  (dataset déjà choisi : on saute critères + pondérations et on file au wizard). */
 function PrefilledProjectForm() {
+  const t = useTranslations("projects.form");
   const params = useSearchParams();
   const domains = params.get("domains");
   const tasks = params.get("tasks");
   const name = params.get("name");
+  const datasetId = params.get("datasetId");
+  const datasetName = params.get("datasetName");
 
   const criteria: CatalogFilters = {};
   if (domains) criteria.domains = domains.split(",").filter(Boolean);
@@ -29,11 +33,7 @@ function PrefilledProjectForm() {
         }
       : undefined;
 
-  return <ProjectForm prefill={prefill} />;
-}
-
-export default function NewProjectPage() {
-  const t = useTranslations("projects.form");
+  const directDataset = datasetId ? { id: datasetId, name: datasetName ?? "" } : undefined;
 
   return (
     <div className="space-y-6">
@@ -44,16 +44,22 @@ export default function NewProjectPage() {
             <FolderPlusIcon className="size-6" />
           </div>
           <div>
-            <h1 className="text-xl font-semibold tracking-tight sm:text-2xl">
-              {t("createTitle")}
-            </h1>
-            <p className="text-muted-foreground mt-0.5 text-sm">{t("createSubtitle")}</p>
+            <h1 className="text-xl font-semibold tracking-tight sm:text-2xl">{t("createTitle")}</h1>
+            <p className="text-muted-foreground mt-0.5 text-sm">
+              {directDataset ? t("directSubtitle") : t("createSubtitle")}
+            </p>
           </div>
         </div>
       </div>
-      <Suspense fallback={null}>
-        <PrefilledProjectForm />
-      </Suspense>
+      <ProjectForm prefill={prefill} directDataset={directDataset} />
     </div>
+  );
+}
+
+export default function NewProjectPage() {
+  return (
+    <Suspense fallback={null}>
+      <PrefilledProjectForm />
+    </Suspense>
   );
 }
