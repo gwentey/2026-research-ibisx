@@ -1202,6 +1202,10 @@
     "text": {
       "title": "Explanation",
       "audience": "Level: {level}",
+      "generatedAs": "Generated for {level}",
+      "regenerateHint": "Written for {generated}, while you're viewing as {effective}.",
+      "regenerateAs": "Regenerate for {level}",
+      "regenerateCost": "1 credit",
       "fallbackBadge": "Generated without AI (deterministic fallback)",
       "modelBadge": "Model: {model}",
       "method": "Method: {method}",

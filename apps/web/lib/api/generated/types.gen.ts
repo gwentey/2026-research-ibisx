@@ -1465,6 +1465,7 @@ export type ExplanationRead = {
  * ExplanationRequest
  */
 export type ExplanationRequest = {
+    audience?: XaiAudience | null;
     /**
      * Instance Index
      */

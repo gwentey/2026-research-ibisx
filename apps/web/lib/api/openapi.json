@@ -2936,6 +2936,16 @@
       "ExplanationRequest": {
         "additionalProperties": false,
         "properties": {
+          "audience": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/XaiAudience"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "instance_index": {
             "anyOf": [
               {

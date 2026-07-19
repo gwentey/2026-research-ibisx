@@ -49,7 +49,7 @@ import {
   listTestInstances,
   requestExplanation
 } from "@/lib/api/generated";
-import type { ExplanationRead, ExplanationResults } from "@/lib/api/generated";
+import type { ExplanationRead, ExplanationResults, XaiAudience } from "@/lib/api/generated";
 import { getMe } from "@/lib/api/generated";
 import { useAuthStore } from "@/lib/auth/store";
 import { cn } from "@/lib/utils";
@@ -174,9 +174,18 @@ function ExplainIntro() {
   );
 }
 
-export function XaiTab({ experimentId }: { experimentId: string }) {
+export function XaiTab({
+  experimentId,
+  audience
+}: {
+  experimentId: string;
+  // Niveau EFFECTIF (« Voir en tant que ») : pilote la génération de l'explication (adaptatif §5.1).
+  audience: XaiAudience;
+}) {
   const t = useTranslations("xai");
   const locale = useLocale();
+  // Niveau du PROFIL (≠ effectif possible) : sert à marquer une explication « générée en vue X ».
+  const profileAudience = useAuthStore((state) => state.user?.xai_audience ?? null);
   const [type, setType] = useState<"global" | "local">("global");
   const [method, setMethod] = useState<"auto" | "shap" | "lime">("auto");
   const [instances, setInstances] = useState<TestInstance[]>([]);
@@ -232,18 +241,19 @@ export function XaiTab({ experimentId }: { experimentId: string }) {
     });
   }, [type, instances.length, experimentId]);
 
-  const launch = async () => {
+  // Lance une explication AU niveau effectif : `audience` est toujours joint au corps, si bien
+  // que l'explication (texte, longueur, ton) suit la vue « Voir en tant que » (adaptatif §5.1).
+  const runExplanation = async (body: {
+    type: "global" | "local";
+    method: "auto" | "shap" | "lime";
+    instance_index: number | null;
+  }) => {
     setRunning(true);
     setErrorMessage(null);
     setProgress(0);
     const { data, error } = await requestExplanation({
       path: { experiment_id: experimentId },
-      body: {
-        type,
-        method,
-        instance_index: type === "local" ? (instanceIndex ?? 0) : null,
-        language: locale as "fr" | "en"
-      },
+      body: { ...body, language: locale as "fr" | "en", audience },
       throwOnError: false
     });
     if (!data) {
@@ -280,6 +290,29 @@ export function XaiTab({ experimentId }: { experimentId: string }) {
     }
   };
 
+  const launch = () =>
+    void runExplanation({
+      type,
+      method,
+      instance_index: type === "local" ? (instanceIndex ?? 0) : null
+    });
+
+  // Regénère l'explication AFFICHÉE au niveau effectif (mêmes type/méthode/instance, seule la
+  // vue change) — choix explicite qui coûte 1 crédit (adaptatif §5.1, décision D3).
+  const regenerate = () => {
+    if (!current) return;
+    const requested = current.method_requested;
+    void runExplanation({
+      type: current.type === "local" ? "local" : "global",
+      method:
+        requested === "shap" || requested === "lime" || requested === "auto" ? requested : "auto",
+      instance_index:
+        current.type === "local"
+          ? ((current.instance_ref as { index?: number } | null)?.index ?? 0)
+          : null
+    });
+  };
+
   const selectedInstance =
     instanceIndex !== null ? instances.find((i) => i.index === instanceIndex) ?? null : null;
   const canLaunch = !running && (type === "global" || instanceIndex !== null);
@@ -294,7 +327,15 @@ export function XaiTab({ experimentId }: { experimentId: string }) {
           ) : current ? (
             // key = id de l'explication → remonte à chaque nouvelle explication (rejoue la
             // révélation) ; `reveal` décide si l'animation s'applique (fraîche vs historique).
-            <ExplanationView key={current.id} explanation={current} reveal={reveal} />
+            <ExplanationView
+              key={current.id}
+              explanation={current}
+              reveal={reveal}
+              profileAudience={profileAudience}
+              effectiveAudience={audience}
+              onRegenerate={regenerate}
+              regenerating={running}
+            />
           ) : (
             <ExplainIntro />
           )}

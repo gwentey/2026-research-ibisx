@@ -465,7 +465,9 @@ export default function ExperimentResultsPage({
         </TabsContent>
 
         <TabsContent value="xai">
-          <XaiTab experimentId={id} />
+          {/* Niveau effectif transmis à la génération : l'explication suit la vue « Voir en
+              tant que » (adaptatif §5.1). Éphémère — le profil n'est jamais modifié. */}
+          <XaiTab experimentId={id} audience={audience} />
         </TabsContent>
       </Tabs>
     </div>
