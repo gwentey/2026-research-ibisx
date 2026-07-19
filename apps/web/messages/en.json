@@ -1,4 +1,25 @@
 {
+  "audience": {
+    "viewAs": "View as",
+    "you": "you",
+    "short": {
+      "novice": "Novice",
+      "intermediate": "Intermediate",
+      "expert": "Expert"
+    },
+    "desc": {
+      "novice": "Simple analogies, essentials only.",
+      "intermediate": "Structured, decision-oriented.",
+      "expert": "Exact terminology, every detail."
+    },
+    "backToMine": "Back to my level ({level})",
+    "warnAbove": "You are {profile} in IBIS-X. This view targets an {effective} audience and may be hard to interpret.",
+    "belowNote": "Simplified view ({effective} level).",
+    "adjustProfile": "This level doesn't fit you? Adjust my profile",
+    "noviceFraming": "You're seeing the essentials. Switch to Intermediate or Expert (above) to see everything.",
+    "advancedTitle": "Advanced details",
+    "advancedHint": "Collapsed for your level — expand to see everything."
+  },
   "common": {
     "appName": "IBIS-X",
     "loading": "Loading…",
