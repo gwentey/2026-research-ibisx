@@ -1,0 +1,23 @@
+{
+ "display_name": "Handwritten Digits",
+ "year": 1998,
+ "objective": "Reconnaître un chiffre manuscrit (0 à 9) à partir d'une image 8×8 en niveaux de gris.",
+ "sources": "UCI — Optical Recognition of Handwritten Digits",
+ "storage_uri": "https://archive.ics.uci.edu/dataset/80/optical+recognition+of+handwritten+digits",
+ "access": "public",
+ "availability": "online",
+ "metadata_provided_with_dataset": true,
+ "external_documentation_available": true,
+ "domain": [
+  "technology"
+ ],
+ "task": [
+  "classification"
+ ],
+ "features_description": "64 variable(s) explicative(s), cible « digit ».",
+ "missing_values_description": "Aucune valeur manquante.",
+ "transparency": true,
+ "data_quality_documented": true,
+ "sample_balance_level": "balanced",
+ "sample_balance_description": "Répartition des classes : 3=183, 1=182, 5=182, 4=181, 6=181, 9=180, 7=179, 0=178, 2=177, 8=174"
+}

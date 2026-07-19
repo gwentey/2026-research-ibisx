@@ -1,0 +1,23 @@
+{
+ "display_name": "Blood Transfusion",
+ "year": 2008,
+ "objective": "Prédire si un donneur redonnera son sang (modèle marketing RFM).",
+ "sources": "UCI — Blood Transfusion Service Center",
+ "storage_uri": "https://archive.ics.uci.edu/dataset/176/blood+transfusion+service+center",
+ "access": "public",
+ "availability": "online",
+ "metadata_provided_with_dataset": true,
+ "external_documentation_available": true,
+ "domain": [
+  "healthcare"
+ ],
+ "task": [
+  "classification"
+ ],
+ "features_description": "4 variable(s) explicative(s), cible « Class ».",
+ "missing_values_description": "Aucune valeur manquante.",
+ "transparency": true,
+ "data_quality_documented": true,
+ "sample_balance_level": "imbalanced",
+ "sample_balance_description": "Répartition des classes : 1=570, 2=178"
+}

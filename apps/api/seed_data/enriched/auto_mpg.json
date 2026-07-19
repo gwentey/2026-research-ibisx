@@ -1,0 +1,21 @@
+{
+ "display_name": "Auto MPG",
+ "year": 1983,
+ "objective": "Prédire la consommation d'une voiture (miles per gallon) selon ses caractéristiques.",
+ "sources": "UCI — Auto MPG",
+ "storage_uri": "https://archive.ics.uci.edu/dataset/9/auto+mpg",
+ "access": "public",
+ "availability": "online",
+ "metadata_provided_with_dataset": true,
+ "external_documentation_available": true,
+ "domain": [
+  "technology"
+ ],
+ "task": [
+  "regression"
+ ],
+ "features_description": "7 variable(s) explicative(s), cible « class ».",
+ "missing_values_description": "6 valeur(s) manquante(s) au total (1 colonne(s) concernée(s)).",
+ "transparency": true,
+ "data_quality_documented": true
+}

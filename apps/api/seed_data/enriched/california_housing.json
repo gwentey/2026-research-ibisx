@@ -1,0 +1,23 @@
+{
+ "display_name": "California Housing",
+ "year": 1990,
+ "objective": "Prédire la valeur médiane des logements d'un quartier californien (recensement 1990).",
+ "sources": "StatLib — California Housing (Pace & Barry, 1997)",
+ "storage_uri": "https://www.dcc.fc.up.pt/~ltorgo/Regression/cal_housing.html",
+ "access": "public",
+ "availability": "online",
+ "metadata_provided_with_dataset": true,
+ "external_documentation_available": true,
+ "domain": [
+  "business"
+ ],
+ "task": [
+  "regression"
+ ],
+ "features_description": "8 variable(s) explicative(s), cible « MedHouseVal ».",
+ "missing_values_description": "Aucune valeur manquante.",
+ "transparency": true,
+ "data_quality_documented": true,
+ "representativity_level": "medium",
+ "representativity_description": "Échantillon aléatoire de 10000 lignes du jeu complet (reproductible, seed=42)."
+}

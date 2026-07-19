@@ -1,8 +1,9 @@
 # Catalogue d'import IBIS-X (CDC §5.5.a, §12.5)
-# - Les 6 entrées `local_file` sont EMBARQUÉES (vrais datasets UCI/GitHub, aucun
-#   téléchargement ni clé Kaggle requis) : c'est le seed démontrable en 20 min.
-# - Les entrées `kaggle_ref` (sans local_file) nécessitent KAGGLE_USERNAME/KAGGLE_KEY
-#   et seront complétées au J9 (~30 datasets).
+# - Les 24 entrées `local_file` sont EMBARQUÉES (vrais datasets UCI / scikit-learn / OpenML,
+#   aucun téléchargement ni clé Kaggle requis à l'import) : seed hors-ligne, démontrable.
+#   Les 6 premières = seed historique ; les 18 suivantes = lot « plein de datasets »
+#   (vrais jeux téléchargés une fois puis embarqués en CSV — voir le bloc plus bas).
+# - Les entrées `kaggle_ref` (sans local_file) nécessitent KAGGLE_USERNAME/KAGGLE_KEY.
 # Chemins relatifs à ce fichier. Import idempotent : slug déjà présent → ignoré.
 
 datasets:
@@ -29,3 +30,60 @@ datasets:
   - slug: penguins
     local_file: files/penguins.csv
     enriched: enriched/penguins.json
+
+  # --- Lot « plein de datasets » : 18 vrais jeux (sklearn bundled + UCI via OpenML),
+  # embarqués en CSV (seed hors-ligne). Générés le 2026-07-19.
+  - slug: wine_recognition
+    local_file: files/wine_recognition.csv
+    enriched: enriched/wine_recognition.json
+  - slug: breast_cancer_wisconsin
+    local_file: files/breast_cancer_wisconsin.csv
+    enriched: enriched/breast_cancer_wisconsin.json
+  - slug: diabetes_progression
+    local_file: files/diabetes_progression.csv
+    enriched: enriched/diabetes_progression.json
+  - slug: handwritten_digits
+    local_file: files/handwritten_digits.csv
+    enriched: enriched/handwritten_digits.json
+  - slug: german_credit
+    local_file: files/german_credit.csv
+    enriched: enriched/german_credit.json
+  - slug: adult_income
+    local_file: files/adult_income.csv
+    enriched: enriched/adult_income.json
+  - slug: mushroom
+    local_file: files/mushroom.csv
+    enriched: enriched/mushroom.json
+  - slug: car_evaluation
+    local_file: files/car_evaluation.csv
+    enriched: enriched/car_evaluation.json
+  - slug: heart_disease
+    local_file: files/heart_disease.csv
+    enriched: enriched/heart_disease.json
+  - slug: bank_marketing
+    local_file: files/bank_marketing.csv
+    enriched: enriched/bank_marketing.json
+  - slug: glass_identification
+    local_file: files/glass_identification.csv
+    enriched: enriched/glass_identification.json
+  - slug: ionosphere
+    local_file: files/ionosphere.csv
+    enriched: enriched/ionosphere.json
+  - slug: banknote_authentication
+    local_file: files/banknote_authentication.csv
+    enriched: enriched/banknote_authentication.json
+  - slug: blood_transfusion
+    local_file: files/blood_transfusion.csv
+    enriched: enriched/blood_transfusion.json
+  - slug: contraceptive_choice
+    local_file: files/contraceptive_choice.csv
+    enriched: enriched/contraceptive_choice.json
+  - slug: abalone_age
+    local_file: files/abalone_age.csv
+    enriched: enriched/abalone_age.json
+  - slug: auto_mpg
+    local_file: files/auto_mpg.csv
+    enriched: enriched/auto_mpg.json
+  - slug: california_housing
+    local_file: files/california_housing.csv
+    enriched: enriched/california_housing.json

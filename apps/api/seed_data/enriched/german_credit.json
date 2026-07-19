@@ -1,0 +1,23 @@
+{
+ "display_name": "German Credit",
+ "year": 1994,
+ "objective": "Évaluer le risque de crédit (bon ou mauvais payeur) d'un demandeur.",
+ "sources": "UCI — Statlog (German Credit Data)",
+ "storage_uri": "https://archive.ics.uci.edu/dataset/144/statlog+german+credit+data",
+ "access": "public",
+ "availability": "online",
+ "metadata_provided_with_dataset": true,
+ "external_documentation_available": true,
+ "domain": [
+  "finance"
+ ],
+ "task": [
+  "classification"
+ ],
+ "features_description": "20 variable(s) explicative(s), cible « class ».",
+ "missing_values_description": "Aucune valeur manquante.",
+ "transparency": true,
+ "data_quality_documented": true,
+ "sample_balance_level": "moderate",
+ "sample_balance_description": "Répartition des classes : good=700, bad=300"
+}

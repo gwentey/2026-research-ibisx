@@ -1,0 +1,23 @@
+{
+ "display_name": "Heart Disease (Statlog)",
+ "year": 1993,
+ "objective": "Prédire la présence d'une maladie cardiaque à partir d'indicateurs cliniques.",
+ "sources": "UCI — Statlog (Heart)",
+ "storage_uri": "https://archive.ics.uci.edu/dataset/145/statlog+heart",
+ "access": "public",
+ "availability": "online",
+ "metadata_provided_with_dataset": true,
+ "external_documentation_available": true,
+ "domain": [
+  "healthcare"
+ ],
+ "task": [
+  "classification"
+ ],
+ "features_description": "13 variable(s) explicative(s), cible « class ».",
+ "missing_values_description": "Aucune valeur manquante.",
+ "transparency": true,
+ "data_quality_documented": true,
+ "sample_balance_level": "balanced",
+ "sample_balance_description": "Répartition des classes : absent=150, present=120"
+}

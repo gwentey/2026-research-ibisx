@@ -1,0 +1,23 @@
+{
+ "display_name": "Mushroom",
+ "year": 1987,
+ "objective": "Déterminer si un champignon est comestible ou vénéneux à partir de ses caractéristiques.",
+ "sources": "UCI — Mushroom (Audubon Society Field Guide)",
+ "storage_uri": "https://archive.ics.uci.edu/dataset/73/mushroom",
+ "access": "public",
+ "availability": "online",
+ "metadata_provided_with_dataset": true,
+ "external_documentation_available": true,
+ "domain": [
+  "biology"
+ ],
+ "task": [
+  "classification"
+ ],
+ "features_description": "22 variable(s) explicative(s), cible « class ».",
+ "missing_values_description": "2480 valeur(s) manquante(s) au total (1 colonne(s) concernée(s)).",
+ "transparency": true,
+ "data_quality_documented": true,
+ "sample_balance_level": "balanced",
+ "sample_balance_description": "Répartition des classes : e=4208, p=3916"
+}

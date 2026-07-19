@@ -1,0 +1,23 @@
+{
+ "display_name": "Wine Recognition",
+ "year": 1991,
+ "objective": "Reconnaître le cépage d'un vin à partir de son analyse chimique.",
+ "sources": "UCI Machine Learning Repository — Wine (analyse chimique de vins italiens)",
+ "storage_uri": "https://archive.ics.uci.edu/dataset/109/wine",
+ "access": "public",
+ "availability": "online",
+ "metadata_provided_with_dataset": true,
+ "external_documentation_available": true,
+ "domain": [
+  "business"
+ ],
+ "task": [
+  "classification"
+ ],
+ "features_description": "13 variable(s) explicative(s), cible « cultivar ».",
+ "missing_values_description": "Aucune valeur manquante.",
+ "transparency": true,
+ "data_quality_documented": true,
+ "sample_balance_level": "moderate",
+ "sample_balance_description": "Répartition des classes : class_1=71, class_0=59, class_2=48"
+}

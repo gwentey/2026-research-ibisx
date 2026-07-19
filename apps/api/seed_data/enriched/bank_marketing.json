@@ -1,0 +1,25 @@
+{
+ "display_name": "Bank Marketing",
+ "year": 2012,
+ "objective": "Prédire si un client souscrira un dépôt à terme après une campagne téléphonique.",
+ "sources": "UCI — Bank Marketing",
+ "storage_uri": "https://archive.ics.uci.edu/dataset/222/bank+marketing",
+ "access": "public",
+ "availability": "online",
+ "metadata_provided_with_dataset": true,
+ "external_documentation_available": true,
+ "domain": [
+  "finance"
+ ],
+ "task": [
+  "classification"
+ ],
+ "features_description": "16 variable(s) explicative(s), cible « Class ».",
+ "missing_values_description": "Aucune valeur manquante.",
+ "transparency": true,
+ "data_quality_documented": true,
+ "representativity_level": "medium",
+ "representativity_description": "Échantillon aléatoire de 10000 lignes du jeu complet (reproductible, seed=42).",
+ "sample_balance_level": "severely_imbalanced",
+ "sample_balance_description": "Répartition des classes : 1=8794, 2=1206"
+}

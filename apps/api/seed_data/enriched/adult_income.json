@@ -1,0 +1,25 @@
+{
+ "display_name": "Adult Census Income",
+ "year": 1996,
+ "objective": "Prédire si le revenu annuel dépasse 50 000 $ à partir de données de recensement.",
+ "sources": "UCI — Adult / Census Income (recensement US 1994)",
+ "storage_uri": "https://archive.ics.uci.edu/dataset/2/adult",
+ "access": "public",
+ "availability": "online",
+ "metadata_provided_with_dataset": true,
+ "external_documentation_available": true,
+ "domain": [
+  "social"
+ ],
+ "task": [
+  "classification"
+ ],
+ "features_description": "14 variable(s) explicative(s), cible « class ».",
+ "missing_values_description": "1298 valeur(s) manquante(s) au total (3 colonne(s) concernée(s)).",
+ "transparency": true,
+ "data_quality_documented": true,
+ "representativity_level": "medium",
+ "representativity_description": "Échantillon aléatoire de 10000 lignes du jeu complet (reproductible, seed=42).",
+ "sample_balance_level": "imbalanced",
+ "sample_balance_description": "Répartition des classes : <=50K=7658, >50K=2342"
+}

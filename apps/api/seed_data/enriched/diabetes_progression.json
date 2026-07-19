@@ -1,0 +1,21 @@
+{
+ "display_name": "Diabetes Progression",
+ "year": 2004,
+ "objective": "Prédire la progression du diabète un an après le diagnostic, à partir de mesures cliniques.",
+ "sources": "Efron, Hastie, Johnstone, Tibshirani (2004) — distribué avec scikit-learn",
+ "storage_uri": "https://scikit-learn.org/stable/datasets/toy_dataset.html",
+ "access": "public",
+ "availability": "online",
+ "metadata_provided_with_dataset": true,
+ "external_documentation_available": true,
+ "domain": [
+  "healthcare"
+ ],
+ "task": [
+  "regression"
+ ],
+ "features_description": "10 variable(s) explicative(s), cible « progression ».",
+ "missing_values_description": "Aucune valeur manquante.",
+ "transparency": true,
+ "data_quality_documented": true
+}
