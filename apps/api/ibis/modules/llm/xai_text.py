@@ -250,7 +250,9 @@ _BLOCKS_GRAMMAR = (
     "Tonalités (tone) — sémantiques, JAMAIS décoratives : "
     '"positive" = pousse vers / favorable, "negative" = pousse contre / risque, '
     '"warning" = limite ou prudence, "accent" = point clé / variable dominante, '
-    '"neutral" = neutre. featureImpact.direction : "up" (favorable) ou "down" (défavorable).'
+    '"neutral" = neutre. featureImpact.direction : "up" (favorable) ou "down" (défavorable). '
+    "Limites STRICTES : 16 blocs max ; keyValue ≤ 8 paires ; featureImpact ≤ 10 barres ; "
+    "table ≤ 14 lignes et 5 colonnes ; list ≤ 12 puces."
 )
 
 _BLOCKS_GRAMMAR_EN = (
@@ -267,7 +269,9 @@ _BLOCKS_GRAMMAR_EN = (
     "Tones — semantic, NEVER decorative: "
     '"positive" = pushes toward / favorable, "negative" = pushes against / risk, '
     '"warning" = limitation or caution, "accent" = key point / dominant feature, '
-    '"neutral" = neutral. featureImpact.direction: "up" (favorable) or "down" (unfavorable).'
+    '"neutral" = neutral. featureImpact.direction: "up" (favorable) or "down" (unfavorable). '
+    "STRICT limits: 16 blocks max; keyValue ≤ 8 pairs; featureImpact ≤ 10 bars; "
+    "table ≤ 14 rows and 5 columns; list ≤ 12 bullets."
 )
 
 

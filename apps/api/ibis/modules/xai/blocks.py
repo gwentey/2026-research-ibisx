@@ -33,7 +33,8 @@ class _Block(BaseModel):
 
 class ParagraphBlock(_Block):
     type: Literal["paragraph"]
-    text: str = Field(min_length=1, max_length=1200)
+    # 2000 : une explication expert (~320 mots) peut tenir dans un seul paragraphe long.
+    text: str = Field(min_length=1, max_length=2000)
 
 
 class HeadingBlock(_Block):
@@ -123,12 +124,41 @@ def _strip_fences(raw: str) -> str:
     return text.strip()
 
 
+# Plafonds du schéma par type de bloc : listes TRONQUÉES avant validation plutôt que
+# rejet du document entier (constaté en réel : 10 métriques dans un keyValue ≤ 8 → repli
+# à tort d'une explication par ailleurs parfaite).
+_LIST_CAPS: dict[str, tuple[str, int]] = {
+    "keyValue": ("items", 8),
+    "featureImpact": ("items", 10),
+    "list": ("items", 12),
+    "table": ("rows", 14),
+}
+
+
+def _clamp_lists(payload: Any) -> Any:
+    """Tronque blocs et listes internes aux plafonds du schéma (tolérance LLM)."""
+    if not isinstance(payload, dict) or not isinstance(payload.get("blocks"), list):
+        return payload
+    payload["blocks"] = payload["blocks"][:16]
+    for block in payload["blocks"]:
+        if not isinstance(block, dict):
+            continue
+        cap = _LIST_CAPS.get(str(block.get("type")))
+        if cap is not None and isinstance(block.get(cap[0]), list):
+            block[cap[0]] = block[cap[0]][: cap[1]]
+        if block.get("type") == "table" and isinstance(block.get("columns"), list):
+            block["columns"] = block["columns"][:5]
+            if isinstance(block.get("rows"), list):
+                block["rows"] = [row[:5] if isinstance(row, list) else row for row in block["rows"]]
+    return payload
+
+
 def parse_document(raw: str) -> BlockDocument:
     """Parse + valide la sortie LLM. Lève ValueError/ValidationError si non conforme."""
     payload: Any = json.loads(_strip_fences(raw))
     if isinstance(payload, list):  # l'IA a renvoyé le tableau de blocs directement
         payload = {"blocks": payload}
-    return BlockDocument.model_validate(payload)
+    return BlockDocument.model_validate(_clamp_lists(payload))
 
 
 def extract_text(doc: BlockDocument) -> str:

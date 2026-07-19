@@ -73,6 +73,38 @@ def test_parse_rejects_non_json() -> None:
         blocks.parse_document("désolé, je ne peux pas répondre en JSON")
 
 
+def test_parse_clamps_overlong_lists_instead_of_rejecting() -> None:
+    """Constaté en réel (vue expert) : le LLM liste 10 métriques dans un keyValue plafonné
+    à 8 → le document entier partait au repli. On tronque au plafond, on ne rejette pas."""
+    payload = {
+        "blocks": [
+            {
+                "type": "keyValue",
+                "items": [{"label": f"m{i}", "value": str(i)} for i in range(10)],
+            },
+            {
+                "type": "featureImpact",
+                "items": [{"feature": f"v{i}", "weight": 0.1} for i in range(12)],
+            },
+            {"type": "list", "items": [f"point {i}" for i in range(15)]},
+        ]
+    }
+    doc = blocks.parse_document(json.dumps(payload))
+    key_value, feature_impact, bullet_list = doc.blocks
+    assert isinstance(key_value, blocks.KeyValueBlock) and len(key_value.items) == 8
+    assert isinstance(feature_impact, blocks.FeatureImpactBlock)
+    assert len(feature_impact.items) == 10
+    assert isinstance(bullet_list, blocks.ListBlock) and len(bullet_list.items) == 12
+
+
+def test_parse_accepts_long_expert_paragraph() -> None:
+    # Une explication expert (~320 mots) peut tenir dans un seul paragraphe long.
+    doc = blocks.parse_document(
+        json.dumps({"blocks": [{"type": "paragraph", "text": "mot " * 450}]})
+    )
+    assert isinstance(doc.blocks[0], blocks.ParagraphBlock)
+
+
 # ---------------------------------------------------------------- extraction / miroir
 
 
