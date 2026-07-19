@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AppGuard } from "@/components/ibis/auth-guard";
+import { QuestTracker } from "@/components/ibis/challenges/quest-tracker";
 import { WizardShell } from "@/components/ibis/wizard/wizard-shell";
 import {
   Step1Overview,
@@ -198,6 +199,7 @@ export default function WizardPage() {
       <Suspense fallback={<Skeleton className="mx-auto mt-16 h-96 w-full max-w-4xl" />}>
         <WizardInner />
       </Suspense>
+      <QuestTracker />
     </AppGuard>
   );
 }

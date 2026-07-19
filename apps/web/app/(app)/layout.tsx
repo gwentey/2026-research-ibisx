@@ -5,6 +5,7 @@ import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { AppGuard } from "@/components/ibis/auth-guard";
 import { IbisHeader } from "@/components/ibis/layout/ibis-header";
 import { IbisSidebar } from "@/components/ibis/layout/ibis-sidebar";
+import { QuestTracker } from "@/components/ibis/challenges/quest-tracker";
 
 // Layout applicatif : structure identique au layout (auth) du template (P6).
 export default async function AppLayout({
@@ -39,6 +40,7 @@ export default async function AppLayout({
               {children}
             </div>
           </div>
+          <QuestTracker />
         </SidebarInset>
       </SidebarProvider>
     </AppGuard>

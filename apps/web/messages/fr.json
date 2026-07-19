@@ -192,14 +192,26 @@
         "tagline": "Le naufrage le plus étudié de la data science.",
         "brief": "Avril 1912 — le Titanic sombre dans l'Atlantique Nord. Plus d'un siècle plus tard, sa liste de passagers reste l'un des jeux de données les plus étudiés au monde. À partir de 891 passagers réels (classe, sexe, âge, tarif…), un modèle peut-il prédire qui a survécu ?",
         "stakes": "Derrière la performance se cache une question de société : le sort d'un passager dépendait-il d'abord de sa classe et de son sexe ?",
-        "reward": "À la clé : ton premier modèle entraîné, et l'explication de ce qui a le plus pesé."
+        "reward": "À la clé : ton premier modèle entraîné, et l'explication de ce qui a le plus pesé.",
+        "coach": {
+          "open_dataset": "Ouvre la fiche Titanic pour découvrir les données.",
+          "create_project": "Clique « Utiliser dans un projet » pour partir sur ce jeu de données.",
+          "launch_training": "Applique la recommandation IA à chaque étape, puis lance l'entraînement.",
+          "read_results": "Observe ton score et tes métriques, puis file à l'onglet Explicabilité."
+        }
       },
       "penguins-antarctique": {
         "title": "Terrain en Antarctique : quelle espèce ?",
         "tagline": "Identifier un manchot au mètre-ruban et à la balance.",
         "brief": "Station Palmer, Antarctique. Un biologiste de terrain relève quelques mesures — longueur du bec, masse, nageoire — sans toujours pouvoir observer l'oiseau de près. Ces chiffres suffisent-ils à distinguer trois espèces de manchots ?",
         "stakes": "Un bon classifieur, c'est un inventaire de la faune plus rapide et reproductible sur le terrain.",
-        "reward": "À la clé : un classifieur à 3 classes et une matrice de confusion qui montre où il hésite."
+        "reward": "À la clé : un classifieur à 3 classes et une matrice de confusion qui montre où il hésite.",
+        "coach": {
+          "open_dataset": "Ouvre la fiche Penguins pour voir les mesures relevées.",
+          "create_project": "Clique « Utiliser dans un projet » pour partir sur ce jeu de données.",
+          "launch_training": "Laisse-toi guider par la recommandation IA à chaque étape, puis lance.",
+          "read_results": "Regarde la matrice de confusion : où le modèle confond-il les espèces ?"
+        }
       },
       "eleves-decrochage": {
         "title": "Été 2026 : qui risque de décrocher ?",

@@ -192,14 +192,26 @@
         "tagline": "Data science's most studied shipwreck.",
         "brief": "April 1912 — the Titanic sinks in the North Atlantic. Over a century later, its passenger list is still one of the most studied datasets in the world. From 891 real passengers (class, sex, age, fare…), can a model predict who survived?",
         "stakes": "Behind the accuracy lies a social question: did a passenger's fate depend first on their class and their sex?",
-        "reward": "You'll leave with your first trained model — and an explanation of what mattered most."
+        "reward": "You'll leave with your first trained model — and an explanation of what mattered most.",
+        "coach": {
+          "open_dataset": "Open the Titanic page to explore the data.",
+          "create_project": "Click \"Use in a project\" to start from this dataset.",
+          "launch_training": "Apply the AI recommendation at each step, then launch training.",
+          "read_results": "Check your score and metrics, then head to the Explainability tab."
+        }
       },
       "penguins-antarctique": {
         "title": "Fieldwork in Antarctica: which species?",
         "tagline": "Identify a penguin with a tape measure and a scale.",
         "brief": "Palmer Station, Antarctica. A field biologist jots down a few measurements — bill length, mass, flipper — without always getting a close look at the bird. Are those numbers enough to tell three penguin species apart?",
         "stakes": "A good classifier means faster, reproducible wildlife surveys in the field.",
-        "reward": "You'll leave with a 3-class classifier and a confusion matrix showing where it hesitates."
+        "reward": "You'll leave with a 3-class classifier and a confusion matrix showing where it hesitates.",
+        "coach": {
+          "open_dataset": "Open the Penguins page to see the recorded measurements.",
+          "create_project": "Click \"Use in a project\" to start from this dataset.",
+          "launch_training": "Let the AI recommendation guide you at each step, then launch.",
+          "read_results": "Look at the confusion matrix: where does the model confuse species?"
+        }
       },
       "eleves-decrochage": {
         "title": "Summer 2026: who's at risk of failing?",
