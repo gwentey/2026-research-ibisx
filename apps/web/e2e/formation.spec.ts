@@ -126,5 +126,21 @@ for (const locale of ["fr", "en"] as const) {
     await expect(
       page.getByText(t(m, "formation.notions.arbre-decision.term"), { exact: true }).first()
     ).toBeVisible();
+
+    // --- 8. Cursus Analyste : une étude de cas réelle (« anatomie d'un fiasco ») ---------
+    await page.goto("/formation/analyste/anatomie-dun-fiasco");
+    await expect(
+      page.getByText(t(m, "formation.blocks.caseLabel"), { exact: true })
+    ).toBeVisible();
+    await expect(
+      page.getByText(t(m, "formation.lessons.anatomie-dun-fiasco.case.title"), { exact: true })
+    ).toBeVisible();
+
+    // --- 9. Passeport IA : certificat + badges de compétence ---------------------------
+    await page.goto("/formation/passeport");
+    await expect(page.getByText(t(m, "formation.passport.certLabel"), { exact: true })).toBeVisible();
+    await expect(
+      page.getByText(t(m, "formation.badges.premier-modele.title"), { exact: true })
+    ).toBeVisible();
   });
 }

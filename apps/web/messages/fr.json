@@ -1560,7 +1560,9 @@
       "practiceTarget": "Défi : {challenge}",
       "readyToFinish": "Tu peux valider la leçon.",
       "answerToFinish": "Réponds au quiz pour valider la leçon.",
-      "finishLesson": "Valider la leçon"
+      "finishLesson": "Valider la leçon",
+      "caseLabel": "Étude de cas",
+      "caseTakeaway": "À retenir"
     },
     "grades": {
       "curieux": "Curieux",
@@ -1584,6 +1586,11 @@
         "title": "Praticien",
         "tagline": "Construis un modèle, et évalue-le sans te mentir.",
         "subtitle": "Prépare les données, choisis un algorithme, mesure honnêtement ce que vaut ton modèle — et comprends enfin pourquoi il décide."
+      },
+      "analyste": {
+        "title": "Analyste",
+        "tagline": "Le niveau chercheur : rigueur, éthique et honnêteté.",
+        "subtitle": "Mesure l'incertitude, traque les biais, distingue corrélation et causalité, et transforme un modèle en résultat défendable."
       }
     },
     "modules": {
@@ -1626,6 +1633,22 @@
       "comprendre-pourquoi": {
         "title": "Comprendre pourquoi il décide",
         "tagline": "Ouvre la boîte : vois ce que le modèle utilise pour décider, et où sont les limites."
+      },
+      "mesurer-lincertitude": {
+        "title": "Mesurer l'incertitude",
+        "tagline": "Un chiffre seul ne suffit pas : apprends à dire à quel point tu es sûr de lui."
+      },
+      "ethique-et-equite": {
+        "title": "Éthique et équité",
+        "tagline": "D'où viennent les biais, comment les auditer, et pourquoi c'est ton problème."
+      },
+      "correlation-et-causalite": {
+        "title": "Corrélation et causalité",
+        "tagline": "Varier ensemble n'est pas se causer : distingue prédire, expliquer et agir."
+      },
+      "du-resultat-au-livrable": {
+        "title": "Du résultat au livrable",
+        "tagline": "Trace, documente, assume : transforme un modèle en résultat qu'on peut citer."
       }
     },
     "lessons": {
@@ -2270,6 +2293,204 @@
           "title": "Mène l'enquête « décrochage scolaire »",
           "body": "Lance le Défi « décrochage scolaire » : tu vas travailler sur de vraies données d'élèves, entraîner un vrai modèle, l'évaluer honnêtement (exactitude, précision, rappel, F1, matrice de confusion) et lire pourquoi il décide grâce à l'importance des variables et à SHAP. Aucune simulation : le modèle est réel et le résultat reproductible. À toi de mener l'enquête du début à la fin."
         }
+      },
+      "un-seul-split-est-fragile": {
+        "title": "Un seul découpage est fragile",
+        "summary": "Tester sur un unique échantillon, c'est jouer sa note à pile ou face. La validation croisée rejoue plusieurs découpages.",
+        "visual": {
+          "title": "Un seul découpage, un résultat qui tremble",
+          "body": "Quand tu coupes tes données une seule fois en « entraînement » et « test », le score dépend beaucoup du hasard de cette coupe. Tombe sur un test facile, ton modèle brille ; tombe sur un test difficile, il déçoit. La validation croisée (k-fold) rejoue plusieurs découpages différents et fait la moyenne. Tu obtiens un résultat plus stable, moins dépendant de la chance.",
+          "caption": "Un split unique = une photo ; la validation croisée = un film."
+        },
+        "quiz": {
+          "question": "Pourquoi la validation croisée donne-t-elle un résultat plus fiable qu'un seul découpage ?",
+          "options": [
+            "Parce qu'elle utilise un modèle plus puissant",
+            "Parce qu'elle rejoue plusieurs découpages et moyenne les scores",
+            "Parce qu'elle supprime les données difficiles"
+          ],
+          "explanation": "La validation croisée n'améliore pas le modèle : elle teste sur plusieurs découpages et fait la moyenne, ce qui réduit l'effet du hasard d'un unique split. À noter : elle n'est pas encore dans le pipeline IBIS-X, elle figure sur la feuille de route. On l'explique ici pour comprendre la logique."
+        }
+      },
+      "intervalles-de-confiance": {
+        "title": "Les intervalles de confiance",
+        "summary": "« 82 % » ne veut pas dire grand-chose sans marge. Découvre le « ± combien » qui rend un chiffre sérieux.",
+        "visual": {
+          "title": "« 82 % », oui, mais à combien près ?",
+          "body": "Annoncer « mon modèle atteint 82 % » sans marge, c'est promettre une précision qu'on ne connaît pas. L'intervalle de confiance ajoute la fourchette : « 82 % ± 3 % » dit honnêtement où se situe la vraie valeur. Plus l'échantillon est petit, plus la fourchette est large. Un intervalle qui chevauche celui d'un autre modèle signifie qu'on ne peut pas les départager.",
+          "caption": "Un chiffre nu cache son incertitude ; l'intervalle la révèle."
+        },
+        "quiz": {
+          "question": "Que t'apprend un intervalle de confiance que le chiffre « 82 % » seul ne dit pas ?",
+          "options": [
+            "L'ampleur de l'incertitude autour de ce chiffre",
+            "Le nom de l'algorithme utilisé",
+            "Le temps d'entraînement du modèle"
+          ],
+          "explanation": "L'intervalle de confiance quantifie la marge d'erreur autour du score : « 82 % ± combien ». C'est ce qui permet de dire si deux modèles sont vraiment différents. Honnêteté : ce calcul n'est pas encore intégré au pipeline IBIS-X, il est à venir."
+        }
+      },
+      "la-reproductibilite": {
+        "title": "La reproductibilité",
+        "summary": "Mêmes données, même graine, même résultat : ce qui rend une analyse vérifiable — et c'est natif dans IBIS-X.",
+        "visual": {
+          "title": "Mêmes graines, mêmes fruits",
+          "body": "Beaucoup d'algorithmes contiennent du hasard : ordre des données, initialisation, tirages. Sans contrôle, deux entraînements donnent deux résultats légèrement différents. En fixant la graine aléatoire (random_state=42), tu forces le hasard à se répéter à l'identique. Dans IBIS-X, c'est réel et natif : mêmes données + même graine → exactement le même résultat, à chaque fois.",
+          "caption": "La graine fixe le hasard : le résultat devient rejouable."
+        },
+        "quiz": {
+          "question": "Que garantit une graine aléatoire fixée (random_state=42) dans IBIS-X ?",
+          "options": [
+            "Que le modèle sera forcément plus précis",
+            "Que l'entraînement ira plus vite",
+            "Que le même entraînement redonne exactement le même résultat"
+          ],
+          "explanation": "Fixer la graine rend le hasard reproductible : mêmes données et même graine produisent le même résultat, ni plus précis ni plus rapide. C'est réel et natif dans IBIS-X, socle de tout résultat défendable."
+        }
+      },
+      "dou-viennent-les-biais": {
+        "title": "D'où viennent les biais",
+        "summary": "Un modèle n'invente pas ses préjugés : il les hérite des données et de la société. Voyons comment.",
+        "visual": {
+          "title": "Le modèle apprend le monde tel qu'il est, injustices comprises",
+          "body": "Un modèle n'invente pas ses biais : il les hérite. Des données historiques marquées par des discriminations passées lui apprennent à les reproduire. Un échantillon non représentatif (un groupe sous-représenté) le rend aveugle à ce groupe. Et une boucle de rétroaction — le modèle influence les données futures qu'il ré-apprend — amplifie le tout.",
+          "caption": "Données injustes en entrée, décisions injustes en sortie."
+        },
+        "quiz": {
+          "question": "Quelle est une source majeure des biais d'un modèle ?",
+          "options": [
+            "Le langage de programmation utilisé",
+            "Des données historiques qui reflètent des injustices passées",
+            "Le fait d'avoir fixé une graine aléatoire"
+          ],
+          "explanation": "Les biais viennent surtout des données et de la société : historiques injustes, échantillons non représentatifs, boucles de rétroaction. Ni le langage ni la graine n'en sont la cause — la graine ne fait que rendre le résultat reproductible."
+        }
+      },
+      "auditer-lequite": {
+        "title": "Auditer l'équité",
+        "summary": "Un bon score global peut masquer une injustice envers un groupe. Apprends à la mesurer.",
+        "visual": {
+          "title": "Traite-t-il tout le monde équitablement ?",
+          "body": "Auditer l'équité, c'est vérifier qu'un modèle ne défavorise pas systématiquement un groupe. Deux idées clés : la parité (des taux de décision comparables entre groupes) et l'égalité des chances (à situation égale, mêmes chances d'un bon résultat). Dans IBIS-X, c'est concret : les Défis d'équité te font auditer le biais via la XAI (SHAP, importance) sur de vrais datasets.",
+          "caption": "Auditer, ce n'est pas croire le modèle sur parole : c'est le mesurer."
+        },
+        "quiz": {
+          "question": "Qu'est-ce qu'auditer l'équité d'un modèle ?",
+          "options": [
+            "Mesurer s'il traite équitablement les différents groupes",
+            "Vérifier qu'il tourne assez vite",
+            "S'assurer qu'il utilise toutes les colonnes disponibles"
+          ],
+          "explanation": "Auditer l'équité, c'est mesurer le traitement des groupes (parité, égalité des chances), pas la vitesse ni le nombre de colonnes. Dans IBIS-X, cet audit se fait réellement via la XAI dans les Défis d'équité."
+        }
+      },
+      "anatomie-dun-fiasco": {
+        "title": "Anatomie d'un fiasco",
+        "summary": "Un cas réel où un algorithme a nui à des gens — et ce qu'il nous apprend.",
+        "case": {
+          "title": "COMPAS : un score de récidive au biais racial",
+          "context": "Aux États-Unis, l'outil COMPAS attribue à des prévenus un « score de risque » de récidive, utilisé pour éclairer des décisions judiciaires (caution, peine). En 2016, l'enquête de ProPublica a analysé des milliers de scores en Floride en les comparant aux récidives réelles.",
+          "problem": "L'enquête a montré que, à comportement futur égal, les prévenus noirs étaient bien plus souvent classés « à haut risque » à tort, tandis que les prévenus blancs étaient plus souvent classés « à faible risque » à tort. Le modèle avait appris des données historiques d'un système judiciaire déjà inégalitaire, et il reproduisait cette inégalité sous une apparence de neutralité chiffrée.",
+          "takeaway": "Un score n'est pas neutre parce qu'il est chiffré. Sans audit d'équité par groupe, un modèle peut blanchir une discrimination en la présentant comme objective. Toujours confronter les erreurs du modèle aux groupes concernés, pas seulement à la précision globale."
+        },
+        "quiz": {
+          "question": "Quel a été le problème central révélé par ProPublica sur COMPAS en 2016 ?",
+          "options": [
+            "Le modèle était trop lent pour être utilisé au tribunal",
+            "Le modèle ignorait complètement les récidives passées",
+            "Le modèle classait à tort les prévenus noirs « à haut risque » bien plus souvent"
+          ],
+          "explanation": "ProPublica a montré un biais racial : à comportement futur comparable, les prévenus noirs étaient plus souvent étiquetés à tort « à haut risque ». Le problème n'était ni la vitesse ni l'ignorance des récidives, mais l'inégalité de traitement héritée de données historiques injustes."
+        }
+      },
+      "ta-troisieme-enquete": {
+        "title": "Ta troisième enquête",
+        "summary": "Tu sais mesurer et douter. Mets-le à l'épreuve : audite le biais d'un vrai modèle.",
+        "visual": {
+          "title": "De la théorie à un vrai audit de biais",
+          "body": "Tu as vu d'où viennent les biais et comment les nommer. Place à la pratique sur des données réelles. Le dataset Adult Census (revenus) sert à prédire si une personne gagne plus d'un certain seuil. Tu vas entraîner un vrai modèle, reproductible, puis inspecter ce sur quoi il s'appuie pour décider.",
+          "caption": "Passe du concept à la preuve : un modèle réel, un biais mesurable."
+        },
+        "practice": {
+          "title": "Défi : auditer l'équité sur les revenus (Adult Census)",
+          "body": "Lance le Défi d'audit d'équité : entraîne un vrai modèle sur Adult Census (résultat reproductible, random_state=42), puis ouvre la XAI (SHAP, importance) pour voir quelles variables pèsent dans la décision. Repère si des attributs sensibles — genre, origine — pèsent anormalement. Compare le traitement entre groupes et formule ton constat de biais, preuves à l'appui. Tout est réel : le modèle, les chiffres, le .joblib téléchargeable."
+        }
+      },
+      "correlation-nest-pas-causalite": {
+        "title": "Corrélation n'est pas causalité",
+        "summary": "Deux courbes qui montent ensemble ne prouvent rien. L'erreur la plus coûteuse de l'analyse.",
+        "myth": {
+          "myth": "Si deux choses varient ensemble, l'une cause forcément l'autre.",
+          "reality": "Deux variables peuvent monter et descendre ensemble sans lien direct : souvent, une troisième cause cachée les tire toutes les deux. La corrélation est un indice, jamais une preuve de cause."
+        },
+        "visual": {
+          "title": "Les glaces ne provoquent pas les noyades",
+          "body": "L'été, les ventes de glaces montent. L'été, les noyades augmentent aussi. Les deux courbes se suivent presque parfaitement : forte corrélation. Pourtant, personne ne se noie à cause d'un cornet. La vraie cause, cachée derrière les deux, c'est la chaleur : elle pousse à manger des glaces ET à se baigner. On appelle ça une corrélation fallacieuse.",
+          "caption": "Une variable cachée (l'été) peut créer un lien qui n'existe pas."
+        },
+        "quiz": {
+          "question": "Ventes de glaces et noyades augmentent ensemble. Que peut-on conclure ?",
+          "options": [
+            "Une cause commune cachée (la chaleur estivale) explique les deux",
+            "Les glaces rendent la baignade dangereuse",
+            "Réduire les ventes de glaces ferait baisser les noyades"
+          ],
+          "explanation": "C'est une corrélation fallacieuse : une troisième variable, la chaleur de l'été, fait monter les deux. Aucune ne cause l'autre, et agir sur les glaces ne changerait rien aux noyades."
+        }
+      },
+      "les-trois-registres": {
+        "title": "Prédire, expliquer, agir",
+        "summary": "Trois questions que l'on confond sans cesse — et ce qu'IBIS-X sait, ou non, y répondre.",
+        "visual": {
+          "title": "Trois questions qu'on confond trop souvent",
+          "body": "Prédire demande « que va-t-il se passer ? » — il suffit que le modèle vise juste. Expliquer/inférer demande « quel effet a réellement X ? » — on cherche à comprendre. Agir/causer demande « si je change X, Y bouge-t-il ? » — la question la plus exigeante. IBIS-X est solide sur le prédictif et l'explicabilité (SHAP, importance) ; l'inférence causale (différences de différences, variables instrumentales) n'y est pas encore. Sache où passe la frontière.",
+          "caption": "Prédire ≠ expliquer ≠ causer : trois questions, trois exigences."
+        },
+        "quiz": {
+          "question": "Quel registre répond à « si je change X, est-ce que Y change ? »",
+          "options": [
+            "La prédiction",
+            "L'action / la causalité",
+            "La reproductibilité"
+          ],
+          "explanation": "« Si je change X, Y bouge-t-il ? » est la question causale (agir). Prédire vise seulement à anticiper, la reproductibilité n'est pas un registre de question. IBIS-X couvre le prédictif et l'explicabilité, mais pas encore l'inférence causale."
+        }
+      },
+      "lempreinte-de-reproductibilite": {
+        "title": "L'empreinte de reproductibilité",
+        "summary": "Données, versions, graine : la trace qui rend ton résultat défendable.",
+        "visual": {
+          "title": "L'empreinte qui rend un résultat défendable",
+          "body": "Un résultat crédible peut être rejoué par un autre. Pour ça, il faut tracer trois choses : les données exactes utilisées, les versions des outils, et la graine aléatoire. C'est l'empreinte de reproductibilité. Dans IBIS-X, tu peux déjà télécharger le modèle entraîné au format .joblib, reproductible : une brique concrète de cette empreinte.",
+          "caption": "Données + versions + graine = un résultat qu'on peut rejouer."
+        },
+        "quiz": {
+          "question": "Que faut-il tracer pour qu'un résultat soit reproductible ?",
+          "options": [
+            "Uniquement le score final obtenu",
+            "Le nom de la personne qui a lancé le modèle",
+            "Les données, les versions des outils et la graine aléatoire"
+          ],
+          "explanation": "L'empreinte de reproductibilité, c'est données + versions + graine — pas seulement le score ni l'auteur. IBIS-X y contribue déjà en permettant de télécharger le modèle .joblib reproductible."
+        }
+      },
+      "vers-un-resultat-citable": {
+        "title": "Vers un résultat citable",
+        "summary": "D'un modèle à un résultat qu'on peut publier : méthode, limites, honnêteté.",
+        "visual": {
+          "title": "D'un modèle à un résultat qu'on peut citer",
+          "body": "Un modèle qui tourne n'est pas encore un résultat citable. Pour qu'on puisse s'y référer, il faut la méthode (ce que tu as fait, avec quelles données), les limites (ce que le modèle ne sait pas faire) et l'honnêteté sur les incertitudes. Dans IBIS-X, le modèle reproductible et l'audit XAI donnent déjà de la matière ; le rapport exportable complet, lui, est encore sur la feuille de route.",
+          "caption": "Méthode + limites + honnêteté = un résultat qu'on peut publier."
+        },
+        "quiz": {
+          "question": "Qu'est-ce qui distingue un résultat citable d'un simple modèle qui tourne ?",
+          "options": [
+            "La méthode documentée, les limites énoncées et l'honnêteté sur l'incertitude",
+            "Le fait d'avoir obtenu le score le plus élevé possible",
+            "Le fait d'avoir utilisé l'algorithme le plus récent"
+          ],
+          "explanation": "Un résultat citable s'appuie sur une méthode traçable, des limites assumées et de l'honnêteté — pas sur le score le plus haut ni l'algorithme le plus neuf. Dans IBIS-X, le rapport exportable complet reste à venir : autant le dire clairement."
+        }
       }
     },
     "notions": {
@@ -2432,6 +2653,51 @@
         "term": "Corrélation n'est pas causalité",
         "definition": "SHAP et l'importance montrent ce que le modèle utilise pour décider, pas ce qui cause réellement le résultat. Une variable peut peser lourd simplement parce qu'elle accompagne le résultat, sans en être la cause.",
         "example": "Les ventes de glaces et les noyades augmentent ensemble parce qu'il fait chaud ; la glace ne cause pas la noyade, même si un modèle s'appuierait volontiers dessus."
+      },
+      "validation-croisee": {
+        "term": "Validation croisée (k-fold)",
+        "definition": "Méthode qui découpe les données en plusieurs parts, entraîne et teste tour à tour sur chacune, puis moyenne les scores pour un résultat plus stable.",
+        "example": "En 5-fold, on entraîne 5 fois en changeant à chaque fois la part servant de test, puis on fait la moyenne des 5 scores. (Pas encore dans le pipeline IBIS-X : sur la feuille de route.)"
+      },
+      "intervalle-confiance": {
+        "term": "Intervalle de confiance",
+        "definition": "Fourchette qui entoure un chiffre estimé pour indiquer où se trouve probablement la vraie valeur : elle traduit l'incertitude de la mesure.",
+        "example": "« Précision 82 % ± 3 % » : la vraie précision se situe vraisemblablement entre 79 % et 85 %. (Calcul pas encore intégré à IBIS-X : à venir.)"
+      },
+      "reproductibilite": {
+        "term": "Reproductibilité",
+        "definition": "Propriété d'un résultat qu'on peut obtenir à l'identique en repartant des mêmes données et des mêmes réglages, dont la graine aléatoire.",
+        "example": "Avec random_state=42, relancer l'entraînement sur les mêmes données redonne exactement le même modèle. (Réel et natif dans IBIS-X.)"
+      },
+      "biais-sources": {
+        "term": "Sources de biais",
+        "definition": "Origines des injustices d'un modèle : données historiques marquées par des discriminations, échantillons non représentatifs, boucles de rétroaction.",
+        "example": "Un modèle de tri de CV entraîné sur des embauches passées majoritairement masculines apprend à défavoriser les candidatures féminines."
+      },
+      "equite-fairness": {
+        "term": "Équité (fairness)",
+        "definition": "Ensemble de critères vérifiant qu'un modèle traite comparablement les groupes : parité des taux de décision, égalité des chances à situation égale.",
+        "example": "Vérifier que le taux d'accord d'un prêt est comparable entre deux groupes à profil financier équivalent. (Audité via la XAI dans les Défis d'équité IBIS-X.)"
+      },
+      "correlations-fallacieuses": {
+        "term": "Corrélation fallacieuse",
+        "definition": "Lien statistique entre deux variables qui varient ensemble sans que l'une cause l'autre, souvent à cause d'une troisième variable cachée.",
+        "example": "Ventes de glaces et noyades montent ensemble l'été, non parce qu'elles se causent, mais à cause de la chaleur commune."
+      },
+      "prediction-inference-causalite": {
+        "term": "Prédiction, inférence, causalité",
+        "definition": "Trois registres distincts : prédire ce qui va arriver, expliquer l'effet d'une variable, ou établir qu'agir sur X change réellement Y.",
+        "example": "Prédire les ventes de demain, estimer l'effet du prix sur les ventes, ou tester si baisser le prix fait vraiment vendre plus. (IBIS-X : prédictif et explicabilité oui, inférence causale pas encore.)"
+      },
+      "empreinte-repro": {
+        "term": "Empreinte de reproductibilité",
+        "definition": "Ensemble des informations à conserver pour rejouer un résultat : données exactes, versions des outils et graine aléatoire.",
+        "example": "Archiver le dataset, la version des bibliothèques et random_state=42 permet à un collègue de retrouver le même modèle. (IBIS-X : .joblib reproductible téléchargeable.)"
+      },
+      "resultat-citable": {
+        "term": "Résultat citable",
+        "definition": "Résultat suffisamment documenté (méthode, limites, incertitudes) pour être référencé ou publié de façon défendable.",
+        "example": "Un rapport indiquant les données, la méthode, la marge d'erreur et les limites du modèle peut être cité dans un travail de recherche. (Rapport exportable complet : sur la feuille de route IBIS-X.)"
       }
     },
     "playgrounds": {
@@ -2474,6 +2740,46 @@
       "count": "{count, plural, one {# terme} other {# termes}}",
       "empty": "Aucun terme ne correspond à ta recherche.",
       "learnMore": "Voir la leçon"
+    },
+    "badges": {
+      "premier-modele": {
+        "title": "Premier modèle",
+        "description": "Tu as entraîné ton tout premier modèle sur de vraies données."
+      },
+      "lire-matrice": {
+        "title": "Lecteur de matrice",
+        "description": "Tu sais lire une matrice de confusion."
+      },
+      "reperer-surapprentissage": {
+        "title": "Œil du sur-apprentissage",
+        "description": "Tu repères un modèle qui apprend par cœur."
+      },
+      "importance-vs-cause": {
+        "title": "Esprit critique",
+        "description": "Tu distingues ce qu'un modèle utilise de ce qui cause réellement."
+      },
+      "resultat-reproductible": {
+        "title": "Reproductible",
+        "description": "Tu sais pourquoi et comment un résultat se reproduit."
+      },
+      "auditer-equite": {
+        "title": "Auditeur d'équité",
+        "description": "Tu as audité le biais d'un vrai modèle."
+      }
+    },
+    "passport": {
+      "navLabel": "Passeport",
+      "certLabel": "Passeport IA",
+      "title": "Académie IBIS-X",
+      "certifiedLead": "Ce passeport atteste ton parcours dans l'Académie IBIS-X. Tu maîtrises de quoi entraîner, évaluer et expliquer un modèle.",
+      "progressLead": "Continue les cursus pour débloquer ton certificat et de nouveaux badges.",
+      "lessonsStat": "{done} / {total} leçons",
+      "notionsStat": "{count, plural, one {# notion} other {# notions}} collectées",
+      "badgesStat": "{count} / {total} badges",
+      "fingerprint": "Empreinte :",
+      "print": "Imprimer / PDF",
+      "cursusTitle": "Cursus",
+      "badgesTitle": "Badges de compétence"
     }
   }
 }

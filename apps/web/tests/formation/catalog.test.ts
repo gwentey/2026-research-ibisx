@@ -6,9 +6,9 @@ import { getChallenge } from "@/lib/challenges/catalog";
 import { GRADE_ORDER } from "@/lib/formation/types";
 
 describe("catalogue de l'académie", () => {
-  it("livre les cursus dans l'ordre (Éveil, Fondations, Praticien)", () => {
-    expect(CURSUS.map((c) => c.slug)).toEqual(["eveil", "fondations", "praticien"]);
-    expect(CURSUS.map((c) => c.order)).toEqual([0, 1, 2]);
+  it("livre les cursus dans l'ordre (Éveil, Fondations, Praticien, Analyste)", () => {
+    expect(CURSUS.map((c) => c.slug)).toEqual(["eveil", "fondations", "praticien", "analyste"]);
+    expect(CURSUS.map((c) => c.order)).toEqual([0, 1, 2, 3]);
   });
 
   it("chaque bloc playground déclare une variante connue", () => {
@@ -50,10 +50,11 @@ describe("catalogue de l'académie", () => {
     }
   });
 
-  it("chaque leçon a au moins un visuel et se termine par un quiz OU une mise en pratique", () => {
+  it("chaque leçon a un bloc explicatif (visuel ou étude de cas) et se termine par quiz/pratique", () => {
     for (const { lesson } of allLessons()) {
       const types = lesson.blocks.map((b) => b.type);
-      expect(types, `leçon ${lesson.slug}`).toContain("visual");
+      const hasExplainer = types.includes("visual") || types.includes("case_study");
+      expect(hasExplainer, `leçon ${lesson.slug}`).toBe(true);
       const last = types[types.length - 1];
       expect(["quiz", "practice"], `leçon ${lesson.slug}`).toContain(last);
     }
@@ -83,5 +84,6 @@ describe("catalogue de l'académie", () => {
     expect(referencedChallenges([getCursus("eveil")!])).toEqual([]);
     expect(referencedChallenges([getCursus("fondations")!])).toEqual(["titanic-1912"]);
     expect(referencedChallenges([getCursus("praticien")!])).toEqual(["eleves-decrochage"]);
+    expect(referencedChallenges([getCursus("analyste")!])).toEqual(["equite-revenus"]);
   });
 });

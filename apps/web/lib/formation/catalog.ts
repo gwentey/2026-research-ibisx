@@ -372,6 +372,122 @@ export const CURSUS: Cursus[] = [
         ]
       }
     ]
+  },
+  {
+    slug: "analyste",
+    level: "confirme",
+    grade: "analyste",
+    domain: "finance",
+    order: 3,
+    modules: [
+      {
+        slug: "mesurer-lincertitude",
+        lessons: [
+          {
+            slug: "un-seul-split-est-fragile",
+            blocks: [
+              { type: "visual", id: "visual" },
+              { type: "notion", id: "validation-croisee", notion: "validation-croisee" },
+              { type: "quiz", id: "quiz", answer: 1, choices: 3 }
+            ]
+          },
+          {
+            slug: "intervalles-de-confiance",
+            blocks: [
+              { type: "visual", id: "visual" },
+              { type: "notion", id: "intervalle-confiance", notion: "intervalle-confiance" },
+              { type: "quiz", id: "quiz", answer: 0, choices: 3 }
+            ]
+          },
+          {
+            slug: "la-reproductibilite",
+            blocks: [
+              { type: "visual", id: "visual" },
+              { type: "notion", id: "reproductibilite", notion: "reproductibilite" },
+              { type: "quiz", id: "quiz", answer: 2, choices: 3 }
+            ]
+          }
+        ]
+      },
+      {
+        slug: "ethique-et-equite",
+        lessons: [
+          {
+            slug: "dou-viennent-les-biais",
+            blocks: [
+              { type: "visual", id: "visual" },
+              { type: "notion", id: "biais-sources", notion: "biais-sources" },
+              { type: "quiz", id: "quiz", answer: 1, choices: 3 }
+            ]
+          },
+          {
+            slug: "auditer-lequite",
+            blocks: [
+              { type: "visual", id: "visual" },
+              { type: "notion", id: "equite-fairness", notion: "equite-fairness" },
+              { type: "quiz", id: "quiz", answer: 0, choices: 3 }
+            ]
+          },
+          {
+            slug: "anatomie-dun-fiasco",
+            blocks: [
+              { type: "case_study", id: "case" },
+              { type: "quiz", id: "quiz", answer: 2, choices: 3 }
+            ]
+          },
+          {
+            slug: "ta-troisieme-enquete",
+            blocks: [
+              { type: "visual", id: "visual" },
+              { type: "practice", id: "practice", challenge: "equite-revenus" }
+            ]
+          }
+        ]
+      },
+      {
+        slug: "correlation-et-causalite",
+        lessons: [
+          {
+            slug: "correlation-nest-pas-causalite",
+            blocks: [
+              { type: "myth", id: "myth" },
+              { type: "visual", id: "visual" },
+              { type: "notion", id: "correlations-fallacieuses", notion: "correlations-fallacieuses" },
+              { type: "quiz", id: "quiz", answer: 0, choices: 3 }
+            ]
+          },
+          {
+            slug: "les-trois-registres",
+            blocks: [
+              { type: "visual", id: "visual" },
+              { type: "notion", id: "prediction-inference-causalite", notion: "prediction-inference-causalite" },
+              { type: "quiz", id: "quiz", answer: 1, choices: 3 }
+            ]
+          }
+        ]
+      },
+      {
+        slug: "du-resultat-au-livrable",
+        lessons: [
+          {
+            slug: "lempreinte-de-reproductibilite",
+            blocks: [
+              { type: "visual", id: "visual" },
+              { type: "notion", id: "empreinte-repro", notion: "empreinte-repro" },
+              { type: "quiz", id: "quiz", answer: 2, choices: 3 }
+            ]
+          },
+          {
+            slug: "vers-un-resultat-citable",
+            blocks: [
+              { type: "visual", id: "visual" },
+              { type: "notion", id: "resultat-citable", notion: "resultat-citable" },
+              { type: "quiz", id: "quiz", answer: 0, choices: 3 }
+            ]
+          }
+        ]
+      }
+    ]
   }
 ];
 

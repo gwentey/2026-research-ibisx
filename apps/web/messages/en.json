@@ -1560,7 +1560,9 @@
       "practiceTarget": "Challenge: {challenge}",
       "readyToFinish": "You can complete the lesson.",
       "answerToFinish": "Answer the quiz to complete the lesson.",
-      "finishLesson": "Complete the lesson"
+      "finishLesson": "Complete the lesson",
+      "caseLabel": "Case study",
+      "caseTakeaway": "Takeaway"
     },
     "grades": {
       "curieux": "Curious",
@@ -1584,6 +1586,11 @@
         "title": "Practitioner",
         "tagline": "Build a model, and evaluate it without kidding yourself.",
         "subtitle": "Prepare the data, pick an algorithm, honestly measure what your model is worth — and finally understand why it decides."
+      },
+      "analyste": {
+        "title": "Analyst",
+        "tagline": "The researcher level: rigor, ethics and honesty.",
+        "subtitle": "Measure uncertainty, hunt for bias, tell correlation from causation, and turn a model into a defensible result."
       }
     },
     "modules": {
@@ -1626,6 +1633,22 @@
       "comprendre-pourquoi": {
         "title": "Understand why it decides",
         "tagline": "Open the box: see what the model uses to decide, and where the limits are."
+      },
+      "mesurer-lincertitude": {
+        "title": "Measuring uncertainty",
+        "tagline": "A number alone isn't enough: learn to say how sure you really are of it."
+      },
+      "ethique-et-equite": {
+        "title": "Ethics and fairness",
+        "tagline": "Where bias comes from, how to audit it, and why it's your problem."
+      },
+      "correlation-et-causalite": {
+        "title": "Correlation and causation",
+        "tagline": "Moving together isn't causing each other: tell predicting, explaining and acting apart."
+      },
+      "du-resultat-au-livrable": {
+        "title": "From result to deliverable",
+        "tagline": "Trace, document, own it: turn a model into a result you can cite."
       }
     },
     "lessons": {
@@ -2270,6 +2293,204 @@
           "title": "Run the \"school dropout\" investigation",
           "body": "Launch the \"school dropout\" Challenge: you will work on real student data, train a real model, evaluate it honestly (accuracy, precision, recall, F1, confusion matrix) and read why it decides thanks to variable importance and SHAP. No simulation: the model is real and the result reproducible. It is up to you to run the investigation from start to finish."
         }
+      },
+      "un-seul-split-est-fragile": {
+        "title": "A single split is fragile",
+        "summary": "Testing on one sample is a coin toss. Cross-validation replays several splits.",
+        "visual": {
+          "title": "A single split, a shaky result",
+          "body": "When you cut your data once into \"training\" and \"test\", the score depends heavily on the luck of that cut. Land on an easy test set and your model shines; land on a hard one and it disappoints. Cross-validation (k-fold) replays several different splits and averages them. You get a more stable result, less at the mercy of chance.",
+          "caption": "A single split is a snapshot; cross-validation is a film."
+        },
+        "quiz": {
+          "question": "Why does cross-validation give a more reliable result than a single split?",
+          "options": [
+            "Because it uses a more powerful model",
+            "Because it replays several splits and averages the scores",
+            "Because it removes the difficult data"
+          ],
+          "explanation": "Cross-validation doesn't improve the model: it tests on several splits and averages them, which reduces the effect of a single split's luck. Note: it isn't in the IBIS-X pipeline yet, it's on the roadmap. We explain it here to understand the logic."
+        }
+      },
+      "intervalles-de-confiance": {
+        "title": "Confidence intervals",
+        "summary": "“82%” means little without a margin. Meet the “± how much” that makes a number serious.",
+        "visual": {
+          "title": "\"82%\", sure, but give or take how much?",
+          "body": "Claiming \"my model reaches 82%\" with no margin promises a precision you don't actually know. The confidence interval adds the range: \"82% ± 3%\" honestly says where the true value lies. The smaller the sample, the wider the range. An interval that overlaps another model's means you can't tell them apart.",
+          "caption": "A bare number hides its uncertainty; the interval reveals it."
+        },
+        "quiz": {
+          "question": "What does a confidence interval tell you that the number \"82%\" alone does not?",
+          "options": [
+            "The size of the uncertainty around that number",
+            "The name of the algorithm used",
+            "The model's training time"
+          ],
+          "explanation": "The confidence interval quantifies the margin of error around the score: \"82% ± how much\". That's what lets you say whether two models really differ. Honesty: this calculation isn't part of the IBIS-X pipeline yet, it's coming."
+        }
+      },
+      "la-reproductibilite": {
+        "title": "Reproducibility",
+        "summary": "Same data, same seed, same result: what makes an analysis verifiable — and it's native in IBIS-X.",
+        "visual": {
+          "title": "Same seeds, same fruit",
+          "body": "Many algorithms contain randomness: data order, initialization, random draws. Without control, two training runs give two slightly different results. By fixing the random seed (random_state=42), you force the randomness to repeat identically. In IBIS-X this is real and native: same data + same seed → exactly the same result, every time.",
+          "caption": "The seed pins down the randomness: the result becomes replayable."
+        },
+        "quiz": {
+          "question": "What does a fixed random seed (random_state=42) guarantee in IBIS-X?",
+          "options": [
+            "That the model will necessarily be more accurate",
+            "That training will run faster",
+            "That the same training run reproduces exactly the same result"
+          ],
+          "explanation": "Fixing the seed makes randomness reproducible: same data and same seed produce the same result, neither more accurate nor faster. This is real and native in IBIS-X, the foundation of any defensible result."
+        }
+      },
+      "dou-viennent-les-biais": {
+        "title": "Where bias comes from",
+        "summary": "A model doesn't invent its prejudices: it inherits them from data and society. Let's see how.",
+        "visual": {
+          "title": "The model learns the world as it is, injustices included",
+          "body": "A model doesn't invent its biases: it inherits them. Historical data shaped by past discrimination teaches it to reproduce them. A non-representative sample (an under-represented group) makes it blind to that group. And a feedback loop — the model shapes the future data it then re-learns from — amplifies the whole thing.",
+          "caption": "Unfair data in, unfair decisions out."
+        },
+        "quiz": {
+          "question": "What is a major source of a model's bias?",
+          "options": [
+            "The programming language used",
+            "Historical data that reflects past injustices",
+            "Having fixed a random seed"
+          ],
+          "explanation": "Bias comes mainly from data and society: unfair history, non-representative samples, feedback loops. Neither the language nor the seed is the cause — the seed only makes the result reproducible."
+        }
+      },
+      "auditer-lequite": {
+        "title": "Auditing fairness",
+        "summary": "A good overall score can hide unfairness toward a group. Learn to measure it.",
+        "visual": {
+          "title": "Does it treat everyone fairly?",
+          "body": "Auditing fairness means checking that a model doesn't systematically disadvantage a group. Two key ideas: parity (comparable decision rates across groups) and equality of opportunity (in equal situations, equal chances of a good outcome). In IBIS-X it's concrete: the Fairness Challenges have you audit bias via XAI (SHAP, importance) on real datasets.",
+          "caption": "Auditing isn't taking the model at its word: it's measuring it."
+        },
+        "quiz": {
+          "question": "What does auditing a model's fairness mean?",
+          "options": [
+            "Measuring whether it treats the different groups fairly",
+            "Checking that it runs fast enough",
+            "Making sure it uses every available column"
+          ],
+          "explanation": "Auditing fairness means measuring how groups are treated (parity, equality of opportunity), not speed or column count. In IBIS-X this audit is done for real via XAI in the Fairness Challenges."
+        }
+      },
+      "anatomie-dun-fiasco": {
+        "title": "Anatomy of a fiasco",
+        "summary": "A real case where an algorithm harmed people — and what it teaches us.",
+        "case": {
+          "title": "COMPAS: a recidivism score with racial bias",
+          "context": "In the United States, the COMPAS tool assigns defendants a \"risk score\" for reoffending, used to inform judicial decisions (bail, sentencing). In 2016, ProPublica's investigation analyzed thousands of scores in Florida and compared them to actual reoffending.",
+          "problem": "The investigation showed that, at equal future behavior, Black defendants were far more often wrongly labeled \"high risk\", while white defendants were more often wrongly labeled \"low risk\". The model had learned from the historical data of an already unequal justice system, and it reproduced that inequality under the guise of numerical neutrality.",
+          "takeaway": "A score isn't neutral just because it's a number. Without a per-group fairness audit, a model can launder discrimination by presenting it as objective. Always confront the model's errors with the affected groups, not just overall accuracy."
+        },
+        "quiz": {
+          "question": "What was the central problem ProPublica revealed about COMPAS in 2016?",
+          "options": [
+            "The model was too slow to be used in court",
+            "The model completely ignored past reoffending",
+            "The model wrongly labeled Black defendants \"high risk\" far more often"
+          ],
+          "explanation": "ProPublica showed a racial bias: at comparable future behavior, Black defendants were more often wrongly tagged \"high risk\". The problem wasn't speed or ignoring reoffending, but unequal treatment inherited from unfair historical data."
+        }
+      },
+      "ta-troisieme-enquete": {
+        "title": "Your third investigation",
+        "summary": "You can measure and doubt. Put it to the test: audit the bias of a real model.",
+        "visual": {
+          "title": "From theory to a real bias audit",
+          "body": "You've seen where bias comes from and how to name it. Time to practice on real data. The Adult Census (income) dataset is used to predict whether a person earns above a certain threshold. You'll train a real, reproducible model, then inspect what it relies on to decide.",
+          "caption": "Move from concept to proof: a real model, a measurable bias."
+        },
+        "practice": {
+          "title": "Challenge: audit fairness on income (Adult Census)",
+          "body": "Launch the Fairness Audit Challenge: train a real model on Adult Census (reproducible result, random_state=42), then open the XAI (SHAP, importance) to see which variables drive the decision. Spot whether sensitive attributes — gender, origin — carry unusual weight. Compare treatment across groups and state your bias finding, with evidence. It's all real: the model, the numbers, the downloadable .joblib."
+        }
+      },
+      "correlation-nest-pas-causalite": {
+        "title": "Correlation is not causation",
+        "summary": "Two curves rising together prove nothing. The costliest mistake in analysis.",
+        "myth": {
+          "myth": "If two things move together, one necessarily causes the other.",
+          "reality": "Two variables can rise and fall together with no direct link: often a hidden third cause pulls both. Correlation is a clue, never proof of causation."
+        },
+        "visual": {
+          "title": "Ice cream doesn't cause drownings",
+          "body": "In summer, ice cream sales go up. In summer, drownings go up too. The two curves track each other almost perfectly: strong correlation. Yet no one drowns because of a cone. The real cause, hidden behind both, is the heat: it drives people to eat ice cream AND to go swimming. This is called a spurious correlation.",
+          "caption": "A hidden variable (summer) can create a link that isn't there."
+        },
+        "quiz": {
+          "question": "Ice cream sales and drownings rise together. What can we conclude?",
+          "options": [
+            "A hidden common cause (summer heat) explains both",
+            "Ice cream makes swimming dangerous",
+            "Cutting ice cream sales would lower drownings"
+          ],
+          "explanation": "This is a spurious correlation: a third variable, summer heat, drives both. Neither causes the other, and acting on ice cream would do nothing to drownings."
+        }
+      },
+      "les-trois-registres": {
+        "title": "Predict, explain, act",
+        "summary": "Three questions people constantly confuse — and what IBIS-X can, or can't, answer.",
+        "visual": {
+          "title": "Three questions we too often confuse",
+          "body": "Predicting asks \"what will happen?\" — the model just needs to hit the target. Explaining/inferring asks \"what effect does X really have?\" — we're after understanding. Acting/causing asks \"if I change X, does Y move?\" — the most demanding question. IBIS-X is solid on prediction and explainability (SHAP, importance); causal inference (difference-in-differences, instrumental variables) isn't there yet. Know where the boundary lies.",
+          "caption": "Predict ≠ explain ≠ cause: three questions, three demands."
+        },
+        "quiz": {
+          "question": "Which register answers \"if I change X, does Y change?\"",
+          "options": [
+            "Prediction",
+            "Action / causation",
+            "Reproducibility"
+          ],
+          "explanation": "\"If I change X, does Y move?\" is the causal question (acting). Predicting only aims to anticipate, and reproducibility isn't a type of question. IBIS-X covers prediction and explainability, but not causal inference yet."
+        }
+      },
+      "lempreinte-de-reproductibilite": {
+        "title": "The reproducibility fingerprint",
+        "summary": "Data, versions, seed: the trail that makes your result defensible.",
+        "visual": {
+          "title": "The fingerprint that makes a result defensible",
+          "body": "A credible result can be replayed by someone else. For that, you must trace three things: the exact data used, the versions of the tools, and the random seed. That's the reproducibility fingerprint. In IBIS-X you can already download the trained model as a reproducible .joblib file: a concrete building block of that fingerprint.",
+          "caption": "Data + versions + seed = a result you can replay."
+        },
+        "quiz": {
+          "question": "What must you trace for a result to be reproducible?",
+          "options": [
+            "Only the final score obtained",
+            "The name of the person who ran the model",
+            "The data, the versions of the tools and the random seed"
+          ],
+          "explanation": "The reproducibility fingerprint is data + versions + seed — not just the score or the author. IBIS-X already contributes to it by letting you download the reproducible .joblib model."
+        }
+      },
+      "vers-un-resultat-citable": {
+        "title": "Toward a citable result",
+        "summary": "From a model to a result you can publish: method, limits, honesty.",
+        "visual": {
+          "title": "From a model to a result you can cite",
+          "body": "A model that runs isn't yet a citable result. For it to be referenced, you need the method (what you did, with which data), the limits (what the model can't do) and honesty about the uncertainties. In IBIS-X, the reproducible model and the XAI audit already give you material; the full exportable report, though, is still on the roadmap.",
+          "caption": "Method + limits + honesty = a result you can publish."
+        },
+        "quiz": {
+          "question": "What sets a citable result apart from a model that merely runs?",
+          "options": [
+            "A documented method, stated limits and honesty about uncertainty",
+            "Having obtained the highest possible score",
+            "Having used the newest algorithm"
+          ],
+          "explanation": "A citable result rests on a traceable method, owned limits and honesty — not the highest score or the newest algorithm. In IBIS-X, the full exportable report is still to come: better to say so plainly."
+        }
       }
     },
     "notions": {
@@ -2432,6 +2653,51 @@
         "term": "Correlation is not causation",
         "definition": "SHAP and importance show what the model uses to decide, not what actually causes the outcome. A variable can weigh heavily simply because it accompanies the outcome, without being its cause.",
         "example": "Ice-cream sales and drownings rise together because it is hot; ice cream does not cause drowning, even though a model would gladly lean on it."
+      },
+      "validation-croisee": {
+        "term": "Cross-validation (k-fold)",
+        "definition": "A method that splits the data into several parts, trains and tests on each in turn, then averages the scores for a more stable result.",
+        "example": "In 5-fold, you train 5 times, each time changing which part serves as the test set, then average the 5 scores. (Not in the IBIS-X pipeline yet: on the roadmap.)"
+      },
+      "intervalle-confiance": {
+        "term": "Confidence interval",
+        "definition": "A range around an estimated number indicating where the true value probably lies: it expresses the uncertainty of the measurement.",
+        "example": "\"Accuracy 82% ± 3%\": the true accuracy likely sits between 79% and 85%. (Calculation not yet built into IBIS-X: coming.)"
+      },
+      "reproductibilite": {
+        "term": "Reproducibility",
+        "definition": "The property of a result you can obtain identically by starting again from the same data and the same settings, including the random seed.",
+        "example": "With random_state=42, re-running training on the same data yields exactly the same model. (Real and native in IBIS-X.)"
+      },
+      "biais-sources": {
+        "term": "Sources of bias",
+        "definition": "The origins of a model's injustices: historical data marked by discrimination, non-representative samples, feedback loops.",
+        "example": "A CV-screening model trained on mostly male past hires learns to disadvantage female applications."
+      },
+      "equite-fairness": {
+        "term": "Fairness",
+        "definition": "A set of criteria checking that a model treats groups comparably: parity of decision rates, equality of opportunity in equal situations.",
+        "example": "Checking that the loan approval rate is comparable between two groups with equivalent financial profiles. (Audited via XAI in the IBIS-X Fairness Challenges.)"
+      },
+      "correlations-fallacieuses": {
+        "term": "Spurious correlation",
+        "definition": "A statistical link between two variables that move together without one causing the other, often because of a hidden third variable.",
+        "example": "Ice cream sales and drownings rise together in summer, not because they cause each other, but because of the shared heat."
+      },
+      "prediction-inference-causalite": {
+        "term": "Prediction, inference, causation",
+        "definition": "Three distinct registers: predicting what will happen, explaining a variable's effect, or establishing that acting on X truly changes Y.",
+        "example": "Predicting tomorrow's sales, estimating the effect of price on sales, or testing whether lowering the price really sells more. (IBIS-X: prediction and explainability yes, causal inference not yet.)"
+      },
+      "empreinte-repro": {
+        "term": "Reproducibility fingerprint",
+        "definition": "The set of information to keep in order to replay a result: exact data, versions of the tools and the random seed.",
+        "example": "Archiving the dataset, the library versions and random_state=42 lets a colleague recover the same model. (IBIS-X: downloadable reproducible .joblib.)"
+      },
+      "resultat-citable": {
+        "term": "Citable result",
+        "definition": "A result documented enough (method, limits, uncertainties) to be referenced or published in a defensible way.",
+        "example": "A report stating the data, the method, the margin of error and the model's limits can be cited in a research work. (Full exportable report: on the IBIS-X roadmap.)"
       }
     },
     "playgrounds": {
@@ -2474,6 +2740,46 @@
       "count": "{count, plural, one {# term} other {# terms}}",
       "empty": "No term matches your search.",
       "learnMore": "Open the lesson"
+    },
+    "badges": {
+      "premier-modele": {
+        "title": "First model",
+        "description": "You trained your very first model on real data."
+      },
+      "lire-matrice": {
+        "title": "Matrix reader",
+        "description": "You can read a confusion matrix."
+      },
+      "reperer-surapprentissage": {
+        "title": "Overfitting radar",
+        "description": "You can spot a model that memorizes."
+      },
+      "importance-vs-cause": {
+        "title": "Critical mind",
+        "description": "You tell what a model uses apart from what truly causes."
+      },
+      "resultat-reproductible": {
+        "title": "Reproducible",
+        "description": "You know why and how a result reproduces."
+      },
+      "auditer-equite": {
+        "title": "Fairness auditor",
+        "description": "You audited the bias of a real model."
+      }
+    },
+    "passport": {
+      "navLabel": "Passport",
+      "certLabel": "AI Passport",
+      "title": "IBIS-X Academy",
+      "certifiedLead": "This passport certifies your journey through the IBIS-X Academy. You have what it takes to train, evaluate and explain a model.",
+      "progressLead": "Keep going through the tracks to unlock your certificate and new badges.",
+      "lessonsStat": "{done} / {total} lessons",
+      "notionsStat": "{count, plural, one {# notion} other {# notions}} collected",
+      "badgesStat": "{count} / {total} badges",
+      "fingerprint": "Fingerprint:",
+      "print": "Print / PDF",
+      "cursusTitle": "Tracks",
+      "badgesTitle": "Competence badges"
     }
   }
 }

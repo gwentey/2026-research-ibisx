@@ -41,6 +41,11 @@ function requiredKeys(): string[] {
           } else if (block.type === "practice") {
             keys.add(`${base}.title`);
             keys.add(`${base}.body`);
+          } else if (block.type === "case_study") {
+            keys.add(`${base}.title`);
+            keys.add(`${base}.context`);
+            keys.add(`${base}.problem`);
+            keys.add(`${base}.takeaway`);
           } else if (block.type === "notion") {
             for (const s of ["term", "definition", "example"]) {
               keys.add(`formation.notions.${block.notion}.${s}`);

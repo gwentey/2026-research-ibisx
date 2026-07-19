@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { BookOpenIcon, GraduationCapIcon, SparklesIcon } from "lucide-react";
+import { AwardIcon, BookOpenIcon, GraduationCapIcon, SparklesIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { CursusCard } from "@/components/ibis/formation/cursus-card";
@@ -63,12 +63,20 @@ export default function FormationHomePage() {
           {t("home.pitchLabel")}
         </p>
         <p className="mt-2 leading-relaxed">{t("home.pitch")}</p>
-        <Button variant="outline" size="sm" asChild className="mt-4">
-          <Link href="/formation/glossaire">
-            <BookOpenIcon />
-            {t("glossary.navLabel")}
-          </Link>
-        </Button>
+        <div className="mt-4 flex flex-wrap gap-2">
+          <Button variant="outline" size="sm" asChild>
+            <Link href="/formation/glossaire">
+              <BookOpenIcon />
+              {t("glossary.navLabel")}
+            </Link>
+          </Button>
+          <Button variant="outline" size="sm" asChild>
+            <Link href="/formation/passeport">
+              <AwardIcon />
+              {t("passport.navLabel")}
+            </Link>
+          </Button>
+        </div>
       </div>
 
       {/* Les cursus */}

@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { MythBlock } from "@/components/ibis/formation/blocks/myth-block";
 import { VisualBlock } from "@/components/ibis/formation/blocks/visual-block";
 import { PlaygroundBlock } from "@/components/ibis/formation/blocks/playground-block";
+import { CaseStudyBlock } from "@/components/ibis/formation/blocks/case-study-block";
 import { NotionCardBlock } from "@/components/ibis/formation/blocks/notion-card-block";
 import { QuizBlock } from "@/components/ibis/formation/blocks/quiz-block";
 import { PracticeBlock } from "@/components/ibis/formation/blocks/practice-block";
@@ -95,6 +96,8 @@ export function LessonView({
               );
             case "playground":
               return <PlaygroundBlock key={key} kind={block.playground!} />;
+            case "case_study":
+              return <CaseStudyBlock key={key} lessonSlug={lesson.slug} blockId={block.id} />;
             case "notion":
               return <NotionCardBlock key={key} notionId={block.notion!} />;
             case "quiz":
