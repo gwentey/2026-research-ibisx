@@ -195,6 +195,30 @@ def _fmt(value: Any) -> str:
     return str(value)
 
 
+def _fallback_intro(*, fr: bool, audience: str, algorithm: str, task_type: str, primary: str, value: Any) -> str:
+    """Intro du repli chat, ADAPTÉE au niveau (adaptatif §5.2) — novice = langage courant,
+    expert = terminologie. Sans clé LLM, c'est ce texte qui « parle » à l'utilisateur."""
+    has = bool(primary) and value is not None
+    if audience == "novice":
+        if fr:
+            intro = f"Pour faire simple : le modèle {algorithm} a appris à faire des prédictions ({task_type})."
+            return intro + (f" Sa note principale ({primary}) vaut {_fmt(value)}." if has else "")
+        intro = f"In plain words: the {algorithm} model learned to make predictions ({task_type})."
+        return intro + (f" Its main score ({primary}) is {_fmt(value)}." if has else "")
+    if audience == "expert":
+        if fr:
+            intro = f"Modèle {algorithm} — tâche de {task_type}."
+            return intro + (f" Métrique principale {primary} = {_fmt(value)}." if has else "")
+        intro = f"Model {algorithm} — {task_type} task."
+        return intro + (f" Main metric {primary} = {_fmt(value)}." if has else "")
+    # intermediate (défaut)
+    if fr:
+        intro = f"Le modèle {algorithm} a été entraîné pour une tâche de {task_type}."
+        return intro + (f" Métrique principale {primary} = {_fmt(value)}." if has else "")
+    intro = f"The {algorithm} model was trained for a {task_type} task."
+    return intro + (f" Main metric {primary} = {_fmt(value)}." if has else "")
+
+
 def fallback_document(
     *,
     language: str,
@@ -202,19 +226,26 @@ def fallback_document(
     importance: list[dict[str, Any]],
     task_type: str,
     algorithm: str,
+    audience: str = "intermediate",
 ) -> BlockDocument:
-    """Document déterministe (paragraphe + tableau des top-variables + note « sans IA »).
+    """Document déterministe (paragraphe + tableau des top-variables + note « sans IA »),
+    ADAPTÉ au niveau (adaptatif §5.2 : l'intro parle au niveau de l'explication commentée).
 
     CDC §11-③. Uniquement construit sur les VRAIES valeurs calculées (P2).
     """
     fr = language != "en"
     primary = str(metrics.get("primary_metric", ""))
     primary_value = metrics.get(primary) if primary else None
+    intro = _fallback_intro(
+        fr=fr,
+        audience=audience,
+        algorithm=algorithm,
+        task_type=task_type,
+        primary=primary,
+        value=primary_value,
+    )
 
     if fr:
-        intro = f"Le modèle {algorithm} a été entraîné pour une tâche de {task_type}."
-        if primary and primary_value is not None:
-            intro += f" Métrique principale {primary} = {_fmt(primary_value)}."
         table_cols = ["Variable", "Poids"]
         note_title = "Réponse générée sans IA"
         note_text = (
@@ -223,9 +254,6 @@ def fallback_document(
         )
         no_imp = "L'importance des variables n'est pas disponible pour cette explication."
     else:
-        intro = f"The {algorithm} model was trained for a {task_type} task."
-        if primary and primary_value is not None:
-            intro += f" Main metric {primary} = {_fmt(primary_value)}."
         table_cols = ["Feature", "Weight"]
         note_title = "Generated without AI"
         note_text = (

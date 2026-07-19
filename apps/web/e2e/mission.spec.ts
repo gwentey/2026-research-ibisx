@@ -117,6 +117,19 @@ for (const locale of ["fr", "en"] as const) {
     await expect(page.getByText(t(m, "experiments.resultsTitle"))).toBeVisible();
     await expect(page.getByText(t(m, "experiments.metrics.accuracy")).first()).toBeVisible();
 
+    // --- 6b. « Voir en tant que » : le niveau effectif pilote la lecture (adaptatif §3–§4) ---
+    // L'utilisateur est Expert (familiarité 4) → par défaut tout est visible, sans avertissement.
+    await expect(page.getByText(t(m, "audience.viewAs"))).toBeVisible();
+    // Bascule en Novice → cadrage « on montre l'essentiel » (main tenue), puis retour à son niveau.
+    await page.getByRole("button", { name: t(m, "audience.short.novice") }).click();
+    await expect(page.getByText(t(m, "audience.noviceFraming"))).toBeVisible();
+    const backToMine = t(m, "audience.backToMine").replace(
+      "{level}",
+      t(m, "audience.short.expert")
+    );
+    await page.getByRole("button", { name: backToMine }).click();
+    await expect(page.getByText(t(m, "audience.noviceFraming"))).toBeHidden();
+
     // --- 7. Explicabilité : génération SHAP + KPI de fiabilité --------------------------
     await page.getByRole("tab", { name: t(m, "experiments.tabXai") }).click();
     await page.getByRole("button", { name: t(m, "xai.request.launch") }).click();

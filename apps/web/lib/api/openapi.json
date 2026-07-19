@@ -2936,6 +2936,16 @@
       "ExplanationRequest": {
         "additionalProperties": false,
         "properties": {
+          "audience": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/XaiAudience"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "instance_index": {
             "anyOf": [
               {
@@ -7497,6 +7507,22 @@
               "pattern": "^(fr|en)$",
               "title": "Language",
               "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "audience",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/XaiAudience"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Audience"
             }
           }
         ],

@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session
 
 from ibis.core.config import get_settings
 from ibis.core.errors import AppError, ConflictError, NotFoundError, QuotaExceededError
-from ibis.modules.auth.models import User
+from ibis.modules.auth.models import User, XaiAudience
 from ibis.modules.experiments.models import Experiment, ExperimentStatus
 from ibis.modules.experiments.service import get_experiment
 from ibis.modules.jobs import service as jobs_service
@@ -40,6 +40,7 @@ def request_explanation(
     method: str,
     instance_index: int | None,
     language: str,
+    audience: XaiAudience | None = None,
 ) -> Explanation:
     if experiment.status != ExperimentStatus.completed:
         raise ConflictError("L'expérience doit être terminée", code="NOT_COMPLETED")
@@ -58,7 +59,9 @@ def request_explanation(
         experiment_id=experiment.id,
         type=ExplanationType(type_ if type_ != "global" else "global"),
         method_requested=method,
-        audience_level=user.xai_audience.value,
+        # Niveau effectif : la surcharge (« Voir en tant que ») prime sur le profil, sinon profil.
+        # Éphémère : on ne touche pas à user.xai_audience (adaptatif §5.1, décision D1).
+        audience_level=(audience or user.xai_audience).value,
         language=language,
         instance_ref={"index": instance_index} if instance_index is not None else None,
     )

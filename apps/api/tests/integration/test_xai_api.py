@@ -229,6 +229,73 @@ def test_chat_session_quota_and_fallback(worker_client: TestClient, trained: dic
     assert all(m["is_fallback"] for m in messages if m["role"] == "assistant")
 
 
+def test_explanation_audience_override(worker_client: TestClient, trained: dict) -> None:
+    """P3 (adaptatif §5.1) : le niveau effectif surcharge le profil pour CETTE explication.
+
+    Le profil par défaut est « novice » ; sans surcharge, l'explication reste au profil ;
+    avec `audience=expert`, elle est générée (et stockée) en vue expert, sans toucher au profil.
+    """
+    default = run_explanation(worker_client, trained, {"type": "global"})
+    assert default["audience_level"] == "novice"  # = profil
+
+    overridden = run_explanation(
+        worker_client, trained, {"type": "global", "audience": "expert"}
+    )
+    assert overridden["audience_level"] == "expert"  # surcharge éphémère
+
+    # Le profil de l'utilisateur n'est PAS modifié par la surcharge.
+    me = worker_client.get("/api/v1/users/me", headers=trained["headers"]).json()
+    assert me["xai_audience"] == "novice"
+
+
+def test_explanation_audience_rejects_unknown_level(
+    worker_client: TestClient, trained: dict
+) -> None:
+    """Une valeur d'audience hors énumération est refusée (422), jamais silencieusement ignorée."""
+    denied = worker_client.post(
+        f"/api/v1/experiments/{trained['experiment']['id']}/explanations",
+        json={"type": "global", "audience": "wizard"},
+        headers=trained["headers"],
+    )
+    assert denied.status_code == 422
+
+
+def test_chat_and_explanation_fallback_follow_audience(
+    worker_client: TestClient, trained: dict
+) -> None:
+    """P4 : sans clé LLM, l'explication ET le chat retombent sur un repli déterministe — qui
+    parle néanmoins au NIVEAU de l'explication (adaptatif §5.2/§5.3 : novice ≠ expert)."""
+    from ibis.workers.tasks.explain import answer_chat_question
+
+    novice = run_explanation(worker_client, trained, {"type": "global", "audience": "novice"})
+    expert = run_explanation(worker_client, trained, {"type": "global", "audience": "expert"})
+    assert novice["is_fallback"] and expert["is_fallback"]
+    # §5.3 : le repli de l'explication varie selon le niveau (même modèle, même données).
+    assert novice["text_explanation"] != expert["text_explanation"]
+
+    def first_answer(explanation_id: str) -> str:
+        session = worker_client.post(
+            f"/api/v1/explanations/{explanation_id}/chat",
+            json={"language": "fr"},
+            headers=trained["headers"],
+        ).json()
+        worker_client.post(
+            f"/api/v1/chat/{session['id']}/messages",
+            json={"question": "Pourquoi cette prédiction ?"},
+            headers=trained["headers"],
+        )
+        answer_chat_question.run(session["id"], "Pourquoi cette prédiction ?")
+        messages = worker_client.get(
+            f"/api/v1/chat/{session['id']}/messages", headers=trained["headers"]
+        ).json()
+        assistant = [m for m in messages if m["role"] == "assistant"]
+        assert assistant and assistant[0]["is_fallback"]
+        return assistant[0]["content"]
+
+    # §5.2 : le chat (repli déterministe) suit le niveau de l'explication qu'il commente.
+    assert first_answer(novice["id"]) != first_answer(expert["id"])
+
+
 def test_explanation_requires_completed_experiment(
     worker_client: TestClient, trained: dict, real_db: Session
 ) -> None:

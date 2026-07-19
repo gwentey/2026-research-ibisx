@@ -26,6 +26,11 @@ import { ChallengeDebrief } from "@/components/ibis/challenges/challenge-debrief
 import { CausalCaveat } from "@/components/ibis/causal-caveat";
 import { LensSwitcher } from "@/components/ibis/lenses/lens-switcher";
 import { LensReading } from "@/components/ibis/lenses/lens-reading";
+import { AudienceSwitcher } from "@/components/ibis/audience/audience-switcher";
+import { AudienceWarning } from "@/components/ibis/audience/audience-warning";
+import { AdvancedDetails } from "@/components/ibis/audience/advanced-details";
+import { isBlockVisible, type ResultBlock } from "@/lib/audience/policy";
+import { useAuthStore } from "@/lib/auth/store";
 import { XaiTab } from "@/components/ibis/xai/xai-tab";
 import { extractInsights } from "@/lib/lenses/insights";
 import { useLensStore } from "@/lib/lenses/store";
@@ -48,7 +53,12 @@ import {
   getExperimentLogs,
   getExperimentResults
 } from "@/lib/api/generated";
-import type { ExperimentResults, ExperimentWithQueue, LogLine } from "@/lib/api/generated";
+import type {
+  ExperimentResults,
+  ExperimentWithQueue,
+  LogLine,
+  XaiAudience
+} from "@/lib/api/generated";
 
 /** Pill de contexte (en-tête résultats) — pastille tonale + icône, données réelles uniquement. */
 function ContextPill({ icon: Icon, children }: { icon: LucideIcon; children: ReactNode }) {
@@ -85,6 +95,7 @@ export default function ExperimentResultsPage({
   const { id } = use(params);
   const t = useTranslations("experiments");
   const tCommon = useTranslations("common");
+  const tAudience = useTranslations("audience");
   const [experiment, setExperiment] = useState<ExperimentWithQueue | null>(null);
   const [results, setResults] = useState<ExperimentResults | null>(null);
   const [logs, setLogs] = useState<LogLine[]>([]);
@@ -118,6 +129,16 @@ export default function ExperimentResultsPage({
   useEffect(() => {
     if (!lensTouched) setActiveLens(storeDiscipline);
   }, [storeDiscipline, lensTouched]);
+
+  // Niveau EFFECTIF : par défaut le niveau du profil (xai_audience), surchargeable par le
+  // sélecteur « Voir en tant que ». Éphémère : repart du profil à chaque ouverture (état local).
+  const profileAudience = useAuthStore((state) => state.user?.xai_audience ?? null);
+  const [effectiveAudience, setEffectiveAudience] = useState<XaiAudience | null>(null);
+  const [audienceTouched, setAudienceTouched] = useState(false);
+  useEffect(() => {
+    if (!audienceTouched && profileAudience) setEffectiveAudience(profileAudience);
+  }, [profileAudience, audienceTouched]);
+  const audience: XaiAudience = effectiveAudience ?? profileAudience ?? "novice";
 
   const insights = useMemo(
     () => extractInsights((results ?? {}) as unknown as RawResults),
@@ -222,16 +243,91 @@ export default function ExperimentResultsPage({
       </Card>
     ) : null;
 
-  // Graphes de classification (matrice + courbes) — grille équilibrée : cartes de même
-  // hauteur par rangée ; l'orphelin d'une rangée impaire s'étend sur toute la largeur
-  // (pas de vide béant à droite de la matrice).
-  const classificationCharts = [
-    confusion ? (
-      <ConfusionMatrix key="cm" classes={confusion.classes} matrix={confusion.matrix} />
-    ) : null,
+  // Blocs de classification séparés pour la révélation progressive : la matrice (novice+) est
+  // intuitive ; les courbes ROC/PR (intermediate+) sont plus techniques.
+  const confusionNode = confusion ? (
+    <ConfusionMatrix classes={confusion.classes} matrix={confusion.matrix} />
+  ) : null;
+  const curveNodes = [
     rocCurve ? <RocCurve key="roc" points={rocCurve.points} auc={rocCurve.auc} /> : null,
     prCurve ? <PrCurve key="pr" points={prCurve.points} /> : null
   ].filter(Boolean) as ReactNode[];
+
+  // Une tuile de métrique (réutilisée : grille complète OU seule la principale en vue novice).
+  const metricTileFor = (key: string) => {
+    const numericValue = results?.metrics[key] as number;
+    const tone = metricTone(key, numericValue);
+    const ratio = metricRatio(key, numericValue);
+    return (
+      <MetricTile
+        key={key}
+        label={t(`metrics.${key}` as never)}
+        displayValue={String(numericValue)}
+        tone={tone}
+        ratio={ratio}
+        qualityLabel={ratio !== null ? t(`metricQuality.${tone}` as never) : undefined}
+        isPrimary={results?.metrics.primary_metric === key}
+        primaryLabel={t("metrics.primary")}
+        hint={t.has(`metricHints.${key}` as never) ? t(`metricHints.${key}` as never) : undefined}
+      />
+    );
+  };
+  const primaryMetricKey =
+    results && typeof results.metrics.primary_metric === "string"
+      ? results.metrics.primary_metric
+      : null;
+  const fullMetricGrid = results ? (
+    <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-6">
+      {METRIC_ORDER.filter((key) => typeof results.metrics[key] === "number").map(metricTileFor)}
+    </div>
+  ) : null;
+  const primaryMetricTile =
+    primaryMetricKey && typeof results?.metrics[primaryMetricKey] === "number" ? (
+      <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-6">
+        {metricTileFor(primaryMetricKey)}
+      </div>
+    ) : null;
+  const importanceNode = viz["feature_importance"] ? (
+    <div className="space-y-3">
+      <ImportanceChart importance={viz["feature_importance"] as never[]} />
+      <CausalCaveat />
+    </div>
+  ) : null;
+  const regressionNode = viz["predicted_vs_actual"] ? (
+    <RegressionCharts
+      predVsActual={viz["predicted_vs_actual"] as never[]}
+      residuals={viz["residuals"] as never[]}
+      histogram={viz["residuals_histogram"] as never[]}
+    />
+  ) : null;
+  const treeNode = viz["tree_structure"] ? <TreeView tree={viz["tree_structure"] as never} /> : null;
+
+  // Blocs soumis à la révélation progressive, dans l'ordre d'affichage. On montre en flux ceux
+  // dont le niveau minimal ≤ niveau effectif, on REPLIE les autres (§4, jamais supprimés — P1).
+  const perfBlocks: { key: ResultBlock; node: ReactNode }[] = (
+    [
+      { key: "metric_grid", node: fullMetricGrid },
+      { key: "confusion", node: confusionNode },
+      {
+        key: "curves",
+        node: curveNodes.length ? (
+          <div className="grid items-stretch gap-4 lg:grid-cols-2">
+            {curveNodes.map((chart, index) => (
+              <div key={index}>{chart}</div>
+            ))}
+          </div>
+        ) : null
+      },
+      { key: "importance", node: importanceNode },
+      { key: "regression", node: regressionNode },
+      { key: "tree", node: treeNode },
+      { key: "preprocessing", node: appliedCard },
+      { key: "logs", node: logsCard }
+    ] as { key: ResultBlock; node: ReactNode }[]
+  ).filter((block) => block.node);
+  const visibleBlocks = perfBlocks.filter((block) => isBlockVisible(block.key, audience));
+  const advancedBlocks = perfBlocks.filter((block) => !isBlockVisible(block.key, audience));
+  const metricGridVisible = isBlockVisible("metric_grid", audience);
 
   return (
     <div className="space-y-6">
@@ -286,13 +382,33 @@ export default function ExperimentResultsPage({
 
       {results ? (
         <div className="space-y-4">
-          <LensSwitcher
-            value={activeLens}
-            onChange={(value) => {
-              setLensTouched(true);
-              setActiveLens(value);
-            }}
-          />
+          <div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-end sm:justify-between">
+            <AudienceSwitcher
+              value={audience}
+              profile={profileAudience}
+              onChange={(next) => {
+                setAudienceTouched(true);
+                setEffectiveAudience(next);
+              }}
+            />
+            <LensSwitcher
+              value={activeLens}
+              onChange={(value) => {
+                setLensTouched(true);
+                setActiveLens(value);
+              }}
+            />
+          </div>
+          {profileAudience ? (
+            <AudienceWarning
+              effective={audience}
+              profile={profileAudience}
+              onReset={() => {
+                setAudienceTouched(false);
+                setEffectiveAudience(profileAudience);
+              }}
+            />
+          ) : null}
           {activeLens ? (
             <LensReading lensId={activeLens} insights={insights} metricLabel={metricLabel} />
           ) : null}
@@ -306,6 +422,10 @@ export default function ExperimentResultsPage({
         </TabsList>
 
         <TabsContent value="performance" className="space-y-4">
+          {audience === "novice" ? (
+            <p className="text-muted-foreground text-sm">{tAudience("noviceFraming")}</p>
+          ) : null}
+
           {composite ? (
             <CompositeScoreCard
               value={composite.value}
@@ -324,89 +444,30 @@ export default function ExperimentResultsPage({
             />
           ) : null}
 
-          {results ? (
-            <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-6">
-              {METRIC_ORDER.filter((key) => typeof results.metrics[key] === "number").map(
-                (key) => {
-                  const numericValue = results.metrics[key] as number;
-                  const tone = metricTone(key, numericValue);
-                  const ratio = metricRatio(key, numericValue);
-                  return (
-                    <MetricTile
-                      key={key}
-                      label={t(`metrics.${key}` as never)}
-                      displayValue={String(numericValue)}
-                      tone={tone}
-                      ratio={ratio}
-                      qualityLabel={ratio !== null ? t(`metricQuality.${tone}` as never) : undefined}
-                      isPrimary={results.metrics.primary_metric === key}
-                      primaryLabel={t("metrics.primary")}
-                      hint={
-                        t.has(`metricHints.${key}` as never)
-                          ? t(`metricHints.${key}` as never)
-                          : undefined
-                      }
-                    />
-                  );
-                }
-              )}
-            </div>
-          ) : null}
+          {/* Métriques : en vue novice, on ne montre QUE la principale (une tuile) ; la grille
+              complète (bloc metric_grid) apparaît en flux à partir d'Intermédiaire, ou repliée
+              dans « Détails avancés » pour le novice. */}
+          {!metricGridVisible ? primaryMetricTile : null}
 
-          {classificationCharts.length > 0 ? (
-            <div className="grid items-stretch gap-4 lg:grid-cols-2">
-              {classificationCharts.map((chart, index) => {
-                const spanFull =
-                  classificationCharts.length % 2 === 1 &&
-                  index === classificationCharts.length - 1;
-                return (
-                  <div key={index} className={spanFull ? "lg:col-span-2" : undefined}>
-                    {chart}
-                  </div>
-                );
-              })}
-            </div>
-          ) : null}
+          {/* Blocs visibles au niveau effectif, dans l'ordre d'affichage. */}
+          {visibleBlocks.map((block) => (
+            <Fragment key={block.key}>{block.node}</Fragment>
+          ))}
 
-          {viz["feature_importance"] ? (
-            <div className="space-y-3">
-              <ImportanceChart importance={viz["feature_importance"] as never[]} />
-              <CausalCaveat />
-            </div>
+          {/* Détails avancés : blocs au-dessus du niveau, repliés (jamais supprimés — P1). */}
+          {advancedBlocks.length > 0 ? (
+            <AdvancedDetails>
+              {advancedBlocks.map((block) => (
+                <Fragment key={block.key}>{block.node}</Fragment>
+              ))}
+            </AdvancedDetails>
           ) : null}
-
-          {viz["predicted_vs_actual"] ? (
-            <RegressionCharts
-              predVsActual={viz["predicted_vs_actual"] as never[]}
-              residuals={viz["residuals"] as never[]}
-              histogram={viz["residuals_histogram"] as never[]}
-            />
-          ) : null}
-
-          {viz["tree_structure"] ? (
-            appliedCard || logsCard ? (
-              // Arbre à gauche, transformations + journal à droite. `items-stretch` : l'arbre
-              // s'étire à la hauteur de la colonne de droite (pas de vide sous une carte trop courte).
-              <div className="grid items-stretch gap-4 lg:grid-cols-2">
-                <TreeView tree={viz["tree_structure"] as never} />
-                <div className="space-y-4">
-                  {appliedCard}
-                  {logsCard}
-                </div>
-              </div>
-            ) : (
-              <TreeView tree={viz["tree_structure"] as never} />
-            )
-          ) : (
-            <>
-              {appliedCard}
-              {logsCard}
-            </>
-          )}
         </TabsContent>
 
         <TabsContent value="xai">
-          <XaiTab experimentId={id} />
+          {/* Niveau effectif transmis à la génération : l'explication suit la vue « Voir en
+              tant que » (adaptatif §5.1). Éphémère — le profil n'est jamais modifié. */}
+          <XaiTab experimentId={id} audience={audience} />
         </TabsContent>
       </Tabs>
     </div>

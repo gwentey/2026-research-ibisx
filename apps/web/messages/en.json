@@ -1,4 +1,25 @@
 {
+  "audience": {
+    "viewAs": "View as",
+    "you": "you",
+    "short": {
+      "novice": "Novice",
+      "intermediate": "Intermediate",
+      "expert": "Expert"
+    },
+    "desc": {
+      "novice": "Simple analogies, essentials only.",
+      "intermediate": "Structured, decision-oriented.",
+      "expert": "Exact terminology, every detail."
+    },
+    "backToMine": "Back to my level ({level})",
+    "warnAbove": "You are {profile} in IBIS-X. This view targets an {effective} audience and may be hard to interpret.",
+    "belowNote": "Simplified view ({effective} level).",
+    "adjustProfile": "This level doesn't fit you? Adjust my profile",
+    "noviceFraming": "You're seeing the essentials. Switch to Intermediate or Expert (above) to see everything.",
+    "advancedTitle": "Advanced details",
+    "advancedHint": "Collapsed for your level — expand to see everything."
+  },
   "common": {
     "appName": "IBIS-X",
     "loading": "Loading…",
@@ -1184,6 +1205,10 @@
     "text": {
       "title": "Explanation",
       "audience": "Level: {level}",
+      "generatedAs": "Generated for {level}",
+      "regenerateHint": "Written for {generated}, while you're viewing as {effective}.",
+      "regenerateAs": "Regenerate for {level}",
+      "regenerateCost": "1 credit",
       "fallbackBadge": "Generated without AI (deterministic fallback)",
       "modelBadge": "Model: {model}",
       "method": "Method: {method}",
@@ -1230,7 +1255,18 @@
       "globalBody": "Which features matter most, on average, across all predictions.",
       "localTitle": "One specific example",
       "localBody": "Why the model answered what it did, for a given example.",
-      "cta": "Set up your request, then hit “Generate explanation”."
+      "cta": "Set up your request, then hit “Generate explanation”.",
+      "novice": "No need to be an expert: we explain everything in plain words, with everyday analogies."
+    },
+    "reading": {
+      "title": "How to read this explanation",
+      "subtitle": "Three reflexes for a first glance, no jargon.",
+      "step1Title": "Look at the score",
+      "step1Body": "The overall score, at the top, tells how much the model can be trusted.",
+      "step2Title": "See what mattered",
+      "step2Body": "The longest bars are the pieces of information that weighed the most.",
+      "step3Title": "Read the plain summary",
+      "step3Body": "A plain-language text translates the numbers — and the copilot answers your questions."
     },
     "generating": {
       "title": "The AI is generating your explanation…",

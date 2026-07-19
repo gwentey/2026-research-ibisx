@@ -1,4 +1,25 @@
 {
+  "audience": {
+    "viewAs": "Voir en tant que",
+    "you": "vous",
+    "short": {
+      "novice": "Novice",
+      "intermediate": "Intermédiaire",
+      "expert": "Expert"
+    },
+    "desc": {
+      "novice": "Analogies simples, l'essentiel seulement.",
+      "intermediate": "Structuré, orienté décision.",
+      "expert": "Terminologie exacte, tous les détails."
+    },
+    "backToMine": "Revenir à mon niveau ({level})",
+    "warnAbove": "Vous êtes {profile} dans IBIS-X. Cette vue s'adresse à un public {effective} et pourrait être difficile à interpréter.",
+    "belowNote": "Vue simplifiée (niveau {effective}).",
+    "adjustProfile": "Ce niveau ne vous convient pas ? Ajuster mon profil",
+    "noviceFraming": "On vous montre l'essentiel. Passez en Intermédiaire ou Expert (ci-dessus) pour tout voir.",
+    "advancedTitle": "Détails avancés",
+    "advancedHint": "Repliés pour votre niveau — dépliez si vous voulez tout voir."
+  },
   "common": {
     "appName": "IBIS-X",
     "loading": "Chargement…",
@@ -1184,6 +1205,10 @@
     "text": {
       "title": "Explication",
       "audience": "Niveau : {level}",
+      "generatedAs": "Généré en vue {level}",
+      "regenerateHint": "Rédigée en vue {generated}, alors que vous consultez en vue {effective}.",
+      "regenerateAs": "Regénérer en vue {level}",
+      "regenerateCost": "1 crédit",
       "fallbackBadge": "Généré sans IA (repli déterministe)",
       "modelBadge": "Modèle : {model}",
       "method": "Méthode : {method}",
@@ -1230,7 +1255,18 @@
       "globalBody": "Quelles variables comptent le plus, en moyenne, sur toutes les prédictions.",
       "localTitle": "Un exemple précis",
       "localBody": "Pourquoi le modèle a répondu ce qu'il a répondu, pour un exemple donné.",
-      "cta": "Configurez votre demande, puis lancez « Générer l'explication »."
+      "cta": "Configurez votre demande, puis lancez « Générer l'explication ».",
+      "novice": "Pas besoin d'être expert : on vous explique tout en mots simples, avec des analogies du quotidien."
+    },
+    "reading": {
+      "title": "Comment lire cette explication",
+      "subtitle": "Trois réflexes pour un premier coup d'œil, sans jargon.",
+      "step1Title": "Regardez le score",
+      "step1Body": "La note globale, en haut, dit à quel point on peut se fier au modèle.",
+      "step2Title": "Voyez ce qui a compté",
+      "step2Body": "Les barres les plus longues sont les informations qui ont le plus pesé.",
+      "step3Title": "Lisez le résumé en clair",
+      "step3Body": "Un texte en langage courant traduit les chiffres — et le copilote répond à vos questions."
     },
     "generating": {
       "title": "L'IA génère votre explication…",

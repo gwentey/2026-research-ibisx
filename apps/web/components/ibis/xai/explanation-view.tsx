@@ -2,15 +2,16 @@
 
 import type { CSSProperties } from "react";
 import { useTranslations } from "next-intl";
-import { BookOpenIcon, LayersIcon, TargetIcon } from "lucide-react";
+import { BookOpenIcon, LayersIcon, SparklesIcon, TargetIcon } from "lucide-react";
 import { Bar, BarChart, CartesianGrid, Cell, XAxis, YAxis } from "recharts";
 
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { Markdown } from "@/components/ui/custom/prompt/markdown";
 import { CausalCaveat } from "@/components/ibis/causal-caveat";
-import type { ExplanationResults } from "@/lib/api/generated";
+import type { ExplanationResults, XaiAudience } from "@/lib/api/generated";
 import { cn } from "@/lib/utils";
 
 // Recette de style markdown (pas de plugin prose dans ce projet → sélecteurs utilitaires).
@@ -151,15 +152,37 @@ const REVEAL_STAGGER = 90;
 
 export function ExplanationView({
   explanation,
-  reveal = false
+  reveal = false,
+  profileAudience = null,
+  effectiveAudience,
+  onRegenerate,
+  regenerating = false
 }: {
   explanation: ExplanationResults;
   // reveal : jouer la révélation IA échelonnée (uniquement après une génération fraîche,
   // pas quand on rouvre une explication de l'historique).
   reveal?: boolean;
+  // Niveau du PROFIL : si l'explication a été générée à un autre niveau → badge « en vue X ».
+  profileAudience?: XaiAudience | null;
+  // Niveau EFFECTIF (vue courante) : si ≠ niveau de l'explication → proposer de regénérer.
+  effectiveAudience?: XaiAudience;
+  onRegenerate?: () => void;
+  regenerating?: boolean;
 }) {
   const t = useTranslations("xai");
+  const tAudience = useTranslations("audience");
   const viz = (explanation.viz_data ?? {}) as Record<string, never>;
+
+  // Niveau auquel cette explication A ÉTÉ générée (stocké côté back = niveau effectif au moment
+  // de la génération). On l'affiche toujours, et on le distingue quand il sort du profil (§5.1).
+  const generatedAudience = explanation.audience_level as XaiAudience;
+  const audienceLabel = (a: XaiAudience) => tAudience(`short.${a}`);
+  const differsFromProfile =
+    profileAudience !== null && generatedAudience !== profileAudience;
+  const canRegenerate =
+    onRegenerate !== undefined &&
+    effectiveAudience !== undefined &&
+    generatedAudience !== effectiveAudience;
   const values = (explanation.values ?? {}) as Record<string, never>;
   const globalImportance = viz["global_importance"] as
     | { feature: string; value: number }[]
@@ -225,6 +248,15 @@ export function ExplanationView({
               )}
             </div>
             <div className="flex flex-wrap items-center gap-1.5">
+              {/* Niveau de restitution — réintroduit (§5.1). Accentué (couleur IA) quand
+                  l'explication a été générée hors du niveau du profil. */}
+              <Badge
+                variant="outline"
+                className={cn(differsFromProfile && "border-ai/40 text-ai")}>
+                {differsFromProfile
+                  ? t("text.generatedAs", { level: audienceLabel(generatedAudience) })
+                  : t("text.audience", { level: audienceLabel(generatedAudience) })}
+              </Badge>
               <Badge variant="outline">
                 {t("text.method", { method: explanation.method_used ?? "" })}
               </Badge>
@@ -244,6 +276,33 @@ export function ExplanationView({
           ) : null}
         </div>
       </div>
+
+      {/* Regénérer-en-vue (§5.1, décision D3) : l'explication affichée a été rédigée à un autre
+          niveau que la vue courante → on propose de la refaire au niveau effectif (1 crédit,
+          choix explicite). La révélation ne s'y applique pas : c'est une commande, pas un résultat. */}
+      {canRegenerate && effectiveAudience ? (
+        <div className="border-ai/30 bg-ai/[0.04] flex flex-col gap-2.5 rounded-lg border border-dashed p-3 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-muted-foreground flex items-start gap-2 text-xs leading-relaxed">
+            <SparklesIcon className="text-ai mt-0.5 size-3.5 shrink-0" />
+            {t("text.regenerateHint", {
+              generated: audienceLabel(generatedAudience),
+              effective: audienceLabel(effectiveAudience)
+            })}
+          </p>
+          <Button
+            size="sm"
+            variant="outline"
+            className="border-ai/40 text-ai hover:bg-ai/10 shrink-0"
+            onClick={onRegenerate}
+            disabled={regenerating}>
+            <SparklesIcon />
+            {t("text.regenerateAs", { level: audienceLabel(effectiveAudience) })}
+            <Badge variant="secondary" className="ml-1 font-normal">
+              {t("text.regenerateCost")}
+            </Badge>
+          </Button>
+        </div>
+      ) : null}
 
       <div {...step()}>
         <KpiBoard kpis={(explanation.quality_kpis ?? {}) as never} />

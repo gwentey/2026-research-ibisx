@@ -10,6 +10,7 @@ from sqlalchemy.orm import Session
 
 from ibis.db.engine import get_db
 from ibis.modules.auth.deps import CurrentClaims, CurrentUser
+from ibis.modules.auth.models import XaiAudience
 from ibis.modules.experiments.service import get_experiment
 from ibis.modules.llm.xai_text import suggested_questions
 from ibis.modules.xai import engine, service
@@ -27,6 +28,9 @@ class ExplanationRequest(BaseModel):
     method: Literal["auto", "shap", "lime"] = "auto"
     instance_index: int | None = Field(default=None, ge=0)
     language: Literal["fr", "en"] = "fr"
+    # Niveau effectif « Voir en tant que » (adaptatif §5.1) : surcharge éphémère du profil pour
+    # CETTE explication. None → on retombe sur user.xai_audience. Ne modifie jamais le profil.
+    audience: XaiAudience | None = None
 
 
 class ExplanationRead(BaseModel):
@@ -114,6 +118,7 @@ def request_explanation(
         method=payload.method,
         instance_index=payload.instance_index,
         language=payload.language,
+        audience=payload.audience,
     )
     return ExplanationRead.model_validate(explanation)
 
@@ -184,10 +189,14 @@ def get_suggested_questions(
     db: DbDep,
     claims: CurrentClaims,
     language: Annotated[str, Query(pattern="^(fr|en)$")] = "fr",
+    audience: XaiAudience | None = None,
 ) -> list[str]:
     experiment = get_experiment(db, claims.user_id, experiment_id)
+    # Niveau (adaptatif §5.2) : le novice reçoit des questions en langage courant.
     return suggested_questions(
-        str(experiment.preprocessing_config.get("task_type", "classification")), language
+        str(experiment.preprocessing_config.get("task_type", "classification")),
+        language,
+        audience.value if audience else None,
     )
 
 
