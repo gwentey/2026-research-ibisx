@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "framework_version": "3.0.0",
+  "project_id": "797a94dc-1d56-48c7-9c6e-7dd657f11a6f",
+  "initialized_at": "2026-07-19T18:35:52.427Z",
+  "stack": "fastapi-nextjs",
+  "monorepo": true,
+  "apps": [
+    {
+      "name": "api",
+      "path": "apps/api",
+      "stack": "fastapi"
+    },
+    {
+      "name": "web",
+      "path": "apps/web",
+      "stack": "nextjs"
+    }
+  ],
+  "initialized_via": "manual-repair"
+}

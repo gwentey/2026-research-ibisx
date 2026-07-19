@@ -205,6 +205,8 @@
       "regression": "Régression"
     },
     "debriefTitle": "Enquête bouclée",
+    "debriefCollapse": "Réduire le récap",
+    "debriefExpand": "Développer le récap",
     "debriefLead": "Bravo — enquête « {title} » bouclée.",
     "debriefMetric": "Un vrai modèle, entraîné sur de vraies données : {metric}.",
     "debriefScoreHint": "Ce score va de 0 à 1 : plus il est proche de 1, plus le modèle voit juste. Pas besoin d'être expert — l'essentiel est de comprendre POURQUOI il décide, à l'étape suivante.",
@@ -292,6 +294,34 @@
         "brief": "1 000 dossiers de crédit allemands. Construis un modèle qui distingue bons et mauvais payeurs, puis enfile ta blouse d'auditeur : qu'est-ce qui pèse vraiment dans la décision — l'historique de remboursement, ou l'âge et le statut du demandeur ? Mène l'enquête seul.",
         "stakes": "Un score de crédit décide de vies réelles. Comprendre ses ressorts, c'est pouvoir le contester — le sujet même de la recherche en IA responsable.",
         "reward": "À la clé : un vrai modèle, et une explication qui met à nu ses critères de décision."
+      },
+      "ecart-salarial-1985": {
+        "title": "1985 : à travail égal, salaire égal ?",
+        "tagline": "Mesurer l'écart de salaire femmes-hommes, variable par variable.",
+        "brief": "534 salarié·e·s, enquête sur l'emploi de 1985. Entraîne un modèle à prédire le salaire horaire à partir du diplôme, de l'expérience, du secteur… puis pose la question qui structure un siècle d'histoire du travail : à caractéristiques comparables, le sexe pèse-t-il encore sur le salaire ? C'est l'exercice fondateur de l'analyse des écarts de salaires par régression.",
+        "stakes": "Toute la difficulté de l'histoire quantitative des inégalités : distinguer ce qui s'explique par le parcours de ce qui relève d'une discrimination pure.",
+        "reward": "À la clé : un modèle de salaire, et l'explication XAI qui chiffre le poids réel de chaque variable — dont le sexe."
+      },
+      "signal-gamma": {
+        "title": "Un rayon gamma, ou juste du bruit ?",
+        "tagline": "Trier le signal céleste du bruit de fond, comme un télescope.",
+        "brief": "Un télescope Cherenkov enregistre des milliers de gerbes lumineuses dans le ciel nocturne. Certaines viennent de vrais rayons gamma cosmiques, la plupart ne sont que du bruit hadronique. À partir de 10 paramètres d'image, entraîne un modèle à séparer le signal du bruit — le cœur du traitement de données en astrophysique instrumentale.",
+        "stakes": "En physique des particules comme en mission spatiale, tout se joue sur la capacité à extraire un signal rare d'un océan de bruit sans le perdre ni s'y noyer.",
+        "reward": "À la clé : un détecteur entraîné, et l'explication des paramètres d'image qui trahissent un vrai rayon gamma."
+      },
+      "batiment-sobre": {
+        "title": "Concevoir un bâtiment sobre en énergie",
+        "tagline": "Prédire la facture énergétique dès les plans.",
+        "brief": "Avant même de poser la première pierre, la forme d'un bâtiment décide en grande partie de ce qu'il consommera. À partir de la compacité, des surfaces, de l'orientation et du vitrage de 768 configurations, entraîne un modèle à prédire les besoins de chauffage — un outil concret pour la conception durable.",
+        "stakes": "Le bâtiment pèse lourd dans le bilan carbone : anticiper sa consommation dès la conception, c'est agir là où l'impact écologique se décide.",
+        "reward": "À la clé : un modèle de consommation, et l'explication des choix de conception qui font la différence."
+      },
+      "reussite-etudiante": {
+        "title": "Décrochage à l'université : repérer sans stigmatiser",
+        "tagline": "Détecter tôt les étudiant·e·s en difficulté — avec prudence.",
+        "brief": "4 424 étudiant·e·s d'une université, suivis de l'inscription au diplôme. À partir de leur parcours, de leur situation et de leurs premiers résultats, entraîne un modèle à distinguer qui décroche, persévère ou obtient son diplôme. Puis interroge-le : sur quoi s'appuie-t-il vraiment — le travail fourni, ou des variables sensibles comme le genre ou la nationalité ?",
+        "stakes": "La détection précoce peut sauver un parcours… ou enfermer un·e étudiant·e dans une prédiction. Toute la question pédagogique est là : aider sans étiqueter.",
+        "reward": "À la clé : un modèle de réussite, et l'audit XAI des variables sur lesquelles il fonde ses prédictions."
       }
     }
   },
@@ -1031,6 +1061,7 @@
   "experiments": {
     "resultsTitle": "Résultats de l'expérience",
     "tabPerformance": "Performance",
+    "tabFairness": "Équité",
     "tabXai": "Explicabilité",
     "xaiSoon": "L'explicabilité (SHAP/LIME, KPI de fiabilité, chat) arrive au prochain jalon.",
     "composite": {
@@ -1563,6 +1594,25 @@
   "causal": {
     "title": "Association, pas causalité",
     "body": "Ces variables sont corrélées à la cible : le modèle s'en sert pour prédire. Cela ne prouve pas qu'elles la causent. Établir un effet causal demande un design d'identification (expérience, différences-de-différences, variable instrumentale)."
+  },
+  "fairness": {
+    "intro": "Choisis une variable sensible : le modèle traite-t-il tous les groupes de la même façon ?",
+    "regressionNote": "L'analyse d'équité s'applique aux modèles de classification, pas de régression.",
+    "noColumns": "Aucune variable catégorielle exploitable détectée dans ce jeu.",
+    "pick": "Variable sensible",
+    "favorable": "Issue favorable : {label}",
+    "colGroup": "Groupe",
+    "colSize": "Effectif",
+    "colSelection": "Taux de sélection",
+    "colTpr": "Vrais positifs",
+    "colAccuracy": "Exactitude",
+    "selectionRatio": "Ratio des taux de sélection (règle des 80 %)",
+    "tprGap": "Écart de vrais positifs",
+    "accuracyGap": "Écart d'exactitude",
+    "disparityDetected": "Disparité détectée",
+    "disparityNone": "Pas de disparité majeure",
+    "caveat": "Une disparité mesurée signale un traitement inégal entre groupes ; elle ne prouve pas à elle seule une discrimination — croise toujours avec le contexte des données.",
+    "errorGeneric": "Analyse indisponible pour cette variable — essaie une variable catégorielle à faibles modalités, comme le sexe."
   },
   "formation": {
     "home": {

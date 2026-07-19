@@ -3,13 +3,21 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { ArrowRightIcon, DownloadIcon, SparklesIcon, TrophyIcon } from "lucide-react";
+import {
+  ArrowRightIcon,
+  ChevronDownIcon,
+  ChevronUpIcon,
+  DownloadIcon,
+  SparklesIcon,
+  TrophyIcon
+} from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { CHALLENGES, getChallenge } from "@/lib/challenges/catalog";
 import { resolveDatasetId } from "@/lib/challenges/resolve-dataset";
 import { nextObjective } from "@/lib/challenges/progress";
 import { useQuestStore } from "@/lib/challenges/store";
+import { cn } from "@/lib/utils";
 import { listExplanations } from "@/lib/api/generated";
 import type { ExperimentResults, ExperimentWithQueue } from "@/lib/api/generated";
 
@@ -30,6 +38,8 @@ export function ChallengeDebrief({
   const done = useQuestStore((state) => state.done);
   const completed = useQuestStore((state) => state.completed);
   const markObjective = useQuestStore((state) => state.markObjective);
+  const collapsed = useQuestStore((state) => state.debriefCollapsed);
+  const setCollapsed = useQuestStore((state) => state.setDebriefCollapsed);
 
   const challenge = activeSlug ? getChallenge(activeSlug) : undefined;
   const succeeded = experiment.status === "completed";
@@ -108,35 +118,61 @@ export function ChallengeDebrief({
           <TrophyIcon className="size-5" />
         </span>
         <div className="min-w-0 flex-1 space-y-2">
-          <p className="font-semibold">
-            {t("debriefLead", { title: t(`items.${challenge.slug}.title`) })}
-          </p>
-          <p className="text-sm">{t("debriefMetric", { metric: metricText })}</p>
-          <p className="text-muted-foreground text-sm">{t("debriefScoreHint")}</p>
-          <p className="text-muted-foreground text-sm">{t(`debriefPont.${challenge.level}`)}</p>
-
-          {/* L'explication est L'étape à ne pas manquer pour un novice : encart IA proéminent. */}
-          {remaining === "generate_explanation" ? (
-            <div className="border-ai/40 from-ai-violet/10 via-ai/5 to-ai-blue/10 mt-1 flex items-start gap-2.5 rounded-lg border border-dashed bg-gradient-to-br p-3">
-              <SparklesIcon className="text-ai mt-0.5 size-4 shrink-0" />
-              <p className="text-sm">{t("debriefExplainCta")}</p>
+          {/* En-tête toujours visible : la victoire + le score. Le bouton réduit tout le reste
+              (préférence globale persistée) car ce récap pédagogique est volontairement verbeux. */}
+          <div className="flex items-start gap-2">
+            <div className="min-w-0 flex-1 space-y-1">
+              <p className={cn("font-semibold", collapsed && "truncate")}>
+                {t("debriefLead", { title: t(`items.${challenge.slug}.title`) })}
+              </p>
+              <p className={cn("text-sm", collapsed && "truncate")}>
+                {t("debriefMetric", { metric: metricText })}
+              </p>
             </div>
-          ) : remaining ? (
-            <p className="text-ai text-sm font-medium">
-              {t("debriefRemaining", { objective: t(`objectives.${remaining}`) })}
-            </p>
-          ) : explanationObjective ? (
-            <p className="text-ai flex items-start gap-1.5 text-sm">
-              <SparklesIcon className="mt-0.5 size-4 shrink-0" />
-              {t("debriefExplainDone")}
-            </p>
-          ) : null}
-          {challenge.level === "confirme" ? (
-            <p className="text-muted-foreground inline-flex items-center gap-1.5 text-xs">
-              <DownloadIcon className="size-3.5" />
-              {t("downloadHint")}
-            </p>
-          ) : null}
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setCollapsed(!collapsed)}
+              aria-label={collapsed ? t("debriefExpand") : t("debriefCollapse")}
+              aria-expanded={!collapsed}
+              className="text-muted-foreground hover:text-foreground -mt-1 -mr-1 size-8 shrink-0">
+              {collapsed ? (
+                <ChevronDownIcon className="size-4" />
+              ) : (
+                <ChevronUpIcon className="size-4" />
+              )}
+            </Button>
+          </div>
+
+          {collapsed ? null : (
+            <>
+              <p className="text-muted-foreground text-sm">{t("debriefScoreHint")}</p>
+              <p className="text-muted-foreground text-sm">{t(`debriefPont.${challenge.level}`)}</p>
+
+              {/* L'explication est L'étape à ne pas manquer pour un novice : encart IA proéminent. */}
+              {remaining === "generate_explanation" ? (
+                <div className="border-ai/40 from-ai-violet/10 via-ai/5 to-ai-blue/10 mt-1 flex items-start gap-2.5 rounded-lg border border-dashed bg-gradient-to-br p-3">
+                  <SparklesIcon className="text-ai mt-0.5 size-4 shrink-0" />
+                  <p className="text-sm">{t("debriefExplainCta")}</p>
+                </div>
+              ) : remaining ? (
+                <p className="text-ai text-sm font-medium">
+                  {t("debriefRemaining", { objective: t(`objectives.${remaining}`) })}
+                </p>
+              ) : explanationObjective ? (
+                <p className="text-ai flex items-start gap-1.5 text-sm">
+                  <SparklesIcon className="mt-0.5 size-4 shrink-0" />
+                  {t("debriefExplainDone")}
+                </p>
+              ) : null}
+              {challenge.level === "confirme" ? (
+                <p className="text-muted-foreground inline-flex items-center gap-1.5 text-xs">
+                  <DownloadIcon className="size-3.5" />
+                  {t("downloadHint")}
+                </p>
+              ) : null}
+            </>
+          )}
           <div className="flex flex-wrap gap-2 pt-1">
             {nextChallenge ? (
               <Button size="sm" asChild>

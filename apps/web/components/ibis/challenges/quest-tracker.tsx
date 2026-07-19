@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useEffect } from "react";
+import { Suspense, useCallback, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -45,6 +45,33 @@ function QuestTrackerInner() {
   const slug = activeSlug ?? (paramSlug && getChallenge(paramSlug) ? paramSlug : null);
   useObjectiveTracking(Boolean(slug));
 
+  // Publie la hauteur réelle du traceur dans --quest-tracker-height. Les surfaces à action basse
+  // (barre de navigation du wizard, contenu des pages app) réservent cet espace pour que la barre
+  // flottante ne recouvre plus aucun bouton (ex. « J'ai compris, commencer » à l'étape 1).
+  // Mesuré via ResizeObserver : suit le repli en pastille et les retours à la ligne responsives.
+  const observerRef = useRef<ResizeObserver | null>(null);
+  const measureRef = useCallback((node: HTMLDivElement | null) => {
+    observerRef.current?.disconnect();
+    observerRef.current = null;
+    const root = document.documentElement;
+    if (!node) {
+      root.style.setProperty("--quest-tracker-height", "0px");
+      return;
+    }
+    const publish = () => root.style.setProperty("--quest-tracker-height", `${node.offsetHeight}px`);
+    publish();
+    const observer = new ResizeObserver(publish);
+    observer.observe(node);
+    observerRef.current = observer;
+  }, []);
+  useEffect(
+    () => () => {
+      observerRef.current?.disconnect();
+      document.documentElement.style.setProperty("--quest-tracker-height", "0px");
+    },
+    []
+  );
+
   const challenge = slug ? getChallenge(slug) : undefined;
   if (!challenge) return null;
 
@@ -64,7 +91,9 @@ function QuestTrackerInner() {
   // l'utilisateur dégager un bouton masqué puis rouvrir le traceur quand il veut.
   if (collapsed) {
     return (
-      <div className="pointer-events-none fixed inset-x-0 bottom-0 z-40 flex justify-center p-3 print:hidden">
+      <div
+        ref={measureRef}
+        className="pointer-events-none fixed inset-x-0 bottom-0 z-40 flex justify-center p-3 print:hidden">
         <button
           type="button"
           onClick={() => setCollapsed(false)}
@@ -84,7 +113,9 @@ function QuestTrackerInner() {
   }
 
   return (
-    <div className="pointer-events-none fixed inset-x-0 bottom-0 z-40 flex justify-center p-3 print:hidden">
+    <div
+      ref={measureRef}
+      className="pointer-events-none fixed inset-x-0 bottom-0 z-40 flex justify-center p-3 print:hidden">
       <div className="bg-background/95 pointer-events-auto flex w-full max-w-3xl flex-col gap-3 rounded-xl border p-3 shadow-lg backdrop-blur sm:flex-row sm:items-center">
         <div className="flex min-w-0 flex-1 items-start gap-3">
           <span className="bg-primary/10 text-primary flex size-9 shrink-0 items-center justify-center rounded-lg">

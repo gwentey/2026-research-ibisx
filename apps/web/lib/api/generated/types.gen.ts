@@ -4002,6 +4002,49 @@ export type RequestExplanationResponses = {
 
 export type RequestExplanationResponse = RequestExplanationResponses[keyof RequestExplanationResponses];
 
+export type GetFairnessReportData = {
+    body?: never;
+    path: {
+        /**
+         * Experiment Id
+         */
+        experiment_id: string;
+    };
+    query: {
+        /**
+         * Sensitive Column
+         */
+        sensitive_column: string;
+        /**
+         * Favorable
+         */
+        favorable?: string | null;
+    };
+    url: '/api/v1/experiments/{experiment_id}/fairness';
+};
+
+export type GetFairnessReportErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type GetFairnessReportError = GetFairnessReportErrors[keyof GetFairnessReportErrors];
+
+export type GetFairnessReportResponses = {
+    /**
+     * Response Getfairnessreport
+     *
+     * Successful Response
+     */
+    200: {
+        [key: string]: unknown;
+    };
+};
+
+export type GetFairnessReportResponse = GetFairnessReportResponses[keyof GetFairnessReportResponses];
+
 export type GetExperimentLogsData = {
     body?: never;
     path: {

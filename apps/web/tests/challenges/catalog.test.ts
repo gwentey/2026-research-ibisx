@@ -2,13 +2,14 @@ import { describe, it, expect } from "vitest";
 
 import { CHALLENGES, getChallenge, XAI_AUDIENCE_BY_LEVEL } from "@/lib/challenges/catalog";
 
-// Datasets réellement embarqués dans le seed (apps/api/seed_data/datasets.yaml) — 24 jeux.
+// Datasets réellement embarqués dans le seed (apps/api/seed_data/datasets.yaml) — 28 jeux.
 const SEEDED = [
   "iris", "student_performance", "titanic", "pima_diabetes", "wine_quality_red", "penguins",
   "wine_recognition", "breast_cancer_wisconsin", "diabetes_progression", "handwritten_digits",
   "german_credit", "adult_income", "mushroom", "car_evaluation", "heart_disease", "bank_marketing",
   "glass_identification", "ionosphere", "banknote_authentication", "blood_transfusion",
-  "contraceptive_choice", "abalone_age", "auto_mpg", "california_housing"
+  "contraceptive_choice", "abalone_age", "auto_mpg", "california_housing",
+  "cps_wages_1985", "gamma_telescope", "energy_efficiency", "student_dropout"
 ];
 
 describe("catalogue de défis", () => {

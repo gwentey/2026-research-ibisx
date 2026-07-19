@@ -1,0 +1,189 @@
+# Spec Technique — web/datasets
+
+| Champ         | Valeur              |
+|---------------|---------------------|
+| Module        | web/datasets        |
+| Version       | 0.1.0               |
+| Date          | 2026-07-19          |
+| Source        | Rétro-ingénierie    |
+
+---
+
+## Architecture du module
+
+Le module est composé de 5 routes Next.js App Router et de 3 couches de composants :
+
+```
+apps/web/app/(app)/datasets/
+├── page.tsx                    ← Catalogue (liste/filtres/tri/pagination)
+├── [id]/
+│   ├── page.tsx               ← Fiche détail (4 onglets)
+│   └── complete/page.tsx      ← Complétion de métadonnées
+├── upload/page.tsx            ← Wizard d'import (3 étapes)
+└── score/page.tsx             ← Scoring pondéré (heatmap/liste)
+
+apps/web/components/ibis/datasets/
+├── dataset-card.tsx           ← Carte catalogue (grille)
+├── dataset-detail-header.tsx  ← Bandeau fiche détail
+├── dataset-how-to-use.tsx     ← Guide pédagogique statique
+├── domain-pattern.tsx         ← Motifs SVG par domaine (filigrane)
+├── ethical-criteria-grid.tsx  ← Grille 10 critères éthiques
+├── files-tab.tsx              ← Onglet fichiers + téléchargement
+├── filters-sheet.tsx          ← Panneau filtres facettés
+├── guide-tab.tsx              ← Onglet guide IA (SSE)
+├── metadata-form.tsx          ← Formulaire métadonnées (3 sections)
+├── overview-tab.tsx           ← Onglet aperçu général
+├── preview-tab.tsx            ← Onglet prévisualisation données
+├── upload-dropzone.tsx        ← Zone de dépôt (drag-and-drop)
+├── upload-preview-table.tsx   ← Tableau d'aperçu post-analyse
+└── upload-stepper.tsx         ← Indicateur d'étapes wizard upload
+
+apps/web/components/ibis/scoring/
+├── results-list.tsx           ← Vue liste du scoring
+├── score-heatmap.tsx          ← Heatmap datasets × critères
+└── weights-panel.tsx          ← Pupitre de pondération
+
+apps/web/lib/datasets/
+├── constants.ts               ← ETHICAL_KEYS, SORT_KEYS, PAGE_SIZES, formatCount, scoreColorClass
+├── domain-visuals.ts          ← Mapping domaine → visuel (icon, pattern, token chart, monogram)
+└── use-catalog.ts             ← Hook useCatalog (state machine catalogue)
+```
+
+---
+
+## Fichiers impactés
+
+| Fichier | Rôle | Lignes |
+|---------|------|--------|
+| `apps/web/app/(app)/datasets/page.tsx` | Catalogue : search, sort, pagination, vue grille/tableau | ~375 |
+| `apps/web/app/(app)/datasets/[id]/page.tsx` | Fiche détail : charge dataset + similaires, orchestre 4 onglets | ~117 |
+| `apps/web/app/(app)/datasets/[id]/complete/page.tsx` | Complétion métadonnées : charge, édite, sauvegarde + taux de remplissage | ~189 |
+| `apps/web/app/(app)/datasets/upload/page.tsx` | Wizard upload 3 étapes : analyse → aperçu → métadonnées | ~209 |
+| `apps/web/app/(app)/datasets/score/page.tsx` | Scoring pondéré : profils, weights, re-scoring debouncé 400 ms | ~141 |
+| `apps/web/components/ibis/datasets/dataset-card.tsx` | Carte catalogue : vignette tonale, ProgressRing score éthique, badges | ~190 |
+| `apps/web/components/ibis/datasets/dataset-detail-header.tsx` | Bandeau fiche : stats, download, lien "utiliser dans un projet" | ~207 |
+| `apps/web/components/ibis/datasets/ethical-criteria-grid.tsx` | Grille tristate 10 critères éthiques + barre segmentée | ~82 |
+| `apps/web/components/ibis/datasets/filters-sheet.tsx` | Panneau Sheet (slide-in) : domaines, tâches, plages numériques, éthique, compteur live | ~323 |
+| `apps/web/components/ibis/datasets/guide-tab.tsx` | Guide IA : SSE EventSource, Progress, badge fallback/modèle | ~142 |
+| `apps/web/components/ibis/datasets/metadata-form.tsx` | Formulaire 3 sections : TagPicker, TristateSelect, switches | ~363 |
+| `apps/web/components/ibis/datasets/overview-tab.tsx` | Onglet Vue d'ensemble : fiche technique, métriques qualité, datasets similaires | ~263 |
+| `apps/web/components/ibis/datasets/preview-tab.tsx` | Onglet Aperçu : tableau de données réelles, stats par colonne | ~130 |
+| `apps/web/components/ibis/datasets/files-tab.tsx` | Onglet Fichiers : colonnes profiling, PII, téléchargement authentifié | ~109 |
+| `apps/web/components/ibis/datasets/upload-dropzone.tsx` | Drag-and-drop (useFileUpload hook), formats acceptés CSV/XLSX/JSON/Parquet, max 100 Mo | ~128 |
+| `apps/web/components/ibis/scoring/weights-panel.tsx` | Pupitre : sliders, profils prédéfinis, barre normalisée, critères inactifs en chips | ~187 |
+| `apps/web/components/ibis/scoring/score-heatmap.tsx` | Heatmap : DOM natif, en-têtes diagonaux, tri colonne, hover card, clic → détail | ~192 |
+| `apps/web/components/ibis/scoring/results-list.tsx` | Vue liste classée du scoring | — |
+| `apps/web/lib/datasets/constants.ts` | ETHICAL_KEYS (10 critères), SORT_KEYS, PAGE_SIZES, formatCount, scoreColorClass | ~63 |
+| `apps/web/lib/datasets/domain-visuals.ts` | Mapping 9 domaines → {icon, pattern, chartToken, monogram, vignette}, hash déterministe repli | ~164 |
+| `apps/web/lib/datasets/use-catalog.ts` | Hook : state machine (loading/ready/error), debounce 300 ms, requestId race-prevention | ~123 |
+
+---
+
+## Schéma BDD (si applicable)
+
+Ce module est 100 % frontend. Le schéma BDD est documenté dans `docs/specs/api/datasets/spec-technique.md`. Les types TypeScript utilisés dans ce module sont générés depuis le contrat OpenAPI.
+
+Types principaux consommés depuis `@/lib/api/generated` :
+- `DatasetCard` — données carte catalogue (id, display_name, domain, task, ethical_score, instances_number, features_number, global_missing_percentage, split, anonymization_applied, temporal_factors, access, year, num_citations, updated_at, objective)
+- `DatasetDetail` — données fiche complète (tous les champs de DatasetCard + files, ethical_criteria, ai_guide, completeness, sources, availability, storage_uri, etc.)
+- `DatasetPage` — réponse paginée du catalogue (items, total, total_pages, page, page_size)
+- `DatasetFacets` — facettes disponibles (domains[], tasks[] avec count)
+- `SimilarDataset` — paire {dataset: DatasetCard, reason: string}
+- `DatasetPreview` — aperçu tabulaire (rows, displayed_columns, total_columns, total_rows, sampled, random_state, column_stats)
+- `UploadAnalysis` — résultat du profiling (files[], suggested_name, suggested_domains, suggested_tasks, indicative_quality_score)
+- `CompletionStatus` — taux de remplissage (overall_percentage, sections[], needs_human_review[])
+- `ScoreResponse` / `ScoredDataset` — résultats de scoring (results[], criteria[])
+- `ProfilesResponse` — profils et poids par défaut (profiles[], default_weights, criteria[])
+
+---
+
+## API / Endpoints (si applicable)
+
+| Méthode | Route | Composant | Auth |
+|---------|-------|-----------|------|
+| GET | `/datasets` | `useCatalog` | Oui (Bearer) |
+| GET | `/datasets/facets` | `DatasetsPage` | Oui |
+| GET | `/datasets/{id}` | `DatasetDetailPage`, `CompleteMetadataPage` | Oui |
+| GET | `/datasets/{id}/similar` | `DatasetDetailPage` | Oui |
+| GET | `/datasets/{id}/preview` | `PreviewTab` | Oui |
+| GET | `/datasets/{id}/completion` | `CompleteMetadataPage` | Oui |
+| POST | `/datasets/{id}/ai-guide` | `GuideTab` | Oui (contributor+) |
+| POST | `/datasets/analyze` | `UploadDatasetPage` | Oui (contributor+) |
+| POST | `/datasets` | `UploadDatasetPage` | Oui (contributor+) |
+| PATCH | `/datasets/{id}` | `CompleteMetadataPage` | Oui (admin ou créateur) |
+| GET | `/datasets/{id}/files/{file_id}/download` | `FilesTab`, `DatasetDetailHeader` | Oui |
+| GET | `/scoring/profiles` | `ScorePage` | Oui |
+| POST | `/scoring/score` | `ScorePage` | Oui |
+| GET | `/jobs/{id}/events` | `GuideTab` | Non (SSE public) |
+
+---
+
+## Patterns identifiés
+
+### State machine catalogue (useCatalog)
+Le hook `useCatalog` implémente une state machine locale `loading / ready / error` avec prévention des race conditions via un `requestId` incrémental. La recherche est debouncée à 300 ms. Chaque action modifiant les paramètres de filtrage remet la pagination à la page 1.
+
+### Transmission inter-pages via sessionStorage
+Les filtres actifs du catalogue sont sérialisés dans `sessionStorage['ibis:score:filters']` avant la navigation vers `/datasets/score`. La page de scoring lit ces filtres au montage. Aucune persistance localStorage (pas de survie à la fermeture de l'onglet).
+
+### Debounce double (catalogue 300 ms / scorer 400 ms)
+Le catalogue deboune la recherche textuelle à 300 ms. La page de scoring deboune le re-scoring à 400 ms sur les changements de poids. Le panneau de filtres deboune le compteur live à 300 ms.
+
+### Téléchargement via Blob objectURL
+Le téléchargement de fichiers dataset utilise `downloadDatasetFile(..., parseAs: "blob")` puis crée une `objectURL` temporaire attachée à un `<a>` créé dynamiquement. L'URL est révoquée immédiatement après le clic. Le fichier est forcé en `.parquet` quelle que soit l'extension d'origine.
+
+### Heatmap DOM natif avec en-têtes diagonaux
+La heatmap de scoring utilise un `<table>` DOM natif (pas de librairie de visualisation). Les en-têtes de colonnes sont rendus en diagonale à -45° via CSS `rotate` et `origin-bottom-left`. La coloration des cellules utilise une rampe définie dans `@/lib/viz/score-scale` (shared avec d'autres modules).
+
+### Domain visual system
+9 domaines connus sont mappés statiquement vers {LucideIcon, DomainPatternId, ChartToken, monogram, vignette CSS class}. Les domaines inconnus reçoivent un token chart déterministe via un hash djb2 simplifié. Toutes les classes Tailwind sont écrites littéralement (pas de concaténation dynamique) pour la compatibilité JIT.
+
+### Guide IA avec EventSource
+La génération du guide IA ouvre un `EventSource` sur `/api/v1/jobs/{id}/events` après avoir déclenché la génération. Sur l'événement `progress`, si le statut est `completed`, le dataset est rechargé et l'EventSource est fermé. En cas d'erreur SSE (`onerror`), l'EventSource est fermé sans marquer l'état comme échoué.
+
+### Formulaire de métadonnées en 3 sections
+Le `MetadataForm` est partagé entre le wizard d'upload (étape 3) et la page de complétion. Les 3 sections (Général, Technique, Éthique) ont des ancres HTML (`id="section-{name}"`) utilisées par la navigation par scroll dans `CompleteMetadataPage`. Le `TristateSelect` encode les valeurs boolean|null en strings "true"/"false"/"null" pour le composant `<Select>`.
+
+---
+
+## Configuration et constantes
+
+| Constante | Valeur | Fichier |
+|-----------|--------|---------|
+| `MAX_SIZE` upload | 100 Mo | `upload-dropzone.tsx` |
+| `ACCEPT` formats | `.csv,.xlsx,.json,.parquet` | `upload-dropzone.tsx` |
+| `PAGE_SIZES` catalogue | [12, 24, 48, 96] | `constants.ts` |
+| `SORT_KEYS` | [name, year, instances, features, citations, created, updated] | `constants.ts` |
+| Debounce recherche | 300 ms | `use-catalog.ts` |
+| Debounce live count filtres | 300 ms | `filters-sheet.tsx` |
+| Debounce re-scoring | 400 ms | `score/page.tsx` |
+| Clé sessionStorage filtres | `ibis:score:filters` | `score/page.tsx` |
+| Score ≥ 80 % | vert | `constants.ts` (`scoreColorClass`) |
+| Score ≥ 60 % | lime | `constants.ts` |
+| Score ≥ 40 % | ambre | `constants.ts` |
+| Score < 40 % | rouge | `constants.ts` |
+
+---
+
+## Tests existants
+
+| Fichier | Ce qu'il teste | Statut |
+|---------|----------------|--------|
+| Tests Vitest `web/datasets` | Non identifié dans les 17 fichiers listés par discovery.md | À vérifier |
+| Tests Playwright e2e | Les 3 specs e2e couvrent le parcours mission (wizard ML) — datasets catalogue non couvert explicitement | Partiel |
+
+---
+
+## Décisions techniques documentées en spec (non ADR)
+
+### 1. Domain visual system — tokens monochromes + motifs SVG
+Le module utilise un système de différenciation visuelle par domaine basé sur les tokens `chart-1..5` du design system (nuances neutres, pas de teintes arbitraires). La distinction entre domaines s'appuie sur la nuance, le motif SVG filigrane et l'icône Lucide — jamais sur une couleur inventée hors du thème. Les 9 domaines connus sont mappés dans `domain-visuals.ts`. Les domaines inconnus reçoivent un visual de repli déterministe par hash. Ce pattern est localisé au module `web/datasets`.
+
+### 2. Transfert inter-pages via sessionStorage (non localStorage)
+Le passage des filtres du catalogue vers le scorer utilise `sessionStorage` (données perdues à la fermeture de l'onglet) plutôt que `localStorage` (persistant) ou des query params (URL trop longue avec filtres complexes). Ce choix est intentionnellement éphémère : le contexte de scoring est lié à une session de navigation.
+
+### 3. Formulaire métadonnées partagé entre upload et complétion
+`MetadataForm` est un composant contrôlé pur (valeur + onChange) réutilisé dans deux contextes différents. La page d'upload pré-remplit depuis l'analyse, la page de complétion pré-remplit depuis le dataset existant. Ce pattern évite la duplication de logique de formulaire mais impose que MetadataFormValue couvre tous les champs modifiables d'un dataset.
+
+### 4. Heatmap en DOM natif (pas de librairie chart)
+La ScoreHeatmap est rendue en `<table>` DOM natif pour garder le contrôle complet sur le tri interactif par colonne, les en-têtes diagonaux CSS, et les tooltips HoverCard/Tooltip de shadcn/ui. L'absence de librairie (D3, Recharts) évite le bridging DOM/React et simplifie la navigation clavier.

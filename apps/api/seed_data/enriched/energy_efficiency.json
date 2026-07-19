@@ -1,0 +1,36 @@
+{
+  "display_name": "Efficacité énergétique des bâtiments",
+  "year": 2012,
+  "objective": "Prédire les besoins de chauffage et de climatisation d'un bâtiment à partir de sa géométrie et de son enveloppe (compacité, surfaces, hauteur, vitrage…). Aide à la conception de bâtiments sobres en énergie.",
+  "sources": "Tsanas & Xifara (2012) — simulations Ecotect de 12 formes de bâtiments, UCI (id 242) / OpenML. Noms de variables rétablis d'après le codebook officiel ENB2012.",
+  "storage_uri": "https://archive.ics.uci.edu/dataset/242/energy+efficiency",
+  "documentation_link": "https://archive.ics.uci.edu/dataset/242/energy+efficiency",
+  "access": "public",
+  "availability": "online",
+  "metadata_provided_with_dataset": true,
+  "external_documentation_available": true,
+  "domain": [
+    "environment"
+  ],
+  "task": [
+    "regression"
+  ],
+  "split": false,
+  "temporal_factors": false,
+  "representativity_level": "medium",
+  "representativity_description": "768 configurations issues de simulations (Ecotect) sur 12 formes de bâtiments ; espace de conception maîtrisé, non un parc immobilier réel.",
+  "sample_balance_level": "balanced",
+  "sample_balance_description": "Plan d'expériences équilibré couvrant systématiquement les 12 formes de bâtiments.",
+  "missing_values_description": "Aucune valeur manquante (768 configurations complètes).",
+  "features_description": "8 caractéristiques du bâtiment (compacité relative, surface totale, surface des murs, surface du toit, hauteur, orientation, surface vitrée, distribution du vitrage) ; deux cibles : charge de chauffage et charge de climatisation.",
+  "transparency": true,
+  "data_quality_documented": true,
+  "informed_consent": null,
+  "anonymization_applied": null,
+  "user_control": null,
+  "record_keeping_policy_exists": true,
+  "equity_non_discrimination": null,
+  "security_measures_in_place": null,
+  "purpose_limitation_respected": true,
+  "accountability_defined": true
+}

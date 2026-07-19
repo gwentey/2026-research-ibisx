@@ -3,6 +3,23 @@
 Refonte complète from scratch (voir [JALONS.md](JALONS.md) et [docs/refonte/](docs/refonte/)).
 Un jalon = un incrément livrable ; chaque entrée correspond à un commit `feat: jalon N`.
 
+## Récap de défi réductible (19/07/2026)
+
+- **Débrief de fin d'enquête repliable** (`ChallengeDebrief`) : l'encart de résultats gardait
+  toujours ses 4-5 paragraphes pédagogiques à l'écran. Un bouton chevron réduit désormais le récap
+  à son en-tête (félicitation + score) tout en gardant les CTA « Défi suivant » / « Tous les défis »
+  visibles. La préférence est **globale et persistée** (`debriefCollapsed` dans le store de quête),
+  donc elle survit entre défis et sessions. Libellés FR/EN (`debriefCollapse`/`debriefExpand`).
+
+## Rétro-documentation Zelian (19/07/2026)
+
+- **Onboarding framework Zelian** : marker `.zelian/project.json` restauré (réactive les hooks
+  d'auto-documentation), Base `.claude/rules/`, stack détectée (`02-stack.md`), index Compass
+  `.zelian/compass.json` (24 entrées, 100 % ancrées).
+- **Rétro-documentation complète des 24 features** (13 api + 11 web) → **48 specs
+  (fonctionnelle + technique) + 24 ADRs RETRO** — et **audit initial** (`docs/quality/` :
+  audit, dette technique, plan de remédiation).
+
 ## J9 — Finalisation : seed, e2e mission, durcissement (17/07/2026)
 
 - `ibis seed` : admin (env) + 6 datasets réels embarqués, idempotent, **jamais** exécuté au

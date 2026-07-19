@@ -1,0 +1,6 @@
+{
+  "apps": {
+    "api": { "root": "apps/api", "stack": "fastapi" },
+    "web": { "root": "apps/web", "stack": "nextjs" }
+  }
+}

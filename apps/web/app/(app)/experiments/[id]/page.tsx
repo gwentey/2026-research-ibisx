@@ -26,6 +26,7 @@ import { ChallengeDebrief } from "@/components/ibis/challenges/challenge-debrief
 import { CausalCaveat } from "@/components/ibis/causal-caveat";
 import { LensSwitcher } from "@/components/ibis/lenses/lens-switcher";
 import { LensReading } from "@/components/ibis/lenses/lens-reading";
+import { FairnessPanel } from "@/components/ibis/fairness/fairness-panel";
 import { AudienceSwitcher } from "@/components/ibis/audience/audience-switcher";
 import { AudienceWarning } from "@/components/ibis/audience/audience-warning";
 import { AdvancedDetails } from "@/components/ibis/audience/advanced-details";
@@ -418,6 +419,7 @@ export default function ExperimentResultsPage({
       <Tabs defaultValue="performance" className="space-y-4">
         <TabsList>
           <TabsTrigger value="performance">{t("tabPerformance")}</TabsTrigger>
+          <TabsTrigger value="fairness">{t("tabFairness")}</TabsTrigger>
           <TabsTrigger value="xai">{t("tabXai")}</TabsTrigger>
         </TabsList>
 
@@ -461,6 +463,16 @@ export default function ExperimentResultsPage({
                 <Fragment key={block.key}>{block.node}</Fragment>
               ))}
             </AdvancedDetails>
+          ) : null}
+        </TabsContent>
+
+        <TabsContent value="fairness">
+          {experiment ? (
+            <FairnessPanel
+              experimentId={id}
+              datasetId={experiment.dataset_id}
+              taskType={results?.task_type}
+            />
           ) : null}
         </TabsContent>
 

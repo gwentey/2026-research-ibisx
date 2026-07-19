@@ -35,7 +35,11 @@ export default async function AppLayout({
         <IbisSidebar variant="inset" />
         <SidebarInset>
           <IbisHeader />
-          <div className="bg-muted/40 flex flex-1 flex-col">
+          <div
+            className="bg-muted/40 flex flex-1 flex-col"
+            // Réserve l'espace du traceur de quête flottant (0px hors défi) : aucun bouton de bas
+            // de page ne passe plus derrière la barre pendant un défi.
+            style={{ paddingBottom: "var(--quest-tracker-height, 0px)" }}>
             <div className="@container/main p-(--content-padding) xl:group-data-[theme-content-layout=centered]/layout:container xl:group-data-[theme-content-layout=centered]/layout:mx-auto">
               {children}
             </div>

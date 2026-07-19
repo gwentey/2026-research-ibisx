@@ -205,6 +205,8 @@
       "regression": "Regression"
     },
     "debriefTitle": "Investigation complete",
+    "debriefCollapse": "Collapse recap",
+    "debriefExpand": "Expand recap",
     "debriefLead": "Well done — investigation «{title}» complete.",
     "debriefMetric": "A real model, trained on real data: {metric}.",
     "debriefScoreHint": "This score runs from 0 to 1: the closer to 1, the better the model sees. No need to be an expert — what matters is understanding WHY it decides, in the next step.",
@@ -292,6 +294,34 @@
         "brief": "1,000 German credit applications. Build a model that tells good from bad borrowers, then put on your auditor's hat: what truly drives the decision — repayment history, or the applicant's age and status? Run the investigation on your own.",
         "stakes": "A credit score decides real lives. Understanding its levers means being able to challenge it — the very subject of responsible-AI research.",
         "reward": "You'll leave with a real model, and an explanation that lays its decision criteria bare."
+      },
+      "ecart-salarial-1985": {
+        "title": "1985: equal work, equal pay?",
+        "tagline": "Measure the gender wage gap, variable by variable.",
+        "brief": "534 wage earners, 1985 employment survey. Train a model to predict the hourly wage from education, experience, sector… then ask the question that has shaped a century of labour history: all else being equal, does sex still weigh on pay? This is the founding exercise of wage-gap analysis by regression.",
+        "stakes": "The core challenge of the quantitative history of inequality: telling apart what a career path explains from what is pure discrimination.",
+        "reward": "You'll leave with a wage model, and the XAI explanation that quantifies the real weight of each variable — including sex."
+      },
+      "signal-gamma": {
+        "title": "A gamma ray, or just noise?",
+        "tagline": "Sort the celestial signal from background noise, like a telescope.",
+        "brief": "A Cherenkov telescope records thousands of light showers in the night sky. Some come from real cosmic gamma rays, most are just hadronic background. From 10 image parameters, train a model to separate signal from noise — the heart of data processing in instrumental astrophysics.",
+        "stakes": "In particle physics as in space missions, everything hinges on extracting a rare signal from an ocean of noise without losing it or drowning in it.",
+        "reward": "You'll leave with a trained detector, and the explanation of the image parameters that betray a real gamma ray."
+      },
+      "batiment-sobre": {
+        "title": "Design a low-energy building",
+        "tagline": "Predict the energy bill straight from the blueprints.",
+        "brief": "Before the first stone is even laid, a building's shape largely decides what it will consume. From the compactness, surfaces, orientation and glazing of 768 configurations, train a model to predict heating needs — a concrete tool for sustainable design.",
+        "stakes": "Buildings weigh heavily on the carbon footprint: anticipating consumption at the design stage means acting where the ecological impact is decided.",
+        "reward": "You'll leave with a consumption model, and the explanation of the design choices that make the difference."
+      },
+      "reussite-etudiante": {
+        "title": "University dropout: spotting without stigmatising",
+        "tagline": "Detect struggling students early — with caution.",
+        "brief": "4,424 university students, tracked from enrolment to graduation. From their path, situation and first-year results, train a model to tell apart who drops out, persists or graduates. Then question it: what does it truly rely on — the effort put in, or sensitive variables such as gender or nationality?",
+        "stakes": "Early detection can save a path… or lock a student into a prediction. That is the whole pedagogical question: helping without labelling.",
+        "reward": "You'll leave with a success model, and the XAI audit of the variables it bases its predictions on."
       }
     }
   },
@@ -1031,6 +1061,7 @@
   "experiments": {
     "resultsTitle": "Experiment results",
     "tabPerformance": "Performance",
+    "tabFairness": "Fairness",
     "tabXai": "Explainability",
     "xaiSoon": "Explainability (SHAP/LIME, reliability KPIs, chat) arrives in the next milestone.",
     "composite": {
@@ -1563,6 +1594,25 @@
   "causal": {
     "title": "Association, not causation",
     "body": "These variables are correlated with the target: the model uses them to predict. That does not prove they cause it. Establishing a causal effect requires an identification design (experiment, difference-in-differences, instrumental variable)."
+  },
+  "fairness": {
+    "intro": "Pick a sensitive variable: does the model treat every group the same way?",
+    "regressionNote": "Fairness analysis applies to classification models, not regression.",
+    "noColumns": "No usable categorical variable detected in this dataset.",
+    "pick": "Sensitive variable",
+    "favorable": "Favorable outcome: {label}",
+    "colGroup": "Group",
+    "colSize": "Count",
+    "colSelection": "Selection rate",
+    "colTpr": "True positives",
+    "colAccuracy": "Accuracy",
+    "selectionRatio": "Selection-rate ratio (four-fifths rule)",
+    "tprGap": "True-positive gap",
+    "accuracyGap": "Accuracy gap",
+    "disparityDetected": "Disparity detected",
+    "disparityNone": "No major disparity",
+    "caveat": "A measured disparity signals unequal treatment between groups; on its own it does not prove discrimination — always cross-check with the data context.",
+    "errorGeneric": "Analysis unavailable for this variable — try a categorical variable with few values, such as sex."
   },
   "formation": {
     "home": {

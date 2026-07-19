@@ -37,3 +37,11 @@ test-results/
 .DS_Store
 .idea/
 .vscode/
+
+# --- Zelian : caches de hooks (NE PAS ignorer .zelian/ — marqueur + compass versionnés) ---
+.claude/.session-*
+.claude/.adr-injected.json
+.claude/.doc-injected.json
+.claude/.update-check.json
+.claude/.events.log
+.claude/.quality-score.log
