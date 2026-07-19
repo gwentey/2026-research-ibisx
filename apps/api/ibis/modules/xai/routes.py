@@ -12,7 +12,7 @@ from ibis.db.engine import get_db
 from ibis.modules.auth.deps import CurrentClaims, CurrentUser
 from ibis.modules.auth.models import XaiAudience
 from ibis.modules.experiments.service import get_experiment
-from ibis.modules.llm.xai_text import suggested_questions
+from ibis.modules.llm.xai_text import humanize_feature, suggested_questions
 from ibis.modules.xai import engine, fairness, service
 from ibis.modules.xai.models import ExplanationStatus
 
@@ -210,11 +210,26 @@ def get_suggested_questions(
     audience: XaiAudience | None = None,
 ) -> list[str]:
     experiment = get_experiment(db, claims.user_id, experiment_id)
+    # Contexte réel (CDC évolutions §4) : variable dominante de la DERNIÈRE explication
+    # terminée (nom humanisé, colonne seule pour un one-hot) + métrique principale.
+    top_feature: str | None = None
+    latest = service.latest_completed_explanation(db, claims.user_id, experiment_id)
+    if latest is not None:
+        stored = latest.values or {}
+        importance = stored.get("importance") or stored.get("contributions") or []
+        if importance:
+            label = humanize_feature(str(importance[0].get("feature", "")))
+            top_feature = label.split(" = ")[0] or None
+    metrics = experiment.metrics or {}
+    primary = str(metrics.get("primary_metric", "")) or None
     # Niveau (adaptatif §5.2) : le novice reçoit des questions en langage courant.
     return suggested_questions(
         str(experiment.preprocessing_config.get("task_type", "classification")),
         language,
         audience.value if audience else None,
+        top_feature=top_feature,
+        metric_name=primary,
+        metric_value=metrics.get(primary) if primary else None,
     )
 
 

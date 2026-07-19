@@ -467,16 +467,40 @@ def chat_prompt_v2(
     )
 
 
-def suggested_questions(task_type: str, language: str, audience: str | None = None) -> list[str]:
+def suggested_questions(
+    task_type: str,
+    language: str,
+    audience: str | None = None,
+    *,
+    top_feature: str | None = None,
+    metric_name: str | None = None,
+    metric_value: Any | None = None,
+) -> list[str]:
     """Questions suggérées contextuelles — déterministes (pas de LLM requis), adaptées au
-    niveau (adaptatif §5.2) : le novice se voit proposer des questions en langage courant."""
+    niveau (adaptatif §5.2) : le novice se voit proposer des questions en langage courant.
+
+    Contextualisées (CDC évolutions §4) : quand la dernière explication fournit la variable
+    dominante (nom humanisé) et la métrique principale, les questions citent le VRAI modèle
+    (« Pourquoi « Sex » domine-t-elle ? », « Un score f1 de 0.732, puis-je m'y fier ? »).
+    Sans contexte, repli sur les formulations génériques d'origine.
+    """
     en = language == "en"
+    value = _round3(metric_value) if metric_value is not None else None
+    has_metric = bool(metric_name) and value is not None
     if audience == "novice":
         if en:
             common = [
                 "In plain words, what did the model learn?",
-                "Can I trust this result, simply put?",
-                "Which piece of information mattered most, and why?",
+                (
+                    f"Is a {metric_name} of {value} good or not?"
+                    if has_metric
+                    else "Can I trust this result, simply put?"
+                ),
+                (
+                    f"Why did “{top_feature}” matter so much?"
+                    if top_feature
+                    else "Which piece of information mattered most, and why?"
+                ),
             ]
             return (
                 [*common, "The confusion matrix — like what, in everyday terms?"]
@@ -485,8 +509,16 @@ def suggested_questions(task_type: str, language: str, audience: str | None = No
             )
         common = [
             "En clair, qu'a appris le modèle ?",
-            "Puis-je faire confiance à ce résultat, simplement ?",
-            "Quelle information a le plus compté, et pourquoi ?",
+            (
+                f"Un score {metric_name} de {value}, c'est bon ou pas ?"
+                if has_metric
+                else "Puis-je faire confiance à ce résultat, simplement ?"
+            ),
+            (
+                f"Pourquoi « {top_feature} » a-t-il autant compté ?"
+                if top_feature
+                else "Quelle information a le plus compté, et pourquoi ?"
+            ),
         ]
         return (
             [*common, "La matrice de confusion, c'est comme quoi au quotidien ?"]
@@ -496,8 +528,16 @@ def suggested_questions(task_type: str, language: str, audience: str | None = No
 
     if en:
         common = [
-            "Why does the top feature dominate the prediction?",
-            "Can I trust these results?",
+            (
+                f"Why does “{top_feature}” dominate the prediction?"
+                if top_feature
+                else "Why does the top feature dominate the prediction?"
+            ),
+            (
+                f"Can I trust a {metric_name} of {value}?"
+                if has_metric
+                else "Can I trust these results?"
+            ),
             "What should I improve before using this model?",
         ]
         return (
@@ -506,8 +546,16 @@ def suggested_questions(task_type: str, language: str, audience: str | None = No
             else [*common, "What does the MAE mean in practice?"]
         )
     common = [
-        "Pourquoi la variable dominante pèse-t-elle autant ?",
-        "Puis-je me fier à ces résultats ?",
+        (
+            f"Pourquoi la variable « {top_feature} » domine-t-elle la prédiction ?"
+            if top_feature
+            else "Pourquoi la variable dominante pèse-t-elle autant ?"
+        ),
+        (
+            f"Un score {metric_name} de {value}, puis-je m'y fier ?"
+            if has_metric
+            else "Puis-je me fier à ces résultats ?"
+        ),
         "Que devrais-je améliorer avant d'utiliser ce modèle ?",
     ]
     return (

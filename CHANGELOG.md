@@ -3,6 +3,16 @@
 Refonte complète from scratch (voir [JALONS.md](JALONS.md) et [docs/refonte/](docs/refonte/)).
 Un jalon = un incrément livrable ; chaque entrée correspond à un commit `feat: jalon N`.
 
+## Évolution XAI 4 — Questions suggérées contextualisées (19/07/2026)
+
+- **Les suggestions citent le vrai modèle** : `getSuggestedQuestions` récupère la dernière
+  explication terminée de l'expérience → variable dominante (nom humanisé, colonne seule pour
+  un one-hot) + métrique principale, injectées dans des questions templatisées
+  (« Pourquoi la variable « Sex » domine-t-elle la prédiction ? », « Un score f1 de 0.732,
+  puis-je m'y fier ? »). Toujours **déterministe** (zéro LLM), adapté au profil (novice en
+  langage courant), FR/EN ; repli sur les listes génériques sans explication terminée.
+  Nouveau helper service `latest_completed_explanation` ; contrat HTTP inchangé.
+
 ## Évolution XAI 1 — Nombres lisibles (19/07/2026)
 
 - **Importances en %** : le contexte servi au LLM (explication + chat) présente les importances

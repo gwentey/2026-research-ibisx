@@ -197,3 +197,48 @@ def test_suggested_questions_vary_by_audience_but_stay_four() -> None:
     expert = xai_text.suggested_questions("classification", "fr", "expert")
     assert len(default) == 4 and len(novice) == 4 and len(expert) == 4
     assert novice != expert
+
+
+def test_suggested_questions_cite_top_feature_and_metric() -> None:
+    questions = xai_text.suggested_questions(
+        "classification",
+        "fr",
+        None,
+        top_feature="Sex",
+        metric_name="f1",
+        metric_value=0.7324,
+    )
+    assert len(questions) == 4
+    assert any("« Sex »" in q for q in questions)  # la vraie variable dominante
+    assert any("f1" in q and "0.732" in q for q in questions)  # la vraie métrique, arrondie
+
+
+def test_suggested_questions_novice_cite_context_in_plain_words() -> None:
+    fr = xai_text.suggested_questions(
+        "classification",
+        "fr",
+        "novice",
+        top_feature="Sex",
+        metric_name="accuracy",
+        metric_value=0.83,
+    )
+    assert len(fr) == 4
+    assert any("Sex" in q for q in fr)
+    assert any("0.83" in q for q in fr)
+    en = xai_text.suggested_questions(
+        "classification",
+        "en",
+        "novice",
+        top_feature="Sex",
+        metric_name="accuracy",
+        metric_value=0.83,
+    )
+    assert len(en) == 4
+    assert any("Sex" in q for q in en)
+
+
+def test_suggested_questions_stay_generic_without_context() -> None:
+    # Sans explication terminée (pas de top feature/métrique) : questions génériques valides.
+    questions = xai_text.suggested_questions("regression", "fr")
+    assert len(questions) == 4
+    assert all("None" not in q for q in questions)
