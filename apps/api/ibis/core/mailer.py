@@ -1,6 +1,14 @@
-"""Envoi d'emails (SMTP configurable) — en dev sans SMTP, le contenu est loggé (CDC §4.1)."""
+"""Envoi d'emails (SMTP configurable).
+
+Sans SMTP configuré, le comportement dépend de l'environnement :
+- hors production, le contenu est loggé pour rester utilisable en dev (CDC §4.1) ;
+- en production, seul un avertissement est loggé — jamais le corps, qui peut
+  contenir un lien de réinitialisation exploitable (ARCH §13, aucune PII ni
+  secret dans les logs).
+"""
 
 import smtplib
+import uuid
 from email.message import EmailMessage
 
 from ibis.core.config import get_settings
@@ -9,10 +17,18 @@ from ibis.core.logging import get_logger
 logger = get_logger(__name__)
 
 
-def send_email(*, to: str, subject: str, body: str) -> None:
+def send_email(*, to: str, subject: str, body: str, user_id: uuid.UUID | None = None) -> None:
     settings = get_settings()
     if not settings.smtp_host:
-        # Pas de SMTP : on logge (lisible en dev via `docker compose logs api`)
+        if settings.is_production:
+            # Le corps porte des secrets (lien de reset valable 1 h) : on n'en logge rien.
+            logger.warning(
+                "mailer.not_configured",
+                reason="e-mail non envoyé : SMTP non configuré",
+                user_id=str(user_id) if user_id is not None else None,
+            )
+            return
+        # Hors production uniquement : lisible via `docker compose logs api`.
         logger.info("mailer.dev_output", to=to, subject=subject, body=body)
         return
 
