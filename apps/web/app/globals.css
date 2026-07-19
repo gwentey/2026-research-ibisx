@@ -315,6 +315,72 @@
     }
   }
 
+  /* Vignettes de domaine (bandeau haut des cartes dataset) : un fond de COULEUR UNIE et
+     DOUCE par domaine, au lieu du gris. Pastels clairs en thème clair, versions sombres et
+     désaturées en thème sombre (jamais éblouissant). Distincts mais calmes (chroma basse) →
+     code couleur lisible, pas un sapin de Noël. */
+  .dv-education {
+    background-color: oklch(0.95 0.04 255);
+  }
+  .dv-healthcare {
+    background-color: oklch(0.95 0.04 18);
+  }
+  .dv-finance {
+    background-color: oklch(0.95 0.045 150);
+  }
+  .dv-social {
+    background-color: oklch(0.95 0.05 75);
+  }
+  .dv-biology {
+    background-color: oklch(0.95 0.045 168);
+  }
+  .dv-business {
+    background-color: oklch(0.95 0.04 285);
+  }
+  .dv-environment {
+    background-color: oklch(0.95 0.05 132);
+  }
+  .dv-technology {
+    background-color: oklch(0.95 0.045 210);
+  }
+  .dv-research {
+    background-color: oklch(0.95 0.045 312);
+  }
+  .dv-default {
+    background-color: oklch(0.95 0.02 260);
+  }
+
+  .dark .dv-education {
+    background-color: oklch(0.31 0.045 255);
+  }
+  .dark .dv-healthcare {
+    background-color: oklch(0.31 0.05 18);
+  }
+  .dark .dv-finance {
+    background-color: oklch(0.31 0.05 150);
+  }
+  .dark .dv-social {
+    background-color: oklch(0.32 0.055 75);
+  }
+  .dark .dv-biology {
+    background-color: oklch(0.31 0.05 168);
+  }
+  .dark .dv-business {
+    background-color: oklch(0.31 0.05 285);
+  }
+  .dark .dv-environment {
+    background-color: oklch(0.32 0.055 132);
+  }
+  .dark .dv-technology {
+    background-color: oklch(0.31 0.05 210);
+  }
+  .dark .dv-research {
+    background-color: oklch(0.31 0.05 312);
+  }
+  .dark .dv-default {
+    background-color: oklch(0.3 0.025 260);
+  }
+
   [data-slot="button"],
   [data-slot="dialog-trigger"],
   [data-slot="dropdown-menu-item"],

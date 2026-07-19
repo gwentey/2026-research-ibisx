@@ -46,20 +46,12 @@ export function DatasetCard({ dataset }: { dataset: DatasetCardData }) {
 
   return (
     <Card className="group gap-0 overflow-hidden pt-0 transition-shadow hover:shadow-md">
-      {/* Vignette d'en-tête tonale du domaine */}
-      <div
-        className={cn(
-          "relative h-24 overflow-hidden bg-gradient-to-br to-transparent",
-          visual.tone.bgSoft,
-          visual.tone.gradientFrom
-        )}>
-        <DomainPattern pattern={visual.pattern} className={visual.tone.patternText} />
-        <div
-          className={cn(
-            "absolute top-4 left-4 flex size-9 items-center justify-center rounded-lg",
-            visual.tone.bgTile,
-            visual.tone.text
-          )}>
+      {/* Vignette d'en-tête : fond de COULEUR UNIE et douce, propre au domaine (au lieu du
+          gris). Motif de formes en filigrane neutre + tuile-icône blanche pour ressortir sur
+          la couleur, dans les deux thèmes. */}
+      <div className={cn("relative h-24 overflow-hidden", visual.vignette)}>
+        <DomainPattern pattern={visual.pattern} className="text-foreground/[0.08]" />
+        <div className="bg-background/80 text-foreground absolute top-4 left-4 flex size-9 items-center justify-center rounded-lg shadow-sm backdrop-blur-sm">
           <DomainIcon className="size-5" />
         </div>
         <Badge
@@ -95,10 +87,6 @@ export function DatasetCard({ dataset }: { dataset: DatasetCardData }) {
           </TooltipTrigger>
           <TooltipContent className="max-w-xs">{t("ethicalHint")}</TooltipContent>
         </Tooltip>
-        <div className="pb-1 leading-tight">
-          <p className="text-xs font-medium">{t("ethical")}</p>
-          <p className="text-muted-foreground text-[11px]">{t("ethicalOutOf")}</p>
-        </div>
       </div>
 
       <CardHeader className="gap-1 pt-2">

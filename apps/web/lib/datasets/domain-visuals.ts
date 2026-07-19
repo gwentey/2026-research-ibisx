@@ -85,6 +85,8 @@ export interface DomainVisual {
   /** Clé i18n `datasets.domains.<key>` (repli : chaîne brute). */
   labelKey: string;
   tone: DomainTone;
+  /** Classe de fond UNI et coloré du bandeau de carte (`.dv-*`, définie clair + sombre). */
+  vignette: string;
 }
 
 interface DomainSpec {
@@ -92,19 +94,23 @@ interface DomainSpec {
   icon: LucideIcon;
   pattern: DomainPatternId;
   monogram: string;
+  /** Fond uni coloré du bandeau (classe `.dv-*` littérale, définie clair + sombre). */
+  vignette: string;
 }
 
 // Mapping figé (cf. docs/refonte/05-catalogue.md). Les 9 domaines connus (constants.ts).
+// `vignette` = fond de couleur unie et douce du bandeau de carte, une teinte distincte par
+// domaine (code couleur), toujours en classe littérale pour le JIT Tailwind (via globals.css).
 const DOMAIN_SPECS: Record<string, DomainSpec> = {
-  education: { chartToken: "chart-3", icon: GraduationCapIcon, pattern: "grid", monogram: "ED" },
-  healthcare: { chartToken: "chart-1", icon: HeartPulseIcon, pattern: "cross", monogram: "HC" },
-  finance: { chartToken: "chart-2", icon: LineChartIcon, pattern: "chevrons", monogram: "FI" },
-  social: { chartToken: "chart-4", icon: UsersIcon, pattern: "dots", monogram: "SO" },
-  biology: { chartToken: "chart-5", icon: LeafIcon, pattern: "waves", monogram: "BI" },
-  business: { chartToken: "chart-3", icon: BriefcaseIcon, pattern: "diagonals", monogram: "BU" },
-  environment: { chartToken: "chart-1", icon: SproutIcon, pattern: "rings", monogram: "EN" },
-  technology: { chartToken: "chart-2", icon: CpuIcon, pattern: "circuit", monogram: "TE" },
-  research: { chartToken: "chart-4", icon: FlaskConicalIcon, pattern: "hatch", monogram: "RE" }
+  education: { chartToken: "chart-3", icon: GraduationCapIcon, pattern: "grid", monogram: "ED", vignette: "dv-education" },
+  healthcare: { chartToken: "chart-1", icon: HeartPulseIcon, pattern: "cross", monogram: "HC", vignette: "dv-healthcare" },
+  finance: { chartToken: "chart-2", icon: LineChartIcon, pattern: "chevrons", monogram: "FI", vignette: "dv-finance" },
+  social: { chartToken: "chart-4", icon: UsersIcon, pattern: "dots", monogram: "SO", vignette: "dv-social" },
+  biology: { chartToken: "chart-5", icon: LeafIcon, pattern: "waves", monogram: "BI", vignette: "dv-biology" },
+  business: { chartToken: "chart-3", icon: BriefcaseIcon, pattern: "diagonals", monogram: "BU", vignette: "dv-business" },
+  environment: { chartToken: "chart-1", icon: SproutIcon, pattern: "rings", monogram: "EN", vignette: "dv-environment" },
+  technology: { chartToken: "chart-2", icon: CpuIcon, pattern: "circuit", monogram: "TE", vignette: "dv-technology" },
+  research: { chartToken: "chart-4", icon: FlaskConicalIcon, pattern: "hatch", monogram: "RE", vignette: "dv-research" }
 };
 
 const FALLBACK_TOKENS: ChartToken[] = ["chart-1", "chart-2", "chart-3", "chart-4", "chart-5"];
@@ -131,7 +137,8 @@ export function getDomainVisual(domain: string | null | undefined): DomainVisual
       pattern: spec.pattern,
       monogram: spec.monogram,
       labelKey: `domains.${key}`,
-      tone: TONES[spec.chartToken]
+      tone: TONES[spec.chartToken],
+      vignette: spec.vignette
     };
   }
 
@@ -145,7 +152,8 @@ export function getDomainVisual(domain: string | null | undefined): DomainVisual
     pattern: "dots",
     monogram,
     labelKey: `domains.${key}`,
-    tone: TONES[token]
+    tone: TONES[token],
+    vignette: "dv-default"
   };
 }
 
