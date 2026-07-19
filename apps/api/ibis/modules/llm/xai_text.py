@@ -10,6 +10,10 @@
 import re
 from typing import Any
 
+from ibis.core.logging import get_logger
+
+logger = get_logger(__name__)
+
 AUDIENCE_SPECS = {
     "novice": {
         "fr": (
@@ -141,13 +145,17 @@ def numbers_exist_in_context(text: str, context: str) -> bool:
             context_numbers.add(
                 f"{value * 100:.{digits}f}".rstrip("0").rstrip(".")
             )  # % équivalents
+    foreign: list[str] = []
     for raw in NUMBER_RE.findall(text.replace(",", ".")):
         normalized = f"{float(raw):g}"
         if normalized in ("1", "2", "3", "4", "5", "10", "100"):  # petits ordinaux tolérés
             continue
         if normalized not in context_numbers:
-            return False
-    return True
+            foreign.append(normalized)
+    if foreign:
+        # Diagnostic : quels nombres cités par l'IA ne sont pas dans le contexte (→ rejet).
+        logger.info("xai_text.foreign_numbers", numbers=foreign[:10])
+    return not foreign
 
 
 def _g(value: Any) -> str:
