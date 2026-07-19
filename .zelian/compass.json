@@ -1,0 +1,208 @@
+{
+  "schema_version": 1,
+  "generated_by": "zelian-framework@3.0.0",
+  "updated_at": "2026-07-19T19:02:53.082Z",
+  "entries": [
+    {
+      "id": "api/datasets",
+      "app": "api",
+      "module": "datasets",
+      "label": "api/datasets",
+      "spec_dir": "docs/specs/api/datasets",
+      "code": [
+        "apps/api/ibis/modules/datasets/routes.py",
+        "apps/api/ibis/modules/datasets/service.py",
+        "apps/api/ibis/modules/datasets/profiling.py",
+        "apps/api/ibis/modules/datasets/ethics.py",
+        "apps/api/ibis/modules/datasets/filters.py",
+        "apps/api/ibis/modules/datasets/importer.py",
+        "apps/api/ibis/modules/datasets/models.py",
+        "apps/api/ibis/modules/datasets/schemas.py",
+        "apps/api/tests/integration/test_datasets.py",
+        "apps/api/tests/unit/test_profiling.py"
+      ],
+      "keywords": [
+        "datasets"
+      ],
+      "updated_at": "2026-07-19T19:02:53.076Z"
+    },
+    {
+      "id": "api/experiments",
+      "app": "api",
+      "module": "experiments",
+      "label": "api/experiments",
+      "spec_dir": "docs/specs/api/experiments",
+      "code": [
+        "apps/api/ibis/modules/experiments/models.py",
+        "apps/api/ibis/modules/experiments/schemas.py",
+        "apps/api/ibis/modules/experiments/routes.py",
+        "apps/api/ibis/modules/experiments/service.py",
+        "apps/api/ibis/workers/tasks/train.py",
+        "apps/api/ibis/modules/ml/algorithms.py",
+        "apps/api/ibis/modules/ml/preprocessing.py",
+        "apps/api/ibis/modules/ml/evaluation.py"
+      ],
+      "keywords": [
+        "experiments"
+      ],
+      "updated_at": "2026-07-19T19:02:53.076Z"
+    },
+    {
+      "id": "api/ml",
+      "app": "api",
+      "module": "ml",
+      "label": "api/ml",
+      "spec_dir": "docs/specs/api/ml",
+      "code": [
+        "apps/api/ibis/modules/ml/vocab.py",
+        "apps/api/ibis/modules/ml/preprocessing.py",
+        "apps/api/ibis/modules/ml/algorithms.py",
+        "apps/api/ibis/modules/ml/evaluation.py",
+        "apps/api/ibis/modules/ml/quality.py",
+        "apps/api/ibis/workers/tasks/train.py",
+        "apps/api/tests/unit/test_preprocessing.py",
+        "apps/api/tests/unit/test_ml_quality_and_eval.py"
+      ],
+      "keywords": [
+        "ml"
+      ],
+      "updated_at": "2026-07-19T19:02:53.077Z"
+    },
+    {
+      "id": "api/xai",
+      "app": "api",
+      "module": "xai",
+      "label": "api/xai",
+      "spec_dir": "docs/specs/api/xai",
+      "code": [
+        "apps/api/ibis/modules/xai/routes.py",
+        "apps/api/ibis/modules/xai/service.py",
+        "apps/api/ibis/modules/xai/engine.py",
+        "apps/api/ibis/modules/xai/fairness.py",
+        "apps/api/ibis/modules/xai/quality.py",
+        "apps/api/ibis/modules/xai/blocks.py",
+        "apps/api/ibis/modules/xai/models.py",
+        "apps/api/ibis/workers/tasks/explain.py",
+        "apps/api/ibis/modules/llm/xai_text.py"
+      ],
+      "keywords": [
+        "xai"
+      ],
+      "updated_at": "2026-07-19T19:02:53.078Z"
+    },
+    {
+      "id": "web/challenges",
+      "app": "web",
+      "module": "challenges",
+      "label": "web/challenges",
+      "spec_dir": "docs/specs/web/challenges",
+      "code": [
+        "apps/web/lib/challenges/types.ts",
+        "apps/web/lib/challenges/catalog.ts",
+        "apps/web/lib/challenges/progress.ts",
+        "apps/web/lib/challenges/objective-map.ts",
+        "apps/web/lib/challenges/resolve-dataset.ts",
+        "apps/web/lib/challenges/store.ts",
+        "apps/web/app/(app)/challenges/page.tsx",
+        "apps/web/app/(app)/challenges/[slug]/page.tsx",
+        "apps/web/components/ibis/challenges/challenge-card.tsx",
+        "apps/web/components/ibis/challenges/challenge-briefing.tsx",
+        "apps/web/components/ibis/challenges/challenge-debrief.tsx",
+        "apps/web/components/ibis/challenges/quest-tracker.tsx",
+        "apps/web/components/ibis/challenges/use-objective-tracking.ts",
+        "apps/web/components/ibis/challenges/level-badge.tsx",
+        "apps/web/app/(app)/layout.tsx",
+        "apps/web/app/(app)/experiments/[id]/page.tsx",
+        "apps/web/app/wizard/page.tsx",
+        "apps/web/tests/challenges/catalog.test.ts",
+        "apps/web/tests/challenges/progress.test.ts",
+        "apps/web/tests/challenges/objective-map.test.ts",
+        "apps/web/tests/challenges/store.test.ts",
+        "apps/web/tests/challenges/resolve-dataset.test.ts",
+        "apps/web/e2e/challenge.spec.ts"
+      ],
+      "keywords": [
+        "challenges"
+      ],
+      "updated_at": "2026-07-19T19:02:53.079Z"
+    },
+    {
+      "id": "web/datasets",
+      "app": "web",
+      "module": "datasets",
+      "label": "web/datasets",
+      "spec_dir": "docs/specs/web/datasets",
+      "code": [
+        "apps/web/app/(app)/datasets/page.tsx",
+        "apps/web/app/(app)/datasets/[id]/page.tsx",
+        "apps/web/app/(app)/datasets/[id]/complete/page.tsx",
+        "apps/web/app/(app)/datasets/upload/page.tsx",
+        "apps/web/app/(app)/datasets/score/page.tsx",
+        "apps/web/components/ibis/datasets/dataset-card.tsx",
+        "apps/web/components/ibis/datasets/dataset-detail-header.tsx",
+        "apps/web/components/ibis/datasets/ethical-criteria-grid.tsx",
+        "apps/web/components/ibis/datasets/filters-sheet.tsx",
+        "apps/web/components/ibis/datasets/guide-tab.tsx",
+        "apps/web/components/ibis/datasets/metadata-form.tsx",
+        "apps/web/components/ibis/datasets/overview-tab.tsx",
+        "apps/web/components/ibis/datasets/preview-tab.tsx",
+        "apps/web/components/ibis/datasets/files-tab.tsx",
+        "apps/web/components/ibis/datasets/upload-dropzone.tsx",
+        "apps/web/components/ibis/scoring/weights-panel.tsx",
+        "apps/web/components/ibis/scoring/score-heatmap.tsx",
+        "apps/web/components/ibis/scoring/results-list.tsx",
+        "apps/web/lib/datasets/constants.ts",
+        "apps/web/lib/datasets/domain-visuals.ts",
+        "apps/web/lib/datasets/use-catalog.ts"
+      ],
+      "keywords": [
+        "datasets"
+      ],
+      "updated_at": "2026-07-19T19:02:53.080Z"
+    },
+    {
+      "id": "web/experiments",
+      "app": "web",
+      "module": "experiments",
+      "label": "web/experiments",
+      "spec_dir": "docs/specs/web/experiments",
+      "code": [
+        "apps/web/app/(app)/experiments/[id]/page.tsx",
+        "apps/web/components/ibis/experiments/result-charts.tsx",
+        "apps/web/components/ibis/experiments/project-experiments-tab.tsx",
+        "apps/web/components/ibis/mission-stepper.tsx",
+        "apps/web/components/ibis/challenges/challenge-debrief.tsx",
+        "apps/web/components/ibis/audience/audience-switcher.tsx",
+        "apps/web/components/ibis/audience/audience-warning.tsx",
+        "apps/web/components/ibis/audience/advanced-details.tsx",
+        "apps/web/lib/audience/policy.ts",
+        "apps/web/tests/audience/policy.test.ts"
+      ],
+      "keywords": [
+        "experiments"
+      ],
+      "updated_at": "2026-07-19T19:02:53.081Z"
+    },
+    {
+      "id": "web/fairness",
+      "app": "web",
+      "module": "fairness",
+      "label": "web/fairness",
+      "spec_dir": "docs/specs/web/fairness",
+      "code": [
+        "apps/api/ibis/modules/xai/fairness.py",
+        "apps/web/components/ibis/fairness/fairness-panel.tsx",
+        "apps/web/components/ibis/causal-caveat.tsx",
+        "apps/web/lib/lenses/insights.ts",
+        "apps/web/app/(app)/experiments/[id]/page.tsx",
+        "apps/api/ibis/modules/xai/routes.py",
+        "apps/api/tests/unit/test_fairness.py",
+        "apps/web/tests/lenses/insights.test.ts"
+      ],
+      "keywords": [
+        "fairness"
+      ],
+      "updated_at": "2026-07-19T19:02:53.081Z"
+    }
+  ]
+}

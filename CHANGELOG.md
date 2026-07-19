@@ -3,6 +3,15 @@
 Refonte complète from scratch (voir [JALONS.md](JALONS.md) et [docs/refonte/](docs/refonte/)).
 Un jalon = un incrément livrable ; chaque entrée correspond à un commit `feat: jalon N`.
 
+## Rétro-documentation Zelian (19/07/2026)
+
+- **Onboarding framework Zelian** : marker `.zelian/project.json` restauré (réactive les hooks
+  d'auto-documentation), Base `.claude/rules/`, stack détectée (`02-stack.md`), index Compass
+  `.zelian/compass.json` (8 entrées, 100 % ancrées).
+- **Rétro-documentation** des 8 features cœur (`docs/specs/{api,web}/…` : datasets, ml, xai,
+  experiments, fairness, challenges) — 16 specs + **12 ADRs RETRO** — et **audit initial**
+  (`docs/quality/` : audit, dette technique, plan de remédiation). 16 features restantes à documenter.
+
 ## J9 — Finalisation : seed, e2e mission, durcissement (17/07/2026)
 
 - `ibis seed` : admin (env) + 6 datasets réels embarqués, idempotent, **jamais** exécuté au
