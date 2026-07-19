@@ -87,6 +87,26 @@ def test_build_context_local_contributions_keep_direction() -> None:
     assert "0.871" in ctx and "0.621" in ctx  # valeurs locales arrondies 3 déc.
 
 
+def test_build_context_adds_column_totals_for_split_modalities() -> None:
+    """Constaté en réel : « Sex domine à 45 % » (25+20) était rejeté par le garde-fou.
+    Le contexte fournit donc les totaux par variable — la somme VUE par le modèle."""
+    ctx = xai_text.build_context(
+        metrics={"accuracy": 0.83},
+        importance=[
+            {"feature": "cat__Sex_male", "value": 0.25},
+            {"feature": "cat__Sex_female", "value": 0.20},
+            {"feature": "num_median_0__Age", "value": 0.55},
+        ],
+        task_type="classification",
+        algorithm="random_forest",
+        explanation_type="global",
+        local_values=None,
+    )
+    assert "Sex (total modalités) : 45 %" in ctx
+    assert "Age (total" not in ctx  # une seule entrée → pas de total
+    assert xai_text.numbers_exist_in_context("La variable Sex domine à 45 %.", ctx) is True
+
+
 def test_guard_accepts_percent_and_decimal_echo() -> None:
     ctx = _titanic_context()
     assert xai_text.numbers_exist_in_context("Le sexe pèse environ 24 % ici.", ctx) is True

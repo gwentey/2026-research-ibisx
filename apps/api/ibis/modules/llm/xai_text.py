@@ -140,7 +140,29 @@ def _importance_line(importance: list[dict[str, Any]]) -> str | None:
     header = "Importances (part de l'importance affichée"
     if signed:
         header += ", ↗ pousse la prédiction vers le haut / ↘ vers le bas"
-    return header + ") : " + ", ".join(parts)
+    line = header + ") : " + ", ".join(parts)
+    if not signed:
+        # Totaux par variable one-hot (somme des % AFFICHÉS, pas des valeurs brutes) :
+        # le modèle agrège naturellement « Sex = male 25 % + Sex = female 20 % → 45 % » ;
+        # sans ce total dans le contexte, le garde-fou rejetait cette somme légitime.
+        totals: dict[str, int] = {}
+        counts: dict[str, int] = {}
+        for item, raw in zip(importance, values, strict=True):
+            label = humanize_feature(str(item.get("feature", "?")))
+            if " = " not in label:
+                continue
+            column = label.split(" = ")[0]
+            pct = abs(raw) / total * 100
+            totals[column] = totals.get(column, 0) + (0 if pct < 0.5 else int(pct + 0.5))
+            counts[column] = counts.get(column, 0) + 1
+        grouped = [
+            f"{column} (total modalités) : {value} %"
+            for column, value in totals.items()
+            if counts[column] >= 2 and value > 0
+        ]
+        if grouped:
+            line += "\nTotaux par variable (somme des modalités affichées) : " + ", ".join(grouped)
+    return line
 
 
 def build_context(
