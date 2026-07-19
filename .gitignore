@@ -45,3 +45,4 @@ test-results/
 .claude/.update-check.json
 .claude/.events.log
 .claude/.quality-score.log
+.claude/.update-writer-ran
