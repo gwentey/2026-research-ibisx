@@ -429,6 +429,7 @@
   "status": {
     "title": "System status",
     "subtitle": "IBIS-X platform health and real-time foundation demo.",
+    "backToDashboard": "Back to dashboard",
     "apiHealth": "API",
     "workerHealth": "Worker",
     "database": "Database",

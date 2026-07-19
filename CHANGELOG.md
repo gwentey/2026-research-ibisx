@@ -24,6 +24,17 @@ Un jalon = un incrément livrable ; chaque entrée correspond à un commit `feat
 - Tests : plan ↔ catalogues i18n (titres, corps, listes de même longueur FR/EN) et rendu du
   message riche `legal.consent` — 116 tests verts.
 
+## Retour au tableau de bord depuis /status (19/07/2026)
+
+- **Sortie de cul-de-sac sur `/status`** : la page d'état vit hors du shell applicatif (aucune
+  sidebar, aucun header) — un utilisateur connecté qui suivait le lien « État du système » depuis
+  la navigation n'avait plus **aucun** chemin de retour. Un lien « Retour au tableau de bord »
+  (`BackToAppLink`) s'affiche désormais en tête de page **uniquement pour les utilisateurs de
+  l'app** : la session est restaurée via `bootstrapSession()`, ce qui couvre aussi le rechargement
+  direct de l'URL (le `document.referrer` est vide après un rechargement et absent des navigations
+  client Next). Le visiteur anonyme de la page de statut publique ne voit rien de plus. Libellés
+  FR/EN (`status.backToDashboard`).
+
 ## Récap de défi réductible (19/07/2026)
 
 - **Débrief de fin d'enquête repliable** (`ChallengeDebrief`) : l'encart de résultats gardait

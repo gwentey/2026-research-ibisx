@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Empty, EmptyDescription, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
 import { Progress } from "@/components/ui/progress";
+import { BackToAppLink } from "@/components/ibis/status/back-to-app-link";
 import { ServiceCard, ServiceSubRow } from "@/components/ibis/status/service-card";
 import { ServiceStatusDot, type ServiceHealthState } from "@/components/ibis/status/service-status-dot";
 import { SmokeTimeline, type SmokeState } from "@/components/ibis/status/smoke-timeline";
@@ -109,6 +110,8 @@ export default function StatusPage() {
   return (
     <main className="bg-background min-h-screen">
       <div className="mx-auto flex max-w-3xl flex-col gap-8 px-4 py-12">
+        <BackToAppLink />
+
         <header className="flex items-start justify-between gap-4">
           <div className="flex items-start gap-4">
             <div className="bg-primary/10 text-primary flex size-12 shrink-0 items-center justify-center rounded-xl">
