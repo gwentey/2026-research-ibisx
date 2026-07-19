@@ -164,6 +164,8 @@
     "resume": "Resume the investigation",
     "replay": "Replay the investigation",
     "quit": "Leave the challenge",
+    "collapse": "Collapse the tracker",
+    "expand": "Reopen the tracker",
     "backToList": "All challenges",
     "next": "Next challenge",
     "currentObjective": "Objective",

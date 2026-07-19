@@ -4,7 +4,14 @@ import { Suspense, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { CheckCircle2Icon, SparklesIcon, SwordsIcon, XIcon } from "lucide-react";
+import {
+  CheckCircle2Icon,
+  ChevronDownIcon,
+  ChevronUpIcon,
+  SparklesIcon,
+  SwordsIcon,
+  XIcon
+} from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { getChallenge } from "@/lib/challenges/catalog";
@@ -25,6 +32,8 @@ function QuestTrackerInner() {
   const done = useQuestStore((state) => state.done);
   const start = useQuestStore((state) => state.start);
   const quit = useQuestStore((state) => state.quit);
+  const collapsed = useQuestStore((state) => state.collapsed);
+  const setCollapsed = useQuestStore((state) => state.setCollapsed);
 
   // Réhydrate le défi actif depuis ?challenge= si le store est vide (rechargement, ou passage
   // vers le wizard qui vit hors du groupe (app) et remonte donc un traceur neuf).
@@ -50,12 +59,32 @@ function QuestTrackerInner() {
   const showCoach =
     challenge.level === "novice" && upcoming !== null && coachKey !== null && t.has(coachKey);
 
-  return (
-    <>
-      {/* Réserve d'espace en flux : la barre est `fixed`, ce cale-pied évite qu'elle ne
-          recouvre le bas du contenu quand on scrolle jusqu'en bas. */}
-      <div aria-hidden className="h-24 print:hidden" />
+  // Replié à la demande : pastille compacte au centre-bas. La barre flotte au-dessus des vraies
+  // pages (aucun cale-pied en flux qui déformerait la mise en page) ; ce repli laisse donc
+  // l'utilisateur dégager un bouton masqué puis rouvrir le traceur quand il veut.
+  if (collapsed) {
+    return (
       <div className="pointer-events-none fixed inset-x-0 bottom-0 z-40 flex justify-center p-3 print:hidden">
+        <button
+          type="button"
+          onClick={() => setCollapsed(false)}
+          aria-label={t("expand")}
+          className="bg-background/95 text-foreground pointer-events-auto flex max-w-[calc(100vw-1.5rem)] items-center gap-2.5 rounded-full border py-1.5 pr-4 pl-1.5 shadow-lg backdrop-blur transition-colors hover:bg-background">
+          <span className="bg-primary/10 text-primary flex size-8 shrink-0 items-center justify-center rounded-full">
+            <SwordsIcon className="size-4" />
+          </span>
+          <span className="hidden min-w-0 max-w-[40vw] truncate text-sm font-medium sm:inline">
+            {t(`items.${slug}.title`)}
+          </span>
+          <span className="text-muted-foreground text-xs font-medium tabular-nums">{percent}%</span>
+          <ChevronUpIcon className="text-muted-foreground size-4 shrink-0" />
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="pointer-events-none fixed inset-x-0 bottom-0 z-40 flex justify-center p-3 print:hidden">
       <div className="bg-background/95 pointer-events-auto flex w-full max-w-3xl flex-col gap-3 rounded-xl border p-3 shadow-lg backdrop-blur sm:flex-row sm:items-center">
         <div className="flex min-w-0 flex-1 items-start gap-3">
           <span className="bg-primary/10 text-primary flex size-9 shrink-0 items-center justify-center rounded-lg">
@@ -101,18 +130,27 @@ function QuestTrackerInner() {
             </div>
             <span className="text-muted-foreground text-xs tabular-nums">{percent}%</span>
           </div>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={quit}
-            className="text-muted-foreground hover:text-foreground shrink-0">
-            <XIcon className="size-4" />
-            <span className="hidden sm:inline">{t("quit")}</span>
-          </Button>
+          <div className="flex items-center gap-1">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setCollapsed(true)}
+              aria-label={t("collapse")}
+              className="text-muted-foreground hover:text-foreground size-8 shrink-0">
+              <ChevronDownIcon className="size-4" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={quit}
+              className="text-muted-foreground hover:text-foreground shrink-0">
+              <XIcon className="size-4" />
+              <span className="hidden sm:inline">{t("quit")}</span>
+            </Button>
+          </div>
         </div>
       </div>
     </div>
-    </>
   );
 }
 

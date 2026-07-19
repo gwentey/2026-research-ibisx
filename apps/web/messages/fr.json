@@ -164,6 +164,8 @@
     "resume": "Reprendre l'enquête",
     "replay": "Relancer l'enquête",
     "quit": "Quitter le défi",
+    "collapse": "Replier le traceur",
+    "expand": "Rouvrir le traceur",
     "backToList": "Tous les défis",
     "next": "Défi suivant",
     "currentObjective": "Objectif",
