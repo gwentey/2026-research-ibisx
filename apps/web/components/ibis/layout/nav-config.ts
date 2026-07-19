@@ -6,6 +6,7 @@ import {
   HomeIcon,
   ListChecksIcon,
   ScaleIcon,
+  SwordsIcon,
   UsersIcon,
   type LucideIcon
 } from "lucide-react";
@@ -15,7 +16,7 @@ import {
 
 export interface NavItem {
   /** Clé de traduction dans le namespace `nav`. */
-  labelKey: "dashboard" | "datasets" | "projects" | "experiments" | "systemStatus";
+  labelKey: "dashboard" | "datasets" | "challenges" | "projects" | "experiments" | "systemStatus";
   href: string;
   icon: LucideIcon;
 }
@@ -23,6 +24,7 @@ export interface NavItem {
 export const MAIN_NAV: NavItem[] = [
   { labelKey: "dashboard", href: "/dashboard", icon: HomeIcon },
   { labelKey: "datasets", href: "/datasets", icon: DatabaseIcon },
+  { labelKey: "challenges", href: "/challenges", icon: SwordsIcon },
   { labelKey: "projects", href: "/projects", icon: FolderIcon },
   { labelKey: "experiments", href: "/experiments", icon: FlaskConicalIcon },
   { labelKey: "systemStatus", href: "/status", icon: ActivityIcon }

@@ -128,6 +128,7 @@
   "nav": {
     "dashboard": "Tableau de bord",
     "datasets": "Datasets",
+    "challenges": "Défis",
     "projects": "Projets",
     "experiments": "Expériences",
     "administration": "Administration",
@@ -138,6 +139,50 @@
     "platform": "Plateforme",
     "profile": "Profil",
     "systemStatus": "État du système"
+  },
+  "challenges": {
+    "title": "Défis",
+    "subtitle": "Entraîne-toi sur des cas réels — de la question à l'explication.",
+    "intro": "Chaque défi est une enquête de données réelle : tu traverses le vrai pipeline et tu repars avec un vrai modèle et son explication.",
+    "levels": {
+      "novice": "Novice",
+      "debutant": "Débutant",
+      "confirme": "Confirmé"
+    },
+    "levelHints": {
+      "novice": "Sur les rails : l'IA te guide à chaque étape.",
+      "debutant": "Copilote : tu fais les choix-clés, l'IA reste disponible.",
+      "confirme": "En autonomie : à toi de jouer, on vérifie le résultat."
+    },
+    "status": {
+      "todo": "À relever",
+      "inProgress": "En cours",
+      "done": "Relevé"
+    },
+    "start": "Démarrer l'enquête",
+    "resume": "Reprendre l'enquête",
+    "replay": "Relancer l'enquête",
+    "quit": "Quitter le défi",
+    "backToList": "Tous les défis",
+    "next": "Défi suivant",
+    "currentObjective": "Objectif",
+    "progressGlobal": "{done} / {total} défis relevés",
+    "progressLabel": "Progression",
+    "datasetLabel": "Jeu de données",
+    "taskLabel": "Tâche",
+    "briefingTitle": "L'enquête",
+    "objectivesTitle": "Tes objectifs",
+    "debriefTitle": "Enquête bouclée",
+    "notFound": "Défi introuvable.",
+    "resolveError": "Impossible d'ouvrir le jeu de données de ce défi pour le moment.",
+    "objectives": {
+      "open_dataset": "Ouvrir la fiche du jeu de données",
+      "create_project": "Créer le projet",
+      "launch_training": "Lancer l'entraînement",
+      "read_results": "Lire les résultats",
+      "generate_explanation": "Générer l'explication"
+    },
+    "items": {}
   },
   "dashboardHome": {
     "welcome": "Bonjour {name} 👋",
@@ -723,7 +768,12 @@
       "applyFinal": "Appliquer la recommandation ({task})",
       "chooseMyself": "Je choisis moi-même",
       "objectiveCardTitle": "Cible et type de problème",
-      "aiGuide": "Guide-moi avec l’IA"
+      "aiGuide": "Guide-moi avec l’IA",
+      "aiAvailableTarget": "L'IA peut vous suggérer quoi prédire",
+      "suggestTargetIntro": "Pour vous aider à démarrer, j'ai analysé vos colonnes.",
+      "suggestTargetTitle": "Colonne à prédire suggérée : « {column} »",
+      "suggestTargetBody": "{reason} Type de tâche recommandé : {task}.",
+      "noSuggestionBody": "Choisissez ci-dessous la colonne que le modèle doit prédire. Dès qu'elle est sélectionnée, je vous conseille le type de tâche adapté."
     },
     "step3": {
       "intro": "Colonnes à traiter : choisissez une stratégie pour chaque colonne ayant des valeurs manquantes. Ce qui est configuré ici sera RÉELLEMENT appliqué par l'entraînement.",
@@ -841,7 +891,8 @@
       "cancelled": "Entraînement annulé.",
       "failed": "Échec : {message}",
       "seeResults": "Voir les résultats",
-      "processing": "L’IA entraîne votre modèle…"
+      "processing": "L’IA entraîne votre modèle…",
+      "recapCount": "{count} réglages validés"
     },
     "errors": {
       "MAX_CONCURRENT_TRAININGS": "Vous avez déjà 3 entraînements en cours — attendez la fin de l'un d'eux.",
@@ -968,27 +1019,38 @@
     "request": {
       "title": "Demander une explication",
       "typeGlobal": "Globale",
-      "typeGlobalHint": "Quelles variables comptent en général pour ce modèle ?",
+      "typeGlobalHint": "Quelles variables comptent le plus, en général, pour ce modèle.",
       "typeLocal": "Locale",
-      "typeLocalHint": "Pourquoi CETTE prédiction pour CETTE instance ?",
+      "typeLocalHint": "Pourquoi le modèle a fait une prédiction précise, sur un exemple que vous choisissez.",
       "method": "Méthode",
       "methodAuto": "Automatique (recommandé)",
       "methodShap": "SHAP",
       "methodLime": "LIME",
-      "pickInstance": "Choisissez une instance de test (triées par erreur décroissante)",
+      "pickInstance": "Choisissez un exemple à expliquer",
       "instanceActual": "Réel",
       "instancePredicted": "Prédit",
-      "instanceError": "Erreur",
+      "instanceError": "Écart",
       "launch": "Générer l'explication",
       "running": "Calcul en cours…",
       "cost": "Coût : 1 crédit",
-      "failed": "La génération a échoué : {message}"
+      "failed": "La génération a échoué : {message}",
+      "typeLabel": "Que voulez-vous comprendre ?",
+      "instanceIntro": "Chaque ligne est un exemple de test — des données jamais vues par le modèle pendant l'entraînement. L'« écart » mesure de combien il s'est trompé (Réel vs Prédit) : les plus gros écarts d'abord, ce sont les cas les plus instructifs.",
+      "selectedExample": "Exemple n°{index} sélectionné",
+      "pickInstancePrompt": "Cliquez sur une ligne pour choisir l'exemple à expliquer.",
+      "methodHint": {
+        "auto": "L'IA choisit automatiquement la méthode la plus fiable pour votre modèle. Idéal si vous débutez.",
+        "shap": "SHAP répartit la prédiction entre les variables de façon mathématiquement exacte. Pour une explication rigoureuse.",
+        "lime": "LIME approche le modèle autour de votre exemple avec un modèle simple. Rapide et intuitif, mais approximatif."
+      }
     },
     "history": {
       "title": "Historique",
       "empty": "Aucune explication générée pour cette expérience.",
       "view": "Voir",
-      "fallback": "Repli"
+      "fallback": "Repli",
+      "typeLocal": "Exemple précis",
+      "typeGlobal": "Vue d'ensemble"
     },
     "kpis": {
       "title": "Fiabilité de l'explication",
@@ -1022,7 +1084,12 @@
       "beeswarm": "Distribution des contributions (top variables)",
       "comparison": "Comparaison SHAP ↔ LIME",
       "baseValue": "Valeur de base : {value}",
-      "prediction": "Prédiction : {value} {label}"
+      "prediction": "Prédiction : {value} {label}",
+      "importanceHint": "Plus la barre est longue, plus la variable pèse dans les décisions du modèle.",
+      "waterfallHint": "On part d'une valeur de base (la moyenne), puis chaque variable pousse la prédiction dans un sens ou l'autre.",
+      "comparisonHint": "Deux méthodes, deux façons de mesurer l'importance. Un fort accord entre elles = explication d'autant plus fiable.",
+      "pushesUp": "Pousse la prédiction vers le haut",
+      "pushesDown": "…vers le bas"
     },
     "text": {
       "title": "Explication",
@@ -1030,7 +1097,8 @@
       "fallbackBadge": "Généré sans IA (repli déterministe)",
       "modelBadge": "Modèle : {model}",
       "method": "Méthode : {method}",
-      "justification": "{justification}"
+      "justification": "{justification}",
+      "subtitle": "Rédigée par l'IA à partir des chiffres ci-dessus."
     },
     "chat": {
       "title": "Discuter de cette explication",
@@ -1044,7 +1112,31 @@
       "fallbackNote": "Réponse générée sans IA (repli déterministe)"
     },
     "result": {
-      "title": "Résultat de l'explication"
+      "title": "Résultat de l'explication",
+      "localTitle": "Explication de cette prédiction",
+      "globalTitle": "Vue d'ensemble du modèle",
+      "localFor": "Pour l'exemple de test n°{index}, le modèle a prédit :",
+      "localWhy": ". Voici ce qui l'a fait pencher de ce côté.",
+      "globalSubtitle": "Les variables qui comptent le plus, en moyenne, sur l'ensemble des prédictions."
+    },
+    "intro": {
+      "title": "Comprenez les décisions de votre modèle",
+      "body": "Une explication traduit en langage clair pourquoi le modèle prédit ce qu'il prédit : quelles informations ont pesé, et dans quel sens. Utile pour lui faire confiance — et pour comprendre comment il raisonne.",
+      "globalTitle": "Vue d'ensemble",
+      "globalBody": "Quelles variables comptent le plus, en moyenne, sur toutes les prédictions.",
+      "localTitle": "Un exemple précis",
+      "localBody": "Pourquoi le modèle a répondu ce qu'il a répondu, pour un exemple donné.",
+      "cta": "Configurez votre demande, puis lancez « Générer l'explication »."
+    },
+    "generating": {
+      "title": "L'IA génère votre explication…",
+      "subtitle": "Analyse du modèle et mise en mots. Quelques secondes suffisent.",
+      "steps": {
+        "read": "Lecture du modèle et des données de test",
+        "compute": "Calcul de l'importance des variables",
+        "verify": "Vérification de la fiabilité",
+        "write": "Rédaction de l'explication en langage clair"
+      }
     }
   },
   "landing": {

@@ -128,6 +128,7 @@
   "nav": {
     "dashboard": "Dashboard",
     "datasets": "Datasets",
+    "challenges": "Challenges",
     "projects": "Projects",
     "experiments": "Experiments",
     "administration": "Administration",
@@ -138,6 +139,50 @@
     "platform": "Platform",
     "profile": "Profile",
     "systemStatus": "System status"
+  },
+  "challenges": {
+    "title": "Challenges",
+    "subtitle": "Practise on real cases — from the question to the explanation.",
+    "intro": "Each challenge is a real data investigation: you go through the actual pipeline and leave with a real model and its explanation.",
+    "levels": {
+      "novice": "Novice",
+      "debutant": "Beginner",
+      "confirme": "Advanced"
+    },
+    "levelHints": {
+      "novice": "On rails: the AI guides you at every step.",
+      "debutant": "Copilot: you make the key choices, the AI stays available.",
+      "confirme": "On your own: you drive, we check the result."
+    },
+    "status": {
+      "todo": "To do",
+      "inProgress": "In progress",
+      "done": "Completed"
+    },
+    "start": "Start the investigation",
+    "resume": "Resume the investigation",
+    "replay": "Replay the investigation",
+    "quit": "Leave the challenge",
+    "backToList": "All challenges",
+    "next": "Next challenge",
+    "currentObjective": "Objective",
+    "progressGlobal": "{done} / {total} challenges completed",
+    "progressLabel": "Progress",
+    "datasetLabel": "Dataset",
+    "taskLabel": "Task",
+    "briefingTitle": "The investigation",
+    "objectivesTitle": "Your objectives",
+    "debriefTitle": "Investigation complete",
+    "notFound": "Challenge not found.",
+    "resolveError": "Could not open this challenge's dataset right now.",
+    "objectives": {
+      "open_dataset": "Open the dataset page",
+      "create_project": "Create the project",
+      "launch_training": "Launch training",
+      "read_results": "Read the results",
+      "generate_explanation": "Generate the explanation"
+    },
+    "items": {}
   },
   "dashboardHome": {
     "welcome": "Hello {name} 👋",
@@ -723,7 +768,12 @@
       "applyFinal": "Apply recommendation ({task})",
       "chooseMyself": "I'll choose myself",
       "objectiveCardTitle": "Target and problem type",
-      "aiGuide": "Guide me with AI"
+      "aiGuide": "Guide me with AI",
+      "aiAvailableTarget": "The AI can suggest what to predict",
+      "suggestTargetIntro": "To get you started, I analysed your columns.",
+      "suggestTargetTitle": "Suggested column to predict: “{column}”",
+      "suggestTargetBody": "{reason} Recommended task type: {task}.",
+      "noSuggestionBody": "Pick the column the model should predict below. As soon as it's selected, I'll advise the right task type."
     },
     "step3": {
       "intro": "Columns to clean: choose a strategy for every column with missing values. What you configure here is REALLY applied during training.",
@@ -841,7 +891,8 @@
       "cancelled": "Training cancelled.",
       "failed": "Failed: {message}",
       "seeResults": "See results",
-      "processing": "The AI is training your model…"
+      "processing": "The AI is training your model…",
+      "recapCount": "{count} confirmed settings"
     },
     "errors": {
       "MAX_CONCURRENT_TRAININGS": "You already have 3 trainings running — wait for one to finish.",
@@ -968,27 +1019,38 @@
     "request": {
       "title": "Request an explanation",
       "typeGlobal": "Global",
-      "typeGlobalHint": "Which features matter in general for this model?",
+      "typeGlobalHint": "Which features matter most, in general, for this model.",
       "typeLocal": "Local",
-      "typeLocalHint": "Why THIS prediction for THIS instance?",
+      "typeLocalHint": "Why the model made one specific prediction, for an example you pick.",
       "method": "Method",
       "methodAuto": "Automatic (recommended)",
       "methodShap": "SHAP",
       "methodLime": "LIME",
-      "pickInstance": "Pick a test instance (sorted by decreasing error)",
+      "pickInstance": "Pick an example to explain",
       "instanceActual": "Actual",
       "instancePredicted": "Predicted",
-      "instanceError": "Error",
+      "instanceError": "Gap",
       "launch": "Generate explanation",
       "running": "Computing…",
       "cost": "Cost: 1 credit",
-      "failed": "Generation failed: {message}"
+      "failed": "Generation failed: {message}",
+      "typeLabel": "What do you want to understand?",
+      "instanceIntro": "Each row is a test example — data the model never saw during training. The “gap” shows how far off it was (Actual vs Predicted): biggest gaps first, as they're the most instructive cases.",
+      "selectedExample": "Example #{index} selected",
+      "pickInstancePrompt": "Click a row to choose the example to explain.",
+      "methodHint": {
+        "auto": "The AI automatically picks the most reliable method for your model. Best if you're new to this.",
+        "shap": "SHAP splits the prediction across features in a mathematically exact way. For a rigorous explanation.",
+        "lime": "LIME approximates the model around your example with a simple model. Fast and intuitive, but approximate."
+      }
     },
     "history": {
       "title": "History",
       "empty": "No explanation generated for this experiment yet.",
       "view": "View",
-      "fallback": "Fallback"
+      "fallback": "Fallback",
+      "typeLocal": "Specific example",
+      "typeGlobal": "Big picture"
     },
     "kpis": {
       "title": "Explanation reliability",
@@ -1022,7 +1084,12 @@
       "beeswarm": "Contribution distribution (top features)",
       "comparison": "SHAP ↔ LIME comparison",
       "baseValue": "Base value: {value}",
-      "prediction": "Prediction: {value} {label}"
+      "prediction": "Prediction: {value} {label}",
+      "importanceHint": "The longer the bar, the more that feature weighs in the model's decisions.",
+      "waterfallHint": "Start from a base value (the average), then each feature pushes the prediction one way or the other.",
+      "comparisonHint": "Two methods, two ways to measure importance. Strong agreement between them = a more reliable explanation.",
+      "pushesUp": "Pushes the prediction up",
+      "pushesDown": "…down"
     },
     "text": {
       "title": "Explanation",
@@ -1030,7 +1097,8 @@
       "fallbackBadge": "Generated without AI (deterministic fallback)",
       "modelBadge": "Model: {model}",
       "method": "Method: {method}",
-      "justification": "{justification}"
+      "justification": "{justification}",
+      "subtitle": "Written by the AI from the numbers above."
     },
     "chat": {
       "title": "Discuss this explanation",
@@ -1044,7 +1112,31 @@
       "fallbackNote": "Answer generated without AI (deterministic fallback)"
     },
     "result": {
-      "title": "Explanation result"
+      "title": "Explanation result",
+      "localTitle": "Explanation for this prediction",
+      "globalTitle": "Model overview",
+      "localFor": "For test example #{index}, the model predicted:",
+      "localWhy": ". Here's what tipped it this way.",
+      "globalSubtitle": "The features that matter most, on average, across all predictions."
+    },
+    "intro": {
+      "title": "Understand your model's decisions",
+      "body": "An explanation turns into plain language why the model predicts what it predicts: which information mattered, and in which direction. Useful to trust it — and to learn how it reasons.",
+      "globalTitle": "Big picture",
+      "globalBody": "Which features matter most, on average, across all predictions.",
+      "localTitle": "One specific example",
+      "localBody": "Why the model answered what it did, for a given example.",
+      "cta": "Set up your request, then hit “Generate explanation”."
+    },
+    "generating": {
+      "title": "The AI is generating your explanation…",
+      "subtitle": "Analysing the model and putting it into words. Just a few seconds.",
+      "steps": {
+        "read": "Reading the model and test data",
+        "compute": "Computing feature importance",
+        "verify": "Checking reliability",
+        "write": "Writing the plain-language explanation"
+      }
     }
   },
   "landing": {
