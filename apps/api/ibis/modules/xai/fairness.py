@@ -56,9 +56,7 @@ def compute_group_fairness(
         if binary and fav is not None:
             selection_rate = sum(1 for i in idx if yp[i] == fav) / size if size else None
             positives = [i for i in idx if yt[i] == fav]
-            tpr = (
-                sum(1 for i in positives if yp[i] == fav) / len(positives) if positives else None
-            )
+            tpr = sum(1 for i in positives if yp[i] == fav) / len(positives) if positives else None
             entry["selection_rate"] = selection_rate
             entry["tpr"] = tpr
         per_group.append(entry)
