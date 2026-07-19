@@ -3,6 +3,17 @@
 Refonte complète from scratch (voir [JALONS.md](JALONS.md) et [docs/refonte/](docs/refonte/)).
 Un jalon = un incrément livrable ; chaque entrée correspond à un commit `feat: jalon N`.
 
+## Évolution XAI 3 — Explication liée au profil : régénération visible et confirmée (19/07/2026)
+
+- **Bandeau proéminent** sur l'explication quand la vue courante (« Voir en tant que ») diffère
+  du niveau de génération : surface IA dégradée, titre « Cette explication est rédigée en vue
+  X », corps expliquant la régénération et son coût — impossible de croire qu'on lit le niveau
+  courant. Remplace l'ancien encart pointillé discret (`regenerateHint`).
+- **Confirmation avant dépense** : le CTA « Regénérer en vue Y (1 crédit) » ouvre désormais un
+  dialog rappelant le nouveau calcul et le débit immédiat d'1 crédit — unique chemin de
+  régénération (annulable). Libellés FR/EN. Le badge de niveau affiché correspond toujours au
+  niveau réellement généré (inchangé), solde rafraîchi via `getMe()` (inchangé).
+
 ## Évolution XAI 2 — Explication en blocs riches (19/07/2026)
 
 - **L'« Explication rédigée par l'IA » a le même design que le chat** : génération en

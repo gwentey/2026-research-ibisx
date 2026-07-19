@@ -2,9 +2,20 @@
 
 import type { CSSProperties } from "react";
 import { useTranslations } from "next-intl";
-import { BookOpenIcon, LayersIcon, SparklesIcon, TargetIcon } from "lucide-react";
+import { BookOpenIcon, LayersIcon, RefreshCcwIcon, SparklesIcon, TargetIcon } from "lucide-react";
 import { Bar, BarChart, CartesianGrid, Cell, XAxis, YAxis } from "recharts";
 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger
+} from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -299,30 +310,60 @@ export function ExplanationView({
         </div>
       </div>
 
-      {/* Regénérer-en-vue (§5.1, décision D3) : l'explication affichée a été rédigée à un autre
-          niveau que la vue courante → on propose de la refaire au niveau effectif (1 crédit,
-          choix explicite). La révélation ne s'y applique pas : c'est une commande, pas un résultat. */}
+      {/* Regénérer-en-vue (§5.1, décision D3 — évolutions §3) : l'explication affichée a été
+          rédigée à un autre niveau que la vue courante. Bandeau PROÉMINENT (impossible de croire
+          qu'on lit le niveau courant) + confirmation rappelant le coût (1 crédit, choix
+          explicite). La révélation ne s'y applique pas : c'est une commande, pas un résultat. */}
       {canRegenerate && effectiveAudience ? (
-        <div className="border-ai/30 bg-ai/[0.04] flex flex-col gap-2.5 rounded-lg border border-dashed p-3 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-muted-foreground flex items-start gap-2 text-xs leading-relaxed">
-            <SparklesIcon className="text-ai mt-0.5 size-3.5 shrink-0" />
-            {t("text.regenerateHint", {
-              generated: audienceLabel(generatedAudience),
-              effective: audienceLabel(effectiveAudience)
-            })}
-          </p>
-          <Button
-            size="sm"
-            variant="outline"
-            className="border-ai/40 text-ai hover:bg-ai/10 shrink-0"
-            onClick={onRegenerate}
-            disabled={regenerating}>
-            <SparklesIcon />
-            {t("text.regenerateAs", { level: audienceLabel(effectiveAudience) })}
-            <Badge variant="secondary" className="ml-1 font-normal">
-              {t("text.regenerateCost")}
-            </Badge>
-          </Button>
+        <div className="border-ai/40 from-ai/10 via-ai/[0.06] relative overflow-hidden rounded-xl border bg-gradient-to-r to-transparent p-4">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-start gap-3">
+              <span className="bg-ai/15 text-ai flex size-9 shrink-0 items-center justify-center rounded-lg">
+                <RefreshCcwIcon className="size-4" />
+              </span>
+              <div className="min-w-0 space-y-0.5">
+                <p className="text-sm font-semibold">
+                  {t("text.regenerateTitle", { generated: audienceLabel(generatedAudience) })}
+                </p>
+                <p className="text-muted-foreground text-sm leading-relaxed">
+                  {t("text.regenerateBody", { effective: audienceLabel(effectiveAudience) })}
+                </p>
+              </div>
+            </div>
+            {/* Seul chemin de régénération : le CTA ouvre TOUJOURS la confirmation (coût). */}
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button
+                  size="sm"
+                  className="bg-ai hover:bg-ai/90 shrink-0 text-white"
+                  disabled={regenerating}>
+                  <SparklesIcon />
+                  {t("text.regenerateAs", { level: audienceLabel(effectiveAudience) })}
+                  <Badge
+                    variant="secondary"
+                    className="ml-1 border-transparent bg-white/20 font-normal text-white">
+                    {t("text.regenerateCost")}
+                  </Badge>
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>{t("text.regenerateConfirmTitle")}</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    {t("text.regenerateConfirmBody", {
+                      effective: audienceLabel(effectiveAudience)
+                    })}
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>{t("text.regenerateCancel")}</AlertDialogCancel>
+                  <AlertDialogAction className="bg-ai hover:bg-ai/90 text-white" onClick={onRegenerate}>
+                    {t("text.regenerateConfirm")}
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </div>
         </div>
       ) : null}
 
