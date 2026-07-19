@@ -46,25 +46,41 @@ cd apps/api && uv run python -m ibis.export_openapi ../web/lib/api/openapi.json 
 
 ## Modules
 
+> Spec technique de chaque module : `docs/specs/{api,web}/<module>/spec-technique.md` (+ `spec-fonctionnel.md`).
+
 ### api
-| Module | Spec technique | ADRs |
-|--------|---|---|
-| datasets | docs/specs/api/datasets/spec-technique.md | RETRO-api-datasets-01, -02 |
-| experiments | docs/specs/api/experiments/spec-technique.md | RETRO-api-experiments-01, -02 |
-| ml | docs/specs/api/ml/spec-technique.md | RETRO-api-ml-01, -02, -03 |
-| xai | docs/specs/api/xai/spec-technique.md | RETRO-api-xai-01, -02 |
+| Module | ADRs RETRO |
+|--------|---|
+| auth | RETRO-api-auth-01, -02 |
+| users | RETRO-api-users-01 |
+| datasets | RETRO-api-datasets-01, -02 |
+| scoring | RETRO-api-scoring-01 |
+| projects | RETRO-api-projects-01 |
+| experiments | RETRO-api-experiments-01, -02 |
+| ml | RETRO-api-ml-01, -02, -03 |
+| xai | RETRO-api-xai-01, -02 |
+| llm | — (cf. ADR-006) |
+| dashboard | RETRO-api-dashboard-01 |
+| admin | RETRO-api-admin-01, -02 |
+| jobs | — (cf. ADR-004, ADR-007) |
+| health | — |
 
 ### web
-| Module | Spec technique | ADRs |
-|--------|---|---|
-| datasets | docs/specs/web/datasets/spec-technique.md | RETRO-web-datasets-01, -02 |
-| experiments | docs/specs/web/experiments/spec-technique.md | RETRO-web-experiments-01 |
-| fairness | docs/specs/web/fairness/spec-technique.md | — |
-| challenges | docs/specs/web/challenges/spec-technique.md | — |
+| Module | ADRs RETRO |
+|--------|---|
+| auth | RETRO-web-auth-01, -02 |
+| onboarding | RETRO-web-onboarding-01 |
+| datasets | RETRO-web-datasets-01, -02 |
+| wizard | — |
+| experiments | RETRO-web-experiments-01 |
+| fairness | — |
+| lenses | — |
+| challenges | — |
+| formation | RETRO-web-formation-01 |
+| dashboard | — |
+| admin | — |
 
-> **16 autres features** scannées mais pas encore documentées (voir `docs/retro/discovery.md`) :
-> api/{auth,users,scoring,projects,llm,dashboard,admin,jobs,health} · web/{auth,onboarding,wizard,lenses,formation,dashboard,admin}.
-> Audit initial + dette + plan : `docs/quality/`.
+> Audit initial, dette technique et plan de remédiation : `docs/quality/`. Cartographie du scan : `docs/retro/discovery.md`.
 
 > **Zelian Compass** : la source de vérité code ↔ doc est `.zelian/compass.json` (cette table n'est qu'une vue humaine).
 > Lecture CIBLÉE obligatoire : `.claude/rules/07-context-discipline.md`.
