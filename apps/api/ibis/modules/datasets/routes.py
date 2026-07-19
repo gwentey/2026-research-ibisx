@@ -11,6 +11,7 @@ from sqlalchemy.orm import Session
 
 from ibis.core.config import get_settings
 from ibis.core.errors import InvalidInputError, NotFoundError
+from ibis.core.ratelimit import rate_limit
 from ibis.db.engine import get_db
 from ibis.modules.auth.deps import CurrentClaims, require_owner_or_admin, require_role
 from ibis.modules.auth.models import UserRole
@@ -42,6 +43,10 @@ router = APIRouter(prefix="/datasets", tags=["datasets"])
 
 DbDep = Annotated[Session, Depends(get_db)]
 ContributorDep = Depends(require_role(UserRole.contributor))
+
+# L'import Kaggle est ouvert à tout compte connecté : le limiteur (par IP) empêche qu'un
+# seul poste sature le stockage et le worker de la VM avec des téléchargements en rafale.
+kaggle_import_rate_limit = Depends(rate_limit("kaggle_import", times=10, seconds=3600))
 
 MAX_UPLOAD_FILES = 10
 
@@ -97,12 +102,18 @@ def get_stats(db: DbDep, _claims: CurrentClaims) -> CatalogStats:
     response_model=KaggleImportResponse,
     status_code=202,
     operation_id="importKaggleDataset",
-    dependencies=[ContributorDep],
+    dependencies=[kaggle_import_rate_limit],
 )
 def import_kaggle_dataset(
     payload: KaggleImportRequest, db: DbDep, claims: CurrentClaims
 ) -> KaggleImportResponse:
-    """Import depuis un lien Kaggle collé — contributor+.
+    """Import depuis un lien Kaggle collé — TOUT compte connecté.
+
+    Volontairement plus ouvert que `POST /datasets` (contributor+) : l'import Kaggle est
+    strictement plus contraint qu'un upload libre — la source est un jeu public identifié,
+    la licence est vérifiée, la taille plafonnée, les doublons écartés et l'attribution
+    nominative. L'utilisateur ne dépose aucun octet arbitraire sur le serveur.
+    Contrepartie : un limiteur protège le stockage et le worker de la VM.
 
     Réponse immédiate : le lien est validé et dédupliqué ici (synchrone, donc l'utilisateur
     sait tout de suite si son lien est mauvais) ; le téléchargement part au worker.
