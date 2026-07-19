@@ -70,6 +70,7 @@ Un jalon = un incrément livrable ; chaque entrée correspond à un commit `feat
   `featureImpact` (anciens messages inclus).
 - **Garde-fou anti-hallucination étendu** : tolérance symétrique ÷100 (contexte « 24 % » →
   « 0,24 » accepté) ; rejets toujours loggués, replis « sans IA » inchangés.
+
 ## Coller un notebook Kaggle marche aussi (20/07/2026)
 
 - **Le cas réel qui bloquait** : on cherche des données, on tombe sur un notebook (c'est ce que

@@ -211,7 +211,7 @@ def fallback_document(dataset: Dataset, language: str) -> rich.BlockDocument:
             "numerical": "Numérique" if fr else "Numerical",
         }
         hint = {
-            "categorical": "Classification" if fr else "Classification",
+            "categorical": "Classification",
             "numerical": "Régression" if fr else "Regression",
         }
         blocks.append(
