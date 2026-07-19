@@ -2868,5 +2868,199 @@
       "cursusTitle": "Cursus",
       "badgesTitle": "Badges de compétence"
     }
+  },
+  "legal": {
+    "badge": "Document légal",
+    "backHome": "Accueil",
+    "summary": "Sommaire",
+    "updatedAt": "Dernière mise à jour : {date}",
+    "lastUpdate": "19 juillet 2026",
+    "contact": "Une question sur ce document, ou une demande concernant vos données ? Écrivez-nous à",
+    "contactEmail": "anthony.rodrigues@zelian.fr",
+    "readTerms": "Lire les conditions d'utilisation",
+    "readPrivacy": "Lire la politique de confidentialité",
+    "consent": "En créant un compte, vous acceptez les <terms>conditions d'utilisation</terms> et la <privacy>politique de confidentialité</privacy>.",
+    "privacy": {
+      "title": "Politique de confidentialité",
+      "intro": "IBIS-X est une plateforme éducative issue d'un projet de recherche universitaire. Cette politique décrit, sans jargon, quelles données personnelles nous traitons, pourquoi, pendant combien de temps, et comment vous en gardez la maîtrise.",
+      "sections": {
+        "controller": {
+          "title": "Qui traite vos données",
+          "body": "Le responsable de traitement au sens du RGPD est la société Zelian, SASU au capital de 1 €, immatriculée au RCS de Paris sous le numéro 992 855 155, dont le siège social est situé 60 rue François 1er, 75008 Paris, représentée par son président Anthony Rodrigues. IBIS-X est né d'un travail de recherche de M2 MIAGE (Université Paris 1 Panthéon-Sorbonne) et le service est accessible à l'adresse ibisx.zelian.fr. Aucun autre organisme n'exploite vos données. Pour toute question ou demande relative à vos données, écrivez à l'adresse indiquée en bas de cette page."
+        },
+        "data": {
+          "title": "Les données que nous collectons",
+          "body": "Nous ne collectons que ce dont le service a besoin pour fonctionner. Rien de plus.",
+          "items": [
+            "Compte — votre adresse e-mail, et votre mot de passe qui n'est jamais stocké en clair (seule une empreinte argon2id est conservée). Si vous passez par Google : votre identifiant Google et l'adresse e-mail vérifiée associée.",
+            "Profil — pseudo, prénom, nom, avatar, langue, niveau d'études, âge et familiarité déclarée avec l'IA, lorsque vous les renseignez. Tout cela est facultatif : seule l'adresse e-mail est nécessaire.",
+            "Vos travaux — projets, jeux de données importés, expériences d'entraînement, modèles produits, explications générées et conversations avec le copilote d'explication.",
+            "Sécurité des sessions — pour chaque connexion : une empreinte du jeton de session, sa date d'expiration et l'identifiant de votre navigateur (user-agent), afin de pouvoir révoquer une session compromise.",
+            "Journaux techniques — horodatage, route appelée, code de réponse et erreurs, utilisés pour diagnostiquer les pannes.",
+            "Ce que nous ne collectons pas — aucune donnée bancaire, aucune géolocalisation, aucun traceur publicitaire, aucun profilage marketing. Vos données ne sont ni vendues ni louées."
+          ]
+        },
+        "purposes": {
+          "title": "Pourquoi, et sur quelle base légale",
+          "body": "Chaque traitement répond à une finalité précise et à une base légale au sens du RGPD.",
+          "items": [
+            "Fournir le service — créer votre compte, sauvegarder vos projets et vos expériences, afficher vos résultats. Base légale : exécution du contrat que forment les conditions d'utilisation.",
+            "Vous authentifier et protéger votre compte — connexion, réinitialisation de mot de passe, révocation de session. Base légale : exécution du contrat et intérêt légitime à sécuriser le service.",
+            "Adapter les explications à votre niveau — la familiarité avec l'IA que vous déclarez détermine le ton des explications (novice, intermédiaire, expert). Base légale : exécution du contrat ; ce niveau reste modifiable à tout moment dans votre profil.",
+            "Générer des explications par intelligence artificielle — lorsque vous demandez une explication ou posez une question au copilote. Base légale : exécution du contrat, dans les limites décrites à la section 5.",
+            "Maintenir le service et prévenir les abus — journaux techniques, quotas de crédits, contrôle des imports. Base légale : intérêt légitime."
+          ]
+        },
+        "google": {
+          "title": "Connexion avec Google",
+          "body": "La connexion Google est facultative : un compte e-mail/mot de passe donne accès à 100 % du service. Si vous choisissez Google, voici exactement ce qui se passe.",
+          "items": [
+            "Nous demandons uniquement les autorisations openid, email et profile. IBIS-X n'accède ni à votre messagerie, ni à votre agenda, ni à vos contacts, ni à vos fichiers Google — et ne peut techniquement pas le faire.",
+            "Nous recevons et conservons votre identifiant Google, votre adresse e-mail vérifiée, et le cas échéant votre prénom, votre nom et votre langue. Aucun jeton d'accès ni de rafraîchissement Google n'est stocké sur nos serveurs.",
+            "Usage limité — les informations reçues de Google servent exclusivement à créer et sécuriser votre compte IBIS-X. Elles ne sont jamais vendues, jamais transmises à des tiers à des fins publicitaires, jamais utilisées pour de la publicité ciblée, et jamais employées pour entraîner des modèles d'intelligence artificielle. L'usage que fait IBIS-X des données reçues des API Google respecte la Google API Services User Data Policy, y compris ses exigences d'usage limité (Limited Use)."
+          ]
+        },
+        "ai": {
+          "title": "Ce qui est transmis à l'intelligence artificielle",
+          "body": "Les explications rédigées et le copilote s'appuient sur un modèle de langage tiers, appelé via OpenRouter (société établie aux États-Unis). Votre identité ne lui est jamais transmise : ni votre adresse e-mail, ni votre nom, ni l'identifiant de votre compte ne quittent nos serveurs. Sont envoyés les seuls éléments techniques nécessaires à la réponse — nom de l'algorithme, type de tâche, métriques, noms des variables et leur importance — ainsi que la question que vous posez. Un point mérite votre attention : lorsque vous demandez le guide IA d'un jeu de données, quelques valeurs d'exemple issues de ses colonnes sont incluses dans la requête, y compris pour les colonnes signalées comme potentiellement personnelles. N'importez donc jamais dans IBIS-X de données directement identifiantes que vous ne souhaiteriez pas voir transmises à ce prestataire. En l'absence de clé d'accès configurée, aucune requête n'est émise et le service bascule sur des explications générées localement."
+        },
+        "recipients": {
+          "title": "Qui d'autre y a accès",
+          "body": "Vos données ne sont ni vendues, ni louées, ni partagées à des fins commerciales. Seuls les prestataires techniques suivants interviennent.",
+          "items": [
+            "Hébergement — serveurs, base de données et fichiers importés sont hébergés sur une infrastructure louée chez Hetzner Online GmbH, dans l'Union européenne. Les fichiers ne quittent pas ce serveur : aucun stockage objet externe n'est utilisé.",
+            "Google — uniquement si vous choisissez la connexion Google, et pour la seule authentification. Ce transfert hors Union européenne est encadré par les clauses contractuelles types de la Commission européenne.",
+            "OpenRouter — uniquement pour les fonctionnalités d'explication par IA, dans les limites décrites à la section 5. Transfert hors Union européenne.",
+            "Envoi d'e-mails — un serveur de messagerie est utilisé pour le seul e-mail que le service envoie : la réinitialisation de mot de passe."
+          ]
+        },
+        "retention": {
+          "title": "Combien de temps nous les conservons",
+          "body": "Vos données vivent avec votre compte : tant qu'il existe, elles sont conservées ; quand il disparaît, elles disparaissent.",
+          "items": [
+            "Compte, profil, projets, expériences, explications et conversations : jusqu'à la suppression de votre compte.",
+            "Jetons de session : valables 7 jours au maximum. Liens de réinitialisation de mot de passe : 1 heure.",
+            "Journaux techniques : conservés le temps nécessaire au diagnostic des incidents et à la sécurité du service."
+          ]
+        },
+        "rights": {
+          "title": "Vos droits, et comment les exercer",
+          "body": "Le RGPD vous reconnaît des droits que vous exercez soit directement dans l'application, soit en nous écrivant. Nous répondons dans un délai d'un mois.",
+          "items": [
+            "Accès et rectification — votre profil est consultable et modifiable à tout moment depuis la page Profil.",
+            "Effacement — vous pouvez supprimer votre compte depuis votre profil, en confirmant par votre adresse e-mail. La suppression est immédiate et définitive : compte, projets, expériences, explications et conversations sont détruits. Deux exceptions à connaître : les jeux de données que vous avez publiés dans le catalogue partagé restent disponibles aux autres utilisateurs, détachés de votre identité ; et si votre compte est supprimé par un administrateur, votre adresse e-mail subsiste dans le journal d'administration.",
+            "Portabilité — aucun export automatique n'est proposé à ce jour. Écrivez-nous et nous vous transmettrons vos données dans un format lisible par machine.",
+            "Opposition et limitation — vous pouvez vous opposer à un traitement fondé sur notre intérêt légitime, ou en demander la limitation, en nous écrivant.",
+            "Réclamation — si vous estimez que vos droits ne sont pas respectés, vous pouvez saisir la CNIL (cnil.fr)."
+          ]
+        },
+        "cookies": {
+          "title": "Cookies et stockage local",
+          "body": "IBIS-X n'utilise aucun cookie publicitaire et aucun outil de mesure d'audience — c'est la raison pour laquelle aucun bandeau de consentement ne vous est imposé. Seuls des éléments strictement fonctionnels sont déposés.",
+          "items": [
+            "ibis_refresh — cookie de session sécurisé (httpOnly, SameSite=Lax, 7 jours) qui vous maintient connecté. Le jeton d'accès, lui, ne quitte jamais la mémoire de l'onglet et n'est écrit nulle part.",
+            "ibis_locale, theme_preset, theme_scale, theme_radius, theme_content_layout, sidebar_state — vos préférences d'affichage (langue, thème, mise en page), conservées un an.",
+            "Stockage local du navigateur — votre progression dans l'académie et les défis, le regard métier choisi et l'état d'ouverture du copilote, sous des clés préfixées ibis:. Ces informations restent sur votre appareil et disparaissent si vous videz les données du site."
+          ]
+        },
+        "security": {
+          "title": "Comment nous les protégeons",
+          "body": "Les échanges avec le service sont chiffrés en HTTPS. Les mots de passe sont hachés en argon2id et ne peuvent pas être relus, même par nous. Les jetons de connexion sont de courte durée et révocables, et les jetons de session ne sont conservés que sous forme d'empreinte. L'accès aux serveurs est restreint aux personnes qui administrent le projet. Aucun système n'étant infaillible, nous vous invitons à utiliser un mot de passe unique et à nous signaler sans délai tout comportement suspect sur votre compte."
+        },
+        "changes": {
+          "title": "Évolutions de cette politique",
+          "body": "Cette politique peut évoluer, en particulier si de nouvelles fonctionnalités traitent de nouvelles données. La date de dernière mise à jour figure en tête de page. En cas de changement substantiel, vous en serez informé dans l'application avant qu'il ne prenne effet."
+        }
+      }
+    },
+    "terms": {
+      "title": "Conditions d'utilisation",
+      "intro": "Ces conditions encadrent l'utilisation d'IBIS-X. En créant un compte ou en utilisant le service, vous les acceptez. Elles sont écrites pour être lues : si un point vous semble ambigu, écrivez-nous.",
+      "sections": {
+        "purpose": {
+          "title": "Objet",
+          "body": "Les présentes conditions définissent les règles d'accès et d'usage d'IBIS-X, plateforme éducative d'apprentissage du Machine Learning accessible à l'adresse ibisx.zelian.fr. Elles forment un contrat entre vous et l'éditeur du service, identifié à la section suivante. La politique de confidentialité les complète et en fait partie intégrante."
+        },
+        "editor": {
+          "title": "Éditeur et hébergeur",
+          "body": "Mentions légales du service, au sens de l'article 6 de la loi pour la confiance dans l'économie numérique.",
+          "items": [
+            "Éditeur — Zelian, société par actions simplifiée unipersonnelle au capital de 1 €, immatriculée au RCS de Paris sous le numéro 992 855 155 (SIRET 992 855 155 00014, TVA intracommunautaire FR57992855155, code NAF 6201Z), siège social 60 rue François 1er, 75008 Paris.",
+            "Directeur de la publication — Anthony Rodrigues, président.",
+            "Contact — anthony.rodrigues@zelian.fr",
+            "Hébergeur — Hetzner Online GmbH, Industriestr. 25, 91710 Gunzenhausen, Allemagne."
+          ]
+        },
+        "service": {
+          "title": "Ce que le service propose",
+          "body": "IBIS-X est un outil pédagogique issu d'un projet de recherche universitaire. Il vous permet de :",
+          "items": [
+            "Explorer un catalogue de jeux de données documentés et les comparer sur des critères à la fois techniques et éthiques.",
+            "Entraîner un modèle de Machine Learning en suivant un parcours guidé, sans écrire une ligne de code.",
+            "Comprendre les décisions de ce modèle grâce aux méthodes d'explicabilité (SHAP, LIME) et à un assistant conversationnel.",
+            "Apprendre les notions sous-jacentes à travers l'académie et les défis guidés."
+          ]
+        },
+        "account": {
+          "title": "Votre compte",
+          "body": "L'accès aux fonctionnalités nécessite la création d'un compte.",
+          "items": [
+            "Vous fournissez une adresse e-mail valide et des informations exactes. Un compte est personnel : il ne se partage pas.",
+            "Vous devez avoir au moins 15 ans. En dessous, l'accord de votre représentant légal est requis.",
+            "Vous êtes responsable de la confidentialité de votre mot de passe et des actions menées depuis votre compte. Prévenez-nous immédiatement en cas d'accès non autorisé.",
+            "Certaines fonctionnalités d'IA consomment des crédits attachés à votre compte. Ces crédits n'ont aucune valeur monétaire : ils ne sont ni achetés, ni échangeables, ni remboursables."
+          ]
+        },
+        "acceptable": {
+          "title": "Usages interdits",
+          "body": "En utilisant IBIS-X, vous vous engagez à ne pas :",
+          "items": [
+            "Importer des données directement identifiantes ou des données sensibles (santé, opinions, origine, orientation) dont vous n'auriez pas le droit de disposer et de confier au service.",
+            "Utiliser le service à des fins illicites ou discriminatoires, ni pour produire des décisions automatisées affectant des personnes réelles.",
+            "Tenter de contourner les limitations techniques, d'accéder aux comptes ou aux données d'autres utilisateurs, ou de porter atteinte à la sécurité du service.",
+            "Surcharger l'infrastructure : extraction automatisée massive, imports abusifs, contournement des quotas.",
+            "Publier dans le catalogue partagé des contenus illicites, trompeurs, ou sur lesquels vous ne détenez pas les droits."
+          ]
+        },
+        "content": {
+          "title": "Vos contenus",
+          "body": "Ce que vous importez vous appartient, et continue de vous appartenir.",
+          "items": [
+            "Vous restez titulaire de vos jeux de données, de vos projets et de vos modèles. Vous nous accordez uniquement le droit de les héberger et de les traiter pour vous fournir le service.",
+            "Vous garantissez disposer des droits nécessaires sur les fichiers que vous importez, et que leur usage dans ce cadre est licite.",
+            "Un jeu de données publié dans le catalogue partagé devient consultable par les autres utilisateurs, et le reste après la suppression de votre compte, détaché de votre identité."
+          ]
+        },
+        "ai": {
+          "title": "Limites des résultats et de l'IA",
+          "body": "Les résultats produits par IBIS-X sont des estimations statistiques, jamais des vérités.",
+          "items": [
+            "Un modèle de Machine Learning se trompe. Les métriques, prédictions et explications affichées sont probabilistes et doivent être interprétées avec prudence.",
+            "Les explications rédigées par intelligence artificielle peuvent comporter des erreurs ou des approximations. Elles complètent votre jugement, elles ne le remplacent pas.",
+            "IBIS-X ne délivre aucun conseil médical, juridique, financier ou de ressources humaines. Ne fondez aucune décision affectant des personnes sur ses seules sorties : une corrélation observée n'est pas une relation de cause à effet."
+          ]
+        },
+        "availability": {
+          "title": "Disponibilité du service",
+          "body": "IBIS-X est un projet de recherche mis à disposition gratuitement, en l'état, sans garantie de disponibilité, de performance ni d'absence d'erreur. Le service peut être interrompu, modifié ou arrêté, y compris sans préavis, pour maintenance ou pour toute autre raison. Conservez une copie de vos fichiers importants : aucune garantie de sauvegarde ni de restauration n'est offerte."
+        },
+        "liability": {
+          "title": "Responsabilité",
+          "body": "Dans la limite permise par la loi, la responsabilité de l'éditeur du service ne saurait être engagée au titre des dommages indirects résultant de l'utilisation du service — notamment pertes de données, pertes d'exploitation, ou décisions prises sur la base de résultats produits par la plateforme. Le service étant fourni gratuitement, aucune garantie commerciale n'y est attachée. Rien dans ces conditions n'exclut la responsabilité qui ne peut légalement l'être."
+        },
+        "termination": {
+          "title": "Fin d'utilisation",
+          "body": "Vous pouvez cesser d'utiliser IBIS-X à tout moment et supprimer votre compte depuis votre profil ; la suppression est immédiate et définitive. Nous pouvons de notre côté suspendre ou supprimer un compte qui enfreint ces conditions, met en péril la sécurité du service ou nuit à ses autres utilisateurs — si les circonstances le permettent, après vous en avoir informé."
+        },
+        "law": {
+          "title": "Droit applicable et litiges",
+          "body": "Les présentes conditions sont soumises au droit français. En cas de différend, une solution amiable sera recherchée en priorité : écrivez-nous. À défaut d'accord, les tribunaux français sont compétents. Si vous êtes consommateur, vous conservez le droit de saisir la juridiction de votre lieu de résidence, ainsi que la plateforme européenne de règlement en ligne des litiges."
+        },
+        "changes": {
+          "title": "Modification des conditions",
+          "body": "Ces conditions peuvent être modifiées pour refléter l'évolution du service ou de la réglementation. La date de dernière mise à jour figure en tête de page. En cas de modification substantielle, vous en serez informé dans l'application ; poursuivre l'utilisation du service après cette information vaut acceptation."
+        }
+      }
+    }
   }
 }

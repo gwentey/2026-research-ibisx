@@ -3,6 +3,27 @@
 Refonte complète from scratch (voir [JALONS.md](JALONS.md) et [docs/refonte/](docs/refonte/)).
 Un jalon = un incrément livrable ; chaque entrée correspond à un commit `feat: jalon N`.
 
+## Pages légales publiques — prérequis validation Google OAuth (19/07/2026)
+
+- **`/legal/privacy` et `/legal/terms`** : politique de confidentialité et conditions
+  d'utilisation, publiques (hors `(guest)`, donc sans garde d'authentification — Google exige
+  que les liens de l'écran de consentement soient atteignables sans compte). Coquille commune
+  `LegalDocument` : header sticky de la landing, sommaire ancré en vis-à-vis sur desktop,
+  sections numérotées à ancres stables (`#google`, `#cookies`…). Plan des documents dans
+  `lib/legal/documents.ts`, contenu intégralement i18n FR/EN. Les CGU portent les mentions
+  légales LCEN (éditeur Zelian SASU, directeur de publication, hébergeur).
+- **Contenu établi sur un audit du code, pas sur un modèle générique** : champs réellement
+  stockés, cookie `ibis_refresh` et clés `ibis:*` du navigateur, sous-traitants réels
+  (Hetzner UE, Google OIDC, OpenRouter), déclaration **Limited Use** exigée par Google, et
+  mentions honnêtes des limites — pas d'export RGPD automatisé, datasets publiés qui
+  survivent à la suppression du compte, valeurs d'exemple transmises à OpenRouter pour le
+  guide IA.
+- **Consentement au point d'inscription** (`/register`) et liens en pied de landing.
+- **Suppression du code mort Google Analytics** (`lib/ga.ts`, dépendance `react-ga4`, exclusion
+  ESLint) : jamais monté dans l'app, mais sa présence contredisait la mention « aucun traceur ».
+- Tests : plan ↔ catalogues i18n (titres, corps, listes de même longueur FR/EN) et rendu du
+  message riche `legal.consent` — 116 tests verts.
+
 ## Retour au tableau de bord depuis /status (19/07/2026)
 
 - **Sortie de cul-de-sac sur `/status`** : la page d'état vit hors du shell applicatif (aucune

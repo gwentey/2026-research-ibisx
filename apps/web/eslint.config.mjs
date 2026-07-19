@@ -21,7 +21,6 @@ const eslintConfig = [
       "hooks/**",
       "lib/compose-refs.ts",
       "lib/fonts.ts",
-      "lib/ga.ts",
       "lib/themes.ts"
     ]
   },
