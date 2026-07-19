@@ -238,9 +238,7 @@ def test_explanation_audience_override(worker_client: TestClient, trained: dict)
     default = run_explanation(worker_client, trained, {"type": "global"})
     assert default["audience_level"] == "novice"  # = profil
 
-    overridden = run_explanation(
-        worker_client, trained, {"type": "global", "audience": "expert"}
-    )
+    overridden = run_explanation(worker_client, trained, {"type": "global", "audience": "expert"})
     assert overridden["audience_level"] == "expert"  # surcharge éphémère
 
     # Le profil de l'utilisateur n'est PAS modifié par la surcharge.

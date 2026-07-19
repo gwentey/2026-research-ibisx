@@ -42,4 +42,6 @@ def test_seed_local_only_skips_kaggle_entries(db_session: Session) -> None:
     """`ibis seed` (CDC §12.5) : aucune clé externe — les entrées kaggle_ref sont exclues."""
     report = import_from_config(db_session, default_config_path(), local_only=True)
     assert report.failed == [], report.failed
-    assert len(report.imported) == 24  # les 24 datasets embarqués (local_file), jamais une entrée kaggle_ref
+    assert (
+        len(report.imported) == 24
+    )  # les 24 datasets embarqués (local_file), jamais une entrée kaggle_ref
