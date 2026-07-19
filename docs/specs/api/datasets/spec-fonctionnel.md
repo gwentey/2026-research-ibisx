@@ -67,7 +67,7 @@ Le module `api/datasets` est le catalogue central de datasets d'IBIS-X. Il gère
 
 14. **Seul le propriétaire ou un administrateur peut modifier ou supprimer un dataset.** La route `PUT` et `DELETE` vérifient `require_owner_or_admin`.
 
-15. **La création de dataset est réservée aux contributeurs et administrateurs** (rôle `contributor` minimum).
+15. **L'upload libre de dataset est réservé aux contributeurs et administrateurs** (rôle `contributor` minimum, route `POST /datasets`). En revanche, **l'import depuis un lien Kaggle (`POST /datasets/import/kaggle`) est ouvert à tout compte connecté** : la source est un jeu public identifié, la licence est vérifiée, la taille plafonnée, les doublons écartés et l'attribution nominative — l'utilisateur ne dépose aucun octet arbitraire sur le serveur. Un limiteur par IP (10 imports/heure) protège le stockage et le worker. C'est le choix produit d'un catalogue **communautaire** : l'attribution visible (avatar + pseudo) est le garde-fou social, pas le rôle.
 
 16. **L'import via YAML (seed) est idempotent.** Un slug déjà présent en base est ignoré sauf si `force=True`. L'import `local_only` n'utilise que les fichiers embarqués (pas de clé Kaggle requise).
 
