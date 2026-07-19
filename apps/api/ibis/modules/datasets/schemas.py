@@ -4,8 +4,9 @@ import uuid
 from datetime import datetime
 from typing import Any, Literal
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
+from ibis.modules.datasets.ethics import ETHICAL_CRITERIA
 from ibis.modules.jobs.schemas import JobRead
 
 SortKey = Literal["name", "year", "instances", "features", "citations", "created", "updated"]
@@ -288,6 +289,24 @@ class KaggleImportResponse(BaseModel):
     #: Renseignés quand le jeu existe déjà — le front redirige au lieu de créer un doublon.
     existing_dataset_id: uuid.UUID | None = None
     duplicate_reason: str | None = None
+
+
+class EthicsReviewInput(StrictModel):
+    """Validation HUMAINE des critères éthiques — seule à pouvoir peser sur le score.
+
+    Revue partielle : un critère absent du dictionnaire n'est pas touché (on n'écrase pas
+    en NULL ce que l'utilisateur n'a pas soumis). `None` explicite = « je ne tranche pas ».
+    """
+
+    values: dict[str, bool | None] = Field(default_factory=dict)
+
+    @field_validator("values")
+    @classmethod
+    def only_known_criteria(cls, value: dict[str, bool | None]) -> dict[str, bool | None]:
+        unknown = sorted(set(value) - set(ETHICAL_CRITERIA))
+        if unknown:
+            raise ValueError(f"Critère(s) éthique(s) inconnu(s) : {', '.join(unknown)}")
+        return value
 
 
 class DatasetMetadataUpdate(DatasetMetadataInput):

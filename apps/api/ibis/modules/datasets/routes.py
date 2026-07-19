@@ -26,6 +26,7 @@ from ibis.modules.datasets.schemas import (
     DatasetMetadataUpdate,
     DatasetPage,
     DatasetPreview,
+    EthicsReviewInput,
     FileRead,
     KaggleImportRequest,
     KaggleImportResponse,
@@ -191,6 +192,28 @@ def update_dataset(
     dataset = service.get_dataset(db, dataset_id)
     require_owner_or_admin(claims, dataset.created_by)
     return service.to_detail(service.update_dataset(db, dataset, payload))
+
+
+@router.post(
+    "/{dataset_id}/ethics-review",
+    response_model=DatasetDetail,
+    operation_id="reviewDatasetEthics",
+)
+def review_dataset_ethics(
+    dataset_id: uuid.UUID,
+    payload: EthicsReviewInput,
+    db: DbDep,
+    claims: CurrentClaims,
+) -> DatasetDetail:
+    """Validation humaine des critères éthiques — propriétaire ou admin.
+
+    C'est le SEUL chemin par lequel un critère peut devenir vrai et donc peser dans
+    `ethical_score` : les suggestions de l'IA restent inertes tant que personne n'a tranché.
+    """
+    dataset = service.get_dataset(db, dataset_id)
+    require_owner_or_admin(claims, dataset.created_by)
+    reviewed = service.review_ethics(db, dataset, payload.values, reviewer_id=claims.user_id)
+    return service.to_detail(reviewed)
 
 
 @router.delete("/{dataset_id}", status_code=204, operation_id="deleteDataset")

@@ -2383,6 +2383,28 @@
         "title": "EducationLevel",
         "type": "string"
       },
+      "EthicsReviewInput": {
+        "additionalProperties": false,
+        "description": "Validation HUMAINE des critères éthiques — seule à pouvoir peser sur le score.\n\nRevue partielle : un critère absent du dictionnaire n'est pas touché (on n'écrase pas\nen NULL ce que l'utilisateur n'a pas soumis). `None` explicite = « je ne tranche pas ».",
+        "properties": {
+          "values": {
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "title": "Values",
+            "type": "object"
+          }
+        },
+        "title": "EthicsReviewInput",
+        "type": "object"
+      },
       "ExperimentCreate": {
         "additionalProperties": false,
         "properties": {
@@ -6845,6 +6867,60 @@
           }
         },
         "summary": "Get Completion",
+        "tags": [
+          "datasets"
+        ]
+      }
+    },
+    "/api/v1/datasets/{dataset_id}/ethics-review": {
+      "post": {
+        "description": "Validation humaine des critères éthiques — propriétaire ou admin.\n\nC'est le SEUL chemin par lequel un critère peut devenir vrai et donc peser dans\n`ethical_score` : les suggestions de l'IA restent inertes tant que personne n'a tranché.",
+        "operationId": "reviewDatasetEthics",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "dataset_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Dataset Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EthicsReviewInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DatasetDetail"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Review Dataset Ethics",
         "tags": [
           "datasets"
         ]

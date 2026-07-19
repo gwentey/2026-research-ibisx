@@ -36,8 +36,16 @@ l'était. Cette feature ouvre le catalogue à l'import par n'importe quel contri
 - **Déduplication à unicité partielle** — `UNIQUE (source_ref) WHERE access = 'public'` : le
   catalogue public n'a jamais de doublon, mais chacun garde le droit à sa copie privée. Une unicité
   globale aurait empêché un second utilisateur d'importer un jeu qu'un premier a gardé pour lui.
+- **Écran de validation éthique** (`POST /datasets/{id}/ethics-review`, propriétaire ou admin) —
+  ferme la boucle « l'IA propose, l'humain assume » : c'est le **seul** chemin par lequel un critère
+  peut devenir vrai et donc peser dans `ethical_score`. La revue est **partielle** (un critère absent
+  du payload n'est pas touché : une revue en plusieurs fois n'efface rien), l'utilisateur peut
+  **contredire** l'IA, et « ne sait pas » reste un choix valide. Bandeau sur la fiche dataset qui ne
+  s'affiche que s'il y a réellement quelque chose à faire, plus une boîte de dialogue tristate
+  affichant chaque proposition de l'IA avec sa justification. Logique d'affichage extraite dans
+  `lib/datasets/ethics-review.ts` et testée à part, comme le reste du front.
 - Migration `0010` (numérotée pour éviter la collision avec le `0009` d'une branche concurrente).
-  **282 tests backend + 105 front verts**, build production OK.
+  **292 tests backend + 115 front verts**, build production OK.
 
 ## Récap de défi réductible (19/07/2026)
 

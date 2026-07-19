@@ -93,9 +93,7 @@ class Dataset(UUIDPk, Timestamped, Base):
 
     # `selectin` : la carte catalogue affiche l'attribution, donc l'owner est TOUJOURS lu.
     # Le charger avec la liste évite une requête par ligne (N+1) sur une page de 96 résultats.
-    owner: Mapped["User | None"] = relationship(
-        "User", foreign_keys=[created_by], lazy="selectin"
-    )
+    owner: Mapped["User | None"] = relationship("User", foreign_keys=[created_by], lazy="selectin")
 
     files: Mapped[list["DatasetFile"]] = relationship(
         back_populates="dataset", cascade="all, delete-orphan", order_by="DatasetFile.created_at"

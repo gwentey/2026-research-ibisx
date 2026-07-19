@@ -1155,6 +1155,23 @@ export type DraftUpsert = {
 export type EducationLevel = 'lycee' | 'licence' | 'master' | 'doctorat' | 'autre';
 
 /**
+ * EthicsReviewInput
+ *
+ * Validation HUMAINE des critères éthiques — seule à pouvoir peser sur le score.
+ *
+ * Revue partielle : un critère absent du dictionnaire n'est pas touché (on n'écrase pas
+ * en NULL ce que l'utilisateur n'a pas soumis). `None` explicite = « je ne tranche pas ».
+ */
+export type EthicsReviewInput = {
+    /**
+     * Values
+     */
+    values?: {
+        [key: string]: boolean | null;
+    };
+};
+
+/**
  * ExperimentCreate
  */
 export type ExperimentCreate = {
@@ -3622,6 +3639,36 @@ export type GetDatasetCompletionResponses = {
 };
 
 export type GetDatasetCompletionResponse = GetDatasetCompletionResponses[keyof GetDatasetCompletionResponses];
+
+export type ReviewDatasetEthicsData = {
+    body: EthicsReviewInput;
+    path: {
+        /**
+         * Dataset Id
+         */
+        dataset_id: string;
+    };
+    query?: never;
+    url: '/api/v1/datasets/{dataset_id}/ethics-review';
+};
+
+export type ReviewDatasetEthicsErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type ReviewDatasetEthicsError = ReviewDatasetEthicsErrors[keyof ReviewDatasetEthicsErrors];
+
+export type ReviewDatasetEthicsResponses = {
+    /**
+     * Successful Response
+     */
+    200: DatasetDetail;
+};
+
+export type ReviewDatasetEthicsResponse = ReviewDatasetEthicsResponses[keyof ReviewDatasetEthicsResponses];
 
 export type ListDatasetFilesData = {
     body?: never;
