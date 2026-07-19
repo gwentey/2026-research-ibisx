@@ -27,6 +27,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { apiErrorMessage } from "@/lib/api/errors";
 import { getJob, importKaggleDataset } from "@/lib/api/generated";
 import { cn } from "@/lib/utils";
 
@@ -97,12 +98,10 @@ export function KaggleImportDialog({ onImported }: { onImported?: () => void }) 
     });
 
     if (error || !data) {
-      // Le backend valide le lien de façon synchrone : le message est exploitable tel quel.
-      const detail =
-        typeof error === "object" && error !== null && "detail" in error
-          ? String((error as { detail?: unknown }).detail ?? "")
-          : "";
-      setPhase({ kind: "error", message: detail || t("errors.badLink") });
+      // Le backend valide le lien de façon synchrone et rédige un message destiné à
+      // l'utilisateur (« Ce lien pointe vers « code », pas vers un dataset ») : on l'affiche
+      // tel quel plutôt qu'un texte générique qui perdrait l'explication du refus.
+      setPhase({ kind: "error", message: apiErrorMessage(error, t("errors.badLink")) });
       return;
     }
 

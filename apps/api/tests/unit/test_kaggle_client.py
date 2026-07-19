@@ -66,6 +66,24 @@ class TestParseKaggleUrl:
         with pytest.raises(InvalidInputError):
             parse_kaggle_url(url)
 
+    @pytest.mark.parametrize(
+        "url,expected_word",
+        [
+            ("https://www.kaggle.com/code/amirmotefaker/supply-chain-analysis/", "notebook"),
+            ("https://www.kaggle.com/competitions/titanic", "compétition"),
+            ("https://www.kaggle.com/models/google/gemma", "modèle"),
+        ],
+    )
+    def test_should_name_the_wrong_page_kind_in_plain_words(
+        self, url: str, expected_word: str
+    ) -> None:
+        """« Ce lien pointe vers « code » » ne dit rien à personne : il faut nommer la chose."""
+        with pytest.raises(InvalidInputError) as caught:
+            parse_kaggle_url(url)
+
+        assert expected_word in str(caught.value)
+        assert "/datasets/" in str(caught.value)  # et dire où aller
+
 
 class TestLicenseRedistribution:
     """Le catalogue public redistribue : on n'y met que ce qui l'autorise."""
