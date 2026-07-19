@@ -121,10 +121,13 @@ function OnboardingWizard() {
   };
 
   return (
-    <main className="bg-muted/20 relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-4 py-10">
+    <main className="bg-muted/20 relative grid min-h-screen grid-rows-[1fr_auto_1fr] overflow-hidden px-4 py-10">
       <CalibrationPattern />
 
-      <div className="relative z-10 w-full max-w-2xl space-y-6">
+      {/* En-tête (logo + parcours) ancré juste au-dessus du formulaire, tandis que le
+          formulaire occupe la rangée centrale : c'est lui — et non l'ensemble — qui est
+          centré verticalement dans la fenêtre. */}
+      <div className="relative z-10 row-start-1 flex w-full max-w-2xl flex-col items-center gap-6 justify-self-center self-end pb-6">
         <div className="flex items-center justify-center gap-2">
           <Logo />
           <span className="text-sm font-semibold tracking-tight">{tCommon("appName")}</span>
@@ -135,7 +138,9 @@ function OnboardingWizard() {
           current={step}
           ariaLabel={t("step", { current: step, total: TOTAL_STEPS })}
         />
+      </div>
 
+      <div className="relative z-10 row-start-2 w-full max-w-2xl justify-self-center">
         <Card className="overflow-hidden">
           <CardContent className="space-y-6 pt-6">
             <div className="flex items-start gap-4">
