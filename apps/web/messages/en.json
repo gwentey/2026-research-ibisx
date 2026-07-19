@@ -1198,6 +1198,20 @@
       "waiting": "Answering…",
       "fallbackNote": "Answer generated without AI (deterministic fallback)"
     },
+    "copilot": {
+      "title": "Explanation copilot",
+      "launcher": "Copilot",
+      "open": "Open the explanation copilot",
+      "close": "Close",
+      "minimize": "Minimize",
+      "aboutGlobal": "about the model overview",
+      "aboutLocal": "about example #{index}",
+      "introTitle": "Ask anything about this explanation",
+      "introBody": "The copilot replies with structured answers — tables, key points and colors — relying only on the computed figures.",
+      "placeholder": "Type your question…",
+      "hint": "Enter to send · Shift+Enter for a new line",
+      "disabled": "Generate an explanation first to chat with the copilot."
+    },
     "result": {
       "title": "Explanation result",
       "localTitle": "Explanation for this prediction",

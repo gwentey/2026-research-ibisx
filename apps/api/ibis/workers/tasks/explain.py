@@ -16,6 +16,7 @@ from ibis.modules.jobs import service as jobs_service
 from ibis.modules.jobs.models import JobStatus
 from ibis.modules.llm import client as llm_client
 from ibis.modules.llm import xai_text
+from ibis.modules.xai import blocks as xai_blocks
 from ibis.modules.xai import engine
 from ibis.modules.xai import quality as xai_quality
 from ibis.modules.xai.models import ChatMessage, ChatSession, Explanation, ExplanationStatus
@@ -198,6 +199,67 @@ def _fail(db, explanation, job_id: str, code: str, message: str) -> None:  # typ
         )
 
 
+def _answer_chat_blocks(
+    *,
+    question: str,
+    context: str,
+    history: list[tuple[str, str]],
+    language: str,
+    metrics: dict,  # type: ignore[type-arg]
+    importance: list,  # type: ignore[type-arg]
+    task_type: str,
+    algorithm: str,
+) -> dict:  # type: ignore[type-arg]
+    """Chat v2 : réponse en blocs validée + anti-hallucination, sinon fallback riche (P2).
+
+    Boucle jusqu'à 2 tentatives LLM : une sortie invalide (JSON non conforme au schéma) OU
+    citant un nombre absent du contexte est rejetée, puis on retente ; à l'échec on retombe
+    sur un document déterministe (paragraphe + tableau des top-variables), badgé « sans IA ».
+    """
+    system = xai_text.chat_system_v2(language)
+    prompt = xai_text.chat_prompt_v2(
+        question=question, context=context, history=history, language=language
+    )
+    try:
+        for attempt in range(2):
+            generated = llm_client.complete(
+                system=system, user=prompt, max_tokens=700, json_mode=True
+            )
+            try:
+                doc = xai_blocks.parse_document(generated.text)
+            except Exception as exc:  # JSON/schéma invalide → on retente
+                logger.info("xai_chat.invalid_blocks", attempt=attempt, reason=str(exc)[:200])
+                continue
+            if not xai_text.numbers_exist_in_context(xai_blocks.extract_text(doc), context):
+                logger.info("xai_chat.hallucinated_number", attempt=attempt)
+                continue
+            return {
+                "content": xai_blocks.to_plain_text(doc),
+                "blocks": doc.model_dump(mode="json"),
+                "model_used": generated.model_used,
+                "is_fallback": False,
+                "tokens_used": generated.tokens_used,
+            }
+        logger.info("xai_chat.fallback", reason="no_valid_answer")
+    except llm_client.LLMUnavailable as exc:
+        logger.info("xai_chat.fallback", reason=str(exc)[:200])
+
+    doc = xai_blocks.fallback_document(
+        language=language,
+        metrics=metrics,
+        importance=importance,
+        task_type=task_type,
+        algorithm=algorithm,
+    )
+    return {
+        "content": xai_blocks.to_plain_text(doc),
+        "blocks": doc.model_dump(mode="json"),
+        "model_used": "fallback",
+        "is_fallback": True,
+        "tokens_used": 0,
+    }
+
+
 @celery_app.task(name="ibis.workers.tasks.explain.answer_chat_question", soft_time_limit=120)
 def answer_chat_question(session_id: str, question: str) -> str:
     db = open_session()
@@ -233,33 +295,16 @@ def answer_chat_question(session_id: str, question: str) -> str:
                 .order_by(ChatMessage.created_at.asc())
             )
         ]
-        prompt = xai_text.chat_prompt(
-            question=question, context=context, history=history, language=session.language
+        payload = _answer_chat_blocks(
+            question=question,
+            context=context,
+            history=history,
+            language=session.language,
+            metrics=experiment.metrics or {},
+            importance=importance,
+            task_type=str(experiment.preprocessing_config.get("task_type", "")),
+            algorithm=experiment.algorithm or "",
         )
-        try:
-            generated = llm_client.complete(
-                system=xai_text.chat_system(session.language), user=prompt, max_tokens=400
-            )
-            payload = {
-                "content": generated.text,
-                "model_used": generated.model_used,
-                "is_fallback": False,
-                "tokens_used": generated.tokens_used,
-            }
-        except llm_client.LLMUnavailable:
-            payload = {
-                "content": xai_text.fallback_text(
-                    audience="novice",
-                    language=session.language,
-                    metrics=experiment.metrics or {},
-                    importance=importance,
-                    task_type=str(experiment.preprocessing_config.get("task_type", "")),
-                    algorithm=experiment.algorithm or "",
-                ),
-                "model_used": "fallback",
-                "is_fallback": True,
-                "tokens_used": 0,
-            }
         db.add(
             ChatMessage(
                 session_id=session.id,

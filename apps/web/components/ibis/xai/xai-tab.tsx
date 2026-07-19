@@ -42,7 +42,7 @@ import {
   TableRow
 } from "@/components/ui/table";
 import { ExplanationView } from "@/components/ibis/xai/explanation-view";
-import { XaiChat } from "@/components/ibis/xai/xai-chat";
+import { ExplanationCopilot } from "@/components/ibis/xai/explanation-copilot";
 import {
   getExplanationResults,
   listExplanations,
@@ -455,10 +455,11 @@ export function XaiTab({ experimentId }: { experimentId: string }) {
               ) : null}
             </CardContent>
           </Card>
-
-          {current ? <XaiChat explanation={current} /> : null}
         </aside>
       </div>
+
+      {/* Copilote d'explication — dock bas ouvrable/fermable (remplace l'encart latéral). */}
+      {current ? <ExplanationCopilot explanation={current} /> : null}
 
       {/* Historique — pleine largeur, HORS de la grille sticky : ne peut plus passer sous le
           chat (le contexte sticky de l'aside se termine avec la grille au-dessus). */}
