@@ -182,7 +182,11 @@ export function WizardShell({
           </div>
         </header>
 
-        <main className="mx-auto w-full max-w-4xl flex-1 px-4 py-8 sm:px-8">
+        <main
+          className="mx-auto w-full max-w-4xl flex-1 px-4 pt-8 sm:px-8"
+          // Réserve l'espace de la barre flottante du traceur de quête sous le contenu : sinon
+          // le CTA de bas d'étape (« J'ai compris, commencer ») passe derrière elle (défi actif).
+          style={{ paddingBottom: "calc(2rem + var(--quest-tracker-height, 0px))" }}>
           <div className="mb-6 flex items-start gap-4">
             <div className="bg-primary/10 text-primary flex size-12 shrink-0 items-center justify-center rounded-xl">
               <HeaderIcon className="size-6" />
@@ -200,7 +204,11 @@ export function WizardShell({
         </main>
 
         {/* ------------------------------- Barre de navigation basse -------------------- */}
-        <footer className="bg-background/95 sticky bottom-0 z-10 border-t px-4 py-3 backdrop-blur sm:px-8">
+        <footer
+          className="bg-background/95 sticky z-10 border-t px-4 py-3 backdrop-blur sm:px-8"
+          // Flotte juste au-dessus du traceur de quête quand un défi est actif (sinon 0px) :
+          // les commandes « Précédent / Suivant » restent visibles et cliquables.
+          style={{ bottom: "var(--quest-tracker-height, 0px)" }}>
           <div className="mx-auto flex max-w-4xl items-center justify-between gap-3">
             <Button
               variant="outline"
