@@ -12,7 +12,7 @@ from ibis.db.engine import get_db
 from ibis.modules.auth.deps import CurrentClaims, CurrentUser
 from ibis.modules.experiments.service import get_experiment
 from ibis.modules.llm.xai_text import suggested_questions
-from ibis.modules.xai import engine, service
+from ibis.modules.xai import engine, fairness, service
 from ibis.modules.xai.models import ExplanationStatus
 
 router = APIRouter(tags=["xai"])
@@ -146,6 +146,26 @@ def list_test_instances(
     loaded = engine.load_experiment_context(db, experiment)
     return engine.test_instances(
         loaded, page=page, page_size=page_size, sort_by_error=sort_by_error
+    )
+
+
+@router.get("/experiments/{experiment_id}/fairness", operation_id="getFairnessReport")
+def get_fairness_report(
+    experiment_id: uuid.UUID,
+    db: DbDep,
+    claims: CurrentClaims,
+    sensitive_column: Annotated[str, Query(min_length=1)],
+    favorable: str | None = None,
+) -> dict[str, Any]:
+    """Comparateur d'équité par attribut sensible — post-hoc, reproductible (P4).
+
+    Recharge modèle + split déterministe, prédit sur le jeu de test et regroupe par la
+    valeur brute de `sensitive_column`. N'est pas applicable en régression.
+    """
+    experiment = get_experiment(db, claims.user_id, experiment_id)
+    loaded = engine.load_experiment_context(db, experiment)
+    return fairness.fairness_report(
+        loaded, sensitive_column=sensitive_column, favorable=favorable
     )
 
 

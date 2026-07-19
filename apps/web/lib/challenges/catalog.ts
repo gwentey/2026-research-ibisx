@@ -101,6 +101,49 @@ export const CHALLENGES: Challenge[] = [
     entryMode: "dataset",
     order: 4,
     objectives: ["create_project", "launch_training", "read_results", "generate_explanation"]
+  },
+  // Défis « profils SHS / présentation » : adossés aux 4 vrais jeux ajoutés le 2026-07-19,
+  // chacun taillé sur l'axe de recherche d'un·e invité·e (écart salarial, astrophysique,
+  // bâtiment durable, réussite étudiante).
+  {
+    slug: "ecart-salarial-1985",
+    datasetSlug: "cps_wages_1985",
+    level: "confirme",
+    domain: "social",
+    taskType: "regression",
+    entryMode: "dataset",
+    order: 5,
+    objectives: ["create_project", "launch_training", "read_results", "generate_explanation"]
+  },
+  {
+    slug: "signal-gamma",
+    datasetSlug: "gamma_telescope",
+    level: "confirme",
+    domain: "technology",
+    taskType: "classification",
+    entryMode: "dataset",
+    order: 6,
+    objectives: ["create_project", "launch_training", "read_results", "generate_explanation"]
+  },
+  {
+    slug: "batiment-sobre",
+    datasetSlug: "energy_efficiency",
+    level: "debutant",
+    domain: "environment",
+    taskType: "regression",
+    entryMode: "project_direct",
+    order: 3,
+    objectives: ["create_project", "launch_training", "read_results", "generate_explanation"]
+  },
+  {
+    slug: "reussite-etudiante",
+    datasetSlug: "student_dropout",
+    level: "debutant",
+    domain: "education",
+    taskType: "classification",
+    entryMode: "project_direct",
+    order: 4,
+    objectives: ["create_project", "launch_training", "read_results", "generate_explanation"]
   }
 ];
 

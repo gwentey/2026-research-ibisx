@@ -40,6 +40,13 @@ def test_seed_import_is_real_and_idempotent(db_session: Session) -> None:
 
 def test_seed_local_only_skips_kaggle_entries(db_session: Session) -> None:
     """`ibis seed` (CDC §12.5) : aucune clé externe — les entrées kaggle_ref sont exclues."""
-    report = import_from_config(db_session, default_config_path(), local_only=True)
+    import yaml
+
+    config = default_config_path()
+    entries = yaml.safe_load(config.read_text())["datasets"]
+    embedded = [e["slug"] for e in entries if "local_file" in e]  # jamais les kaggle_ref
+
+    report = import_from_config(db_session, config, local_only=True)
     assert report.failed == [], report.failed
-    assert len(report.imported) == 6  # les 6 datasets embarqués, jamais l'entrée kaggle_ref
+    # Tous les datasets embarqués sont importés ; aucune entrée kaggle_ref ne se glisse.
+    assert sorted(report.imported) == sorted(embedded)

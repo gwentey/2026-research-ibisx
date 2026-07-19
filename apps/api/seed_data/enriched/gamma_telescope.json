@@ -1,0 +1,36 @@
+{
+  "display_name": "MAGIC — Télescope à rayons gamma",
+  "year": 2007,
+  "objective": "Distinguer un signal de rayon gamma (source astronomique) d'un bruit de fond hadronique à partir des paramètres d'images Cherenkov du télescope MAGIC. Tâche de détection de signal en astrophysique.",
+  "sources": "MAGIC Gamma Telescope (Bock et al.) — données de simulation Monte-Carlo du détecteur Cherenkov MAGIC, UCI (id 159) / OpenML.",
+  "storage_uri": "https://archive.ics.uci.edu/dataset/159/magic+gamma+telescope",
+  "documentation_link": "https://archive.ics.uci.edu/dataset/159/magic+gamma+telescope",
+  "access": "public",
+  "availability": "online",
+  "metadata_provided_with_dataset": true,
+  "external_documentation_available": true,
+  "domain": [
+    "technology"
+  ],
+  "task": [
+    "classification"
+  ],
+  "split": false,
+  "temporal_factors": false,
+  "representativity_level": "high",
+  "representativity_description": "10 000 événements tirés aléatoirement (seed=42) du jeu simulé de 19 020 événements.",
+  "sample_balance_level": "moderate",
+  "sample_balance_description": "Signal gamma (g) 6 492 / bruit hadronique (h) 3 508 (≈65/35).",
+  "missing_values_description": "Aucune valeur manquante.",
+  "features_description": "10 paramètres géométriques et statistiques de l'image lumineuse (longueur, largeur, taille, concentration, asymétrie, moments longitudinaux/transverses, angle, distance) ; cible : signal gamma (g) vs bruit (h).",
+  "transparency": true,
+  "data_quality_documented": true,
+  "informed_consent": null,
+  "anonymization_applied": null,
+  "user_control": null,
+  "record_keeping_policy_exists": true,
+  "equity_non_discrimination": null,
+  "security_measures_in_place": null,
+  "purpose_limitation_respected": true,
+  "accountability_defined": true
+}

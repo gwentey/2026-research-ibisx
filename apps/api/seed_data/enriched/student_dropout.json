@@ -1,0 +1,36 @@
+{
+  "display_name": "Décrochage et réussite étudiante",
+  "year": 2021,
+  "objective": "Prédire l'issue académique d'un·e étudiant·e — décrochage, encore inscrit·e ou diplômé·e — à partir de son parcours, de sa situation socio-économique et de ses résultats de première année. Support d'aide à la détection précoce et à l'inclusion.",
+  "sources": "Realinho, Machado, Baptista, Martins (2021) — établissement d'enseignement supérieur portugais, données administratives anonymisées, UCI (id 697) / OpenML.",
+  "storage_uri": "https://archive.ics.uci.edu/dataset/697/predict+students+dropout+and+academic+success",
+  "documentation_link": "https://archive.ics.uci.edu/dataset/697/predict+students+dropout+and+academic+success",
+  "access": "public",
+  "availability": "online",
+  "metadata_provided_with_dataset": true,
+  "external_documentation_available": true,
+  "domain": [
+    "education"
+  ],
+  "task": [
+    "classification"
+  ],
+  "split": false,
+  "temporal_factors": false,
+  "representativity_level": "medium",
+  "representativity_description": "4 424 étudiant·e·s d'un même établissement portugais (cohortes 2008–2019) ; contexte national spécifique, à ne pas généraliser tel quel.",
+  "sample_balance_level": "moderate",
+  "sample_balance_description": "Diplômé·e·s 2 209 / décrochage 1 421 / encore inscrit·e·s 794.",
+  "missing_values_description": "Aucune valeur manquante (jeu pré-nettoyé, 4 424 étudiant·e·s).",
+  "features_description": "36 variables : voie et ordre de candidature, formation, qualifications et professions des parents, bourse, dette, frais à jour, genre, âge à l'inscription, besoins éducatifs particuliers, unités validées aux 1er et 2e semestres, contexte macro-économique ; cible : décrochage / inscrit / diplômé.",
+  "transparency": true,
+  "data_quality_documented": true,
+  "informed_consent": null,
+  "anonymization_applied": true,
+  "user_control": null,
+  "record_keeping_policy_exists": true,
+  "equity_non_discrimination": false,
+  "security_measures_in_place": null,
+  "purpose_limitation_respected": null,
+  "accountability_defined": true
+}

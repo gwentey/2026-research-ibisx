@@ -1,0 +1,37 @@
+{
+  "display_name": "Salaires et genre — CPS 1985",
+  "year": 1985,
+  "objective": "Analyser et prédire le salaire horaire à partir de caractéristiques socio-démographiques (sexe, éducation, expérience, secteur, appartenance syndicale…). Support classique de l'étude des écarts de salaires femmes-hommes par modèles de régression.",
+  "sources": "Current Population Survey (CPS) 1985, U.S. Bureau of Labor Statistics — diffusion Berndt (1991) / StatLib / OpenML (id 534).",
+  "storage_uri": "https://www.openml.org/d/534",
+  "documentation_link": "https://www.openml.org/d/534",
+  "access": "public",
+  "availability": "online",
+  "metadata_provided_with_dataset": true,
+  "external_documentation_available": true,
+  "domain": [
+    "social"
+  ],
+  "task": [
+    "regression",
+    "classification"
+  ],
+  "split": false,
+  "temporal_factors": false,
+  "representativity_level": "medium",
+  "representativity_description": "534 salarié·e·s tiré·e·s de l'enquête CPS 1985 ; représentatif à sa date mais daté (marché du travail américain de 1985).",
+  "sample_balance_level": "balanced",
+  "sample_balance_description": "Sexe : 289 hommes / 245 femmes (≈54/46).",
+  "missing_values_description": "Aucune valeur manquante (534 individus complets).",
+  "features_description": "11 variables : sexe, âge, années d'éducation et d'expérience, appartenance syndicale, secteur, profession, origine, région Sud, statut marital ; cible usuelle : salaire horaire (WAGE, en $/h).",
+  "transparency": true,
+  "data_quality_documented": true,
+  "informed_consent": null,
+  "anonymization_applied": true,
+  "user_control": null,
+  "record_keeping_policy_exists": true,
+  "equity_non_discrimination": false,
+  "security_measures_in_place": null,
+  "purpose_limitation_respected": null,
+  "accountability_defined": true
+}

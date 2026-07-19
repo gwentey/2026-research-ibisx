@@ -87,3 +87,19 @@ datasets:
   - slug: california_housing
     local_file: files/california_housing.csv
     enriched: enriched/california_housing.json
+
+  # --- Lot « profils SHS / présentation » : 4 vrais jeux ciblés sur les axes de
+  # recherche des invité·e·s (inégalités salariales, astrophysique instrumentale,
+  # bâtiment durable, décrochage étudiant). Sourcés via OpenML/UCI le 2026-07-19.
+  - slug: cps_wages_1985
+    local_file: files/cps_wages_1985.csv
+    enriched: enriched/cps_wages_1985.json
+  - slug: gamma_telescope
+    local_file: files/gamma_telescope.csv
+    enriched: enriched/gamma_telescope.json
+  - slug: energy_efficiency
+    local_file: files/energy_efficiency.csv
+    enriched: enriched/energy_efficiency.json
+  - slug: student_dropout
+    local_file: files/student_dropout.csv
+    enriched: enriched/student_dropout.json

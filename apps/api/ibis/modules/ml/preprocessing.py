@@ -92,6 +92,9 @@ class PreprocessResult:
     label_encoder: LabelEncoder | None
     class_names: list[str] | None
     applied: dict[str, Any] = field(default_factory=dict)  # le récapitulatif HONNÊTE
+    # Index d'origine des lignes de test (dans l'ordre du split) — permet de retrouver
+    # les valeurs BRUTES d'une colonne (ex. attribut sensible) alignées aux prédictions.
+    test_index: list[Any] = field(default_factory=list)
 
 
 def normalize_missing_tokens(df: pd.DataFrame) -> pd.DataFrame:
@@ -217,6 +220,8 @@ def preprocess(df: pd.DataFrame, config: PreprocessingConfig) -> PreprocessResul
         X, y, test_size=config.test_size, random_state=RANDOM_STATE, stratify=stratify
     )
     applied["steps"].append(f"split:test_size={config.test_size},stratified={stratify is not None}")
+    # Index d'origine des lignes de test, AVANT la transformation (qui réinitialise l'index).
+    test_index = list(X_test.index)
 
     # 5 — ColumnTransformer par groupe de stratégie — FIT SUR TRAIN UNIQUEMENT
     numeric_columns = [c for c in X.columns if pd.api.types.is_numeric_dtype(X[c])]
@@ -284,4 +289,5 @@ def preprocess(df: pd.DataFrame, config: PreprocessingConfig) -> PreprocessResul
         label_encoder=label_encoder,
         class_names=class_names,
         applied=applied,
+        test_index=test_index,
     )

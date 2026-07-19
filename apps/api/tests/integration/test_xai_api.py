@@ -245,3 +245,31 @@ def test_explanation_requires_completed_experiment(
     assert denied.status_code == 409
     experiment.status = ExperimentStatus.completed
     real_db.commit()
+
+
+def test_fairness_report_groups_by_column(worker_client: TestClient, trained: dict) -> None:
+    """L'endpoint d'équité recharge le split déterministe et regroupe par colonne brute."""
+    response = worker_client.get(
+        f"/api/v1/experiments/{trained['experiment']['id']}/fairness",
+        params={"sensitive_column": "sepal_width"},
+        headers=trained["headers"],
+    )
+    assert response.status_code == 200
+    data = response.json()
+    assert data["applicable"] is True
+    assert data["sensitive_column"] == "sepal_width"
+    assert len(data["groups"]) >= 2
+    # Les tailles de groupe se somment au nombre d'instances de test (alignement correct).
+    total = sum(group["size"] for group in data["groups"])
+    assert total == data["total"] and total > 0
+    for group in data["groups"]:
+        assert 0.0 <= group["accuracy"] <= 1.0
+
+
+def test_fairness_unknown_column_errors(worker_client: TestClient, trained: dict) -> None:
+    response = worker_client.get(
+        f"/api/v1/experiments/{trained['experiment']['id']}/fairness",
+        params={"sensitive_column": "colonne_inexistante"},
+        headers=trained["headers"],
+    )
+    assert response.status_code == 422

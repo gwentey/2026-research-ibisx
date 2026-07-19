@@ -42,6 +42,8 @@ class LoadedExperiment:
     config: PreprocessingConfig
     feature_names: list[str]
     class_names: list[str] | None
+    # DataFrame source rechargé (colonnes BRUTES) — pour l'analyse d'équité par attribut sensible.
+    raw_df: Any = None
 
 
 def load_experiment_context(db: Session, experiment: Experiment) -> LoadedExperiment:
@@ -66,6 +68,7 @@ def load_experiment_context(db: Session, experiment: Experiment) -> LoadedExperi
         config=config,
         feature_names=artifact["feature_names"],
         class_names=artifact.get("class_names"),
+        raw_df=df,
     )
 
 
