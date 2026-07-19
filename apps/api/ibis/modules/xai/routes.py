@@ -60,6 +60,9 @@ class ExplanationResults(ExplanationRead):
     quality_kpis: dict[str, Any] | None
     viz_data: dict[str, Any] | None
     text_explanation: str | None
+    # Explication riche v2 (BlockDocument) ; None pour les explications antérieures — le front
+    # retombe alors sur le rendu Markdown de text_explanation (CDC évolutions §2).
+    text_blocks: dict[str, Any] | None = None
     instance_ref: dict[str, Any] | None
 
 

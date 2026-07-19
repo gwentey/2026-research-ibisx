@@ -3,6 +3,18 @@
 Refonte complète from scratch (voir [JALONS.md](JALONS.md) et [docs/refonte/](docs/refonte/)).
 Un jalon = un incrément livrable ; chaque entrée correspond à un commit `feat: jalon N`.
 
+## Évolution XAI 2 — Explication en blocs riches (19/07/2026)
+
+- **L'« Explication rédigée par l'IA » a le même design que le chat** : génération en
+  `BlockDocument` (grammaire de blocs + anti-hallucination + repli déterministe par niveau),
+  nouvelle colonne `explanations.text_blocks` (JSONB, migration 0009), exposée dans
+  `getExplanationResults` (contrat OpenAPI + client TS régénérés). Le front rend `IbisBlocks`
+  (tableaux, callouts, featureImpact) et retombe sur le Markdown de `text_explanation` pour
+  les explications antérieures — miroir texte conservé (compat, copie, a11y).
+- **Factorisation worker** : boucle LLM commune chat/explication (`_blocks_completion`) +
+  repli commun (`_fallback_payload`) ; l'ancien chemin texte plat (`build_prompt`,
+  `fallback_text`) est supprimé, son invariant adaptatif vit dans `fallback_document`.
+
 ## Évolution XAI 4 — Questions suggérées contextualisées (19/07/2026)
 
 - **Les suggestions citent le vrai modèle** : `getSuggestedQuestions` récupère la dernière

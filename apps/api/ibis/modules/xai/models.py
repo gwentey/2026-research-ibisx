@@ -68,6 +68,9 @@ class Explanation(UUIDPk, Timestamped, Base):
     quality_kpis: Mapped[dict[str, Any] | None] = mapped_column(JSONB)  # KPI CALCULÉS ou absents
     viz_data: Mapped[dict[str, Any] | None] = mapped_column(JSONB)
     text_explanation: Mapped[str | None] = mapped_column(Text)
+    # Explication riche v2 (BlockDocument, même contrat que le chat) ; text_explanation reste
+    # le miroir lisible/repli (CDC évolutions §2).
+    text_blocks: Mapped[dict[str, Any] | None] = mapped_column(JSONB)
     model_used: Mapped[str | None] = mapped_column(String(120))
     is_fallback: Mapped[bool] = mapped_column(Boolean, default=False)
     tokens_used: Mapped[int] = mapped_column(Integer, default=0)

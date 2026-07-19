@@ -8,7 +8,7 @@ from pydantic import ValidationError
 from ibis.modules.llm import client as llm_client
 from ibis.modules.llm import xai_text
 from ibis.modules.xai import blocks
-from ibis.workers.tasks.explain import _answer_chat_blocks
+from ibis.workers.tasks.explain import _answer_chat_blocks, _generate_explanation_blocks
 
 CONTEXT = (
     "Algorithme : random_forest | Tâche : classification | Type d'explication : global\n"
@@ -224,6 +224,58 @@ def test_worker_falls_back_when_llm_unavailable(monkeypatch: pytest.MonkeyPatch)
 
     monkeypatch.setattr(llm_client, "complete", _raise)
     payload = _answer_chat_blocks(**_kwargs(None))
+    assert payload["is_fallback"] is True
+    assert payload["model_used"] == "fallback"
+
+
+# ---------------------------------------------------------------- worker : explication v2
+
+
+EXPLANATION_DOC = {
+    "schema_version": 1,
+    "blocks": [
+        {"type": "paragraph", "text": "La variable ==revenu== pèse **0.41** dans la décision."},
+        {"type": "callout", "tone": "warning", "title": "Limite", "text": "Jeu de test limité."},
+    ],
+}
+
+
+def _expl_kwargs() -> dict:
+    return dict(
+        context=CONTEXT,
+        language="fr",
+        audience="novice",
+        metrics={"primary_metric": "accuracy", "accuracy": 0.83},
+        importance=[{"feature": "revenu", "value": 0.41}],
+        task_type="classification",
+        algorithm="random_forest",
+    )
+
+
+def test_explanation_blocks_valid(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(llm_client, "complete", lambda **_: _result(json.dumps(EXPLANATION_DOC)))
+    payload = _generate_explanation_blocks(**_expl_kwargs())
+    assert payload["is_fallback"] is False
+    assert payload["blocks"]["blocks"][0]["type"] == "paragraph"
+    assert "revenu" in payload["content"]  # miroir texte → text_explanation (compat)
+
+
+def test_explanation_blocks_fall_back_on_hallucination(monkeypatch: pytest.MonkeyPatch) -> None:
+    bad = {"blocks": [{"type": "paragraph", "text": "Le score vaut 0.99 exactement."}]}
+    monkeypatch.setattr(llm_client, "complete", lambda **_: _result(json.dumps(bad)))
+    payload = _generate_explanation_blocks(**_expl_kwargs())
+    assert payload["is_fallback"] is True  # 0.99 absent du contexte → 2 essais → repli
+    assert payload["blocks"]["blocks"]  # repli riche par-audience (document valide)
+
+
+def test_explanation_blocks_fall_back_when_llm_unavailable(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    def _raise(**_):  # type: ignore[no-untyped-def]
+        raise llm_client.LLMUnavailable("no key")
+
+    monkeypatch.setattr(llm_client, "complete", _raise)
+    payload = _generate_explanation_blocks(**_expl_kwargs())
     assert payload["is_fallback"] is True
     assert payload["model_used"] == "fallback"
 

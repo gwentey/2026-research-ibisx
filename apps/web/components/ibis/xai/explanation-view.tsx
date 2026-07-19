@@ -11,8 +11,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { Markdown } from "@/components/ui/custom/prompt/markdown";
 import { CausalCaveat } from "@/components/ibis/causal-caveat";
+import { IbisBlocks } from "@/components/ibis/xai/ibis-blocks";
 import type { ExplanationResults, XaiAudience } from "@/lib/api/generated";
 import { cn } from "@/lib/utils";
+import { getBlocks } from "@/lib/xai/blocks";
 import { humanizeFeature, roundLabel } from "@/lib/xai/features";
 
 // Recette de style markdown (pas de plugin prose dans ce projet → sélecteurs utilitaires).
@@ -209,6 +211,10 @@ export function ExplanationView({
     ...item,
     feature: humanizeFeature(item.feature)
   }));
+
+  // Explication riche v2 (CDC évolutions §2) : même motif de blocs que le chat. Les
+  // explications antérieures (sans blocs) retombent sur le rendu Markdown du miroir texte.
+  const textBlocks = getBlocks(explanation.text_blocks);
 
   // Contexte « QUEL exemple » (explication locale) — répond à « de quel élément parle-t-on ? ».
   const isLocal = explanation.type === "local";
@@ -463,7 +469,7 @@ export function ExplanationView({
         </div>
       ) : null}
 
-      {explanation.text_explanation ? (
+      {textBlocks.length > 0 || explanation.text_explanation ? (
         <div {...step()}>
           <Card>
             <CardHeader>
@@ -475,7 +481,11 @@ export function ExplanationView({
             </CardHeader>
             <CardContent>
               <div className="bg-muted/40 rounded-md border p-4">
-                <Markdown className={PROSE}>{explanation.text_explanation}</Markdown>
+                {textBlocks.length > 0 ? (
+                  <IbisBlocks blocks={textBlocks} />
+                ) : (
+                  <Markdown className={PROSE}>{explanation.text_explanation ?? ""}</Markdown>
+                )}
               </div>
             </CardContent>
           </Card>

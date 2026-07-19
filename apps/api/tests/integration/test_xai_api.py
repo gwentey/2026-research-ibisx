@@ -183,6 +183,17 @@ def test_explanation_debits_credit_and_lists(worker_client: TestClient, trained:
     assert len(history) >= 1
 
 
+def test_explanation_results_include_blocks(worker_client: TestClient, trained: dict) -> None:
+    """CDC évolutions §2 : l'explication est aussi servie en blocs riches (même contrat que le
+    chat). Sans clé LLM, le repli déterministe fournit un document badgé « sans IA » et le
+    miroir texte (`text_explanation`) reste rempli (compat)."""
+    results = run_explanation(worker_client, trained, {"type": "global"})
+    assert results["text_blocks"] is not None
+    assert results["text_blocks"]["blocks"]
+    assert results["is_fallback"] is True  # pas de clé LLM en test → repli
+    assert results["text_explanation"]
+
+
 def test_suggested_questions_cite_real_model(worker_client: TestClient, trained: dict) -> None:
     """CDC évolutions §4 : après une explication terminée, les suggestions citent la vraie
     variable dominante (nom humanisé, colonne seule pour un one-hot) — plus de liste générique."""

@@ -4,7 +4,8 @@
   langue UI ; température 0 (P4).
 - Anti-hallucination : le prompt ne contient QUE les vraies valeurs ; chaque nombre
   cité en sortie doit exister dans le contexte, sinon régénération puis fallback.
-- Fallback : template déterministe construit sur les vraies données (P2).
+- Fallback : document de blocs déterministe construit sur les vraies données (P2),
+  voir `ibis.modules.xai.blocks.fallback_document`.
 """
 
 import re
@@ -171,30 +172,6 @@ def build_context(
     return "\n".join(lines)
 
 
-def build_prompt(*, audience: str, language: str, context: str) -> tuple[str, str]:
-    lang = "en" if language == "en" else "fr"
-    spec = AUDIENCE_SPECS.get(audience, AUDIENCE_SPECS["novice"])[lang]
-    if lang == "fr":
-        user = (
-            f"Explique ces résultats pour {spec}.\n"
-            "Structure : ① ce que le modèle a appris ② quelles variables comptent et pourquoi "
-            "③ à quel point s'y fier (métriques) ④ une limite à garder en tête.\n"
-            "Cite les nombres tels qu'affichés dans le contexte (arrondis / en %) — "
-            "ne re-dérive jamais une précision supérieure.\n\n"
-            f"CONTEXTE (seules valeurs autorisées) :\n{context}"
-        )
-    else:
-        user = (
-            f"Explain these results for {spec}.\n"
-            "Structure: ① what the model learned ② which features matter and why "
-            "③ how much to trust it (metrics) ④ one limitation to keep in mind.\n"
-            "Quote numbers exactly as displayed in the context (rounded / in %) — "
-            "never re-derive extra precision.\n\n"
-            f"CONTEXT (only allowed values):\n{context}"
-        )
-    return SYSTEM[lang], user
-
-
 NUMBER_RE = re.compile(r"\d+(?:[.,]\d+)?")
 
 
@@ -225,138 +202,6 @@ def numbers_exist_in_context(text: str, context: str) -> bool:
         # Diagnostic : quels nombres cités par l'IA ne sont pas dans le contexte (→ rejet).
         logger.info("xai_text.foreign_numbers", numbers=foreign[:10])
     return not foreign
-
-
-def fallback_text(
-    *,
-    audience: str,
-    language: str,
-    metrics: dict[str, Any],
-    importance: list[dict[str, Any]],
-    task_type: str,
-    algorithm: str,
-) -> str:
-    """Template déterministe sur les VRAIES données, ADAPTÉ au niveau (adaptatif §5.3).
-
-    Trois formulations distinctes (novice → analogie + langage courant ; intermédiaire →
-    orienté décision ; expert → terminologie), toujours ancrées sur les valeurs calculées et
-    toujours badgées « généré sans IA » (P2). Le novice reçoit l'essentiel (moins de variables).
-    """
-    en = language == "en"
-    primary = str(metrics.get("primary_metric", ""))
-    primary_value = metrics.get(primary) if primary else None
-    has_primary = bool(primary) and primary_value is not None
-
-    if audience == "novice":
-        top = [humanize_feature(str(i["feature"])) for i in importance[:3]]  # l'essentiel
-        if en:
-            parts = [
-                f"In plain words: the {algorithm} model learned from examples to make "
-                f"predictions ({task_type}) — a bit like learning to recognise a fruit after "
-                "seeing many of them.",
-                (
-                    f"Its main score ({primary}) is {_round3(primary_value)}: the closer to 1, "
-                    "the better."
-                    if has_primary
-                    else "Its main score is unavailable here."
-                ),
-                (
-                    "What counted most: " + ", ".join(top) + "."
-                    if top
-                    else "Which information counted most is unavailable."
-                ),
-                "This summary was generated without AI, from the computed values only.",
-            ]
-        else:
-            parts = [
-                f"Pour faire simple : le modèle {algorithm} a appris, à partir d'exemples, à "
-                f"faire des prédictions ({task_type}) — un peu comme on apprend à reconnaître un "
-                "fruit après en avoir vu beaucoup.",
-                (
-                    f"Sa note principale ({primary}) est de {_round3(primary_value)} : plus c'est "
-                    "proche de 1, mieux c'est."
-                    if has_primary
-                    else "Sa note principale n'est pas disponible ici."
-                ),
-                (
-                    "Ce qui a le plus compté : " + ", ".join(top) + "."
-                    if top
-                    else "L'information qui a le plus compté n'est pas disponible."
-                ),
-                "Ce résumé a été généré sans IA, uniquement à partir des valeurs calculées.",
-            ]
-        return " ".join(parts)
-
-    top = [humanize_feature(str(i["feature"])) for i in importance[:5]]
-    if audience == "expert":
-        if en:
-            parts = [
-                f"Model {algorithm} — {task_type} task.",
-                (
-                    f"Main metric {primary} = {_round3(primary_value)} "
-                    "(see the full grid for macro metrics)."
-                    if has_primary
-                    else "Main metric unavailable."
-                ),
-                (
-                    "Most influential features, by decreasing importance: " + ", ".join(top) + "."
-                    if top
-                    else "Feature importance unavailable."
-                ),
-                "Summary generated without AI, from the computed values only.",
-            ]
-        else:
-            parts = [
-                f"Modèle {algorithm} — tâche de {task_type}.",
-                (
-                    f"Métrique principale {primary} = {_round3(primary_value)} "
-                    "(voir la grille complète pour les macro-métriques)."
-                    if has_primary
-                    else "Métrique principale indisponible."
-                ),
-                (
-                    "Variables les plus influentes, par importance décroissante : "
-                    + ", ".join(top)
-                    + "."
-                    if top
-                    else "Importance des variables indisponible."
-                ),
-                "Résumé généré sans IA, à partir des seules valeurs calculées.",
-            ]
-        return " ".join(parts)
-
-    # intermediate (défaut) : structuré, orienté décision.
-    if en:
-        parts = [
-            f"The {algorithm} model was trained for a {task_type} task.",
-            (
-                f"Main metric {primary} = {_round3(primary_value)}."
-                if has_primary
-                else "Main metric unavailable."
-            ),
-            (
-                "The most influential features are: " + ", ".join(top) + "."
-                if top
-                else "Feature importance is unavailable."
-            ),
-            "This summary was generated without AI, from the computed values only.",
-        ]
-        return " ".join(parts)
-    parts = [
-        f"Le modèle {algorithm} a été entraîné pour une tâche de {task_type}.",
-        (
-            f"Métrique principale {primary} = {_round3(primary_value)}."
-            if has_primary
-            else "Métrique principale indisponible."
-        ),
-        (
-            "Les variables les plus influentes sont : " + ", ".join(top) + "."
-            if top
-            else "L'importance des variables est indisponible."
-        ),
-        "Ce résumé a été généré sans IA, uniquement à partir des valeurs calculées.",
-    ]
-    return " ".join(parts)
 
 
 # ------------------------------------ Chat (CDC §9.6) ---------------------------------------
@@ -431,6 +276,43 @@ def chat_system_v2(language: str, audience: str = "intermediate") -> str:
     lang = "en" if language == "en" else "fr"
     grammar = _BLOCKS_GRAMMAR_EN if lang == "en" else _BLOCKS_GRAMMAR
     return SYSTEM[lang] + "\n\n" + _audience_tone(audience, lang) + "\n\n" + grammar
+
+
+# ------------------------------ Explication v2 : blocs riches (CDC évolutions §2) -------------
+
+
+def explanation_system_v2(language: str) -> str:
+    """Système explication v2 = anti-hallucination + contrat de blocs (même grammaire que le
+    chat). Le NIVEAU est porté par le prompt utilisateur ; le contrat de blocs et
+    l'anti-hallucination restent constants quel que soit le niveau."""
+    lang = "en" if language == "en" else "fr"
+    grammar = _BLOCKS_GRAMMAR_EN if lang == "en" else _BLOCKS_GRAMMAR
+    return SYSTEM[lang] + "\n\n" + grammar
+
+
+def explanation_prompt_v2(*, audience: str, language: str, context: str) -> str:
+    """Prompt d'explication en blocs, adapté au niveau (longueur/ton d'AUDIENCE_SPECS)."""
+    lang = "en" if language == "en" else "fr"
+    spec = AUDIENCE_SPECS.get(audience, AUDIENCE_SPECS["novice"])[lang]
+    if lang == "fr":
+        return (
+            f"Rédige l'explication de ces résultats pour {spec}.\n"
+            "Structure en blocs : ① ce que le modèle a appris (paragraphe) ② quelles variables "
+            "comptent et pourquoi (featureImpact ou tableau) ③ à quel point s'y fier (keyValue "
+            "ou tableau des métriques) ④ une limite à garder en tête (callout warning).\n"
+            "8 blocs maximum. Cite les nombres tels qu'affichés dans le contexte (arrondis / "
+            "en %) — ne re-dérive jamais une précision supérieure.\n\n"
+            f"CONTEXTE (seules valeurs autorisées) :\n{context}"
+        )
+    return (
+        f"Write the explanation of these results for {spec}.\n"
+        "Structure in blocks: ① what the model learned (paragraph) ② which features matter "
+        "and why (featureImpact or table) ③ how much to trust it (keyValue or metrics table) "
+        "④ one limitation to keep in mind (warning callout).\n"
+        "8 blocks maximum. Quote numbers exactly as displayed in the context (rounded / in %) "
+        "— never re-derive extra precision.\n\n"
+        f"CONTEXT (only allowed values):\n{context}"
+    )
 
 
 def chat_prompt_v2(

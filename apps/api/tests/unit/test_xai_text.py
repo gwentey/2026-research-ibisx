@@ -1,14 +1,10 @@
-"""Adaptation au niveau (adaptatif §5) : le repli d'explication, le chat et les suggestions
-varient selon l'audience, tout en restant ancrés sur les vraies valeurs
-et badgés « sans IA » (P2)."""
+"""Adaptation au niveau (adaptatif §5) : prompts d'explication/chat et suggestions varient
+selon l'audience, ancrés sur les vraies valeurs. Le repli riche (badgé « sans IA », P2) est
+testé dans test_xai_blocks.py (fallback_document)."""
 
 import re
 
 from ibis.modules.llm import xai_text
-
-METRICS = {"primary_metric": "accuracy", "accuracy": 0.83}
-IMPORTANCE = [{"feature": "revenu", "value": 0.41}, {"feature": "age", "value": 0.19}]
-
 
 # ------------------------------- Nombres lisibles (CDC évolutions §1) -------------------------
 
@@ -91,19 +87,6 @@ def test_build_context_local_contributions_keep_direction() -> None:
     assert "0.871" in ctx and "0.621" in ctx  # valeurs locales arrondies 3 déc.
 
 
-def test_fallback_text_humanizes_feature_names() -> None:
-    text = xai_text.fallback_text(
-        audience="novice",
-        language="fr",
-        metrics=METRICS,
-        importance=TITANIC_IMPORTANCE,
-        task_type="classification",
-        algorithm="random_forest",
-    )
-    assert "cat__" not in text and "num_median_0__" not in text
-    assert "Sex = female" in text
-
-
 def test_guard_accepts_percent_and_decimal_echo() -> None:
     ctx = _titanic_context()
     assert xai_text.numbers_exist_in_context("Le sexe pèse environ 24 % ici.", ctx) is True
@@ -116,61 +99,31 @@ def test_guard_still_rejects_foreign_numbers() -> None:
     assert xai_text.numbers_exist_in_context("Le score magique est 0.37.", ctx) is False
 
 
-def test_prompts_ask_to_quote_numbers_as_displayed() -> None:
-    _, user_fr = xai_text.build_prompt(audience="novice", language="fr", context="ctx")
-    _, user_en = xai_text.build_prompt(audience="novice", language="en", context="ctx")
-    assert "tels qu'affichés" in user_fr
-    assert "as displayed" in user_en
+def test_chat_prompt_v2_asks_to_quote_numbers_as_displayed() -> None:
     chat_fr = xai_text.chat_prompt_v2(question="q", context="ctx", history=[], language="fr")
     chat_en = xai_text.chat_prompt_v2(question="q", context="ctx", history=[], language="en")
     assert "tels qu'affichés" in chat_fr
     assert "as displayed" in chat_en
 
 
-def _fallback(audience: str, language: str = "fr") -> str:
-    return xai_text.fallback_text(
-        audience=audience,
-        language=language,
-        metrics=METRICS,
-        importance=IMPORTANCE,
-        task_type="classification",
-        algorithm="random_forest",
-    )
+# ------------------------------- Explication v2 en blocs (CDC évolutions §2) ------------------
 
 
-def test_fallback_text_varies_by_audience() -> None:
-    novice, intermediate, expert = (
-        _fallback("novice"),
-        _fallback("intermediate"),
-        _fallback("expert"),
-    )
-    # Trois formulations distinctes (§5.3) — plus un texte unique servi à tous les niveaux.
-    assert novice != intermediate and intermediate != expert and novice != expert
-    # Toujours badgé « sans IA », quel que soit le niveau (P2).
-    assert all("sans IA" in text for text in (novice, intermediate, expert))
-    # Les vraies valeurs restent présentes (ancrage anti-hallucination) — la métrique principale.
-    assert all("0.83" in text for text in (novice, intermediate, expert))
+def test_explanation_system_v2_carries_grammar_and_honesty() -> None:
+    system_fr = xai_text.explanation_system_v2("fr")
+    assert "schema_version" in system_fr  # contrat de blocs (même grammaire que le chat)
+    assert "INTERDIT" in system_fr  # anti-hallucination conservé
+    system_en = xai_text.explanation_system_v2("en")
+    assert "schema_version" in system_en and "FORBIDDEN" in system_en
 
 
-def test_fallback_text_novice_cites_fewer_variables() -> None:
-    # Le novice reçoit l'essentiel : moins de variables citées que l'expert (charge cognitive,
-    # Sweller 1988). L'analogie, elle, est volontaire — le novice n'est donc pas « plus court ».
-    many = [{"feature": f"var{i}", "value": 0.5 - i * 0.05} for i in range(6)]
-
-    def fb(audience: str) -> str:
-        return xai_text.fallback_text(
-            audience=audience,
-            language="fr",
-            metrics=METRICS,
-            importance=many,
-            task_type="classification",
-            algorithm="random_forest",
-        )
-
-    novice_vars = sum(1 for i in range(6) if f"var{i}" in fb("novice"))
-    expert_vars = sum(1 for i in range(6) if f"var{i}" in fb("expert"))
-    assert novice_vars <= 3
-    assert novice_vars < expert_vars
+def test_explanation_prompt_v2_varies_by_audience_and_quotes_format() -> None:
+    novice = xai_text.explanation_prompt_v2(audience="novice", language="fr", context="ctx")
+    expert = xai_text.explanation_prompt_v2(audience="expert", language="fr", context="ctx")
+    assert novice != expert  # spec de niveau injectée (adaptatif §5.2)
+    assert "tels qu'affichés" in novice
+    en = xai_text.explanation_prompt_v2(audience="novice", language="en", context="ctx")
+    assert "as displayed" in en
 
 
 def test_chat_system_v2_injects_audience_directive() -> None:
