@@ -1506,5 +1506,9 @@
       "purpose": "Purpose and consent: was this data collected for this specific use?",
       "caveat": "The real question goes beyond legality: is this model fair and acceptable?"
     }
+  },
+  "causal": {
+    "title": "Association, not causation",
+    "body": "These variables are correlated with the target: the model uses them to predict. That does not prove they cause it. Establishing a causal effect requires an identification design (experiment, difference-in-differences, instrumental variable)."
   }
 }

@@ -1506,5 +1506,9 @@
       "purpose": "Finalité et consentement : ces données ont-elles été collectées pour cet usage précis ?",
       "caveat": "La vraie question dépasse la légalité : ce modèle est-il juste et acceptable ?"
     }
+  },
+  "causal": {
+    "title": "Association, pas causalité",
+    "body": "Ces variables sont corrélées à la cible : le modèle s'en sert pour prédire. Cela ne prouve pas qu'elles la causent. Établir un effet causal demande un design d'identification (expérience, différences-de-différences, variable instrumentale)."
   }
 }

@@ -23,6 +23,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { MissionStepper } from "@/components/ibis/mission-stepper";
 import { ChallengeDebrief } from "@/components/ibis/challenges/challenge-debrief";
+import { CausalCaveat } from "@/components/ibis/causal-caveat";
 import { LensSwitcher } from "@/components/ibis/lenses/lens-switcher";
 import { LensReading } from "@/components/ibis/lenses/lens-reading";
 import { XaiTab } from "@/components/ibis/xai/xai-tab";
@@ -368,7 +369,10 @@ export default function ExperimentResultsPage({
           ) : null}
 
           {viz["feature_importance"] ? (
-            <ImportanceChart importance={viz["feature_importance"] as never[]} />
+            <div className="space-y-3">
+              <ImportanceChart importance={viz["feature_importance"] as never[]} />
+              <CausalCaveat />
+            </div>
           ) : null}
 
           {viz["predicted_vs_actual"] ? (
