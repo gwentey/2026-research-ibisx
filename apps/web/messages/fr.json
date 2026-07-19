@@ -1252,7 +1252,18 @@
       "globalBody": "Quelles variables comptent le plus, en moyenne, sur toutes les prédictions.",
       "localTitle": "Un exemple précis",
       "localBody": "Pourquoi le modèle a répondu ce qu'il a répondu, pour un exemple donné.",
-      "cta": "Configurez votre demande, puis lancez « Générer l'explication »."
+      "cta": "Configurez votre demande, puis lancez « Générer l'explication ».",
+      "novice": "Pas besoin d'être expert : on vous explique tout en mots simples, avec des analogies du quotidien."
+    },
+    "reading": {
+      "title": "Comment lire cette explication",
+      "subtitle": "Trois réflexes pour un premier coup d'œil, sans jargon.",
+      "step1Title": "Regardez le score",
+      "step1Body": "La note globale, en haut, dit à quel point on peut se fier au modèle.",
+      "step2Title": "Voyez ce qui a compté",
+      "step2Body": "Les barres les plus longues sont les informations qui ont le plus pesé.",
+      "step3Title": "Lisez le résumé en clair",
+      "step3Body": "Un texte en langage courant traduit les chiffres — et le copilote répond à vos questions."
     },
     "generating": {
       "title": "L'IA génère votre explication…",

@@ -4,7 +4,10 @@ import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import {
   ArrowRightIcon,
+  BarChart3Icon,
+  BookOpenIcon,
   CheckCircle2Icon,
+  GaugeIcon,
   HistoryIcon,
   LayersIcon,
   Loader2Icon,
@@ -134,9 +137,52 @@ function GeneratingPanel({ progress }: { progress: number }) {
   );
 }
 
+// ------------------------------------------------------------- Main tenue novice (adaptatif §6)
+// Mini pas-à-pas « Comment lire cette explication » — 2-3 réflexes visuels, motif IA (pointillé,
+// couleur ai). Gaté sur niveau effectif = novice : [NE PAS FAIRE] l'afficher aux niveaux
+// intermediate/expert (charge inutile). Réutilise la pédagogie visuelle (EducIA) + tons du kit.
+const READING_STEPS = [
+  { key: "step1", icon: GaugeIcon },
+  { key: "step2", icon: BarChart3Icon },
+  { key: "step3", icon: BookOpenIcon }
+] as const;
+
+function NoviceReadingGuide() {
+  const t = useTranslations("xai.reading");
+  return (
+    <div className="from-ai-violet/10 via-ai/5 to-ai-blue/10 border-ai/40 rounded-xl border border-dashed bg-gradient-to-br p-4 sm:p-5">
+      <div className="flex items-center gap-2.5">
+        <span className="bg-ai/15 text-ai flex size-8 shrink-0 items-center justify-center rounded-lg">
+          <SparklesIcon className="size-4" />
+        </span>
+        <div className="min-w-0">
+          <p className="text-ai text-sm font-semibold">{t("title")}</p>
+          <p className="text-muted-foreground text-xs">{t("subtitle")}</p>
+        </div>
+      </div>
+      <ol className="mt-4 grid gap-3 sm:grid-cols-3">
+        {READING_STEPS.map((step, index) => (
+          <li
+            key={step.key}
+            className="bg-background/60 flex flex-col gap-2 rounded-lg border p-3">
+            <div className="flex items-center gap-2">
+              <span className="bg-ai text-ai-foreground flex size-6 shrink-0 items-center justify-center rounded-full text-xs font-semibold">
+                {index + 1}
+              </span>
+              <step.icon className="text-ai size-4" />
+            </div>
+            <p className="text-sm font-medium">{t(`${step.key}Title`)}</p>
+            <p className="text-muted-foreground text-xs leading-relaxed">{t(`${step.key}Body`)}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  );
+}
+
 // ------------------------------------------------------------- État vide pédagogique
 // Avant toute génération : on EXPLIQUE l'explicabilité et on guide vers le panneau de droite.
-function ExplainIntro() {
+function ExplainIntro({ novice = false }: { novice?: boolean }) {
   const t = useTranslations("xai.intro");
   const cards = [
     { key: "global", icon: LayersIcon },
@@ -152,6 +198,14 @@ function ExplainIntro() {
           <h3 className="text-lg font-semibold">{t("title")}</h3>
           <p className="text-muted-foreground text-sm leading-relaxed">{t("body")}</p>
         </div>
+
+        {/* Cadrage novice : on rassure avant même de générer (main tenue, adaptatif §6). */}
+        {novice ? (
+          <div className="border-ai/40 bg-ai/5 text-ai/90 flex items-start gap-2 rounded-lg border border-dashed px-3 py-2.5 text-left text-sm leading-relaxed">
+            <SparklesIcon className="text-ai mt-0.5 size-4 shrink-0" />
+            <span>{t("novice")}</span>
+          </div>
+        ) : null}
 
         <div className="grid gap-3 text-left sm:grid-cols-2">
           {cards.map((card) => (
@@ -327,17 +381,21 @@ export function XaiTab({
           ) : current ? (
             // key = id de l'explication → remonte à chaque nouvelle explication (rejoue la
             // révélation) ; `reveal` décide si l'animation s'applique (fraîche vs historique).
-            <ExplanationView
-              key={current.id}
-              explanation={current}
-              reveal={reveal}
-              profileAudience={profileAudience}
-              effectiveAudience={audience}
-              onRegenerate={regenerate}
-              regenerating={running}
-            />
+            <>
+              {/* Main tenue novice : « comment lire » AVANT le résultat (§6). Masqué ≥ intermédiaire. */}
+              {audience === "novice" ? <NoviceReadingGuide /> : null}
+              <ExplanationView
+                key={current.id}
+                explanation={current}
+                reveal={reveal}
+                profileAudience={profileAudience}
+                effectiveAudience={audience}
+                onRegenerate={regenerate}
+                regenerating={running}
+              />
+            </>
           ) : (
-            <ExplainIntro />
+            <ExplainIntro novice={audience === "novice"} />
           )}
         </div>
 
