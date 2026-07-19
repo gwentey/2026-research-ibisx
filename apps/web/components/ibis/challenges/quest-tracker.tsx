@@ -46,7 +46,11 @@ function QuestTrackerInner() {
   const showCoach = challenge.level === "novice" && upcoming !== null && t.has(coachKey);
 
   return (
-    <div className="pointer-events-none fixed inset-x-0 bottom-0 z-40 flex justify-center p-3 print:hidden">
+    <>
+      {/* Réserve d'espace en flux : la barre est `fixed`, ce cale-pied évite qu'elle ne
+          recouvre le bas du contenu quand on scrolle jusqu'en bas. */}
+      <div aria-hidden className="h-24 print:hidden" />
+      <div className="pointer-events-none fixed inset-x-0 bottom-0 z-40 flex justify-center p-3 print:hidden">
       <div className="bg-background/95 pointer-events-auto flex w-full max-w-3xl flex-col gap-3 rounded-xl border p-3 shadow-lg backdrop-blur sm:flex-row sm:items-center">
         <div className="flex min-w-0 flex-1 items-start gap-3">
           <span className="bg-primary/10 text-primary flex size-9 shrink-0 items-center justify-center rounded-lg">
@@ -103,6 +107,7 @@ function QuestTrackerInner() {
         </div>
       </div>
     </div>
+    </>
   );
 }
 
