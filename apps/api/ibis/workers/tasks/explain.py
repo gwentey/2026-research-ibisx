@@ -205,12 +205,12 @@ def _answer_chat_blocks(
     context: str,
     history: list[tuple[str, str]],
     language: str,
-    metrics: dict,  # type: ignore[type-arg]
-    importance: list,  # type: ignore[type-arg]
+    metrics: dict,
+    importance: list,
     task_type: str,
     algorithm: str,
     audience: str = "intermediate",
-) -> dict:  # type: ignore[type-arg]
+) -> dict:
     """Chat v2 : réponse en blocs validée + anti-hallucination, sinon fallback riche (P2).
 
     Boucle jusqu'à 2 tentatives LLM : une sortie invalide (JSON non conforme au schéma) OU

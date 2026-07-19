@@ -58,6 +58,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
+        with:
+          version: 10.25.0
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -83,6 +85,8 @@ jobs:
         run: uv run python -m ibis.export_openapi ../web/lib/api/openapi.json
         working-directory: apps/api
       - uses: pnpm/action-setup@v4
+        with:
+          version: 10.25.0
       - uses: actions/setup-node@v4
         with:
           node-version: 22

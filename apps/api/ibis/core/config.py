@@ -41,6 +41,9 @@ class Settings(BaseSettings):
     llm_model: str = "openai/gpt-5-mini"
     llm_max_tokens: int = 2000
     llm_timeout_seconds: int = 60
+    # Modèles à raisonnement (gpt-5*) : "" = désactivé (modèle classique) ;
+    # "low"/"medium"/"high" = envoie l'effort de raisonnement + retire la température imposée.
+    llm_reasoning_effort: str = ""
 
     # --- Import Kaggle ---
     kaggle_username: str = ""

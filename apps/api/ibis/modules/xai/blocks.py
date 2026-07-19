@@ -195,13 +195,18 @@ def _fmt(value: Any) -> str:
     return str(value)
 
 
-def _fallback_intro(*, fr: bool, audience: str, algorithm: str, task_type: str, primary: str, value: Any) -> str:
+def _fallback_intro(
+    *, fr: bool, audience: str, algorithm: str, task_type: str, primary: str, value: Any
+) -> str:
     """Intro du repli chat, ADAPTÉE au niveau (adaptatif §5.2) — novice = langage courant,
     expert = terminologie. Sans clé LLM, c'est ce texte qui « parle » à l'utilisateur."""
     has = bool(primary) and value is not None
     if audience == "novice":
         if fr:
-            intro = f"Pour faire simple : le modèle {algorithm} a appris à faire des prédictions ({task_type})."
+            intro = (
+                f"Pour faire simple : le modèle {algorithm} a appris "
+                f"à faire des prédictions ({task_type})."
+            )
             return intro + (f" Sa note principale ({primary}) vaut {_fmt(value)}." if has else "")
         intro = f"In plain words: the {algorithm} model learned to make predictions ({task_type})."
         return intro + (f" Its main score ({primary}) is {_fmt(value)}." if has else "")
@@ -279,7 +284,5 @@ def fallback_document(
     else:
         blocks.append(ParagraphBlock(type="paragraph", text=no_imp))
 
-    blocks.append(
-        CalloutBlock(type="callout", tone="warning", title=note_title, text=note_text)
-    )
+    blocks.append(CalloutBlock(type="callout", tone="warning", title=note_title, text=note_text))
     return BlockDocument(blocks=blocks)
