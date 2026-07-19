@@ -46,8 +46,13 @@ class Settings(BaseSettings):
     llm_reasoning_effort: str = ""
 
     # --- Import Kaggle ---
+    # Jeton unique (nouveau format Kaggle) — prioritaire s'il est renseigné.
+    kaggle_api_token: str = ""
+    # Couple « legacy » (bouton « Create Legacy API Key ») — repli tant que Kaggle le propose.
     kaggle_username: str = ""
     kaggle_key: str = ""
+    # Plafond d'import, en Mo, sur la taille décompressée.
+    kaggle_max_dataset_mb: int = 200
 
     # --- SMTP (optionnel — reset de mot de passe) ---
     smtp_host: str = ""

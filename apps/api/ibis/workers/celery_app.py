@@ -20,6 +20,7 @@ celery_app = Celery(
         "ibis.workers.tasks.train",
         "ibis.workers.tasks.maintenance",
         "ibis.workers.tasks.explain",
+        "ibis.workers.tasks.kaggle",
     ],
 )
 
@@ -43,6 +44,9 @@ celery_app.conf.update(
         "ibis.workers.tasks.maintenance.*": {"queue": "maintenance"},
         "ibis.workers.tasks.explain.generate_explanation": {"queue": "xai"},
         "ibis.workers.tasks.explain.answer_chat_question": {"queue": "llm"},
+        # Import Kaggle : réseau + pandas, mais jamais d'entraînement — file maintenance,
+        # pour ne pas occuper la file `training` bridée à 1 en production.
+        "ibis.workers.tasks.kaggle.*": {"queue": "maintenance"},
     },
     beat_schedule={
         # Détection de worker perdu : running sans battement > 10 min → WORKER_LOST

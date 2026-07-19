@@ -19,6 +19,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { DatasetAttribution } from "@/components/ibis/datasets/dataset-attribution";
 import { DomainPattern } from "@/components/ibis/datasets/domain-pattern";
 import { ProgressRing } from "@/components/ibis/progress-ring";
 import type { DatasetCard as DatasetCardData } from "@/lib/api/generated";
@@ -168,6 +169,14 @@ export function DatasetCard({ dataset }: { dataset: DatasetCardData }) {
             </Badge>
           ) : null}
         </div>
+
+        {/* Provenance : badge « Vérifié » pour le catalogue curé, sinon avatar + pseudo de
+            l'importeur. L'attribution est le garde-fou social du catalogue ouvert. */}
+        <DatasetAttribution
+          owner={dataset.owner}
+          isVerified={dataset.is_verified}
+          className="mt-3"
+        />
       </CardContent>
 
       {/* Pied stable : date de MAJ à gauche, bouton « Voir la fiche » (outline) aligné à

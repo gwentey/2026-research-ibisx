@@ -2,7 +2,7 @@
 
 import { type Client, type ClientMeta, formDataBodySerializer, type Options as Options2, type RequestResult, type TDataShape } from './client';
 import { client } from './client.gen';
-import type { AdminDeleteTemplateData, AdminDeleteTemplateErrors, AdminDeleteTemplateResponses, AdminDeleteUserData, AdminDeleteUserErrors, AdminDeleteUserResponses, AdminListAuditData, AdminListAuditErrors, AdminListAuditResponses, AdminListJobsData, AdminListJobsErrors, AdminListJobsResponses, AdminListTemplatesData, AdminListTemplatesResponses, AdminListUsersData, AdminListUsersErrors, AdminListUsersResponses, AdminReanalyzeDatasetData, AdminReanalyzeDatasetErrors, AdminReanalyzeDatasetResponses, AdminUpdateUserData, AdminUpdateUserErrors, AdminUpdateUserResponses, AdminUpsertTemplateData, AdminUpsertTemplateErrors, AdminUpsertTemplateResponses, AnalyzeUploadData, AnalyzeUploadErrors, AnalyzeUploadResponses, AskChatQuestionData, AskChatQuestionErrors, AskChatQuestionResponses, CancelExperimentData, CancelExperimentErrors, CancelExperimentResponses, ChangePasswordData, ChangePasswordErrors, ChangePasswordResponses, CompareExperimentsData, CompareExperimentsErrors, CompareExperimentsResponses, CompleteOnboardingData, CompleteOnboardingErrors, CompleteOnboardingResponses, CreateChatSessionData, CreateChatSessionErrors, CreateChatSessionResponses, CreateDatasetData, CreateDatasetErrors, CreateDatasetResponses, CreateProjectData, CreateProjectErrors, CreateProjectResponses, DeleteAccountData, DeleteAccountErrors, DeleteAccountResponses, DeleteDatasetData, DeleteDatasetErrors, DeleteDatasetResponses, DeleteExperimentData, DeleteExperimentErrors, DeleteExperimentResponses, DeleteProjectData, DeleteProjectErrors, DeleteProjectResponses, DownloadDatasetFileData, DownloadDatasetFileErrors, DownloadDatasetFileResponses, DownloadModelData, DownloadModelErrors, DownloadModelResponses, ForgotPasswordData, ForgotPasswordErrors, ForgotPasswordResponses, GetCatalogStatsData, GetCatalogStatsResponses, GetDashboardData, GetDashboardResponses, GetDatasetCompletionData, GetDatasetCompletionErrors, GetDatasetCompletionResponses, GetDatasetData, GetDatasetErrors, GetDatasetFacetsData, GetDatasetFacetsResponses, GetDatasetResponses, GetDraftData, GetDraftErrors, GetDraftResponses, GetExperimentData, GetExperimentErrors, GetExperimentLogsData, GetExperimentLogsErrors, GetExperimentLogsResponses, GetExperimentResponses, GetExperimentResultsData, GetExperimentResultsErrors, GetExperimentResultsResponses, GetExplanationData, GetExplanationErrors, GetExplanationResponses, GetExplanationResultsData, GetExplanationResultsErrors, GetExplanationResultsResponses, GetFairnessReportData, GetFairnessReportErrors, GetFairnessReportResponses, GetHealthData, GetHealthResponses, GetJobData, GetJobErrors, GetJobResponses, GetMeData, GetMeResponses, GetMyAvatarData, GetMyAvatarResponses, GetProjectData, GetProjectErrors, GetProjectRecommendationsData, GetProjectRecommendationsErrors, GetProjectRecommendationsResponses, GetProjectResponses, GetQualityAnalysisData, GetQualityAnalysisErrors, GetQualityAnalysisResponses, GetScoringProfilesData, GetScoringProfilesResponses, GetSimilarDatasetsData, GetSimilarDatasetsErrors, GetSimilarDatasetsResponses, GetSuggestedQuestionsData, GetSuggestedQuestionsErrors, GetSuggestedQuestionsResponses, GetWorkerHealthData, GetWorkerHealthResponses, GoogleAuthorizeData, GoogleAuthorizeResponses, GoogleExchangeData, GoogleExchangeErrors, GoogleExchangeResponses, ListAlgorithmsData, ListAlgorithmsResponses, ListChatMessagesData, ListChatMessagesErrors, ListChatMessagesResponses, ListDatasetFilesData, ListDatasetFilesErrors, ListDatasetFilesResponses, ListDatasetsData, ListDatasetsErrors, ListDatasetsResponses, ListExperimentsData, ListExperimentsErrors, ListExperimentsResponses, ListExplanationsData, ListExplanationsErrors, ListExplanationsResponses, ListProjectExperimentsData, ListProjectExperimentsErrors, ListProjectExperimentsResponses, ListProjectsData, ListProjectsErrors, ListProjectsResponses, ListTestInstancesData, ListTestInstancesErrors, ListTestInstancesResponses, LoginData, LoginErrors, LoginResponses, LogoutData, LogoutResponses, PreviewDatasetData, PreviewDatasetErrors, PreviewDatasetResponses, RefreshTokenData, RefreshTokenResponses, RegisterData, RegisterErrors, RegisterResponses, RequestAiGuideData, RequestAiGuideErrors, RequestAiGuideResponses, RequestExplanationData, RequestExplanationErrors, RequestExplanationResponses, ResetPasswordData, ResetPasswordErrors, ResetPasswordResponses, ScoreDatasetsData, ScoreDatasetsErrors, ScoreDatasetsResponses, StartExperimentData, StartExperimentErrors, StartExperimentResponses, StartSmokeJobData, StartSmokeJobResponses, StreamJobEventsData, StreamJobEventsErrors, StreamJobEventsResponses, UpdateDatasetData, UpdateDatasetErrors, UpdateDatasetResponses, UpdateMeData, UpdateMeErrors, UpdateMeResponses, UpdateProjectData, UpdateProjectErrors, UpdateProjectResponses, UploadAvatarData, UploadAvatarErrors, UploadAvatarResponses, UpsertDraftData, UpsertDraftErrors, UpsertDraftResponses } from './types.gen';
+import type { AdminDeleteTemplateData, AdminDeleteTemplateErrors, AdminDeleteTemplateResponses, AdminDeleteUserData, AdminDeleteUserErrors, AdminDeleteUserResponses, AdminListAuditData, AdminListAuditErrors, AdminListAuditResponses, AdminListJobsData, AdminListJobsErrors, AdminListJobsResponses, AdminListTemplatesData, AdminListTemplatesResponses, AdminListUsersData, AdminListUsersErrors, AdminListUsersResponses, AdminReanalyzeDatasetData, AdminReanalyzeDatasetErrors, AdminReanalyzeDatasetResponses, AdminUpdateUserData, AdminUpdateUserErrors, AdminUpdateUserResponses, AdminUpsertTemplateData, AdminUpsertTemplateErrors, AdminUpsertTemplateResponses, AnalyzeUploadData, AnalyzeUploadErrors, AnalyzeUploadResponses, AskChatQuestionData, AskChatQuestionErrors, AskChatQuestionResponses, CancelExperimentData, CancelExperimentErrors, CancelExperimentResponses, ChangePasswordData, ChangePasswordErrors, ChangePasswordResponses, CompareExperimentsData, CompareExperimentsErrors, CompareExperimentsResponses, CompleteOnboardingData, CompleteOnboardingErrors, CompleteOnboardingResponses, CreateChatSessionData, CreateChatSessionErrors, CreateChatSessionResponses, CreateDatasetData, CreateDatasetErrors, CreateDatasetResponses, CreateProjectData, CreateProjectErrors, CreateProjectResponses, DeleteAccountData, DeleteAccountErrors, DeleteAccountResponses, DeleteDatasetData, DeleteDatasetErrors, DeleteDatasetResponses, DeleteExperimentData, DeleteExperimentErrors, DeleteExperimentResponses, DeleteProjectData, DeleteProjectErrors, DeleteProjectResponses, DownloadDatasetFileData, DownloadDatasetFileErrors, DownloadDatasetFileResponses, DownloadModelData, DownloadModelErrors, DownloadModelResponses, ForgotPasswordData, ForgotPasswordErrors, ForgotPasswordResponses, GetCatalogStatsData, GetCatalogStatsResponses, GetDashboardData, GetDashboardResponses, GetDatasetCompletionData, GetDatasetCompletionErrors, GetDatasetCompletionResponses, GetDatasetData, GetDatasetErrors, GetDatasetFacetsData, GetDatasetFacetsResponses, GetDatasetResponses, GetDraftData, GetDraftErrors, GetDraftResponses, GetExperimentData, GetExperimentErrors, GetExperimentLogsData, GetExperimentLogsErrors, GetExperimentLogsResponses, GetExperimentResponses, GetExperimentResultsData, GetExperimentResultsErrors, GetExperimentResultsResponses, GetExplanationData, GetExplanationErrors, GetExplanationResponses, GetExplanationResultsData, GetExplanationResultsErrors, GetExplanationResultsResponses, GetFairnessReportData, GetFairnessReportErrors, GetFairnessReportResponses, GetHealthData, GetHealthResponses, GetJobData, GetJobErrors, GetJobResponses, GetMeData, GetMeResponses, GetMyAvatarData, GetMyAvatarResponses, GetProjectData, GetProjectErrors, GetProjectRecommendationsData, GetProjectRecommendationsErrors, GetProjectRecommendationsResponses, GetProjectResponses, GetQualityAnalysisData, GetQualityAnalysisErrors, GetQualityAnalysisResponses, GetScoringProfilesData, GetScoringProfilesResponses, GetSimilarDatasetsData, GetSimilarDatasetsErrors, GetSimilarDatasetsResponses, GetSuggestedQuestionsData, GetSuggestedQuestionsErrors, GetSuggestedQuestionsResponses, GetUserAvatarData, GetUserAvatarErrors, GetUserAvatarResponses, GetWorkerHealthData, GetWorkerHealthResponses, GoogleAuthorizeData, GoogleAuthorizeResponses, GoogleExchangeData, GoogleExchangeErrors, GoogleExchangeResponses, ImportKaggleDatasetData, ImportKaggleDatasetErrors, ImportKaggleDatasetResponses, ListAlgorithmsData, ListAlgorithmsResponses, ListChatMessagesData, ListChatMessagesErrors, ListChatMessagesResponses, ListDatasetFilesData, ListDatasetFilesErrors, ListDatasetFilesResponses, ListDatasetsData, ListDatasetsErrors, ListDatasetsResponses, ListExperimentsData, ListExperimentsErrors, ListExperimentsResponses, ListExplanationsData, ListExplanationsErrors, ListExplanationsResponses, ListProjectExperimentsData, ListProjectExperimentsErrors, ListProjectExperimentsResponses, ListProjectsData, ListProjectsErrors, ListProjectsResponses, ListTestInstancesData, ListTestInstancesErrors, ListTestInstancesResponses, LoginData, LoginErrors, LoginResponses, LogoutData, LogoutResponses, PreviewDatasetData, PreviewDatasetErrors, PreviewDatasetResponses, RefreshTokenData, RefreshTokenResponses, RegisterData, RegisterErrors, RegisterResponses, RequestAiGuideData, RequestAiGuideErrors, RequestAiGuideResponses, RequestExplanationData, RequestExplanationErrors, RequestExplanationResponses, ResetPasswordData, ResetPasswordErrors, ResetPasswordResponses, ReviewDatasetEthicsData, ReviewDatasetEthicsErrors, ReviewDatasetEthicsResponses, ScoreDatasetsData, ScoreDatasetsErrors, ScoreDatasetsResponses, StartExperimentData, StartExperimentErrors, StartExperimentResponses, StartSmokeJobData, StartSmokeJobResponses, StreamJobEventsData, StreamJobEventsErrors, StreamJobEventsResponses, UpdateDatasetData, UpdateDatasetErrors, UpdateDatasetResponses, UpdateMeData, UpdateMeErrors, UpdateMeResponses, UpdateProjectData, UpdateProjectErrors, UpdateProjectResponses, UploadAvatarData, UploadAvatarErrors, UploadAvatarResponses, UpsertDraftData, UpsertDraftErrors, UpsertDraftResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean, TResponse = unknown> = Options2<TData, ThrowOnError, TResponse> & {
     /**
@@ -225,6 +225,23 @@ export const createDataset = <ThrowOnError extends boolean = false>(options: Opt
 export const getDatasetFacets = <ThrowOnError extends boolean = false>(options?: Options<GetDatasetFacetsData, ThrowOnError>): RequestResult<GetDatasetFacetsResponses, unknown, ThrowOnError> => (options?.client ?? client).get<GetDatasetFacetsResponses, unknown, ThrowOnError>({ url: '/api/v1/datasets/facets', ...options });
 
 /**
+ * Import Kaggle Dataset
+ *
+ * Import depuis un lien Kaggle collé — contributor+.
+ *
+ * Réponse immédiate : le lien est validé et dédupliqué ici (synchrone, donc l'utilisateur
+ * sait tout de suite si son lien est mauvais) ; le téléchargement part au worker.
+ */
+export const importKaggleDataset = <ThrowOnError extends boolean = false>(options: Options<ImportKaggleDatasetData, ThrowOnError>): RequestResult<ImportKaggleDatasetResponses, ImportKaggleDatasetErrors, ThrowOnError> => (options.client ?? client).post<ImportKaggleDatasetResponses, ImportKaggleDatasetErrors, ThrowOnError>({
+    url: '/api/v1/datasets/import/kaggle',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
  * Analyze Upload
  *
  * Analyse pré-upload SANS persistance (CDC §5.5.b) — contributor+.
@@ -293,6 +310,23 @@ export const requestAiGuide = <ThrowOnError extends boolean = false>(options: Op
  * Get Completion
  */
 export const getDatasetCompletion = <ThrowOnError extends boolean = false>(options: Options<GetDatasetCompletionData, ThrowOnError>): RequestResult<GetDatasetCompletionResponses, GetDatasetCompletionErrors, ThrowOnError> => (options.client ?? client).get<GetDatasetCompletionResponses, GetDatasetCompletionErrors, ThrowOnError>({ url: '/api/v1/datasets/{dataset_id}/completion', ...options });
+
+/**
+ * Review Dataset Ethics
+ *
+ * Validation humaine des critères éthiques — propriétaire ou admin.
+ *
+ * C'est le SEUL chemin par lequel un critère peut devenir vrai et donc peser dans
+ * `ethical_score` : les suggestions de l'IA restent inertes tant que personne n'a tranché.
+ */
+export const reviewDatasetEthics = <ThrowOnError extends boolean = false>(options: Options<ReviewDatasetEthicsData, ThrowOnError>): RequestResult<ReviewDatasetEthicsResponses, ReviewDatasetEthicsErrors, ThrowOnError> => (options.client ?? client).post<ReviewDatasetEthicsResponses, ReviewDatasetEthicsErrors, ThrowOnError>({
+    url: '/api/v1/datasets/{dataset_id}/ethics-review',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
 /**
  * List Files
@@ -640,3 +674,12 @@ export const changePassword = <ThrowOnError extends boolean = false>(options: Op
         ...options.headers
     }
 });
+
+/**
+ * Get User Avatar
+ *
+ * Avatar public d'un contributeur — sert l'attribution « importé par » du catalogue.
+ *
+ * Ne renvoie QUE l'image : aucune autre donnée de compte n'est exposée par cette route.
+ */
+export const getUserAvatar = <ThrowOnError extends boolean = false>(options: Options<GetUserAvatarData, ThrowOnError>): RequestResult<GetUserAvatarResponses, GetUserAvatarErrors, ThrowOnError> => (options.client ?? client).get<GetUserAvatarResponses, GetUserAvatarErrors, ThrowOnError>({ url: '/api/v1/users/{user_id}/avatar', ...options });

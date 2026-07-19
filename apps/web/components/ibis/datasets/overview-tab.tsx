@@ -19,6 +19,7 @@ import {
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import { EthicalCriteriaGrid } from "@/components/ibis/datasets/ethical-criteria-grid";
+import { EthicsReviewBanner } from "@/components/ibis/datasets/ethics-review-banner";
 import type { DatasetDetail, SimilarDataset } from "@/lib/api/generated";
 import { formatCount, scoreColorClass } from "@/lib/datasets/constants";
 import { primaryDomainVisual } from "@/lib/datasets/domain-visuals";
@@ -41,10 +42,14 @@ function IndicatorRow({ label, value }: { label: string; value: boolean | null }
 
 export function OverviewTab({
   dataset,
-  similar
+  similar,
+  canEdit = false,
+  onReviewed
 }: {
   dataset: DatasetDetail;
   similar: SimilarDataset[];
+  canEdit?: boolean;
+  onReviewed?: (updated: DatasetDetail) => void;
 }) {
   const t = useTranslations("datasets.detail");
   const locale = useLocale();
@@ -61,7 +66,8 @@ export function OverviewTab({
 
   return (
     <div className="grid gap-4 lg:grid-cols-2">
-      <div className="lg:col-span-2">
+      <div className="space-y-4 lg:col-span-2">
+        <EthicsReviewBanner dataset={dataset} canEdit={canEdit} onReviewed={onReviewed} />
         <EthicalCriteriaGrid dataset={dataset} />
       </div>
 

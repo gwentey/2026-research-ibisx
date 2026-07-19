@@ -827,6 +827,22 @@
             ],
             "title": "Instances Number"
           },
+          "is_verified": {
+            "default": false,
+            "title": "Is Verified",
+            "type": "boolean"
+          },
+          "license_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "License Name"
+          },
           "num_citations": {
             "title": "Num Citations",
             "type": "integer"
@@ -842,6 +858,16 @@
             ],
             "title": "Objective"
           },
+          "owner": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DatasetOwner"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "representativity_level": {
             "anyOf": [
               {
@@ -852,6 +878,11 @@
               }
             ],
             "title": "Representativity Level"
+          },
+          "source_kind": {
+            "default": "upload",
+            "title": "Source Kind",
+            "type": "string"
           },
           "split": {
             "anyOf": [
@@ -1048,6 +1079,30 @@
             "title": "Ethical Score",
             "type": "number"
           },
+          "ethics_reviewed_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ethics Reviewed At"
+          },
+          "ethics_suggestions": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ethics Suggestions"
+          },
           "external_documentation_available": {
             "anyOf": [
               {
@@ -1126,6 +1181,22 @@
             ],
             "title": "Instances Number"
           },
+          "is_verified": {
+            "default": false,
+            "title": "Is Verified",
+            "type": "boolean"
+          },
+          "license_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "License Name"
+          },
           "metadata_provided_with_dataset": {
             "anyOf": [
               {
@@ -1174,6 +1245,16 @@
             ],
             "title": "Objective"
           },
+          "owner": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DatasetOwner"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "representativity_description": {
             "anyOf": [
               {
@@ -1217,6 +1298,22 @@
               }
             ],
             "title": "Sample Balance Level"
+          },
+          "source_kind": {
+            "default": "upload",
+            "title": "Source Kind",
+            "type": "string"
+          },
+          "source_ref": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Ref"
           },
           "sources": {
             "anyOf": [
@@ -2115,6 +2212,38 @@
         "title": "DatasetMetadataUpdate",
         "type": "object"
       },
+      "DatasetOwner": {
+        "description": "Attribution publique d'un dataset importé — jamais l'email, seulement le pseudo.",
+        "properties": {
+          "has_avatar": {
+            "title": "Has Avatar",
+            "type": "boolean"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "pseudo": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pseudo"
+          }
+        },
+        "required": [
+          "id",
+          "pseudo",
+          "has_avatar"
+        ],
+        "title": "DatasetOwner",
+        "type": "object"
+      },
       "DatasetPage": {
         "properties": {
           "items": {
@@ -2253,6 +2382,28 @@
         ],
         "title": "EducationLevel",
         "type": "string"
+      },
+      "EthicsReviewInput": {
+        "additionalProperties": false,
+        "description": "Validation HUMAINE des critères éthiques — seule à pouvoir peser sur le score.\n\nRevue partielle : un critère absent du dictionnaire n'est pas touché (on n'écrase pas\nen NULL ce que l'utilisateur n'a pas soumis). `None` explicite = « je ne tranche pas ».",
+        "properties": {
+          "values": {
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "title": "Values",
+            "type": "object"
+          }
+        },
+        "title": "EthicsReviewInput",
+        "type": "object"
       },
       "ExperimentCreate": {
         "additionalProperties": false,
@@ -3649,6 +3800,79 @@
         ],
         "title": "JobStatus",
         "type": "string"
+      },
+      "KaggleImportRequest": {
+        "additionalProperties": false,
+        "description": "Import depuis un lien Kaggle collé par l'utilisateur.",
+        "properties": {
+          "access": {
+            "default": "public",
+            "enum": [
+              "public",
+              "private"
+            ],
+            "title": "Access",
+            "type": "string"
+          },
+          "url": {
+            "maxLength": 500,
+            "minLength": 1,
+            "title": "Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "url"
+        ],
+        "title": "KaggleImportRequest",
+        "type": "object"
+      },
+      "KaggleImportResponse": {
+        "description": "Réponse immédiate : soit un job lancé, soit le dataset déjà présent.",
+        "properties": {
+          "duplicate_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Duplicate Reason"
+          },
+          "existing_dataset_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Existing Dataset Id"
+          },
+          "job": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/JobRead"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "ref": {
+            "title": "Ref",
+            "type": "string"
+          }
+        },
+        "required": [
+          "ref"
+        ],
+        "title": "KaggleImportResponse",
+        "type": "object"
       },
       "LogLine": {
         "properties": {
@@ -6275,6 +6499,48 @@
         ]
       }
     },
+    "/api/v1/datasets/import/kaggle": {
+      "post": {
+        "description": "Import depuis un lien Kaggle collé — contributor+.\n\nRéponse immédiate : le lien est validé et dédupliqué ici (synchrone, donc l'utilisateur\nsait tout de suite si son lien est mauvais) ; le téléchargement part au worker.",
+        "operationId": "importKaggleDataset",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/KaggleImportRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/KaggleImportResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Import Kaggle Dataset",
+        "tags": [
+          "datasets"
+        ]
+      }
+    },
     "/api/v1/datasets/preview": {
       "post": {
         "description": "Analyse pré-upload SANS persistance (CDC §5.5.b) — contributor+.",
@@ -6601,6 +6867,60 @@
           }
         },
         "summary": "Get Completion",
+        "tags": [
+          "datasets"
+        ]
+      }
+    },
+    "/api/v1/datasets/{dataset_id}/ethics-review": {
+      "post": {
+        "description": "Validation humaine des critères éthiques — propriétaire ou admin.\n\nC'est le SEUL chemin par lequel un critère peut devenir vrai et donc peser dans\n`ethical_score` : les suggestions de l'IA restent inertes tant que personne n'a tranché.",
+        "operationId": "reviewDatasetEthics",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "dataset_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Dataset Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EthicsReviewInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DatasetDetail"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Review Dataset Ethics",
         "tags": [
           "datasets"
         ]
@@ -8569,6 +8889,43 @@
           }
         },
         "summary": "Change Password",
+        "tags": [
+          "users"
+        ]
+      }
+    },
+    "/api/v1/users/{user_id}/avatar": {
+      "get": {
+        "description": "Avatar public d'un contributeur — sert l'attribution « importé par » du catalogue.\n\nNe renvoie QUE l'image : aucune autre donnée de compte n'est exposée par cette route.",
+        "operationId": "getUserAvatar",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "user_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "User Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get User Avatar",
         "tags": [
           "users"
         ]
