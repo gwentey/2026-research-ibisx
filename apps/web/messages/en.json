@@ -2885,7 +2885,7 @@
       "sections": {
         "controller": {
           "title": "Who processes your data",
-          "body": "IBIS-X is published and operated on an individual basis by the author of the project, as part of an MSc research project in MIAGE (Université Paris 1 Panthéon-Sorbonne). The service is available at ibisx.zelian.fr. The data controller under the GDPR is the author of the project, reachable at the address given at the bottom of this page. No other organisation exploits your data."
+          "body": "The data controller under the GDPR is Anthony Rodrigues — Zelian, 60 rue François 1er, 75008 Paris, France, reachable at the email address given at the bottom of this page. IBIS-X grew out of an MSc research project in MIAGE (Université Paris 1 Panthéon-Sorbonne) and the service is available at ibisx.zelian.fr. No other organisation exploits your data."
         },
         "data": {
           "title": "The data we collect",
@@ -2978,7 +2978,7 @@
       "sections": {
         "purpose": {
           "title": "Purpose",
-          "body": "These terms set out the rules for accessing and using IBIS-X, an educational Machine Learning platform available at ibisx.zelian.fr. They form a contract between you and the author of the project. The privacy policy complements them and forms an integral part of them."
+          "body": "These terms set out the rules for accessing and using IBIS-X, an educational Machine Learning platform available at ibisx.zelian.fr. They form a contract between you and the publisher of the service, Anthony Rodrigues — Zelian, 60 rue François 1er, 75008 Paris, France. The privacy policy complements them and forms an integral part of them."
         },
         "service": {
           "title": "What the service offers",
@@ -3035,7 +3035,7 @@
         },
         "liability": {
           "title": "Liability",
-          "body": "To the extent permitted by law, the author of the project cannot be held liable for indirect damages arising from use of the service — in particular loss of data, loss of business, or decisions taken on the basis of results produced by the platform. As the service is provided free of charge, no commercial warranty attaches to it. Nothing in these terms excludes liability that cannot lawfully be excluded."
+          "body": "To the extent permitted by law, the publisher of the service cannot be held liable for indirect damages arising from use of the service — in particular loss of data, loss of business, or decisions taken on the basis of results produced by the platform. As the service is provided free of charge, no commercial warranty attaches to it. Nothing in these terms excludes liability that cannot lawfully be excluded."
         },
         "termination": {
           "title": "Ending your use",

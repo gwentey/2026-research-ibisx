@@ -2885,7 +2885,7 @@
       "sections": {
         "controller": {
           "title": "Qui traite vos données",
-          "body": "IBIS-X est édité et exploité à titre individuel par l'auteur du projet, dans le cadre d'un travail de recherche de M2 MIAGE (Université Paris 1 Panthéon-Sorbonne). Le service est accessible à l'adresse ibisx.zelian.fr. Le responsable de traitement au sens du RGPD est l'auteur du projet, joignable à l'adresse indiquée en bas de cette page. Aucun autre organisme n'exploite vos données."
+          "body": "Le responsable de traitement au sens du RGPD est Anthony Rodrigues — Zelian, 60 rue François 1er, 75008 Paris, joignable à l'adresse e-mail indiquée en bas de cette page. IBIS-X est né d'un travail de recherche de M2 MIAGE (Université Paris 1 Panthéon-Sorbonne) et le service est accessible à l'adresse ibisx.zelian.fr. Aucun autre organisme n'exploite vos données."
         },
         "data": {
           "title": "Les données que nous collectons",
@@ -2978,7 +2978,7 @@
       "sections": {
         "purpose": {
           "title": "Objet",
-          "body": "Les présentes conditions définissent les règles d'accès et d'usage d'IBIS-X, plateforme éducative d'apprentissage du Machine Learning accessible à l'adresse ibisx.zelian.fr. Elles forment un contrat entre vous et l'auteur du projet. La politique de confidentialité les complète et en fait partie intégrante."
+          "body": "Les présentes conditions définissent les règles d'accès et d'usage d'IBIS-X, plateforme éducative d'apprentissage du Machine Learning accessible à l'adresse ibisx.zelian.fr. Elles forment un contrat entre vous et l'éditeur du service, Anthony Rodrigues — Zelian, 60 rue François 1er, 75008 Paris. La politique de confidentialité les complète et en fait partie intégrante."
         },
         "service": {
           "title": "Ce que le service propose",
@@ -3035,7 +3035,7 @@
         },
         "liability": {
           "title": "Responsabilité",
-          "body": "Dans la limite permise par la loi, la responsabilité de l'auteur du projet ne saurait être engagée au titre des dommages indirects résultant de l'utilisation du service — notamment pertes de données, pertes d'exploitation, ou décisions prises sur la base de résultats produits par la plateforme. Le service étant fourni gratuitement, aucune garantie commerciale n'y est attachée. Rien dans ces conditions n'exclut la responsabilité qui ne peut légalement l'être."
+          "body": "Dans la limite permise par la loi, la responsabilité de l'éditeur du service ne saurait être engagée au titre des dommages indirects résultant de l'utilisation du service — notamment pertes de données, pertes d'exploitation, ou décisions prises sur la base de résultats produits par la plateforme. Le service étant fourni gratuitement, aucune garantie commerciale n'y est attachée. Rien dans ces conditions n'exclut la responsabilité qui ne peut légalement l'être."
         },
         "termination": {
           "title": "Fin d'utilisation",
