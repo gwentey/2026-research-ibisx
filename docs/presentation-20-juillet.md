@@ -27,6 +27,28 @@ Logique : **A** met tout le monde à niveau et crée le premier « waouh » acce
 
 ---
 
+## 1.bis. L'atout transversal : les **Regards métier** (à dégainer dans A, B et C)
+
+Nouveauté livrée pour cette réunion. Sur **chaque page de résultats**, une bascule
+**« Résultat classique ⇄ à travers les yeux de {discipline} »** relit les **mêmes vrais
+chiffres** à travers **6 disciplines SHS** : économiste, juriste, politiste, sociologue,
+historien, éthicien IA. Chaque regard met en avant ce qui l'intéresse **et nomme son angle
+mort**.
+
+**Pourquoi c'est LE moment fort pour cette salle** : tu prends UN résultat et tu le fais
+parler à chaque personne présente. *« Le même modèle : voilà ce qu'y voit un juriste… puis
+un économiste… puis un politiste. »* C'est la preuve, en direct, que l'outil parle à **leur**
+discipline — pas seulement à un data scientist.
+
+- **Honnête (P1)** : mêmes chiffres, seul l'angle change ; rien n'est inventé. La détection
+  de variables sensibles est réelle, et quand il n'y en a pas, l'outil **le dit**.
+- **Geste de démo** : sur les résultats, cliquer la bascule et enchaîner 2–3 regards. 10 secondes, effet garanti.
+- **Réglage** : le regard par défaut se choisit dans **Profil → Préférences → Ma discipline**.
+
+> À intégrer explicitement dans **B** (le clou) et **C** (vidéo). Utilisable aussi en clôture de **A**.
+
+---
+
 ## 2. Scénario A — « De zéro à un modèle expliqué » *(LIVE, ouverture)*
 
 **Promesse** : un non-codeur part d'une question et repart, en 8 minutes, avec un vrai modèle et une explication qu'il comprend.
@@ -42,6 +64,7 @@ Logique : **A** met tout le monde à niveau et crée le premier « waouh » acce
 4. **3–5 min** — Wizard : cible suggérée, **stratégie de nettoyage réellement appliquée** (montrer le récap « transformations appliquées » = contrat d'honnêteté), split, arbre de décision (« explicabilité maximale »).
 5. **5–6 min** — Lancement → **console temps réel** (SSE) : file, logs du worker. ~1 s → résultats (F1, matrice de confusion, importance).
 6. **6–8 min** — **Explicabilité** : « Générer l'explication » → SHAP global + **KPI de fiabilité mesurés** (stabilité, parcimonie) + texte niveau débutant. Chat : « quelle variable compte le plus ? ».
+7. **(clôture, ~30 s) — Regards métier** : sur les résultats, basculer en **« Économiste »** puis **« Éthicien IA »** — « le même résultat, lu autrement ». Teaser du scénario B/C.
 
 ### Le moment « waouh »
 Le récap « transformations réellement appliquées » + les KPI de fiabilité **mesurés** : « ce n'est pas une démo qui fait semblant, tout est calculé et re-vérifiable. »
@@ -68,12 +91,18 @@ Le récap « transformations réellement appliquées » + les KPI de fiabilité 
 1. **0–2 min** — Poser l'étude : « imaginez le papier *quels déterminants du salaire ?* ; classiquement, des heures de nettoyage + du code Stata. Ici : ».
 2. **2–4 min** — **Upload du CSV** (rôle contributor) → profilage automatique + **scoring éthique** calculé sur SES données. C'est le geste « j'apporte mes données ».
 3. **4–7 min** — Wizard : cible `income`, nettoyage recommandé appliqué, **forêt aléatoire**. Lancement → résultats (F1, ROC-AUC, importance des variables).
-4. **7–9 min** — Lecture des résultats en économiste : « éducation et heures travaillées ressortent — cohérent avec la littérature ». **Importance des variables** à l'écran.
-5. **9–11 min** — **LE caveat, assumé** : « attention — ceci est **associationnel, pas causal**. L'outil ne dit pas que faire +1 an d'études *cause* +X\$. Pour ça il faudrait un design causal (DiD, IV) — c'est sur la feuille de route, pas dans l'outil aujourd'hui. » (voir [audit §2](audit-valeur-recherche.md)).
+4. **7–10 min** — **Les Regards métier, EN DIRECT** (le pic de la démo) : sur les résultats, dérouler la bascule pour la salle.
+   - **Économiste** → « éducation et heures travaillées ressortent — cohérent avec la littérature » + il énonce lui-même l'angle mort causalité.
+   - **Juriste** → le regard **détecte réellement** que le modèle s'appuie sur **le sexe, l'âge, l'origine** (variables présentes dans Adult) → RGPD art. 22 / AI Act. « Le même modèle devient une question de discrimination. »
+   - **Politiste** → représentativité de l'échantillon, poids de sondage absents.
+   - Message : *« un seul résultat, trois lectures — l'outil parle à chacun de vous. »*
+5. **10–11 min** — **LE caveat, assumé** (déjà amorcé par le regard économiste) : « ceci est **associationnel, pas causal** ; établir un effet demanderait un design d'identification (DiD, IV) — feuille de route » (voir [audit §2](audit-valeur-recherche.md)).
 6. **11–12 min** — Le **gain de temps** : « de la donnée brute à un modèle expliqué et **téléchargeable** en ~10 min, sans une ligne de code, reproductible ». Télécharger le `.joblib` à l'écran.
 
 ### Le moment « waouh »
-L'**upload de données réelles** + résultat crédible en minutes → « ça marche avec MES données, pas juste vos exemples ».
+L'**upload de données réelles** + le **switch de regards** : le résultat économiste devient, en un clic, une alerte juriste sur les variables sensibles réellement utilisées → « ça marche avec MES données ET ça parle à MA discipline ».
+
+> **Pré-requis démo** : mettre le regard par défaut sur **Économiste** (Profil → Préférences → Ma discipline) pour ouvrir directement sur la lecture économiste, puis basculer.
 
 ### Objections probables → réponses
 - *« Ce n'est que de la corrélation / ce n'est pas causal. »* → **Exactement, et je le dis avant vous.** C'est un outil exploratoire et prédictif ; l'inférence causale est un horizon documenté (montrer l'audit). Cette lucidité = ta force.
@@ -97,7 +126,7 @@ L'**upload de données réelles** + résultat crédible en minutes → « ça ma
 
 ### Storyboard (~7 min)
 1. **0–1 min** — Le cas : « un algorithme prédisait le risque de récidive aux États-Unis — et reproduisait un biais racial. Comment un outil *explicable* aide-t-il à le voir ? »
-2. **1–3 min** — Entraînement réel sur COMPAS → résultats. Puis **SHAP local sur un individu** : « pourquoi CE cas a-t-il été classé à risque ? » (explication locale = force du produit).
+2. **1–3 min** — Entraînement réel sur COMPAS → résultats. **Regard « Juriste » / « Éthicien IA »** : le regard **détecte** que le modèle mobilise des variables sensibles (origine, sexe) et pose la question de la discrimination et de l'acceptabilité. Puis **SHAP local sur un individu** : « pourquoi CE cas a-t-il été classé à risque ? » (explication locale = force du produit).
 3. **3–4 min** — **Comparaison de deux modèles** (`compareExperiments`) : montrer que le choix de méthode change les erreurs.
 4. **4–5 min** — L'**honnêteté machine** : badge « Généré sans IA (repli déterministe) » → « l'outil ne bluffe jamais sur ce qu'il sait ». Scoring éthique tristate.
 5. **5–7 min** — Le pont **droit/éthique** : ce que l'AI Act et le RGPD exigent (explicabilité, non-discrimination) ; **ce que l'outil ne fait pas encore** (audit d'équité formel = feuille de route, [audit §F1](audit-valeur-recherche.md)). Conclusion lucide.
@@ -121,6 +150,8 @@ L'**upload de données réelles** + résultat crédible en minutes → « ça ma
 | « Et mes données SPSS/Stata ? » | « CSV aujourd'hui ; l'import SPSS/Stata est identifié comme la barrière d'entrée n°1 à lever. » |
 | « C'est un jouet pédagogique. » | « Le résultat est réel, reproductible (`seed=42`) et téléchargeable. Le pédagogique, c'est le *guidage*, pas le résultat. » |
 | « Ça hallucine comme ChatGPT ? » | « Non : sans clé LLM, il passe en repli déterministe *explicitement marqué*. L'honnêteté est un principe du produit. » |
+| « Ça ne parle pas à MA discipline. » | *(basculer le regard)* « Justement — voici la lecture pour un juriste, un économiste, un politiste… le même résultat, votre angle. » |
+| « Vous surinterprétez l'importance des variables. » | « L'outil le rappelle lui-même : un bandeau *association ≠ causalité* accompagne l'importance et le SHAP. » |
 
 ---
 
@@ -142,6 +173,7 @@ docker compose exec api ibis seed          # admin + 6 datasets
 
 - [ ] Compte de démo prêt : `admin@ibisx-demo.org` / `admin-ibisx-2026` (+ un compte contributor « néophyte » avec crédits pour le scénario A).
 - [ ] **Rejouer les 2 scénarios live en entier** une fois, chrono en main.
+- [ ] **Regards métier** : régler le regard par défaut (Profil → Préférences → **Ma discipline** = Économiste) et **répéter la bascule** sur une page de résultats (Économiste → Juriste → Politiste). Vérifier que sur Adult le regard Juriste **détecte bien** sexe/âge/origine.
 - [ ] Vérifier les **crédits** suffisants sur les comptes (chaque entraînement = 1 crédit).
 - [ ] **Pré-entraîner** les expériences du scénario C avant de tourner la vidéo.
 - [ ] Tester le CSV Adult exact (encodage UTF-8, en-têtes, séparateur `,`, taille < `upload_max_bytes`).
