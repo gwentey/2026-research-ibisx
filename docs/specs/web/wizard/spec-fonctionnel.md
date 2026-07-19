@@ -17,10 +17,9 @@
 
 ## ADRs
 
-> Aucun ADR RETRO n'a été créé pour cette feature : tous les candidats ont été
-> rejetés après passage du filtre politique v2.3.0 (voir rapport ADR en fin de
-> spec-technique.md). Les décisions pertinentes sont documentées en spec-technique.md
-> et/ou référencent des ADRs existants (ADR-006, ADR-007).
+*Aucun ADR lié.*
+
+> *Table auto-générée par adr-linker. Ne pas éditer manuellement.*
 
 ---
 

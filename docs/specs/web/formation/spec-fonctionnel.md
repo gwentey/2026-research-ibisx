@@ -17,9 +17,11 @@
 
 ## ADRs
 
-| ADR | Titre | Catégorie | Statut |
-|-----|-------|-----------|--------|
-| [RETRO-021](../../../adr/RETRO-021.md) | Intégrité référentielle : les blocs "practice" ne citent que des Défis existants | DATA-MODEL | Documenté (rétro) |
+| ADR | Titre | Statut |
+|-----|-------|--------|
+| [RETRO-021](../../../adr/RETRO-021.md) | Intégrité référentielle : les blocs "practice" ne citent que des Défis existants | Documenté (rétro) |
+
+> *Table auto-générée par adr-linker. Ne pas éditer manuellement.*
 
 ---
 

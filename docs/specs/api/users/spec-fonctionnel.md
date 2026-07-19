@@ -19,8 +19,9 @@
 
 | ADR | Titre | Statut |
 |-----|-------|--------|
-| [null](../../../adr/RETRO-002.md) |  | Documenté (rétro) |
-| [null](../../../adr/RETRO-002.md) |  | Documenté (rétro) |
+| [RETRO-002](../../../adr/RETRO-002.md) | Niveau d'audience XAI : dérivation, priorité au choix explicite, et capture immuable | Documenté (rétro) |
+
+> *Table auto-générée par adr-linker. Ne pas éditer manuellement.*
 
 ---
 

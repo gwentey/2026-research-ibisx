@@ -17,10 +17,13 @@
 
 ## ADRs
 
-| ADR | Titre | Catégorie | Statut |
-|-----|-------|-----------|--------|
-| [RETRO-002](../../../adr/RETRO-002.md) | Niveau d'audience capturé immuablement par explication | DATA-MODEL | Documenté (rétro) |
-| [RETRO-012](../../../adr/RETRO-012.md) | Contrat BlockDocument pour les réponses de chat XAI | DATA-MODEL | Documenté (rétro) |
+| ADR | Titre | Statut |
+|-----|-------|--------|
+| [RETRO-002](../../../adr/RETRO-002.md) | Niveau d'audience XAI : dérivation, priorité au choix explicite, et capture immuable | Documenté (rétro) |
+| [RETRO-009](../../../adr/RETRO-009.md) | test_index dans PreprocessResult : alignement prédictions/attributs bruts | Documenté (rétro) |
+| [RETRO-012](../../../adr/RETRO-012.md) | Contrat BlockDocument pour les réponses de chat XAI | Documenté (rétro) |
+
+> *Table auto-générée par adr-linker. Ne pas éditer manuellement.*
 
 ---
 

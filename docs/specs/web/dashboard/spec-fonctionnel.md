@@ -17,7 +17,11 @@
 
 ## ADRs
 
-Aucun ADR créé pour cette feature (voir rapport de filtrage ci-dessous).
+| ADR | Titre | Statut |
+|-----|-------|--------|
+| [RETRO-013](../../../adr/RETRO-013.md) | `success_rate` absent (None) quand aucune expérience terminée | Documenté (rétro) |
+
+> *Table auto-générée par adr-linker. Ne pas éditer manuellement.*
 
 ---
 

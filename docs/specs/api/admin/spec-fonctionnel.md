@@ -17,10 +17,14 @@
 
 ## ADRs
 
-| ADR | Titre | Categorie | Statut |
-|-----|-------|-----------|--------|
-| [RETRO-014](../../../adr/RETRO-014.md) | Role admin reverifiee en base sur chaque route | SECURITY | Documente (retro) |
-| [RETRO-015](../../../adr/RETRO-015.md) | Templates ethiques stockes en base (pas en YAML) | DB-STRATEGY | Documente (retro) |
+| ADR | Titre | Statut |
+|-----|-------|--------|
+| [RETRO-003](../../../adr/RETRO-003.md) | Taxonomie Khelifi 2024 : 10 critères éthiques tristate | Documenté (rétro) |
+| [RETRO-014](../../../adr/RETRO-014.md) | Role admin reverifiee en base sur chaque route admin | Documente (retro) |
+| [RETRO-015](../../../adr/RETRO-015.md) | Templates ethiques stockes en base (source autoritaire) | Documente (retro) |
+| [RETRO-019](../../../adr/RETRO-019.md) | Téléchargement authentifié via API : jamais d'URL de stockage directe | Documenté (rétro) |
+
+> *Table auto-générée par adr-linker. Ne pas éditer manuellement.*
 
 ---
 

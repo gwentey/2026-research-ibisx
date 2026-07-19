@@ -17,9 +17,13 @@
 
 ## ADRs
 
-| # | Titre | Catégorie | Statut |
-|---|-------|-----------|--------|
-| [RETRO-020](../../../adr/RETRO-020.md) | Révélation progressive des blocs de résultats par niveau d'audience | DESIGN | Documenté (rétro) |
+| ADR | Titre | Statut |
+|-----|-------|--------|
+| [RETRO-002](../../../adr/RETRO-002.md) | Niveau d'audience XAI : dérivation, priorité au choix explicite, et capture immuable | Documenté (rétro) |
+| [RETRO-010](../../../adr/RETRO-010.md) | viz_data stocké en JSON pur, jamais en PNG/base64 | Documenté (rétro) |
+| [RETRO-020](../../../adr/RETRO-020.md) | Révélation progressive des blocs de résultats par niveau d'audience | Documenté (rétro) |
+
+> *Table auto-générée par adr-linker. Ne pas éditer manuellement.*
 
 ---
 

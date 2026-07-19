@@ -17,9 +17,11 @@
 
 ## ADRs
 
-| ADR | Titre | Catégorie |
-|-----|-------|-----------|
-| [RETRO-013](../../../adr/RETRO-013.md) | `success_rate` absent (None) quand aucune expérience terminée | DATA-MODEL |
+| ADR | Titre | Statut |
+|-----|-------|--------|
+| [RETRO-013](../../../adr/RETRO-013.md) | `success_rate` absent (None) quand aucune expérience terminée | Documenté (rétro) |
+
+> *Table auto-générée par adr-linker. Ne pas éditer manuellement.*
 
 ---
 

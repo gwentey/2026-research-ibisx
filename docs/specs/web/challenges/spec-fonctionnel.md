@@ -17,7 +17,9 @@
 
 ## ADRs
 
-Aucun ADR RETRO créé pour cette feature — tous les candidats identifiés ont été rejetés par la politique ADR v2.3.0. Voir la section « Candidats ADR rejetés » dans la spec technique.
+*Aucun ADR lié.*
+
+> *Table auto-générée par adr-linker. Ne pas éditer manuellement.*
 
 ---
 

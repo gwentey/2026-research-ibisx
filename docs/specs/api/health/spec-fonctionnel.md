@@ -17,7 +17,9 @@
 
 ## ADRs
 
-Aucun ADR RETRO créé pour cette feature — toutes les décisions de ce module (seuils de timeout, heuristique de vérification du volume, code HTTP 503) ont été rejetées après application de la politique ADR v2.3.0. Voir `spec-technique.md` pour le détail des décisions techniques.
+*Aucun ADR lié.*
+
+> *Table auto-générée par adr-linker. Ne pas éditer manuellement.*
 
 ---
 

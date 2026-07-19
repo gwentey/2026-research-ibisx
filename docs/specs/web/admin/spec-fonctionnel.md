@@ -17,6 +17,10 @@
 
 ## ADRs
 
+*Aucun ADR lié.*
+
+> *Table auto-générée par adr-linker. Ne pas éditer manuellement.*
+
 ## ADRs
 
 *Aucun ADR lié.*

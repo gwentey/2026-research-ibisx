@@ -17,9 +17,11 @@
 
 ## ADRs
 
-| ADR | Titre | Catégorie | Statut |
-|-----|-------|-----------|--------|
-| [RETRO-002](../../../adr/RETRO-002.md) | Règle de dérivation familiarity → xai\_audience dupliquée frontend + backend | DATA-MODEL | Documenté (rétro) |
+| ADR | Titre | Statut |
+|-----|-------|--------|
+| [RETRO-002](../../../adr/RETRO-002.md) | Niveau d'audience XAI : dérivation, priorité au choix explicite, et capture immuable | Documenté (rétro) |
+
+> *Table auto-générée par adr-linker. Ne pas éditer manuellement.*
 
 ---
 

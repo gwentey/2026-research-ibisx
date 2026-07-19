@@ -17,12 +17,17 @@
 
 ## ADRs
 
-| ADR | Catégorie | Titre | Statut |
-|-----|-----------|-------|--------|
-| [RETRO-003](../../../adr/RETRO-003.md) | DATA-MODEL | Taxonomie Khelifi 2024 — 10 critères éthiques tristate | Documenté (rétro) |
-| [RETRO-004](../../../adr/RETRO-004.md) | DB-STRATEGY | Score éthique compute-on-read — jamais persisté en colonne dédiée | Documenté (rétro) |
-| [ADR-002](../../../adr/ADR-002-base-de-donnees.md) | STACK | PostgreSQL 16 — ARRAY GIN + JSONB | Accepté |
-| [ADR-005](../../../adr/ADR-005-stockage-fichiers.md) | DB-STRATEGY | Format canonique Parquet (Snappy) — conversion à l'ingestion | Accepté |
+| ADR | Titre | Statut |
+|-----|-------|--------|
+| [RETRO-003](../../../adr/RETRO-003.md) | Taxonomie Khelifi 2024 : 10 critères éthiques tristate | Documenté (rétro) |
+| [RETRO-004](../../../adr/RETRO-004.md) | Score éthique compute-on-read : jamais persisté en colonne dédiée | Documenté (rétro) |
+| [RETRO-005](../../../adr/RETRO-005.md) | Scores de pertinence calculés à la demande (raw + compute-on-read) — non matérialisés en base | Documenté (rétro) |
+| [RETRO-011](../../../adr/RETRO-011.md) | Vocabulaire canonique unique de nettoyage (vocab.py) | Documenté (rétro) |
+| [RETRO-015](../../../adr/RETRO-015.md) | Templates ethiques stockes en base (source autoritaire) | Documente (retro) |
+| [RETRO-018](../../../adr/RETRO-018.md) | Taxonomie éthique des datasets : 10 critères Khelifi 2024 | Documenté (rétro) |
+| [RETRO-019](../../../adr/RETRO-019.md) | Téléchargement authentifié via API : jamais d'URL de stockage directe | Documenté (rétro) |
+
+> *Table auto-générée par adr-linker. Ne pas éditer manuellement.*
 
 ---
 

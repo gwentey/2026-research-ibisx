@@ -17,8 +17,9 @@
 
 ## ADRs
 
-Aucun ADR RETRO n'a été créé pour cette feature. Les décisions techniques identifiées
-sont documentées dans `spec-technique.md` (voir section « Décisions techniques »).
+*Aucun ADR lié.*
+
+> *Table auto-générée par adr-linker. Ne pas éditer manuellement.*
 
 ---
 

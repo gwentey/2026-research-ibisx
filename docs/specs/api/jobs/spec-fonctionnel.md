@@ -17,14 +17,9 @@
 
 ## ADRs
 
-Aucun RETRO ADR créé pour ce module. Les décisions architecturales clés (BD source
-de vérité, SSE + repli polling, Celery 4 files) sont entièrement couvertes par les
-ADRs existants :
+*Aucun ADR lié.*
 
-| ADR | Décision |
-|-----|----------|
-| [ADR-004](../../../adr/ADR-004-worker-jobs.md) | Worker Celery, jobs asynchrones, DB source de vérité, pub/sub temps réel |
-| [ADR-007](../../../adr/ADR-007-temps-reel-contrat.md) | SSE + repli polling, contrat OpenAPI |
+> *Table auto-générée par adr-linker. Ne pas éditer manuellement.*
 
 ---
 

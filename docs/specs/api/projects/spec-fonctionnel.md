@@ -17,9 +17,11 @@
 
 ## ADRs
 
-| ADR | Catégorie | Titre | Statut |
-|-----|-----------|-------|--------|
-| [RETRO-006](../../../adr/RETRO-006.md) | DATA-MODEL | Recommandations déléguées à score_datasets() : invariant P3 | Documenté (rétro) |
+| ADR | Titre | Statut |
+|-----|-------|--------|
+| [RETRO-006](../../../adr/RETRO-006.md) | Recommandations déléguées à score_datasets() : invariant P3 | Documenté (rétro) |
+
+> *Table auto-générée par adr-linker. Ne pas éditer manuellement.*
 
 ---
 

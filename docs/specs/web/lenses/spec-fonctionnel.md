@@ -17,9 +17,9 @@
 
 ## ADRs
 
-Aucun ADR créé pour cette feature — toutes les décisions techniques identifiées échouent
-à la politique ADR v2.3.0 (détail dans le rapport ADR ci-dessous). Les décisions sont
-documentées dans `spec-technique.md`.
+*Aucun ADR lié.*
+
+> *Table auto-générée par adr-linker. Ne pas éditer manuellement.*
 
 ---
 

@@ -17,10 +17,12 @@
 
 ## ADRs
 
-| ADR | Titre | Catégorie | Statut |
-|-----|-------|-----------|--------|
-| [RETRO-018](../../../adr/RETRO-018.md) | Taxonomie éthique des datasets — 10 critères Khelifi 2024 | DATA-MODEL | Documenté (rétro) |
-| [RETRO-019](../../../adr/RETRO-019.md) | Téléchargement authentifié via API — jamais d'URL de stockage directe | SECURITY | Documenté (rétro) |
+| ADR | Titre | Statut |
+|-----|-------|--------|
+| [RETRO-018](../../../adr/RETRO-018.md) | Taxonomie éthique des datasets : 10 critères Khelifi 2024 | Documenté (rétro) |
+| [RETRO-019](../../../adr/RETRO-019.md) | Téléchargement authentifié via API : jamais d'URL de stockage directe | Documenté (rétro) |
+
+> *Table auto-générée par adr-linker. Ne pas éditer manuellement.*
 
 ---
 

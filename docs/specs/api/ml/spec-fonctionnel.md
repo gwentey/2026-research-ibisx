@@ -17,16 +17,13 @@
 
 ## ADRs
 
-| ADR | Titre | Catégorie | Statut |
-|-----|-------|-----------|--------|
-| [RETRO-009](../../../adr/RETRO-009.md) | test_index dans PreprocessResult : alignement prédictions/attributs bruts | DATA-MODEL | Documenté (rétro) |
-| [RETRO-010](../../../adr/RETRO-010.md) | viz_data stocké en JSON pur, jamais en PNG/base64 | DATA-MODEL | Documenté (rétro) |
-| [RETRO-011](../../../adr/RETRO-011.md) | Vocabulaire canonique unique de nettoyage (vocab.py) | DATA-MODEL | Documenté (rétro) |
+| ADR | Titre | Statut |
+|-----|-------|--------|
+| [RETRO-009](../../../adr/RETRO-009.md) | test_index dans PreprocessResult : alignement prédictions/attributs bruts | Documenté (rétro) |
+| [RETRO-010](../../../adr/RETRO-010.md) | viz_data stocké en JSON pur, jamais en PNG/base64 | Documenté (rétro) |
+| [RETRO-011](../../../adr/RETRO-011.md) | Vocabulaire canonique unique de nettoyage (vocab.py) | Documenté (rétro) |
 
-ADRs existants (projet) directement liés à ce module :
-| ADR | Titre | Lien |
-|-----|-------|------|
-| [ADR-006](../../../adr/ADR-006-ia-xai-llm.md) | Bibliothèques IA : ML, XAI et LLM (random_state=42, registre d'algorithmes) | Accepté |
+> *Table auto-générée par adr-linker. Ne pas éditer manuellement.*
 
 ---
 

@@ -17,9 +17,13 @@
 
 ## ADRs
 
-| ADR | Catégorie | Titre | Statut |
-|-----|-----------|-------|--------|
-| [RETRO-005](../../../adr/RETRO-005.md) | DB-STRATEGY | Scores de pertinence calculés à la demande (raw + compute-on-read) — non matérialisés en base | Documenté (rétro) |
+| ADR | Titre | Statut |
+|-----|-------|--------|
+| [RETRO-004](../../../adr/RETRO-004.md) | Score éthique compute-on-read : jamais persisté en colonne dédiée | Documenté (rétro) |
+| [RETRO-005](../../../adr/RETRO-005.md) | Scores de pertinence calculés à la demande (raw + compute-on-read) — non matérialisés en base | Documenté (rétro) |
+| [RETRO-006](../../../adr/RETRO-006.md) | Recommandations déléguées à score_datasets() : invariant P3 | Documenté (rétro) |
+
+> *Table auto-générée par adr-linker. Ne pas éditer manuellement.*
 
 ---
 

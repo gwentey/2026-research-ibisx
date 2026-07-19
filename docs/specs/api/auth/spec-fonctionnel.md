@@ -17,11 +17,12 @@
 
 ## ADRs
 
-| ADR | Catégorie | Titre | Statut |
-|-----|-----------|-------|--------|
-| [ADR-003](../../../adr/ADR-003-auth-rbac.md) | AUTH | Authentification & RBAC | Accepté |
-| [RETRO-001](../../../adr/RETRO-001.md) | SECURITY | Anti-énumération email — réponse opaque sur authenticate et forgot-password | Documenté (rétro) |
-| [RETRO-002](../../../adr/RETRO-002.md) | DATA-MODEL | XaiAudience 3 niveaux dérivée à l'onboarding | Documenté (rétro) |
+| ADR | Titre | Statut |
+|-----|-------|--------|
+| [RETRO-001](../../../adr/RETRO-001.md) | Anti-énumération email : réponse opaque sur authenticate et forgot-password | Documenté (rétro) |
+| [RETRO-002](../../../adr/RETRO-002.md) | Niveau d'audience XAI : dérivation, priorité au choix explicite, et capture immuable | Documenté (rétro) |
+
+> *Table auto-générée par adr-linker. Ne pas éditer manuellement.*
 
 ---
 

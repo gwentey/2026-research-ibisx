@@ -21,6 +21,9 @@
 |-----|-------|--------|
 | [RETRO-007](../../../adr/RETRO-007.md) | Prohibition de tout repli sur données synthétiques lors de l'entraînement | Documenté (rétro) |
 | [RETRO-008](../../../adr/RETRO-008.md) | Modèle crédit : débit à l'entraînement, remboursement conditionnel à l'annulation | Documenté (rétro) |
+| [RETRO-010](../../../adr/RETRO-010.md) | viz_data stocké en JSON pur, jamais en PNG/base64 | Documenté (rétro) |
+
+> *Table auto-générée par adr-linker. Ne pas éditer manuellement.*
 
 ---
 
