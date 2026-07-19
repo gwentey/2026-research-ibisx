@@ -95,7 +95,7 @@ export const listAlgorithms = <ThrowOnError extends boolean = false>(options?: O
 /**
  * Forgot Password
  *
- * Répond toujours 204 (pas d'énumération). Sans SMTP le lien est loggé (dev).
+ * Répond toujours 204 (pas d'énumération). Sans SMTP le lien n'est loggé qu'hors production.
  */
 export const forgotPassword = <ThrowOnError extends boolean = false>(options: Options<ForgotPasswordData, ThrowOnError>): RequestResult<ForgotPasswordResponses, ForgotPasswordErrors, ThrowOnError> => (options.client ?? client).post<ForgotPasswordResponses, ForgotPasswordErrors, ThrowOnError>({
     url: '/api/v1/auth/forgot-password',

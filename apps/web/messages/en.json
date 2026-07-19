@@ -429,6 +429,7 @@
   "status": {
     "title": "System status",
     "subtitle": "IBIS-X platform health and real-time foundation demo.",
+    "backToDashboard": "Back to dashboard",
     "apiHealth": "API",
     "workerHealth": "Worker",
     "database": "Database",
@@ -2928,6 +2929,200 @@
       "print": "Print / PDF",
       "cursusTitle": "Tracks",
       "badgesTitle": "Competence badges"
+    }
+  },
+  "legal": {
+    "badge": "Legal document",
+    "backHome": "Home",
+    "summary": "Contents",
+    "updatedAt": "Last updated: {date}",
+    "lastUpdate": "19 July 2026",
+    "contact": "A question about this document, or a request regarding your data? Write to us at",
+    "contactEmail": "anthony.rodrigues@zelian.fr",
+    "readTerms": "Read the terms of service",
+    "readPrivacy": "Read the privacy policy",
+    "consent": "By creating an account, you accept the <terms>terms of service</terms> and the <privacy>privacy policy</privacy>.",
+    "privacy": {
+      "title": "Privacy policy",
+      "intro": "IBIS-X is an educational platform born out of an academic research project. This policy sets out, in plain language, which personal data we process, why, for how long, and how you stay in control of it.",
+      "sections": {
+        "controller": {
+          "title": "Who processes your data",
+          "body": "The data controller under the GDPR is Zelian, a French SASU with share capital of €1, registered with the Paris Trade and Companies Register under number 992 855 155, whose registered office is at 60 rue François 1er, 75008 Paris, France, represented by its president Anthony Rodrigues. IBIS-X grew out of an MSc research project in MIAGE (Université Paris 1 Panthéon-Sorbonne) and the service is available at ibisx.zelian.fr. No other organisation exploits your data. For any question or request concerning your data, write to the address given at the bottom of this page."
+        },
+        "data": {
+          "title": "The data we collect",
+          "body": "We only collect what the service needs in order to work. Nothing more.",
+          "items": [
+            "Account — your email address, and your password, which is never stored in clear text (only an argon2id hash is kept). If you sign in with Google: your Google identifier and the verified email address attached to it.",
+            "Profile — display name, first name, last name, avatar, language, education level, age and self-declared familiarity with AI, when you choose to provide them. All of this is optional: only the email address is required.",
+            "Your work — projects, imported datasets, training experiments, resulting models, generated explanations and conversations with the explanation copilot.",
+            "Session security — for each sign-in: a hash of the session token, its expiry date and your browser identifier (user agent), so that a compromised session can be revoked.",
+            "Technical logs — timestamp, endpoint called, response code and errors, used to diagnose incidents.",
+            "What we do not collect — no payment data, no geolocation, no advertising tracker, no marketing profiling. Your data is neither sold nor rented."
+          ]
+        },
+        "purposes": {
+          "title": "Why, and on what legal basis",
+          "body": "Every processing operation serves a specific purpose and rests on a legal basis under the GDPR.",
+          "items": [
+            "Providing the service — creating your account, saving your projects and experiments, displaying your results. Legal basis: performance of the contract formed by the terms of service.",
+            "Authenticating you and protecting your account — sign-in, password reset, session revocation. Legal basis: performance of the contract, and our legitimate interest in securing the service.",
+            "Tailoring explanations to your level — the familiarity with AI you declare determines the register of explanations (novice, intermediate, expert). Legal basis: performance of the contract; that level can be changed at any time in your profile.",
+            "Generating AI explanations — when you request an explanation or ask the copilot a question. Legal basis: performance of the contract, within the limits described in section 5.",
+            "Maintaining the service and preventing abuse — technical logs, credit quotas, import controls. Legal basis: legitimate interest."
+          ]
+        },
+        "google": {
+          "title": "Signing in with Google",
+          "body": "Google sign-in is optional: an email and password account gives you access to 100% of the service. If you do choose Google, here is exactly what happens.",
+          "items": [
+            "We request only the openid, email and profile scopes. IBIS-X has no access to your mailbox, your calendar, your contacts or your Google files — and is technically unable to obtain it.",
+            "We receive and store your Google identifier, your verified email address and, where available, your first name, last name and language. No Google access token or refresh token is stored on our servers.",
+            "Limited Use — information received from Google is used exclusively to create and secure your IBIS-X account. It is never sold, never passed to third parties for advertising purposes, never used for targeted advertising, and never used to train artificial intelligence models. IBIS-X's use of information received from Google APIs adheres to the Google API Services User Data Policy, including its Limited Use requirements."
+          ]
+        },
+        "ai": {
+          "title": "What is sent to the AI",
+          "body": "Written explanations and the copilot rely on a third-party language model, called through OpenRouter (a company established in the United States). Your identity is never passed to it: neither your email address, nor your name, nor your account identifier leaves our servers. What is sent is strictly the technical material needed to answer — algorithm name, task type, metrics, feature names and their importance — together with the question you ask. One point deserves your attention: when you request the AI guide for a dataset, a few sample values taken from its columns are included in the request, including for columns flagged as potentially personal. So never import into IBIS-X directly identifying data that you would not want passed to that provider. If no API key is configured, no request is sent at all and the service falls back to locally generated explanations."
+        },
+        "recipients": {
+          "title": "Who else has access",
+          "body": "Your data is neither sold, nor rented, nor shared for commercial purposes. Only the following technical providers are involved.",
+          "items": [
+            "Hosting — servers, database and imported files are hosted on infrastructure rented from Hetzner Online GmbH, within the European Union. Files never leave that server: no external object storage is used.",
+            "Google — only if you choose Google sign-in, and solely for authentication. This transfer outside the European Union is governed by the European Commission's standard contractual clauses.",
+            "OpenRouter — only for AI explanation features, within the limits described in section 5. Transfer outside the European Union.",
+            "Email delivery — a mail server is used for the single email the service sends: password reset."
+          ]
+        },
+        "retention": {
+          "title": "How long we keep it",
+          "body": "Your data lives with your account: as long as it exists, the data is kept; when it goes, the data goes.",
+          "items": [
+            "Account, profile, projects, experiments, explanations and conversations: until you delete your account.",
+            "Session tokens: valid for 7 days at most. Password reset links: 1 hour.",
+            "Technical logs: kept for as long as needed to diagnose incidents and secure the service."
+          ]
+        },
+        "rights": {
+          "title": "Your rights, and how to exercise them",
+          "body": "The GDPR grants you rights that you can exercise either directly in the application or by writing to us. We reply within one month.",
+          "items": [
+            "Access and rectification — your profile can be viewed and edited at any time from the Profile page.",
+            "Erasure — you can delete your account from your profile by confirming with your email address. Deletion is immediate and permanent: account, projects, experiments, explanations and conversations are destroyed. Two exceptions to be aware of: datasets you published to the shared catalogue remain available to other users, detached from your identity; and if your account is deleted by an administrator, your email address remains in the administration log.",
+            "Portability — no automated export exists to date. Write to us and we will send you your data in a machine-readable format.",
+            "Objection and restriction — you may object to processing based on our legitimate interest, or request its restriction, by writing to us.",
+            "Complaint — if you believe your rights are not respected, you may lodge a complaint with the CNIL (cnil.fr) or your local supervisory authority."
+          ]
+        },
+        "cookies": {
+          "title": "Cookies and local storage",
+          "body": "IBIS-X uses no advertising cookie and no analytics tool — which is precisely why no consent banner is forced upon you. Only strictly functional items are stored.",
+          "items": [
+            "ibis_refresh — a secure session cookie (httpOnly, SameSite=Lax, 7 days) that keeps you signed in. The access token itself never leaves the tab's memory and is written nowhere.",
+            "ibis_locale, theme_preset, theme_scale, theme_radius, theme_content_layout, sidebar_state — your display preferences (language, theme, layout), kept for one year.",
+            "Browser local storage — your progress in the academy and challenges, the chosen disciplinary lens and whether the copilot is open, under keys prefixed with ibis:. This information stays on your device and disappears if you clear the site's data."
+          ]
+        },
+        "security": {
+          "title": "How we protect it",
+          "body": "Traffic to the service is encrypted over HTTPS. Passwords are hashed with argon2id and cannot be read back, not even by us. Sign-in tokens are short-lived and revocable, and session tokens are stored only as hashes. Server access is restricted to the people who administer the project. Since no system is infallible, we encourage you to use a unique password and to report any suspicious activity on your account without delay."
+        },
+        "changes": {
+          "title": "Changes to this policy",
+          "body": "This policy may evolve, particularly if new features process new data. The date of the last update appears at the top of this page. In the event of a substantial change, you will be informed in the application before it takes effect."
+        }
+      }
+    },
+    "terms": {
+      "title": "Terms of service",
+      "intro": "These terms govern the use of IBIS-X. By creating an account or using the service, you accept them. They are written to be read: if anything seems ambiguous, write to us.",
+      "sections": {
+        "purpose": {
+          "title": "Purpose",
+          "body": "These terms set out the rules for accessing and using IBIS-X, an educational Machine Learning platform available at ibisx.zelian.fr. They form a contract between you and the publisher of the service, identified in the next section. The privacy policy complements them and forms an integral part of them."
+        },
+        "editor": {
+          "title": "Publisher and host",
+          "body": "Legal notices for the service, as required by article 6 of the French Act for Confidence in the Digital Economy.",
+          "items": [
+            "Publisher — Zelian, a French simplified joint-stock company with a sole shareholder, share capital €1, registered with the Paris Trade and Companies Register under number 992 855 155 (SIRET 992 855 155 00014, VAT FR57992855155, NAF code 6201Z), registered office at 60 rue François 1er, 75008 Paris, France.",
+            "Publication director — Anthony Rodrigues, president.",
+            "Contact — anthony.rodrigues@zelian.fr",
+            "Host — Hetzner Online GmbH, Industriestr. 25, 91710 Gunzenhausen, Germany."
+          ]
+        },
+        "service": {
+          "title": "What the service offers",
+          "body": "IBIS-X is an educational tool born out of an academic research project. It lets you:",
+          "items": [
+            "Explore a catalogue of documented datasets and compare them against both technical and ethical criteria.",
+            "Train a Machine Learning model along a guided path, without writing a single line of code.",
+            "Understand that model's decisions through explainability methods (SHAP, LIME) and a conversational assistant.",
+            "Learn the underlying concepts through the academy and the guided challenges."
+          ]
+        },
+        "account": {
+          "title": "Your account",
+          "body": "Access to the features requires creating an account.",
+          "items": [
+            "You provide a valid email address and accurate information. An account is personal: it is not to be shared.",
+            "You must be at least 15 years old. Below that age, your legal guardian's consent is required.",
+            "You are responsible for keeping your password confidential and for actions taken from your account. Tell us immediately in case of unauthorised access.",
+            "Some AI features consume credits attached to your account. These credits have no monetary value: they are neither purchased, nor exchangeable, nor refundable."
+          ]
+        },
+        "acceptable": {
+          "title": "Prohibited uses",
+          "body": "When using IBIS-X, you undertake not to:",
+          "items": [
+            "Import directly identifying data, or sensitive data (health, opinions, origin, orientation), that you have no right to hold and to entrust to the service.",
+            "Use the service for unlawful or discriminatory purposes, or to produce automated decisions affecting real people.",
+            "Attempt to circumvent technical limitations, access other users' accounts or data, or undermine the security of the service.",
+            "Overload the infrastructure: mass automated extraction, abusive imports, quota circumvention.",
+            "Publish to the shared catalogue any content that is unlawful, misleading, or to which you do not hold the rights."
+          ]
+        },
+        "content": {
+          "title": "Your content",
+          "body": "What you import belongs to you, and continues to belong to you.",
+          "items": [
+            "You remain the owner of your datasets, projects and models. You grant us only the right to host and process them in order to provide you with the service.",
+            "You warrant that you hold the necessary rights over the files you import, and that using them in this context is lawful.",
+            "A dataset published to the shared catalogue becomes visible to other users, and remains so after your account is deleted, detached from your identity."
+          ]
+        },
+        "ai": {
+          "title": "Limits of the results and of the AI",
+          "body": "Results produced by IBIS-X are statistical estimates, never truths.",
+          "items": [
+            "A Machine Learning model gets things wrong. The metrics, predictions and explanations shown are probabilistic and must be interpreted with care.",
+            "Explanations written by artificial intelligence may contain errors or approximations. They complement your judgement, they do not replace it.",
+            "IBIS-X provides no medical, legal, financial or human-resources advice. Do not base any decision affecting people on its output alone: an observed correlation is not a causal relationship."
+          ]
+        },
+        "availability": {
+          "title": "Availability of the service",
+          "body": "IBIS-X is a research project made available free of charge, as is, with no guarantee of availability, performance or freedom from error. The service may be interrupted, modified or discontinued, including without notice, for maintenance or any other reason. Keep a copy of your important files: no backup or restoration guarantee is offered."
+        },
+        "liability": {
+          "title": "Liability",
+          "body": "To the extent permitted by law, the publisher of the service cannot be held liable for indirect damages arising from use of the service — in particular loss of data, loss of business, or decisions taken on the basis of results produced by the platform. As the service is provided free of charge, no commercial warranty attaches to it. Nothing in these terms excludes liability that cannot lawfully be excluded."
+        },
+        "termination": {
+          "title": "Ending your use",
+          "body": "You may stop using IBIS-X at any time and delete your account from your profile; deletion is immediate and permanent. We may for our part suspend or delete an account that breaches these terms, endangers the security of the service or harms its other users — where circumstances allow, after informing you."
+        },
+        "law": {
+          "title": "Governing law and disputes",
+          "body": "These terms are governed by French law. In the event of a dispute, an amicable solution will be sought first: write to us. Failing agreement, the French courts have jurisdiction. If you are a consumer, you retain the right to bring proceedings before the courts of your place of residence, as well as to use the European online dispute resolution platform."
+        },
+        "changes": {
+          "title": "Changes to these terms",
+          "body": "These terms may be amended to reflect changes in the service or in applicable regulation. The date of the last update appears at the top of this page. In the event of a substantial change, you will be informed in the application; continuing to use the service after that notice constitutes acceptance."
+        }
+      }
     }
   }
 }

@@ -32,6 +32,7 @@ type FormValues = z.infer<typeof schema>;
 export default function RegisterPage() {
   const t = useTranslations("auth");
   const tErrors = useTranslations("errors");
+  const tLegal = useTranslations("legal");
   const router = useRouter();
   const [errorCode, setErrorCode] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
@@ -147,6 +148,23 @@ export default function RegisterPage() {
             {t("signIn")}
           </Link>
         </div>
+
+        {/* Consentement affiché au point d'inscription (email ET Google) : exigé par
+            l'écran de consentement OAuth, et c'est là que l'utilisateur décide. */}
+        <p className="text-muted-foreground mt-6 text-center text-xs">
+          {tLegal.rich("consent", {
+            terms: (chunks) => (
+              <Link href="/legal/terms" className="hover:text-foreground underline">
+                {chunks}
+              </Link>
+            ),
+            privacy: (chunks) => (
+              <Link href="/legal/privacy" className="hover:text-foreground underline">
+                {chunks}
+              </Link>
+            )
+          })}
+        </p>
       </div>
     </GuestShell>
   );

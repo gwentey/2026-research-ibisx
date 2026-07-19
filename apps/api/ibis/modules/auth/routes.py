@@ -141,13 +141,14 @@ def logout(request: Request, response: Response, db: DbDep, settings: SettingsDe
     dependencies=[auth_rate_limit],
 )
 def forgot_password(payload: ForgotPasswordRequest, db: DbDep) -> None:
-    """Répond toujours 204 (pas d'énumération). Sans SMTP le lien est loggé (dev)."""
+    """Répond toujours 204 (pas d'énumération). Sans SMTP le lien n'est loggé qu'hors production."""
     result = service.create_reset_token(db, payload.email)
     if result is not None:
         user, token = result
         reset_url = f"/reset-password?token={token}"
         send_email(
             to=user.email,
+            user_id=user.id,
             subject="IBIS-X — Réinitialisation de votre mot de passe",
             body=(
                 "Pour définir un nouveau mot de passe, ouvrez ce lien (valable 1 h) :\n"
