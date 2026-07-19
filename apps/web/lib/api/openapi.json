@@ -3813,6 +3813,25 @@
         "title": "JobStatus",
         "type": "string"
       },
+      "KaggleChoice": {
+        "description": "Un dataset candidat, quand un notebook en utilise plusieurs.",
+        "properties": {
+          "ref": {
+            "title": "Ref",
+            "type": "string"
+          },
+          "url": {
+            "title": "Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "ref",
+          "url"
+        ],
+        "title": "KaggleChoice",
+        "type": "object"
+      },
       "KaggleImportRequest": {
         "additionalProperties": false,
         "description": "Import depuis un lien Kaggle collé par l'utilisateur.",
@@ -3840,8 +3859,15 @@
         "type": "object"
       },
       "KaggleImportResponse": {
-        "description": "Réponse immédiate : soit un job lancé, soit le dataset déjà présent.",
+        "description": "Réponse immédiate : job lancé, dataset déjà présent, ou choix à faire.",
         "properties": {
+          "choices": {
+            "items": {
+              "$ref": "#/components/schemas/KaggleChoice"
+            },
+            "title": "Choices",
+            "type": "array"
+          },
           "duplicate_reason": {
             "anyOf": [
               {
@@ -3876,13 +3902,16 @@
             ]
           },
           "ref": {
+            "default": "",
             "title": "Ref",
             "type": "string"
+          },
+          "resolved_from_notebook": {
+            "default": false,
+            "title": "Resolved From Notebook",
+            "type": "boolean"
           }
         },
-        "required": [
-          "ref"
-        ],
         "title": "KaggleImportResponse",
         "type": "object"
       },
