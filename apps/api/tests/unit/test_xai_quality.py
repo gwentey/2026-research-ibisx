@@ -101,6 +101,14 @@ def test_numbers_validation_rejects_invented() -> None:
     assert xai_text.numbers_exist_in_context(invented, context) is False
 
 
+def test_numbers_validation_accepts_high_precision_context_echo() -> None:
+    # Régression : une importance SHAP à pleine précision (>4 décimales), recopiée telle
+    # quelle par l'IA, ne doit PAS être vue comme une hallucination (elle EST dans le contexte).
+    context = "Importances : Sex_female=0.242421, Pclass=0.126984, Age=0.050806"
+    echoed = "Sex_female pèse 0.242421, devant Pclass (0.126984) et Age (0.050806)."
+    assert xai_text.numbers_exist_in_context(echoed, context) is True
+
+
 def test_fallback_text_uses_only_real_values() -> None:
     text = xai_text.fallback_text(
         audience="novice",

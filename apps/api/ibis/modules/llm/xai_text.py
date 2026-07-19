@@ -140,6 +140,9 @@ def numbers_exist_in_context(text: str, context: str) -> bool:
     context_numbers: set[str] = set()
     for raw in NUMBER_RE.findall(context.replace(",", ".")):
         value = float(raw)
+        # Valeur EXACTE du contexte (écho fidèle du modèle, quelle que soit sa précision) :
+        # sans ça, une importance SHAP « 0.242421 » recopiée telle quelle était rejetée à tort.
+        context_numbers.add(f"{value:g}")
         for digits in (0, 1, 2, 3, 4):
             context_numbers.add(f"{value:.{digits}f}".rstrip("0").rstrip("."))
             context_numbers.add(
