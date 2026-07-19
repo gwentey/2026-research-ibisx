@@ -217,6 +217,161 @@ export const CURSUS: Cursus[] = [
         ]
       }
     ]
+  },
+  {
+    slug: "praticien",
+    level: "debutant",
+    grade: "praticien",
+    domain: "healthcare",
+    order: 2,
+    modules: [
+      {
+        slug: "preparer-les-donnees",
+        lessons: [
+          {
+            slug: "valeurs-manquantes",
+            blocks: [
+              { type: "visual", id: "visual" },
+              { type: "notion", id: "valeurs-manquantes", notion: "valeurs-manquantes" },
+              { type: "quiz", id: "quiz", answer: 1, choices: 3 }
+            ]
+          },
+          {
+            slug: "encoder-les-categories",
+            blocks: [
+              { type: "visual", id: "visual" },
+              { type: "notion", id: "encodage", notion: "encodage" },
+              { type: "quiz", id: "quiz", answer: 0, choices: 3 }
+            ]
+          },
+          {
+            slug: "mettre-a-lechelle",
+            blocks: [
+              { type: "visual", id: "visual" },
+              { type: "notion", id: "mise-a-lechelle", notion: "mise-a-lechelle" },
+              { type: "quiz", id: "quiz", answer: 2, choices: 3 }
+            ]
+          },
+          {
+            slug: "la-fuite-de-donnees",
+            blocks: [
+              { type: "myth", id: "myth" },
+              { type: "visual", id: "visual" },
+              { type: "notion", id: "fuite-de-donnees", notion: "fuite-de-donnees" },
+              { type: "quiz", id: "quiz", answer: 0, choices: 3 }
+            ]
+          }
+        ]
+      },
+      {
+        slug: "les-algorithmes",
+        lessons: [
+          {
+            slug: "de-larbre-a-la-foret",
+            blocks: [
+              { type: "visual", id: "visual" },
+              { type: "notion", id: "foret-aleatoire", notion: "foret-aleatoire" },
+              { type: "quiz", id: "quiz", answer: 1, choices: 3 }
+            ]
+          },
+          {
+            slug: "la-regression-logistique",
+            blocks: [
+              { type: "visual", id: "visual" },
+              { type: "notion", id: "regression-logistique", notion: "regression-logistique" },
+              { type: "quiz", id: "quiz", answer: 2, choices: 3 }
+            ]
+          },
+          {
+            slug: "comment-choisir-un-algo",
+            blocks: [
+              { type: "myth", id: "myth" },
+              { type: "visual", id: "visual" },
+              { type: "notion", id: "choix-algorithme", notion: "choix-algorithme" },
+              { type: "quiz", id: "quiz", answer: 0, choices: 3 }
+            ]
+          }
+        ]
+      },
+      {
+        slug: "evaluer-honnetement",
+        lessons: [
+          {
+            slug: "laccuracy-et-son-piege",
+            blocks: [
+              { type: "myth", id: "myth" },
+              { type: "visual", id: "visual" },
+              { type: "notion", id: "accuracy-piege", notion: "accuracy-piege" },
+              { type: "quiz", id: "quiz", answer: 1, choices: 3 }
+            ]
+          },
+          {
+            slug: "precision-rappel-f1",
+            blocks: [
+              { type: "visual", id: "visual" },
+              { type: "notion", id: "precision-rappel-f1", notion: "precision-rappel-f1" },
+              { type: "quiz", id: "quiz", answer: 2, choices: 3 }
+            ]
+          },
+          {
+            slug: "la-matrice-de-confusion",
+            blocks: [
+              { type: "visual", id: "visual" },
+              { type: "playground", id: "playground", playground: "confusion-threshold" },
+              { type: "notion", id: "matrice-de-confusion", notion: "matrice-de-confusion" },
+              { type: "quiz", id: "quiz", answer: 0, choices: 3 }
+            ]
+          },
+          {
+            slug: "le-surapprentissage",
+            blocks: [
+              { type: "myth", id: "myth" },
+              { type: "visual", id: "visual" },
+              { type: "playground", id: "playground", playground: "overfitting-depth" },
+              { type: "notion", id: "surapprentissage", notion: "surapprentissage" },
+              { type: "quiz", id: "quiz", answer: 1, choices: 3 }
+            ]
+          }
+        ]
+      },
+      {
+        slug: "comprendre-pourquoi",
+        lessons: [
+          {
+            slug: "la-boite-noire",
+            blocks: [
+              { type: "visual", id: "visual" },
+              { type: "notion", id: "boite-noire", notion: "boite-noire" },
+              { type: "quiz", id: "quiz", answer: 1, choices: 3 }
+            ]
+          },
+          {
+            slug: "importance-et-shap",
+            blocks: [
+              { type: "visual", id: "visual" },
+              { type: "notion", id: "importance-shap", notion: "importance-shap" },
+              { type: "quiz", id: "quiz", answer: 0, choices: 3 }
+            ]
+          },
+          {
+            slug: "importance-nest-pas-cause",
+            blocks: [
+              { type: "myth", id: "myth" },
+              { type: "visual", id: "visual" },
+              { type: "notion", id: "correlation-causalite", notion: "correlation-causalite" },
+              { type: "quiz", id: "quiz", answer: 2, choices: 3 }
+            ]
+          },
+          {
+            slug: "ta-deuxieme-enquete",
+            blocks: [
+              { type: "visual", id: "visual" },
+              { type: "practice", id: "practice", challenge: "eleves-decrochage" }
+            ]
+          }
+        ]
+      }
+    ]
   }
 ];
 

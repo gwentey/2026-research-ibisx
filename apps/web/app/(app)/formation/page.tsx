@@ -1,9 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { GraduationCapIcon, SparklesIcon } from "lucide-react";
+import { BookOpenIcon, GraduationCapIcon, SparklesIcon } from "lucide-react";
 
+import { Button } from "@/components/ui/button";
 import { CursusCard } from "@/components/ibis/formation/cursus-card";
 import { GradeBadge } from "@/components/ibis/formation/grade-badge";
 import { ProgressRing } from "@/components/ibis/progress-ring";
@@ -61,6 +63,12 @@ export default function FormationHomePage() {
           {t("home.pitchLabel")}
         </p>
         <p className="mt-2 leading-relaxed">{t("home.pitch")}</p>
+        <Button variant="outline" size="sm" asChild className="mt-4">
+          <Link href="/formation/glossaire">
+            <BookOpenIcon />
+            {t("glossary.navLabel")}
+          </Link>
+        </Button>
       </div>
 
       {/* Les cursus */}

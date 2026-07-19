@@ -9,6 +9,7 @@ import { ArrowLeftIcon, ArrowRightIcon, CheckCircle2Icon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { MythBlock } from "@/components/ibis/formation/blocks/myth-block";
 import { VisualBlock } from "@/components/ibis/formation/blocks/visual-block";
+import { PlaygroundBlock } from "@/components/ibis/formation/blocks/playground-block";
 import { NotionCardBlock } from "@/components/ibis/formation/blocks/notion-card-block";
 import { QuizBlock } from "@/components/ibis/formation/blocks/quiz-block";
 import { PracticeBlock } from "@/components/ibis/formation/blocks/practice-block";
@@ -92,6 +93,8 @@ export function LessonView({
                   domain={cursus.domain}
                 />
               );
+            case "playground":
+              return <PlaygroundBlock key={key} kind={block.playground!} />;
             case "notion":
               return <NotionCardBlock key={key} notionId={block.notion!} />;
             case "quiz":

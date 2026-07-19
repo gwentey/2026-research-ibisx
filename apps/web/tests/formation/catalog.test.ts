@@ -6,9 +6,20 @@ import { getChallenge } from "@/lib/challenges/catalog";
 import { GRADE_ORDER } from "@/lib/formation/types";
 
 describe("catalogue de l'académie", () => {
-  it("livre les 2 cursus de la Vague 1, dans l'ordre", () => {
-    expect(CURSUS.map((c) => c.slug)).toEqual(["eveil", "fondations"]);
-    expect(CURSUS.map((c) => c.order)).toEqual([0, 1]);
+  it("livre les cursus dans l'ordre (Éveil, Fondations, Praticien)", () => {
+    expect(CURSUS.map((c) => c.slug)).toEqual(["eveil", "fondations", "praticien"]);
+    expect(CURSUS.map((c) => c.order)).toEqual([0, 1, 2]);
+  });
+
+  it("chaque bloc playground déclare une variante connue", () => {
+    const kinds = new Set(["confusion-threshold", "overfitting-depth"]);
+    for (const { lesson } of allLessons()) {
+      for (const block of lesson.blocks) {
+        if (block.type === "playground") {
+          expect(kinds, `leçon ${lesson.slug}`).toContain(block.playground);
+        }
+      }
+    }
   });
 
   it("chaque bloc practice pointe vers un Défi VIVANT (P5)", () => {
@@ -68,8 +79,9 @@ describe("catalogue de l'académie", () => {
     expect(findLesson("inexistant")).toBeUndefined();
   });
 
-  it("le cursus Éveil reste conceptuel (aucune mise en pratique), Fondations en a une", () => {
+  it("chaque cursus renvoie vers le bon niveau de Défi (ou aucun pour Éveil)", () => {
     expect(referencedChallenges([getCursus("eveil")!])).toEqual([]);
     expect(referencedChallenges([getCursus("fondations")!])).toEqual(["titanic-1912"]);
+    expect(referencedChallenges([getCursus("praticien")!])).toEqual(["eleves-decrochage"]);
   });
 });

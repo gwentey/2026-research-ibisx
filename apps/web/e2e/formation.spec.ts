@@ -108,5 +108,23 @@ for (const locale of ["fr", "en"] as const) {
     await expect(
       page.getByRole("button", { name: t(m, "formation.blocks.practiceCta") })
     ).toBeVisible();
+
+    // --- 6. Cursus Praticien : un bac à sable interactif (matrice de confusion) ---------
+    await page.goto("/formation/praticien/la-matrice-de-confusion");
+    await expect(
+      page.getByText(t(m, "formation.playgrounds.confusion.title"), { exact: true })
+    ).toBeVisible();
+    await expect(page.getByRole("slider").first()).toBeVisible(); // seuil manipulable
+
+    // --- 7. Glossaire vivant : recherche + entrées reliées aux leçons -------------------
+    await page.goto("/formation/glossaire");
+    await expect(page.getByRole("heading", { name: t(m, "formation.glossary.title") })).toBeVisible();
+    await expect(
+      page.getByPlaceholder(t(m, "formation.glossary.searchPlaceholder"))
+    ).toBeVisible();
+    // au moins un terme connu du glossaire (« arbre de décision »)
+    await expect(
+      page.getByText(t(m, "formation.notions.arbre-decision.term"), { exact: true }).first()
+    ).toBeVisible();
   });
 }

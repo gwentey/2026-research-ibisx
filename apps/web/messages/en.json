@@ -1579,6 +1579,11 @@
         "title": "Foundations",
         "tagline": "The concrete basics of Machine Learning",
         "subtitle": "The essential vocabulary and moves, all the way to your first real hands-on: training a model on the Titanic dataset."
+      },
+      "praticien": {
+        "title": "Practitioner",
+        "tagline": "Build a model, and evaluate it without kidding yourself.",
+        "subtitle": "Prepare the data, pick an algorithm, honestly measure what your model is worth — and finally understand why it decides."
       }
     },
     "modules": {
@@ -1605,6 +1610,22 @@
       "entrainer-un-premier-modele": {
         "title": "Training a first model",
         "tagline": "What \"training\" means, the decision tree, and your first investigation."
+      },
+      "preparer-les-donnees": {
+        "title": "Preparing the data",
+        "tagline": "Before training a model, you clean and shape the data. Empty cells, categories, scales: the moves that make all the difference."
+      },
+      "les-algorithmes": {
+        "title": "The algorithms",
+        "tagline": "Tree, forest, coefficients: discover the models that learn to predict, and how to pick the right one."
+      },
+      "evaluer-honnetement": {
+        "title": "Evaluate a model honestly",
+        "tagline": "A good score proves nothing on its own. Learn to judge a model without getting fooled."
+      },
+      "comprendre-pourquoi": {
+        "title": "Understand why it decides",
+        "tagline": "Open the box: see what the model uses to decide, and where the limits are."
       }
     },
     "lessons": {
@@ -1964,6 +1985,291 @@
           "title": "Run the Titanic investigation",
           "body": "Move to practice with the Titanic challenge. From 891 real passengers, you'll train a real decision tree, get a real result, and discover what weighed most on survival. No simulation: the model is real, the training reproducible. Ready to run your first investigation?"
         }
+      },
+      "valeurs-manquantes": {
+        "title": "Missing values",
+        "summary": "In real life, some cells stay empty. Two choices: drop the row, or fill it in smartly.",
+        "visual": {
+          "title": "Empty cells in the table",
+          "body": "Picture a file of medical records: for some patients, age or weight was never recorded. The model doesn't know what to do with an empty cell. You have two options. Drop the rows with holes — simple, but you lose examples. Or impute: fill the gap with a reasonable value, using the mean, the median, or finer methods like KNN and MICE. IBIS-X can do all of this for real.",
+          "caption": "An empty cell: drop it, or fill it in smartly."
+        },
+        "quiz": {
+          "question": "Some patients have no age recorded. What can you do in IBIS-X?",
+          "options": [
+            "Nothing: the model ignores empty cells on its own, no action needed.",
+            "Impute the missing value, for instance with the median of the known ages.",
+            "Replace every empty cell with a zero — it's always the best solution."
+          ],
+          "explanation": "Imputing means filling the gap with a reasonable value (mean, median, KNN, MICE). The model doesn't handle empty cells by itself, and dropping in a zero often distorts the result."
+        }
+      },
+      "encoder-les-categories": {
+        "title": "Encoding categories",
+        "summary": "A model only understands numbers. Words like “red” or “female” have to become figures.",
+        "visual": {
+          "title": "From text to numbers",
+          "body": "A model only eats numbers: it can't read “red”, “green” or “blue”. So you have to translate these categories into figures. Two ways to do it. One-hot creates one column per category (is it red? yes/no), ideal when there's no order. Ordinal encoding places the categories on a scale (small < medium < large), when order makes sense. IBIS-X really applies both of these encodings.",
+          "caption": "“red”, “green”, “blue” → columns of numbers."
+        },
+        "quiz": {
+          "question": "Why must you encode a “color” column that contains “red”, “green”, “blue”?",
+          "options": [
+            "Because a model only handles numbers, not text.",
+            "Because colors take up too much memory.",
+            "Because a column must always be reduced to a single value."
+          ],
+          "explanation": "A model can only compute with numbers. So you turn “red/green/blue” into figures, via one-hot (one column per category) or ordinal encoding (when an order exists)."
+        }
+      },
+      "mettre-a-lechelle": {
+        "title": "Scaling",
+        "summary": "A salary runs into the thousands, an age up to a hundred. Without care, the big column crushes the small one.",
+        "visual": {
+          "title": "Everyone on the same scale",
+          "body": "Picture two columns: age (0 to 100) and salary (0 to 5000). For some models, the column with big numbers automatically weighs more — salary crushes age, just because its figures are larger. Scaling means bringing every column into a comparable range, so none dominates because of its unit. IBIS-X offers several real recipes: standard, minmax and robust.",
+          "caption": "Big column, small column: back on equal footing."
+        },
+        "quiz": {
+          "question": "Why scale age and salary before training?",
+          "options": [
+            "To remove the missing values from these columns.",
+            "To turn these numbers into readable categories.",
+            "To keep the column with big numbers from crushing the others."
+          ],
+          "explanation": "Without scaling, a column with big numbers (salary) weighs more than a small one (age), purely because of its unit. Standard, minmax or robust bring them into a comparable range."
+        }
+      },
+      "la-fuite-de-donnees": {
+        "title": "Data leakage",
+        "summary": "A near-perfect score isn't always good news. Sometimes a column “cheats” without you noticing.",
+        "myth": {
+          "myth": "My model gets 99% right: it must be an excellent model.",
+          "reality": "A score that's too good sometimes hides cheating. If a column holds a clue that wouldn't be available at the moment of the real prediction, the model “sees the answer” ahead of time. Its score is inflated, but it will collapse in real life."
+        },
+        "visual": {
+          "title": "When a column gives the answer",
+          "body": "Data leakage is when information that shouldn't be there slips into training. Example: to predict whether a patient is ill, a “prescribed treatment” column is already filled in. The model learns “treatment filled = ill” and gets a huge score — but in real life, at prediction time, that treatment doesn't exist yet. To prevent this, IBIS-X fits its preparations (imputation, encoding, scaling) only on the training data, never on the test data.",
+          "caption": "A clue that won't be there for real: the score lies."
+        },
+        "quiz": {
+          "question": "How does IBIS-X limit data leakage?",
+          "options": [
+            "By fitting the preparations only on the training data, never on the test set.",
+            "By always picking the model that gets the highest score.",
+            "By removing every numeric column from the dataset."
+          ],
+          "explanation": "Leakage happens when information from the test set “leaks” into training. IBIS-X computes its transformations only on the training data, then applies them to the test set: the test stays an honest exam."
+        }
+      },
+      "de-larbre-a-la-foret": {
+        "title": "From tree to forest",
+        "summary": "A single decision tree can be wrong. Hundreds of trees voting together are wrong less often.",
+        "visual": {
+          "title": "The wisdom of the crowd",
+          "body": "A decision tree asks a series of questions (“is age above 50?”) to reach a prediction. Simple, but a single tree is fragile: it can be tripped up by one detail. A random forest trains hundreds of slightly different trees, then has them vote. The majority answer is more stable and more robust — like a jury beats a single judge. Decision tree and random forest are two real IBIS-X models.",
+          "caption": "Many trees voting: sturdier than one alone."
+        },
+        "quiz": {
+          "question": "What is a random forest?",
+          "options": [
+            "A single decision tree, only much bigger.",
+            "Many slightly different trees that vote for a shared answer.",
+            "A method for filling in the dataset's missing values."
+          ],
+          "explanation": "A random forest gathers hundreds of trees and has their predictions vote. This “wisdom of the crowd” makes it more robust than a single tree."
+        }
+      },
+      "la-regression-logistique": {
+        "title": "Logistic regression",
+        "summary": "A model that gives a numeric weight to each variable — the researchers' language for reading how much each factor matters.",
+        "visual": {
+          "title": "A weight for each variable",
+          "body": "Logistic regression gives each variable a weight, called a coefficient. Its sign tells the direction (this factor raises or lowers the risk) and its size tells the importance. It's researchers' favourite language, because it reads and explains easily. Honesty: this coefficient-based model isn't available yet in the IBIS-X pipeline — it's coming. We explain it here to help you understand, without pretending you can run it right away.",
+          "caption": "Each variable gets a coefficient: direction and importance."
+        },
+        "quiz": {
+          "question": "What does a variable's coefficient tell you in a logistic regression?",
+          "options": [
+            "It automatically fills in the variable's missing values.",
+            "It turns the variable into an image the model can read.",
+            "It shows the direction and importance of that variable in the prediction."
+          ],
+          "explanation": "The coefficient gives the direction (through its sign) and the weight (through its size) of a variable. That's what makes logistic regression so readable. Note: this model isn't available in IBIS-X yet, it's coming."
+        }
+      },
+      "comment-choisir-un-algo": {
+        "title": "How to choose an algorithm",
+        "summary": "There's no perfect algorithm for everything. The right choice depends on your data and what you're after.",
+        "myth": {
+          "myth": "There's a single best algorithm overall, one to use every time.",
+          "reality": "No model wins every time. A very high-performing algorithm can be unreadable; a very clear one can be less accurate. The right choice depends on your data, on your priority (understanding or performing), and is settled by comparing."
+        },
+        "visual": {
+          "title": "A trade-off, not a champion",
+          "body": "Choosing an algorithm means weighing three things. Readability: can you explain its decisions? Performance: is it often wrong? Data: do you have enough, and in what shape? A single tree is very readable but sometimes less accurate; a random forest often performs better but explains itself less. The right method: try several models on your data and compare their results — which is exactly what IBIS-X lets you do.",
+          "caption": "Readability, performance, data: weigh, try, compare."
+        },
+        "quiz": {
+          "question": "How do you choose the right algorithm for a problem?",
+          "options": [
+            "By trying several models on your data and comparing the results.",
+            "By always taking the same algorithm, reputed to be best everywhere.",
+            "By picking the one with the most recent name."
+          ],
+          "explanation": "No algorithm is best in the absolute: it's all a trade-off between readability, performance and data. You try several models and compare their results on your own dataset."
+        }
+      },
+      "laccuracy-et-son-piege": {
+        "title": "Accuracy and its trap",
+        "summary": "99% correct can hide a useless model. See why accuracy, on its own, can lie.",
+        "myth": {
+          "myth": "99% correct answers has to mean an excellent model.",
+          "reality": "Not always. Picture a rare disease: 99 people out of 100 are healthy. A model that answers \"healthy\" to everyone has 99% accuracy… and misses 100% of the sick. The score shines, but the model is useless."
+        },
+        "visual": {
+          "title": "Accuracy can lie",
+          "body": "Accuracy simply counts the share of correct answers. When one class is far rarer than the other, that number becomes misleading. A lazy model that always predicts the common case earns a huge score without ever spotting what really matters.",
+          "caption": "A high score is only reassuring when the classes are balanced."
+        },
+        "quiz": {
+          "question": "Out of 1,000 people, 10 of whom are sick, a model says \"healthy\" to everyone. What is its accuracy, and its problem?",
+          "options": [
+            "Low accuracy, so the model is bad and easy to spot.",
+            "Accuracy of 99%, but it detects no sick person: the score hides the failure.",
+            "Accuracy of 50%, because there are two possible classes."
+          ],
+          "explanation": "It is right about the 990 healthy people, so 99% accuracy. But it misses all 10 sick people. With imbalanced classes, accuracy alone is never enough to judge a model."
+        }
+      },
+      "precision-rappel-f1": {
+        "title": "Precision, recall, F1",
+        "summary": "Two questions accuracy never asks: when the model says “yes,” is it right? and does it catch every real case?",
+        "visual": {
+          "title": "Precision and recall: two different questions",
+          "body": "Precision asks: when the model says \"positive\", is it right? Recall asks: out of all the true positives, how many does it catch? A screening test can raise the alarm often (good recall) but be wrong a lot (low precision), or the reverse. The F1 combines the two into a single number to summarize them.",
+          "caption": "Precision = am I right when I alert? Recall = am I missing cases? F1 = the balance of the two."
+        },
+        "quiz": {
+          "question": "A screening test wants above all to miss no sick person, even at the cost of a few false alarms. Which metric should it favor?",
+          "options": [
+            "Precision, so it only alerts when it is certain.",
+            "Accuracy, since it sums up everything on its own.",
+            "Recall, to catch as many true sick people as possible."
+          ],
+          "explanation": "Missing no sick person means maximizing recall: catching all the true positives. You then accept a few false alarms (lower precision). The F1 helps you see whether the balance stays reasonable."
+        }
+      },
+      "la-matrice-de-confusion": {
+        "title": "The confusion matrix",
+        "summary": "A four-cell table that shows not just how often the model is wrong, but how. Yours to play with.",
+        "visual": {
+          "title": "The four cells of truth",
+          "body": "The confusion matrix sorts every prediction into a four-cell table: true positives, false positives, true negatives, false negatives. At a glance you see not only how often the model is wrong, but above all how it is wrong. Try it yourself just below: move the decision threshold and watch the four cells fill and empty in real time.",
+          "caption": "The four cells tell you the type of error, not just how many."
+        },
+        "quiz": {
+          "question": "In a confusion matrix, what does a \"false negative\" represent?",
+          "options": [
+            "A true positive case the model wrongly labeled \"negative\": it missed it.",
+            "A negative case correctly labeled \"negative\".",
+            "A false alarm: a healthy case labeled \"positive\"."
+          ],
+          "explanation": "A false negative is a true positive that the model let slip by calling it \"negative\". In screening, these are the missed sick people: often the most serious error to watch."
+        }
+      },
+      "le-surapprentissage": {
+        "title": "Overfitting",
+        "summary": "A model that memorizes its data can fail on anything new. Watch the gap widen live.",
+        "myth": {
+          "myth": "My model is perfect on my data, so it is perfect.",
+          "reality": "A model can learn your examples by heart, details and randomness included, instead of learning the general rule. It shines on what it already knows and collapses on anything new. That is overfitting: a student who recites the answer key but freezes on the slightest unfamiliar exercise."
+        },
+        "visual": {
+          "title": "Learn the rule, don't recite it",
+          "body": "A good model captures the underlying trend; an overfit model clings to every point, noise included. The real question is never \"is it good on the training data?\" but \"does it hold up on data it has never seen?\". Try it yourself just below: increase the model's depth and watch it move from a reasonable curve to a line that contorts itself to memorize everything.",
+          "caption": "The more a model hugs every detail, the more it risks having learned by heart."
+        },
+        "quiz": {
+          "question": "A model gets 100% right on the training data but 60% on new data. What is probably happening?",
+          "options": [
+            "It is excellent: 100% proves it understood everything.",
+            "It is overfitting: it memorized the training set instead of learning the general rule.",
+            "The new data must be faulty."
+          ],
+          "explanation": "A huge gap between training and new data is the signature of overfitting. The model memorized the examples by heart; it cannot generalize. Only the score on never-seen data truly counts."
+        }
+      },
+      "la-boite-noire": {
+        "title": "The black box",
+        "summary": "Some models decide without showing why. Why that's a problem — and what we can do about it.",
+        "visual": {
+          "title": "Deciding without showing why",
+          "body": "Some models are a black box: they give an answer, but without letting you see the reasoning that leads to it. As long as everything goes well, we live with it. But as soon as you need to trust it, justify a decision before the law, or fix a mistake, not understanding the \"why\" becomes a real problem.",
+          "caption": "An answer without an explanation is hard to check, to defend, and to repair."
+        },
+        "quiz": {
+          "question": "Why is a \"black box\" decision a problem in a sensitive context, for instance to deny a loan?",
+          "options": [
+            "Because a black box is always less accurate than a simple model.",
+            "Because you can neither justify the decision, nor contest it, nor spot an error or a bias.",
+            "Because a black-box model can never be wrong."
+          ],
+          "explanation": "The issue is not accuracy but opacity. Without seeing the why, you cannot justify the decision to the person, contest it fairly, or detect a bias. Hence the need to open the box."
+        }
+      },
+      "importance-et-shap": {
+        "title": "Feature importance and SHAP",
+        "summary": "Which variables weighed most on a decision? IBIS-X can measure it and show you.",
+        "visual": {
+          "title": "Seeing what tipped the scales",
+          "body": "To open the box, we measure which variables weighed most on a decision. Variable importance ranks the factors from most to least influential. SHAP goes further: for a specific case, it shows what pushed the decision toward \"yes\" and what pulled it toward \"no\". IBIS-X really computes these values on your model.",
+          "caption": "Importance = which factors matter most. SHAP = how each one pushed a specific decision."
+        },
+        "quiz": {
+          "question": "What does SHAP give you that global variable importance does not?",
+          "options": [
+            "It explains, case by case, what pushed the decision toward one outcome or the other.",
+            "It guarantees the model is never wrong about this case.",
+            "It proves which variable is the real cause of the outcome."
+          ],
+          "explanation": "Global importance gives an overall ranking. SHAP drops down to an individual case and shows each variable's contribution to that particular decision. Beware: it shows influence, not cause."
+        }
+      },
+      "importance-nest-pas-cause": {
+        "title": "Importance is not cause",
+        "summary": "The most important guardrail of the track: what a model uses is not what causes the outcome.",
+        "myth": {
+          "myth": "SHAP tells me what CAUSES the outcome.",
+          "reality": "No. SHAP shows what the model USES to decide, not what actually causes things in the world. If the model relies on a variable that is merely correlated with the outcome, SHAP will highlight it without it being the cause. Correlation is not causation: the honesty guardrail never to forget."
+        },
+        "visual": {
+          "title": "What the model uses ≠ what causes",
+          "body": "A model can lean heavily on a variable that accompanies the outcome without causing it. Example: ice-cream sales rise at the same time as drownings, because it is hot; ice cream does not cause drowning. SHAP would say \"ice cream weighs a lot\" without it being the cause. Always read explainability as \"what the model looks at\", never as proof of cause and effect.",
+          "caption": "SHAP lights up the model's reasoning, not the real world's laws of cause and effect."
+        },
+        "quiz": {
+          "question": "SHAP shows that the variable \"number of absences\" weighs heavily in the prediction of school dropout. What can you conclude?",
+          "options": [
+            "That reducing absences will automatically lower dropout.",
+            "That absences are the proven cause of dropout.",
+            "That the model relies heavily on this variable, without that proving any cause-and-effect link."
+          ],
+          "explanation": "SHAP reveals what the model uses, not what causes what. Absences may be a sign accompanying other real difficulties. Concluding a cause would require an entirely different study. Correlation is not causation."
+        }
+      },
+      "ta-deuxieme-enquete": {
+        "title": "Your second investigation",
+        "summary": "You can prepare, evaluate and explain. Put it all to work on real student data.",
+        "visual": {
+          "title": "Ready for a real investigation",
+          "body": "You now know how to read a model without being fooled: spot the accuracy trap, weigh precision and recall, read the confusion matrix, flush out overfitting, then open the box with importance and SHAP, without confusing influence with cause. It is time to move from theory to a real investigation on real data.",
+          "caption": "You have the tools to judge a model honestly and understand its decisions."
+        },
+        "practice": {
+          "title": "Run the \"school dropout\" investigation",
+          "body": "Launch the \"school dropout\" Challenge: you will work on real student data, train a real model, evaluate it honestly (accuracy, precision, recall, F1, confusion matrix) and read why it decides thanks to variable importance and SHAP. No simulation: the model is real and the result reproducible. It is up to you to run the investigation from start to finish."
+        }
       }
     },
     "notions": {
@@ -2056,7 +2362,118 @@
         "term": "Decision tree",
         "definition": "A readable model that chains yes/no questions up to a decision. It's a real IBIS-X algorithm.",
         "example": "\"Woman? In first class?\" then a survival prediction."
+      },
+      "valeurs-manquantes": {
+        "term": "Missing values",
+        "definition": "Empty cells in the data, when a piece of information wasn't recorded. You can drop the affected rows or impute them (fill them in smartly, by mean, median, KNN or MICE).",
+        "example": "Weight left blank for some patients in a medical file."
+      },
+      "encodage": {
+        "term": "Encoding",
+        "definition": "Turning categories into numbers so a model can process them. Either one-hot (one column per category) or ordinal (categories placed in an order).",
+        "example": "The “sex” column (“M”/“F”) turned into 0 and 1."
+      },
+      "mise-a-lechelle": {
+        "term": "Scaling",
+        "definition": "Bringing numeric columns into a comparable range so none dominates because of its unit. IBIS-X offers the standard, minmax and robust recipes.",
+        "example": "Bringing age (0-100) and salary (0-5000) onto the same scale before training."
+      },
+      "fuite-de-donnees": {
+        "term": "Data leakage",
+        "definition": "When information unavailable at the moment of the real prediction slips into training and artificially inflates the score. You avoid it by fitting the preparations only on the training data.",
+        "example": "A “prescribed treatment” column that already reveals the patient is ill."
+      },
+      "foret-aleatoire": {
+        "term": "Random forest",
+        "definition": "A model that trains many slightly different decision trees and has their predictions vote. The majority vote is more stable than a lone tree. It's a real IBIS-X model.",
+        "example": "A hundred trees each voting “survives” or “doesn't survive”; the majority wins."
+      },
+      "regression-logistique": {
+        "term": "Logistic regression",
+        "definition": "A model that assigns a coefficient (a weight) to each variable to predict a category; the sign gives the direction, the size the importance. Very readable, it isn't available in IBIS-X yet (it's coming).",
+        "example": "A positive coefficient for “age” means the risk rises with age."
+      },
+      "choix-algorithme": {
+        "term": "Choosing an algorithm",
+        "definition": "The decision, specific to each problem, of which model to use. It balances readability, performance and available data, and is settled by comparing several models.",
+        "example": "Preferring a readable tree to explain a decision, or a higher-performing forest when accuracy matters most."
+      },
+      "accuracy-piege": {
+        "term": "The accuracy trap",
+        "definition": "Accuracy is the share of correct answers. It becomes misleading when one class is far rarer than the other: a model can post a very high score while completely missing the rare class.",
+        "example": "Out of 1,000 files, 10 of them fraud, a model that says \"no fraud\" everywhere reaches 99% accuracy and detects no fraud at all."
+      },
+      "precision-rappel-f1": {
+        "term": "Precision, recall and F1",
+        "definition": "Precision measures: when the model says \"positive\", is it right? Recall measures: out of all the true positives, how many does it catch? The F1 sums up both in a single number to judge their balance.",
+        "example": "A very cautious spam filter produces few false positives (good precision) but lets some spam through (lower recall); the F1 tells you whether the trade-off holds."
+      },
+      "matrice-de-confusion": {
+        "term": "The confusion matrix",
+        "definition": "A four-cell table that crosses truth and prediction: true positives, false positives, true negatives, false negatives. It shows not only how many errors, but what type of errors the model makes.",
+        "example": "In screening, it clearly separates missed sick people (false negatives) from false alarms (false positives), two errors with very different consequences."
+      },
+      "surapprentissage": {
+        "term": "Overfitting",
+        "definition": "A model overfits when it memorizes the training examples, noise included, instead of learning the general rule. The result: excellent on its own data, poor on new data.",
+        "example": "A model with 100% success on training but 60% on new data recited by heart instead of understanding; only the score on never-seen data counts."
+      },
+      "boite-noire": {
+        "term": "The black box",
+        "definition": "A \"black box\" model gives an answer without letting you see the reasoning behind it. This becomes a problem as soon as you need to trust it, justify a decision, or fix a mistake.",
+        "example": "A model that denies a loan without explanation is hard to contest and control: you can neither justify the decision nor spot a possible bias."
+      },
+      "importance-shap": {
+        "term": "Variable importance and SHAP",
+        "definition": "Variable importance ranks factors by their overall influence on the model. SHAP drops down to the individual case and shows how each variable pushed a specific decision toward an outcome. IBIS-X computes them for real.",
+        "example": "For a given student, SHAP can show that their absences pushed the prediction toward \"dropout\" while their good grades pulled it toward \"no dropout\"."
+      },
+      "correlation-causalite": {
+        "term": "Correlation is not causation",
+        "definition": "SHAP and importance show what the model uses to decide, not what actually causes the outcome. A variable can weigh heavily simply because it accompanies the outcome, without being its cause.",
+        "example": "Ice-cream sales and drownings rise together because it is hot; ice cream does not cause drowning, even though a model would gladly lean on it."
       }
+    },
+    "playgrounds": {
+      "illustration": "Teaching example",
+      "confusion": {
+        "title": "Sandbox: the confusion matrix",
+        "intro": "Drag the decision threshold and watch the four cells — and the metrics — move in real time.",
+        "thresholdLabel": "Decision threshold",
+        "legendPos": "Actually positive cases",
+        "legendNeg": "Actually negative cases",
+        "predictedPositive": "Predicted positive",
+        "predPos": "Predicted positive",
+        "predNeg": "Predicted negative",
+        "actualPos": "Actual positive",
+        "actualNeg": "Actual negative",
+        "tp": "True positives",
+        "fp": "False positives",
+        "fn": "False negatives",
+        "tn": "True negatives",
+        "precision": "Precision",
+        "recall": "Recall",
+        "accuracy": "Accuracy",
+        "caption": "A low threshold catches every positive but raises many false alarms; a high threshold does the opposite. The right setting depends on what costs more: missing a case, or bothering someone for nothing."
+      },
+      "overfitting": {
+        "title": "Sandbox: overfitting",
+        "intro": "Increase the tree depth and watch the gap between training and test widen.",
+        "depthLabel": "Tree depth",
+        "train": "Training",
+        "test": "Test",
+        "gap": "Gap",
+        "caption": "The deeper the tree, the better it recites its training data — but past a point it learns the noise and fails on fresh data. That widening gap is overfitting."
+      }
+    },
+    "glossary": {
+      "navLabel": "Glossary",
+      "title": "Glossary",
+      "subtitle": "Every term in the Academy, one click away. Wherever you see a dotted-underlined word, hover it for the definition.",
+      "searchPlaceholder": "Search for a term…",
+      "count": "{count, plural, one {# term} other {# terms}}",
+      "empty": "No term matches your search.",
+      "learnMore": "Open the lesson"
     }
   }
 }

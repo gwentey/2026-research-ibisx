@@ -15,18 +15,21 @@ export type CursusLevel = "novice" | "debutant" | "confirme";
 /** Slugs de cursus (les 4 niveaux de l'académie ; la Vague 1 livre eveil + fondations). */
 export type CursusSlug = "eveil" | "fondations" | "praticien" | "analyste";
 
-/** Types de blocs pédagogiques (§3.5 du CDC). La Vague 1 utilise les 5 premiers. */
+/** Types de blocs pédagogiques (§3.5 du CDC). */
 export type BlockType =
   | "myth" // B1 — Mythe → Réalité
   | "visual" // B2 — Explication visuelle (schéma en tokens)
+  | "playground" // B3 — Bac à sable interactif (Vague 2)
   | "notion" // B4 — Carte-notion collectionnable
   | "quiz" // B5 — Quiz éclair (réponse expliquée)
   | "practice" // B8 — Mise en pratique (pont vers un vrai Défi)
-  | "translator" // B6 — [Vague 2]
+  | "translator" // B6 — [Vague 2+]
   | "case_study" // B7 — [Vague 3]
   | "tutor" // B9 — [Vague 3]
-  | "ia_vs_you" // B10 — [Vague 2]
-  | "playground"; // B3 — [Vague 2]
+  | "ia_vs_you"; // B10 — [Vague 2+]
+
+/** Bacs à sable disponibles (B3) — chacun a son composant interactif dédié. */
+export type PlaygroundKind = "confusion-threshold" | "overfitting-depth";
 
 /**
  * Un bloc d'une leçon. `id` est le suffixe de clé i18n sous la leçon.
@@ -43,6 +46,8 @@ export interface Block {
   answer?: number;
   choices?: number;
   challenge?: string;
+  /** Variante de bac à sable (bloc "playground"). */
+  playground?: PlaygroundKind;
 }
 
 /** Une leçon = une séquence ordonnée de blocs. */
