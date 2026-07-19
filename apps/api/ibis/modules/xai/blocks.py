@@ -17,6 +17,8 @@ from typing import Annotated, Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
+from ibis.modules.llm.xai_text import format_share, humanize_feature
+
 SCHEMA_VERSION = 1
 
 # Tonalités sémantiques — mappées côté front sur les tokens du kit (jamais de hex ici).
@@ -31,7 +33,8 @@ class _Block(BaseModel):
 
 class ParagraphBlock(_Block):
     type: Literal["paragraph"]
-    text: str = Field(min_length=1, max_length=1200)
+    # 2000 : une explication expert (~320 mots) peut tenir dans un seul paragraphe long.
+    text: str = Field(min_length=1, max_length=2000)
 
 
 class HeadingBlock(_Block):
@@ -121,12 +124,41 @@ def _strip_fences(raw: str) -> str:
     return text.strip()
 
 
+# Plafonds du schéma par type de bloc : listes TRONQUÉES avant validation plutôt que
+# rejet du document entier (constaté en réel : 10 métriques dans un keyValue ≤ 8 → repli
+# à tort d'une explication par ailleurs parfaite).
+_LIST_CAPS: dict[str, tuple[str, int]] = {
+    "keyValue": ("items", 8),
+    "featureImpact": ("items", 10),
+    "list": ("items", 12),
+    "table": ("rows", 14),
+}
+
+
+def _clamp_lists(payload: Any) -> Any:
+    """Tronque blocs et listes internes aux plafonds du schéma (tolérance LLM)."""
+    if not isinstance(payload, dict) or not isinstance(payload.get("blocks"), list):
+        return payload
+    payload["blocks"] = payload["blocks"][:16]
+    for block in payload["blocks"]:
+        if not isinstance(block, dict):
+            continue
+        cap = _LIST_CAPS.get(str(block.get("type")))
+        if cap is not None and isinstance(block.get(cap[0]), list):
+            block[cap[0]] = block[cap[0]][: cap[1]]
+        if block.get("type") == "table" and isinstance(block.get("columns"), list):
+            block["columns"] = block["columns"][:5]
+            if isinstance(block.get("rows"), list):
+                block["rows"] = [row[:5] if isinstance(row, list) else row for row in block["rows"]]
+    return payload
+
+
 def parse_document(raw: str) -> BlockDocument:
     """Parse + valide la sortie LLM. Lève ValueError/ValidationError si non conforme."""
     payload: Any = json.loads(_strip_fences(raw))
     if isinstance(payload, list):  # l'IA a renvoyé le tableau de blocs directement
         payload = {"blocks": payload}
-    return BlockDocument.model_validate(payload)
+    return BlockDocument.model_validate(_clamp_lists(payload))
 
 
 def extract_text(doc: BlockDocument) -> str:
@@ -191,7 +223,7 @@ def _fmt(value: Any) -> str:
     if isinstance(value, bool):
         return str(value)
     if isinstance(value, (int, float)):
-        return f"{float(value):g}"
+        return f"{round(float(value), 3):g}"  # 3 déc. max — cohérent avec le contexte LLM
     return str(value)
 
 
@@ -251,7 +283,7 @@ def fallback_document(
     )
 
     if fr:
-        table_cols = ["Variable", "Poids"]
+        table_cols = ["Variable", "Poids (%)"]
         note_title = "Réponse générée sans IA"
         note_text = (
             "L'assistant est momentanément indisponible : ce résumé s'appuie uniquement "
@@ -259,7 +291,7 @@ def fallback_document(
         )
         no_imp = "L'importance des variables n'est pas disponible pour cette explication."
     else:
-        table_cols = ["Feature", "Weight"]
+        table_cols = ["Feature", "Weight (%)"]
         note_title = "Generated without AI"
         note_text = (
             "The assistant is momentarily unavailable: this summary relies only on the "
@@ -271,15 +303,16 @@ def fallback_document(
 
     top = importance[:6]
     if top:
-        rows: list[list[Cell]] = []
-        for item in top:
-            value = item.get("value", item.get("contribution", 0))
-            rows.append(
-                [
-                    Cell(text=str(item.get("feature", "?"))),
-                    Cell(text=_fmt(round(float(value or 0), 3))),
-                ]
-            )
+        # Mêmes % que le contexte LLM et les graphiques : dénominateur = liste reçue ENTIÈRE.
+        values = [float(i.get("value", i.get("contribution")) or 0) for i in importance]
+        total = sum(abs(v) for v in values)
+        rows: list[list[Cell]] = [
+            [
+                Cell(text=humanize_feature(str(item.get("feature", "?")))),
+                Cell(text=format_share(value, total)),
+            ]
+            for item, value in zip(importance[:6], values[:6], strict=True)
+        ]
         blocks.append(TableBlock(type="table", columns=table_cols, rows=rows))
     else:
         blocks.append(ParagraphBlock(type="paragraph", text=no_imp))

@@ -3,6 +3,52 @@
 Refonte complète from scratch (voir [JALONS.md](JALONS.md) et [docs/refonte/](docs/refonte/)).
 Un jalon = un incrément livrable ; chaque entrée correspond à un commit `feat: jalon N`.
 
+## Évolution XAI 3 — Explication liée au profil : régénération visible et confirmée (19/07/2026)
+
+- **Bandeau proéminent** sur l'explication quand la vue courante (« Voir en tant que ») diffère
+  du niveau de génération : surface IA dégradée, titre « Cette explication est rédigée en vue
+  X », corps expliquant la régénération et son coût — impossible de croire qu'on lit le niveau
+  courant. Remplace l'ancien encart pointillé discret (`regenerateHint`).
+- **Confirmation avant dépense** : le CTA « Regénérer en vue Y (1 crédit) » ouvre désormais un
+  dialog rappelant le nouveau calcul et le débit immédiat d'1 crédit — unique chemin de
+  régénération (annulable). Libellés FR/EN. Le badge de niveau affiché correspond toujours au
+  niveau réellement généré (inchangé), solde rafraîchi via `getMe()` (inchangé).
+
+## Évolution XAI 2 — Explication en blocs riches (19/07/2026)
+
+- **L'« Explication rédigée par l'IA » a le même design que le chat** : génération en
+  `BlockDocument` (grammaire de blocs + anti-hallucination + repli déterministe par niveau),
+  nouvelle colonne `explanations.text_blocks` (JSONB, migration 0009), exposée dans
+  `getExplanationResults` (contrat OpenAPI + client TS régénérés). Le front rend `IbisBlocks`
+  (tableaux, callouts, featureImpact) et retombe sur le Markdown de `text_explanation` pour
+  les explications antérieures — miroir texte conservé (compat, copie, a11y).
+- **Factorisation worker** : boucle LLM commune chat/explication (`_blocks_completion`) +
+  repli commun (`_fallback_payload`) ; l'ancien chemin texte plat (`build_prompt`,
+  `fallback_text`) est supprimé, son invariant adaptatif vit dans `fallback_document`.
+
+## Évolution XAI 4 — Questions suggérées contextualisées (19/07/2026)
+
+- **Les suggestions citent le vrai modèle** : `getSuggestedQuestions` récupère la dernière
+  explication terminée de l'expérience → variable dominante (nom humanisé, colonne seule pour
+  un one-hot) + métrique principale, injectées dans des questions templatisées
+  (« Pourquoi la variable « Sex » domine-t-elle la prédiction ? », « Un score f1 de 0.732,
+  puis-je m'y fier ? »). Toujours **déterministe** (zéro LLM), adapté au profil (novice en
+  langage courant), FR/EN ; repli sur les listes génériques sans explication terminée.
+  Nouveau helper service `latest_completed_explanation` ; contrat HTTP inchangé.
+
+## Évolution XAI 1 — Nombres lisibles (19/07/2026)
+
+- **Importances en %** : le contexte servi au LLM (explication + chat) présente les importances
+  en « part de l'importance affichée » (% entiers, dénominateur = top affiché par les
+  graphiques), les métriques et valeurs locales arrondies à 3 décimales, avec consigne « cite
+  les nombres tels qu'affichés ». Fini `0.242421` — le modèle dit « ≈ 24 % ».
+- **Noms de variables humanisés** (`humanize_feature` + miroir front `lib/xai/features.ts`) :
+  `cat__Sex_female` → « Sex = female », `num_median_0__Pclass` → « Pclass » — appliqué au
+  contexte LLM, aux replis déterministes (texte + tableau du chat, désormais en « Poids (%) »),
+  aux graphiques (importance globale en %, waterfall, comparaison SHAP/LIME) et aux barres
+  `featureImpact` (anciens messages inclus).
+- **Garde-fou anti-hallucination étendu** : tolérance symétrique ÷100 (contexte « 24 % » →
+  « 0,24 » accepté) ; rejets toujours loggués, replis « sans IA » inchangés.
 ## Import Kaggle ouvert à tout compte connecté (20/07/2026)
 
 - **Le bouton « Importer depuis Kaggle » n'apparaissait pour personne** en dehors des

@@ -102,8 +102,10 @@ export type InlineToken =
   | { kind: "highlight"; value: string };
 
 // `**gras**` puis `==surligné==` puis `` `code` `` puis `*italique*` / `_italique_`.
-// L'ordre compte : ** doit être tenté avant *.
-const INLINE_RE = /(\*\*(.+?)\*\*|==(.+?)==|`(.+?)`|\*(.+?)\*|_(.+?)_)/g;
+// L'ordre compte : ** doit être tenté avant *. L'italique `_…_` exige des frontières de
+// mots : les underscores INTRA-mots (roc_auc, random_forest — omniprésents en ML) ne sont
+// jamais des marqueurs.
+const INLINE_RE = /(\*\*(.+?)\*\*|==(.+?)==|`(.+?)`|\*(.+?)\*|(?<!\w)_([^_]+?)_(?!\w))/g;
 
 /** Découpe un texte en jetons inline. Grammaire fermée, non imbriquée, sûre (pas de HTML). */
 export function parseInline(text: string): InlineToken[] {

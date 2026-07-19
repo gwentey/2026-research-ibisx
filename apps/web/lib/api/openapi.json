@@ -3286,6 +3286,18 @@
             "title": "Status",
             "type": "string"
           },
+          "text_blocks": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Text Blocks"
+          },
           "text_explanation": {
             "anyOf": [
               {

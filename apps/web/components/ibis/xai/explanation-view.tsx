@@ -2,17 +2,31 @@
 
 import type { CSSProperties } from "react";
 import { useTranslations } from "next-intl";
-import { BookOpenIcon, LayersIcon, SparklesIcon, TargetIcon } from "lucide-react";
+import { BookOpenIcon, LayersIcon, RefreshCcwIcon, SparklesIcon, TargetIcon } from "lucide-react";
 import { Bar, BarChart, CartesianGrid, Cell, XAxis, YAxis } from "recharts";
 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger
+} from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { Markdown } from "@/components/ui/custom/prompt/markdown";
 import { CausalCaveat } from "@/components/ibis/causal-caveat";
+import { IbisBlocks } from "@/components/ibis/xai/ibis-blocks";
 import type { ExplanationResults, XaiAudience } from "@/lib/api/generated";
 import { cn } from "@/lib/utils";
+import { getBlocks } from "@/lib/xai/blocks";
+import { humanizeFeature, roundLabel } from "@/lib/xai/features";
 
 // Recette de style markdown (pas de plugin prose dans ce projet → sélecteurs utilitaires).
 const PROSE = cn(
@@ -194,6 +208,25 @@ export function ExplanationView({
     | { shap: { feature: string; value: number }[]; lime: { feature: string; value: number }[] }
     | undefined;
 
+  // Nombres lisibles (CDC évolutions §1) : labels humanisés + parts en % entiers — mêmes
+  // valeurs que le contexte servi au LLM (dénominateur = liste affichée entière).
+  const importanceTotal = (globalImportance ?? []).reduce(
+    (sum, item) => sum + Math.abs(item.value),
+    0
+  );
+  const importanceData = globalImportance?.map((item) => ({
+    feature: humanizeFeature(item.feature),
+    pct: importanceTotal > 0 ? Math.round((Math.abs(item.value) / importanceTotal) * 100) : 0
+  }));
+  const waterfallData = waterfall?.map((item) => ({
+    ...item,
+    feature: humanizeFeature(item.feature)
+  }));
+
+  // Explication riche v2 (CDC évolutions §2) : même motif de blocs que le chat. Les
+  // explications antérieures (sans blocs) retombent sur le rendu Markdown du miroir texte.
+  const textBlocks = getBlocks(explanation.text_blocks);
+
   // Contexte « QUEL exemple » (explication locale) — répond à « de quel élément parle-t-on ? ».
   const isLocal = explanation.type === "local";
   const instanceIndex = (explanation.instance_ref as { index?: number } | null)?.index;
@@ -203,7 +236,7 @@ export function ExplanationView({
     predictedLabel != null && String(predictedLabel) !== ""
       ? String(predictedLabel)
       : predictionRaw !== undefined && predictionRaw !== null
-        ? String(predictionRaw)
+        ? roundLabel(predictionRaw)
         : null;
 
   // Révélation en cascade : chaque bloc émerge d'un flou, décalé — le résultat se
@@ -277,30 +310,60 @@ export function ExplanationView({
         </div>
       </div>
 
-      {/* Regénérer-en-vue (§5.1, décision D3) : l'explication affichée a été rédigée à un autre
-          niveau que la vue courante → on propose de la refaire au niveau effectif (1 crédit,
-          choix explicite). La révélation ne s'y applique pas : c'est une commande, pas un résultat. */}
+      {/* Regénérer-en-vue (§5.1, décision D3 — évolutions §3) : l'explication affichée a été
+          rédigée à un autre niveau que la vue courante. Bandeau PROÉMINENT (impossible de croire
+          qu'on lit le niveau courant) + confirmation rappelant le coût (1 crédit, choix
+          explicite). La révélation ne s'y applique pas : c'est une commande, pas un résultat. */}
       {canRegenerate && effectiveAudience ? (
-        <div className="border-ai/30 bg-ai/[0.04] flex flex-col gap-2.5 rounded-lg border border-dashed p-3 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-muted-foreground flex items-start gap-2 text-xs leading-relaxed">
-            <SparklesIcon className="text-ai mt-0.5 size-3.5 shrink-0" />
-            {t("text.regenerateHint", {
-              generated: audienceLabel(generatedAudience),
-              effective: audienceLabel(effectiveAudience)
-            })}
-          </p>
-          <Button
-            size="sm"
-            variant="outline"
-            className="border-ai/40 text-ai hover:bg-ai/10 shrink-0"
-            onClick={onRegenerate}
-            disabled={regenerating}>
-            <SparklesIcon />
-            {t("text.regenerateAs", { level: audienceLabel(effectiveAudience) })}
-            <Badge variant="secondary" className="ml-1 font-normal">
-              {t("text.regenerateCost")}
-            </Badge>
-          </Button>
+        <div className="border-ai/40 from-ai/10 via-ai/[0.06] relative overflow-hidden rounded-xl border bg-gradient-to-r to-transparent p-4">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-start gap-3">
+              <span className="bg-ai/15 text-ai flex size-9 shrink-0 items-center justify-center rounded-lg">
+                <RefreshCcwIcon className="size-4" />
+              </span>
+              <div className="min-w-0 space-y-0.5">
+                <p className="text-sm font-semibold">
+                  {t("text.regenerateTitle", { generated: audienceLabel(generatedAudience) })}
+                </p>
+                <p className="text-muted-foreground text-sm leading-relaxed">
+                  {t("text.regenerateBody", { effective: audienceLabel(effectiveAudience) })}
+                </p>
+              </div>
+            </div>
+            {/* Seul chemin de régénération : le CTA ouvre TOUJOURS la confirmation (coût). */}
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button
+                  size="sm"
+                  className="bg-ai hover:bg-ai/90 shrink-0 text-white"
+                  disabled={regenerating}>
+                  <SparklesIcon />
+                  {t("text.regenerateAs", { level: audienceLabel(effectiveAudience) })}
+                  <Badge
+                    variant="secondary"
+                    className="ml-1 border-transparent bg-white/20 font-normal text-white">
+                    {t("text.regenerateCost")}
+                  </Badge>
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>{t("text.regenerateConfirmTitle")}</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    {t("text.regenerateConfirmBody", {
+                      effective: audienceLabel(effectiveAudience)
+                    })}
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>{t("text.regenerateCancel")}</AlertDialogCancel>
+                  <AlertDialogAction className="bg-ai hover:bg-ai/90 text-white" onClick={onRegenerate}>
+                    {t("text.regenerateConfirm")}
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </div>
         </div>
       ) : null}
 
@@ -310,7 +373,7 @@ export function ExplanationView({
 
       {/* Colonne principale étroite (écran − sidebar) : on empile en 1 colonne pour garder des
           cartes homogènes et sans trou, quel que soit le type d'explication. */}
-      {globalImportance ? (
+      {importanceData ? (
         <div {...step()}>
           <Card>
             <CardHeader>
@@ -325,15 +388,19 @@ export function ExplanationView({
               <ChartContainer
                 config={chartConfig}
                 className="w-full"
-                style={{ height: globalImportance.length * 24 + 40 }}>
+                style={{ height: importanceData.length * 24 + 40 }}>
                 <BarChart
-                  data={[...globalImportance].reverse()}
+                  data={[...importanceData].reverse()}
                   layout="vertical"
                   margin={{ left: 40 }}>
                   <XAxis type="number" hide />
                   <YAxis dataKey="feature" type="category" width={150} tick={{ fontSize: 10 }} />
-                  <ChartTooltip content={<ChartTooltipContent />} />
-                  <Bar dataKey="value" fill="var(--chart-1)" radius={3} />
+                  <ChartTooltip
+                    content={
+                      <ChartTooltipContent formatter={(value) => `${Number(value)} %`} />
+                    }
+                  />
+                  <Bar dataKey="pct" fill="var(--chart-1)" radius={3} />
                 </BarChart>
               </ChartContainer>
               <CausalCaveat className="mt-3" />
@@ -342,7 +409,7 @@ export function ExplanationView({
         </div>
       ) : null}
 
-      {waterfall ? (
+      {waterfallData ? (
         <div {...step()}>
           <Card>
             <CardHeader>
@@ -352,11 +419,11 @@ export function ExplanationView({
               </p>
               <p className="text-muted-foreground text-xs">
                 {values["base_value"] !== undefined
-                  ? t("charts.baseValue", { value: String(values["base_value"]) })
+                  ? t("charts.baseValue", { value: roundLabel(values["base_value"]) })
                   : null}{" "}
                 {values["prediction"] !== undefined
                   ? t("charts.prediction", {
-                      value: String(values["prediction"]),
+                      value: roundLabel(values["prediction"]),
                       label: String(values["predicted_label"] ?? "")
                     })
                   : null}
@@ -380,14 +447,21 @@ export function ExplanationView({
               <ChartContainer
                 config={chartConfig}
                 className="w-full"
-                style={{ height: waterfall.length * 26 + 40 }}>
-                <BarChart data={[...waterfall].reverse()} layout="vertical" margin={{ left: 40 }}>
+                style={{ height: waterfallData.length * 26 + 40 }}>
+                <BarChart
+                  data={[...waterfallData].reverse()}
+                  layout="vertical"
+                  margin={{ left: 40 }}>
                   <XAxis type="number" tick={{ fontSize: 10 }} />
                   <YAxis dataKey="feature" type="category" width={150} tick={{ fontSize: 10 }} />
-                  <ChartTooltip content={<ChartTooltipContent />} />
+                  <ChartTooltip
+                    content={
+                      <ChartTooltipContent formatter={(value) => roundLabel(Number(value))} />
+                    }
+                  />
                   <CartesianGrid strokeDasharray="3 3" horizontal={false} />
                   <Bar dataKey="contribution" radius={3}>
-                    {[...waterfall].reverse().map((entry, index) => (
+                    {[...waterfallData].reverse().map((entry, index) => (
                       <Cell
                         key={index}
                         fill={entry.contribution >= 0 ? "var(--score-4)" : "var(--destructive)"}
@@ -416,7 +490,9 @@ export function ExplanationView({
                   <p className="mb-1 text-xs font-medium uppercase">{method}</p>
                   {comparison[method].map((item) => (
                     <div key={item.feature} className="flex items-center gap-2 text-xs">
-                      <span className="w-32 truncate">{item.feature}</span>
+                      <span className="w-32 truncate" title={humanizeFeature(item.feature)}>
+                        {humanizeFeature(item.feature)}
+                      </span>
                       <div className="bg-muted h-1.5 flex-1 rounded">
                         <div
                           className="bg-primary h-1.5 rounded"
@@ -434,7 +510,7 @@ export function ExplanationView({
         </div>
       ) : null}
 
-      {explanation.text_explanation ? (
+      {textBlocks.length > 0 || explanation.text_explanation ? (
         <div {...step()}>
           <Card>
             <CardHeader>
@@ -446,7 +522,11 @@ export function ExplanationView({
             </CardHeader>
             <CardContent>
               <div className="bg-muted/40 rounded-md border p-4">
-                <Markdown className={PROSE}>{explanation.text_explanation}</Markdown>
+                {textBlocks.length > 0 ? (
+                  <IbisBlocks blocks={textBlocks} />
+                ) : (
+                  <Markdown className={PROSE}>{explanation.text_explanation ?? ""}</Markdown>
+                )}
               </div>
             </CardContent>
           </Card>

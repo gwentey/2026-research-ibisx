@@ -20,6 +20,7 @@ import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/
 import { Progress } from "@/components/ui/progress";
 import { scoreCellStyle } from "@/lib/viz/score-scale";
 import { cn } from "@/lib/utils";
+import { humanizeFeature } from "@/lib/xai/features";
 
 // Rendu 100 % client des DONNÉES de visualisation (viz_data JSON) — Recharts (P6).
 
@@ -320,7 +321,11 @@ export function ImportanceChart({
   importance: { feature: string; importance: number }[];
 }) {
   const t = useTranslations("experiments.charts");
-  const data = importance.slice(0, 15).reverse();
+  // Noms humanisés (CDC évolutions §1) : jamais de cat__/num_…__ bruts côté utilisateur.
+  const data = importance
+    .slice(0, 15)
+    .reverse()
+    .map((item) => ({ ...item, feature: humanizeFeature(item.feature) }));
   return (
     <Card>
       <CardHeader>
@@ -363,7 +368,7 @@ function TreeNodeView({ node, depth }: { node: TreeNode; depth: number }) {
   return (
     <div className="space-y-2">
       <div className="border-primary/40 bg-background text-foreground w-fit max-w-full rounded-md border px-2.5 py-1.5 font-mono text-xs">
-        {node.feature} ≤ {node.threshold}{" "}
+        {humanizeFeature(node.feature ?? "")} ≤ {node.threshold}{" "}
         <span className="text-muted-foreground">({node.samples})</span>
       </div>
       <div className="border-border/70 ml-5 space-y-2 border-l pl-4">
