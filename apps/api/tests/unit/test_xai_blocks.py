@@ -120,6 +120,25 @@ def test_fallback_document_is_valid_and_grounded() -> None:
     assert xai_text.numbers_exist_in_context(blocks.extract_text(doc), context) is True
 
 
+def test_fallback_document_varies_by_audience() -> None:
+    """Sans clé LLM, le chat retombe sur ce document déterministe — qui doit néanmoins
+    parler au niveau de l'explication (adaptatif §5.2 : novice ≠ expert)."""
+
+    def doc_text(audience: str) -> str:
+        return blocks.to_plain_text(
+            blocks.fallback_document(
+                language="fr",
+                audience=audience,
+                metrics={"primary_metric": "accuracy", "accuracy": 0.83},
+                importance=[{"feature": "revenu", "value": 0.41}],
+                task_type="classification",
+                algorithm="random_forest",
+            )
+        )
+
+    assert doc_text("novice") != doc_text("expert")
+
+
 def test_fallback_without_importance_stays_valid() -> None:
     doc = blocks.fallback_document(
         language="en",

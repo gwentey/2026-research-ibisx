@@ -260,6 +260,42 @@ def test_explanation_audience_rejects_unknown_level(
     assert denied.status_code == 422
 
 
+def test_chat_and_explanation_fallback_follow_audience(
+    worker_client: TestClient, trained: dict
+) -> None:
+    """P4 : sans clé LLM, l'explication ET le chat retombent sur un repli déterministe — qui
+    parle néanmoins au NIVEAU de l'explication (adaptatif §5.2/§5.3 : novice ≠ expert)."""
+    from ibis.workers.tasks.explain import answer_chat_question
+
+    novice = run_explanation(worker_client, trained, {"type": "global", "audience": "novice"})
+    expert = run_explanation(worker_client, trained, {"type": "global", "audience": "expert"})
+    assert novice["is_fallback"] and expert["is_fallback"]
+    # §5.3 : le repli de l'explication varie selon le niveau (même modèle, même données).
+    assert novice["text_explanation"] != expert["text_explanation"]
+
+    def first_answer(explanation_id: str) -> str:
+        session = worker_client.post(
+            f"/api/v1/explanations/{explanation_id}/chat",
+            json={"language": "fr"},
+            headers=trained["headers"],
+        ).json()
+        worker_client.post(
+            f"/api/v1/chat/{session['id']}/messages",
+            json={"question": "Pourquoi cette prédiction ?"},
+            headers=trained["headers"],
+        )
+        answer_chat_question.run(session["id"], "Pourquoi cette prédiction ?")
+        messages = worker_client.get(
+            f"/api/v1/chat/{session['id']}/messages", headers=trained["headers"]
+        ).json()
+        assistant = [m for m in messages if m["role"] == "assistant"]
+        assert assistant and assistant[0]["is_fallback"]
+        return assistant[0]["content"]
+
+    # §5.2 : le chat (repli déterministe) suit le niveau de l'explication qu'il commente.
+    assert first_answer(novice["id"]) != first_answer(expert["id"])
+
+
 def test_explanation_requires_completed_experiment(
     worker_client: TestClient, trained: dict, real_db: Session
 ) -> None:

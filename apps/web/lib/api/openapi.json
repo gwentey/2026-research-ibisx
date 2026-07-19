@@ -7508,6 +7508,22 @@
               "title": "Language",
               "type": "string"
             }
+          },
+          {
+            "in": "query",
+            "name": "audience",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/XaiAudience"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Audience"
+            }
           }
         ],
         "responses": {

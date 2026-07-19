@@ -189,10 +189,14 @@ def get_suggested_questions(
     db: DbDep,
     claims: CurrentClaims,
     language: Annotated[str, Query(pattern="^(fr|en)$")] = "fr",
+    audience: XaiAudience | None = None,
 ) -> list[str]:
     experiment = get_experiment(db, claims.user_id, experiment_id)
+    # Niveau (adaptatif §5.2) : le novice reçoit des questions en langage courant.
     return suggested_questions(
-        str(experiment.preprocessing_config.get("task_type", "classification")), language
+        str(experiment.preprocessing_config.get("task_type", "classification")),
+        language,
+        audience.value if audience else None,
     )
 
 

@@ -13,12 +13,14 @@ from typing import Any
 AUDIENCE_SPECS = {
     "novice": {
         "fr": (
-            "un débutant complet : analogies du quotidien, zéro jargon, environ 180 mots, "
+            "un grand débutant : commence par une analogie concrète du quotidien, puis traduis "
+            "chaque chiffre en langage courant ; zéro jargon, phrases courtes, environ 180 mots, "
             "au maximum 5 variables citées"
         ),
         "en": (
-            "a complete beginner: everyday analogies, zero jargon, about 180 words, "
-            "at most 5 features mentioned"
+            "a complete beginner: start with a concrete everyday analogy, then translate each "
+            "number into plain language; zero jargon, short sentences, about 180 words, at most "
+            "5 features mentioned"
         ),
     },
     "intermediate": {
@@ -32,6 +34,35 @@ AUDIENCE_SPECS = {
         "en": "an expert: exact terminology (SHAP axioms, OOB, macro metrics), about 320 words",
     },
 }
+
+# Directive de niveau injectée au CHAT (adaptatif §5.2). Novice = métaphores systématiques ;
+# expert = terminologie exacte. On sépare volontairement le TON (ici) du contrat de blocs et de
+# l'anti-hallucination (SYSTEM) — qui, eux, restent constants quel que soit le niveau.
+AUDIENCE_CHAT_TONE = {
+    "novice": {
+        "fr": (
+            "Adresse-toi à un grand débutant : emploie des métaphores et des analogies du "
+            "quotidien, traduis chaque chiffre en mots simples, zéro jargon, phrases courtes."
+        ),
+        "en": (
+            "Address a complete beginner: use everyday metaphors and analogies, translate every "
+            "number into plain words, zero jargon, short sentences."
+        ),
+    },
+    "intermediate": {
+        "fr": "Adresse-toi à un public intermédiaire : structuré et orienté décision.",
+        "en": "Address an intermediate audience: structured and decision-oriented.",
+    },
+    "expert": {
+        "fr": "Adresse-toi à un expert : terminologie exacte, réponse concise et précise.",
+        "en": "Address an expert: exact terminology, concise and precise.",
+    },
+}
+
+
+def _audience_tone(audience: str, lang: str) -> str:
+    return AUDIENCE_CHAT_TONE.get(audience, AUDIENCE_CHAT_TONE["intermediate"])[lang]
+
 
 SYSTEM = {
     "fr": (
@@ -119,6 +150,13 @@ def numbers_exist_in_context(text: str, context: str) -> bool:
     return True
 
 
+def _g(value: Any) -> str:
+    """Format court d'un nombre (0.83 → « 0.83 »), robuste aux valeurs non numériques."""
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        return str(value)
+    return f"{float(value):g}"
+
+
 def fallback_text(
     *,
     audience: str,
@@ -128,15 +166,102 @@ def fallback_text(
     task_type: str,
     algorithm: str,
 ) -> str:
-    """Template déterministe sur les VRAIES données — badge « généré sans IA » (P2)."""
+    """Template déterministe sur les VRAIES données, ADAPTÉ au niveau (adaptatif §5.3).
+
+    Trois formulations distinctes (novice → analogie + langage courant ; intermédiaire →
+    orienté décision ; expert → terminologie), toujours ancrées sur les valeurs calculées et
+    toujours badgées « généré sans IA » (P2). Le novice reçoit l'essentiel (moins de variables).
+    """
+    en = language == "en"
+    primary = str(metrics.get("primary_metric", ""))
+    primary_value = metrics.get(primary) if primary else None
+    has_primary = bool(primary) and primary_value is not None
+
+    if audience == "novice":
+        top = [str(i["feature"]) for i in importance[:3]]  # l'essentiel, pas un mur de texte
+        if en:
+            parts = [
+                f"In plain words: the {algorithm} model learned from examples to make "
+                f"predictions ({task_type}) — a bit like learning to recognise a fruit after "
+                "seeing many of them.",
+                (
+                    f"Its main score ({primary}) is {_g(primary_value)}: the closer to 1, "
+                    "the better."
+                    if has_primary
+                    else "Its main score is unavailable here."
+                ),
+                (
+                    "What counted most: " + ", ".join(top) + "."
+                    if top
+                    else "Which information counted most is unavailable."
+                ),
+                "This summary was generated without AI, from the computed values only.",
+            ]
+        else:
+            parts = [
+                f"Pour faire simple : le modèle {algorithm} a appris, à partir d'exemples, à "
+                f"faire des prédictions ({task_type}) — un peu comme on apprend à reconnaître un "
+                "fruit après en avoir vu beaucoup.",
+                (
+                    f"Sa note principale ({primary}) est de {_g(primary_value)} : plus c'est "
+                    "proche de 1, mieux c'est."
+                    if has_primary
+                    else "Sa note principale n'est pas disponible ici."
+                ),
+                (
+                    "Ce qui a le plus compté : " + ", ".join(top) + "."
+                    if top
+                    else "L'information qui a le plus compté n'est pas disponible."
+                ),
+                "Ce résumé a été généré sans IA, uniquement à partir des valeurs calculées.",
+            ]
+        return " ".join(parts)
+
     top = [str(i["feature"]) for i in importance[:5]]
-    if language == "en":
-        primary = metrics.get("primary_metric", "")
+    if audience == "expert":
+        if en:
+            parts = [
+                f"Model {algorithm} — {task_type} task.",
+                (
+                    f"Main metric {primary} = {_g(primary_value)} "
+                    "(see the full grid for macro metrics)."
+                    if has_primary
+                    else "Main metric unavailable."
+                ),
+                (
+                    "Most influential features, by decreasing importance: " + ", ".join(top) + "."
+                    if top
+                    else "Feature importance unavailable."
+                ),
+                "Summary generated without AI, from the computed values only.",
+            ]
+        else:
+            parts = [
+                f"Modèle {algorithm} — tâche de {task_type}.",
+                (
+                    f"Métrique principale {primary} = {_g(primary_value)} "
+                    "(voir la grille complète pour les macro-métriques)."
+                    if has_primary
+                    else "Métrique principale indisponible."
+                ),
+                (
+                    "Variables les plus influentes, par importance décroissante : "
+                    + ", ".join(top)
+                    + "."
+                    if top
+                    else "Importance des variables indisponible."
+                ),
+                "Résumé généré sans IA, à partir des seules valeurs calculées.",
+            ]
+        return " ".join(parts)
+
+    # intermediate (défaut) : structuré, orienté décision.
+    if en:
         parts = [
             f"The {algorithm} model was trained for a {task_type} task.",
             (
-                f"Main metric {primary} = {metrics.get(primary)}."
-                if primary and metrics.get(primary) is not None
+                f"Main metric {primary} = {_g(primary_value)}."
+                if has_primary
                 else "Main metric unavailable."
             ),
             (
@@ -147,12 +272,11 @@ def fallback_text(
             "This summary was generated without AI, from the computed values only.",
         ]
         return " ".join(parts)
-    primary = metrics.get("primary_metric", "")
     parts = [
         f"Le modèle {algorithm} a été entraîné pour une tâche de {task_type}.",
         (
-            f"Métrique principale {primary} = {metrics.get(primary)}."
-            if primary and metrics.get(primary) is not None
+            f"Métrique principale {primary} = {_g(primary_value)}."
+            if has_primary
             else "Métrique principale indisponible."
         ),
         (
@@ -232,23 +356,30 @@ _BLOCKS_GRAMMAR_EN = (
 )
 
 
-def chat_system_v2(language: str) -> str:
-    """Système chat v2 = honnêteté anti-hallucination + contrat de blocs."""
+def chat_system_v2(language: str, audience: str = "intermediate") -> str:
+    """Système chat v2 = honnêteté anti-hallucination + niveau (§5.2) + contrat de blocs."""
     lang = "en" if language == "en" else "fr"
     grammar = _BLOCKS_GRAMMAR_EN if lang == "en" else _BLOCKS_GRAMMAR
-    return SYSTEM[lang] + "\n\n" + grammar
+    return SYSTEM[lang] + "\n\n" + _audience_tone(audience, lang) + "\n\n" + grammar
 
 
 def chat_prompt_v2(
-    *, question: str, context: str, history: list[tuple[str, str]], language: str
+    *,
+    question: str,
+    context: str,
+    history: list[tuple[str, str]],
+    language: str,
+    audience: str = "intermediate",
 ) -> str:
     lang = "en" if language == "en" else "fr"
     history_block = "\n".join(f"{role}: {content}" for role, content in history[-10:])
+    tone = _audience_tone(audience, lang)
     if lang == "fr":
         return (
             f"CONTEXTE (seules valeurs autorisées) :\n{context}\n\n"
             f"HISTORIQUE :\n{history_block}\n\n"
             f"QUESTION : {question}\n\n"
+            f"{tone}\n"
             "Rédige une réponse claire et STRUCTURÉE en blocs (≤ 6 blocs, ≤ 120 mots au total). "
             "Utilise un tableau ou featureImpact quand cela éclaire vraiment, un callout pour une "
             "limite. Appuie-toi UNIQUEMENT sur le contexte."
@@ -257,15 +388,41 @@ def chat_prompt_v2(
         f"CONTEXT (only allowed values):\n{context}\n\n"
         f"HISTORY:\n{history_block}\n\n"
         f"QUESTION: {question}\n\n"
+        f"{tone}\n"
         "Write a clear, STRUCTURED answer in blocks (≤ 6 blocks, ≤ 120 words total). "
         "Use a table or featureImpact only when it truly helps, a callout for a limitation. "
         "Rely ONLY on the context."
     )
 
 
-def suggested_questions(task_type: str, language: str) -> list[str]:
-    """Questions suggérées contextuelles — déterministes (pas de LLM requis)."""
-    if language == "en":
+def suggested_questions(task_type: str, language: str, audience: str | None = None) -> list[str]:
+    """Questions suggérées contextuelles — déterministes (pas de LLM requis), adaptées au
+    niveau (adaptatif §5.2) : le novice se voit proposer des questions en langage courant."""
+    en = language == "en"
+    if audience == "novice":
+        if en:
+            common = [
+                "In plain words, what did the model learn?",
+                "Can I trust this result, simply put?",
+                "Which piece of information mattered most, and why?",
+            ]
+            return (
+                [*common, "The confusion matrix — like what, in everyday terms?"]
+                if task_type == "classification"
+                else [*common, "The average error — what does it mean in real life?"]
+            )
+        common = [
+            "En clair, qu'a appris le modèle ?",
+            "Puis-je faire confiance à ce résultat, simplement ?",
+            "Quelle information a le plus compté, et pourquoi ?",
+        ]
+        return (
+            [*common, "La matrice de confusion, c'est comme quoi au quotidien ?"]
+            if task_type == "classification"
+            else [*common, "L'erreur moyenne, ça représente quoi dans la vraie vie ?"]
+        )
+
+    if en:
         common = [
             "Why does the top feature dominate the prediction?",
             "Can I trust these results?",

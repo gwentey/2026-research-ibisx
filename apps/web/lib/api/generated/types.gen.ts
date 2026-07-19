@@ -4077,6 +4077,10 @@ export type GetSuggestedQuestionsData = {
          * Language
          */
         language?: string;
+        /**
+         * Audience
+         */
+        audience?: XaiAudience | null;
     };
     url: '/api/v1/experiments/{experiment_id}/suggested-questions';
 };
