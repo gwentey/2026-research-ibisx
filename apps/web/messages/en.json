@@ -718,6 +718,48 @@
       "environment": "Environment",
       "technology": "Technology",
       "research": "Research"
+    },
+    "kaggleImport": {
+      "trigger": "Import from Kaggle",
+      "title": "Import a Kaggle dataset",
+      "description": "Paste the Kaggle page link: the dataset is downloaded, analysed and described automatically.",
+      "urlLabel": "Dataset link",
+      "urlHint": "For example https://www.kaggle.com/datasets/uciml/iris — the dataset page, not a competition or a notebook.",
+      "submit": "Import",
+      "cancel": "Cancel",
+      "running": "Importing…",
+      "visibility": {
+        "label": "Visibility",
+        "public": "Public",
+        "publicHint": "Visible to everyone in the catalogue, under your name.",
+        "private": "Private",
+        "privateHint": "Visible only to you. You can make it public later.",
+        "licenseNotice": "If the Kaggle licence does not allow redistribution, the import will switch to private automatically."
+      },
+      "duplicate": {
+        "title": "This dataset already exists",
+        "generic": "This dataset is already present.",
+        "open": "View the existing dataset"
+      },
+      "done": {
+        "title": "Import complete",
+        "body": "Ethical criteria were suggested by AI: they still need confirmation before counting towards the score.",
+        "open": "Open the dataset"
+      },
+      "errors": {
+        "title": "Import failed",
+        "badLink": "This link is not a valid Kaggle dataset page.",
+        "unreachable": "Cannot track the import. Please try again shortly.",
+        "generic": "The import did not complete."
+      }
+    },
+    "attribution": {
+      "importedBy": "Imported by {name}",
+      "anonymous": "a member",
+      "verified": "Verified",
+      "verifiedHint": "IBIS-X catalogue dataset, verified by the team.",
+      "community": "Community",
+      "communityHint": "Imported by a member. Metadata has not been verified by the team."
     }
   },
   "scoring": {

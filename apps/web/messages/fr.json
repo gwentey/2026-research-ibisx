@@ -718,6 +718,48 @@
       "environment": "Environnement",
       "technology": "Technologie",
       "research": "Recherche"
+    },
+    "kaggleImport": {
+      "trigger": "Importer depuis Kaggle",
+      "title": "Importer un dataset Kaggle",
+      "description": "Colle le lien de la page Kaggle : le dataset est téléchargé, analysé et décrit automatiquement.",
+      "urlLabel": "Lien du dataset",
+      "urlHint": "Par exemple https://www.kaggle.com/datasets/uciml/iris — la page du dataset, pas une compétition ni un notebook.",
+      "submit": "Importer",
+      "cancel": "Annuler",
+      "running": "Import en cours…",
+      "visibility": {
+        "label": "Visibilité",
+        "public": "Public",
+        "publicHint": "Visible par tout le monde dans le catalogue, à ton nom.",
+        "private": "Privé",
+        "privateHint": "Visible par toi seul. Tu pourras le rendre public plus tard.",
+        "licenseNotice": "Si la licence Kaggle n'autorise pas la redistribution, l'import passera automatiquement en privé."
+      },
+      "duplicate": {
+        "title": "Ce dataset existe déjà",
+        "generic": "Ce dataset est déjà présent.",
+        "open": "Voir le dataset existant"
+      },
+      "done": {
+        "title": "Import terminé",
+        "body": "Les critères éthiques ont été suggérés par l'IA : ils restent à confirmer avant d'être comptés dans le score.",
+        "open": "Ouvrir le dataset"
+      },
+      "errors": {
+        "title": "L'import a échoué",
+        "badLink": "Ce lien n'est pas une page de dataset Kaggle valide.",
+        "unreachable": "Impossible de suivre l'import. Réessaie dans un instant.",
+        "generic": "L'import n'a pas abouti."
+      }
+    },
+    "attribution": {
+      "importedBy": "Importé par {name}",
+      "anonymous": "un membre",
+      "verified": "Vérifié",
+      "verifiedHint": "Dataset du catalogue IBIS-X, vérifié par l'équipe.",
+      "community": "Communauté",
+      "communityHint": "Importé par un membre. Les métadonnées n'ont pas été vérifiées par l'équipe."
     }
   },
   "scoring": {

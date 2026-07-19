@@ -3,6 +3,42 @@
 Refonte complète from scratch (voir [JALONS.md](JALONS.md) et [docs/refonte/](docs/refonte/)).
 Un jalon = un incrément livrable ; chaque entrée correspond à un commit `feat: jalon N`.
 
+## Import Kaggle par lien + catalogue communautaire (19/07/2026)
+
+Le catalogue plafonnait à 28 datasets parce que chaque entrée exigeait un JSON de métadonnées
+enrichies **écrit à la main**. Le téléchargement Kaggle n'était pas le goulot — l'enrichissement
+l'était. Cette feature ouvre le catalogue à l'import par n'importe quel contributeur.
+
+- **`POST /datasets/import/kaggle`** — on colle l'URL Kaggle (toutes ses formes : `/data`,
+  `?select=`, `/versions/N`, ancienne forme sans `/datasets`, référence nue). Validation et
+  déduplication **synchrones** (erreur immédiate sur mauvais lien), téléchargement au worker
+  (file `maintenance`, jamais `training` qui est bridée à 1 en production).
+- **Client Kaggle `httpx`** (`kaggle_client.py`) au lieu de la CLI `kaggle`, qui n'a jamais été
+  installée : la taille se lit sur `totalBytes` **avant** téléchargement, puis se revérifie sur la
+  taille **décompressée** (une archive de 2 Mo peut cacher 5 Go). Refus des membres d'archive en
+  `../` (zip slip). Auth `Bearer` (`KAGGLE_API_TOKEN`) avec repli Basic legacy.
+- **Enrichissement automatique** (`enrichment.py`) — socle déterministe qui tient **sans clé LLM**
+  (tags Kaggle → domaines, profilage réel des colonnes → tâche ML, % de manquants mesuré), plus une
+  couche IA de confort (objectif en français). Panne LLM, JSON illisible ou hors-format → repli
+  silencieux, l'import aboutit quand même.
+- **L'IA propose, l'humain assume.** Les 10 critères éthiques restent `NULL` à l'import ; les
+  suggestions du modèle vivent dans une colonne séparée (`ethics_suggestions`), filtrées aux seuls
+  critères connus et aux seuls booléens, et **ne comptent jamais dans `ethical_score`** tant qu'un
+  humain ne les a pas confirmées. `apply_ethical_template=False` sur ce chemin, contrairement à
+  l'upload.
+- **Attribution + badges** — avatar et pseudo de l'importeur sur la carte catalogue (nouvelle route
+  publique `GET /users/{id}/avatar`, image seule), badge **Vérifié** pour le catalogue curé vs
+  **Communauté** pour les imports. `is_verified` est une colonne explicite, **non déduite** de
+  `created_by IS NULL` : la suppression d'un compte aurait sinon promu des imports en « vérifiés ».
+- **Licence opposable** — récupérée, stockée, affichée. Liste conservatrice : ce qui n'est pas
+  clairement ouvert (NC, « Other », inconnue) **force le mode privé**, puisque le catalogue public
+  redistribue les fichiers.
+- **Déduplication à unicité partielle** — `UNIQUE (source_ref) WHERE access = 'public'` : le
+  catalogue public n'a jamais de doublon, mais chacun garde le droit à sa copie privée. Une unicité
+  globale aurait empêché un second utilisateur d'importer un jeu qu'un premier a gardé pour lui.
+- Migration `0010` (numérotée pour éviter la collision avec le `0009` d'une branche concurrente).
+  **282 tests backend + 105 front verts**, build production OK.
+
 ## Récap de défi réductible (19/07/2026)
 
 - **Débrief de fin d'enquête repliable** (`ChallengeDebrief`) : l'encart de résultats gardait

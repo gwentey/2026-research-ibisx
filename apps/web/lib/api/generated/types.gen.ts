@@ -506,6 +506,14 @@ export type DatasetCard = {
      */
     instances_number: number | null;
     /**
+     * Is Verified
+     */
+    is_verified?: boolean;
+    /**
+     * License Name
+     */
+    license_name?: string | null;
+    /**
      * Num Citations
      */
     num_citations: number;
@@ -513,10 +521,15 @@ export type DatasetCard = {
      * Objective
      */
     objective: string | null;
+    owner?: DatasetOwner | null;
     /**
      * Representativity Level
      */
     representativity_level: string | null;
+    /**
+     * Source Kind
+     */
+    source_kind?: string;
     /**
      * Split
      */
@@ -604,6 +617,16 @@ export type DatasetDetail = {
      */
     ethical_score: number;
     /**
+     * Ethics Reviewed At
+     */
+    ethics_reviewed_at?: string | null;
+    /**
+     * Ethics Suggestions
+     */
+    ethics_suggestions?: {
+        [key: string]: unknown;
+    } | null;
+    /**
      * External Documentation Available
      */
     external_documentation_available: boolean | null;
@@ -636,6 +659,14 @@ export type DatasetDetail = {
      */
     instances_number: number | null;
     /**
+     * Is Verified
+     */
+    is_verified?: boolean;
+    /**
+     * License Name
+     */
+    license_name?: string | null;
+    /**
      * Metadata Provided With Dataset
      */
     metadata_provided_with_dataset: boolean | null;
@@ -655,6 +686,7 @@ export type DatasetDetail = {
      * Objective
      */
     objective: string | null;
+    owner?: DatasetOwner | null;
     /**
      * Representativity Description
      */
@@ -671,6 +703,14 @@ export type DatasetDetail = {
      * Sample Balance Level
      */
     sample_balance_level: string | null;
+    /**
+     * Source Kind
+     */
+    source_kind?: string;
+    /**
+     * Source Ref
+     */
+    source_ref?: string | null;
     /**
      * Sources
      */
@@ -995,6 +1035,26 @@ export type DatasetMetadataUpdate = {
      * Year
      */
     year?: number | null;
+};
+
+/**
+ * DatasetOwner
+ *
+ * Attribution publique d'un dataset importé — jamais l'email, seulement le pseudo.
+ */
+export type DatasetOwner = {
+    /**
+     * Has Avatar
+     */
+    has_avatar: boolean;
+    /**
+     * Id
+     */
+    id: string;
+    /**
+     * Pseudo
+     */
+    pseudo: string | null;
 };
 
 /**
@@ -1841,6 +1901,43 @@ export type JobRow = {
  * JobStatus
  */
 export type JobStatus = 'pending' | 'running' | 'completed' | 'failed' | 'cancelled';
+
+/**
+ * KaggleImportRequest
+ *
+ * Import depuis un lien Kaggle collé par l'utilisateur.
+ */
+export type KaggleImportRequest = {
+    /**
+     * Access
+     */
+    access?: 'public' | 'private';
+    /**
+     * Url
+     */
+    url: string;
+};
+
+/**
+ * KaggleImportResponse
+ *
+ * Réponse immédiate : soit un job lancé, soit le dataset déjà présent.
+ */
+export type KaggleImportResponse = {
+    /**
+     * Duplicate Reason
+     */
+    duplicate_reason?: string | null;
+    /**
+     * Existing Dataset Id
+     */
+    existing_dataset_id?: string | null;
+    job?: JobRead | null;
+    /**
+     * Ref
+     */
+    ref: string;
+};
 
 /**
  * LogLine
@@ -3279,6 +3376,31 @@ export type GetDatasetFacetsResponses = {
 };
 
 export type GetDatasetFacetsResponse = GetDatasetFacetsResponses[keyof GetDatasetFacetsResponses];
+
+export type ImportKaggleDatasetData = {
+    body: KaggleImportRequest;
+    path?: never;
+    query?: never;
+    url: '/api/v1/datasets/import/kaggle';
+};
+
+export type ImportKaggleDatasetErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type ImportKaggleDatasetError = ImportKaggleDatasetErrors[keyof ImportKaggleDatasetErrors];
+
+export type ImportKaggleDatasetResponses = {
+    /**
+     * Successful Response
+     */
+    202: KaggleImportResponse;
+};
+
+export type ImportKaggleDatasetResponse = ImportKaggleDatasetResponses[keyof ImportKaggleDatasetResponses];
 
 export type AnalyzeUploadData = {
     body: BodyAnalyzeUpload;
@@ -4776,3 +4898,31 @@ export type ChangePasswordResponses = {
 };
 
 export type ChangePasswordResponse = ChangePasswordResponses[keyof ChangePasswordResponses];
+
+export type GetUserAvatarData = {
+    body?: never;
+    path: {
+        /**
+         * User Id
+         */
+        user_id: string;
+    };
+    query?: never;
+    url: '/api/v1/users/{user_id}/avatar';
+};
+
+export type GetUserAvatarErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type GetUserAvatarError = GetUserAvatarErrors[keyof GetUserAvatarErrors];
+
+export type GetUserAvatarResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
