@@ -10,7 +10,8 @@ import {
   GlobeIcon,
   LinkIcon,
   LockIcon,
-  Loader2Icon
+  Loader2Icon,
+  SparklesIcon
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -39,6 +40,7 @@ type Phase =
   | { kind: "submitting" }
   | { kind: "running"; jobId: string; progress: number; message: string | null }
   | { kind: "duplicate"; datasetId: string; reason: string }
+  | { kind: "choices"; choices: { ref: string; url: string }[] }
   | { kind: "done"; datasetId: string }
   | { kind: "error"; message: string };
 
@@ -49,6 +51,8 @@ export function KaggleImportDialog({ onImported }: { onImported?: () => void }) 
   const [url, setUrl] = useState("");
   const [access, setAccess] = useState<"public" | "private">("public");
   const [phase, setPhase] = useState<Phase>({ kind: "idle" });
+  // Le lien collé était un notebook : on le dit, sinon l'utilisateur croit s'être trompé.
+  const [notebookNotice, setNotebookNotice] = useState(false);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const stopPolling = useCallback(() => {
@@ -105,6 +109,16 @@ export function KaggleImportDialog({ onImported }: { onImported?: () => void }) 
       return;
     }
 
+    if (data.choices && data.choices.length > 0) {
+      // Le notebook collé utilise plusieurs jeux : on ne devine pas à la place de l'utilisateur.
+      setPhase({ kind: "choices", choices: data.choices });
+      return;
+    }
+
+    if (data.resolved_from_notebook) {
+      setNotebookNotice(true);
+    }
+
     if (data.existing_dataset_id) {
       setPhase({
         kind: "duplicate",
@@ -121,6 +135,7 @@ export function KaggleImportDialog({ onImported }: { onImported?: () => void }) 
     stopPolling();
     setUrl("");
     setAccess("public");
+    setNotebookNotice(false);
     setPhase({ kind: "idle" });
   }, [stopPolling]);
 
@@ -164,6 +179,32 @@ export function KaggleImportDialog({ onImported }: { onImported?: () => void }) 
               ) : null
             }
           />
+        ) : phase.kind === "choices" ? (
+          <div className="space-y-3">
+            <ResultPanel
+              tone="warning"
+              icon={<AlertTriangleIcon className="size-5" />}
+              title={t("choices.title")}
+              body={t("choices.body", { count: phase.choices.length })}
+            />
+            <div className="space-y-2">
+              {phase.choices.map((choice) => (
+                <button
+                  key={choice.ref}
+                  type="button"
+                  onClick={() => {
+                    setUrl(choice.url);
+                    setPhase({ kind: "idle" });
+                  }}
+                  className="hover:bg-muted/60 flex w-full items-center justify-between gap-3 rounded-lg border p-3 text-left transition-colors">
+                  <span className="min-w-0 truncate text-sm font-medium">{choice.ref}</span>
+                  <span className="text-muted-foreground shrink-0 text-xs">
+                    {t("choices.pick")}
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
         ) : phase.kind === "duplicate" ? (
           <ResultPanel
             tone="warning"
@@ -197,6 +238,12 @@ export function KaggleImportDialog({ onImported }: { onImported?: () => void }) 
                 />
               </div>
               <p className="text-muted-foreground text-xs">{t("urlHint")}</p>
+              {notebookNotice ? (
+                <p className="text-ai flex items-start gap-1.5 text-xs">
+                  <SparklesIcon className="mt-0.5 size-3.5 shrink-0" />
+                  {t("notebookResolved")}
+                </p>
+              ) : null}
             </div>
 
             <fieldset className="space-y-2" disabled={busy}>
@@ -251,7 +298,7 @@ export function KaggleImportDialog({ onImported }: { onImported?: () => void }) 
           </div>
         )}
 
-        {phase.kind === "done" || phase.kind === "duplicate" ? null : (
+        {phase.kind === "done" || phase.kind === "duplicate" || phase.kind === "choices" ? null : (
           <DialogFooter>
             <Button variant="ghost" onClick={() => setOpen(false)} disabled={busy}>
               {t("cancel")}

@@ -11,7 +11,7 @@ from sqlalchemy.orm import Session
 
 from ibis.core.config import get_settings
 from ibis.core.errors import InvalidInputError, NotFoundError
-from ibis.core.ratelimit import rate_limit
+from ibis.core.ratelimit import enforce_quota
 from ibis.db.engine import get_db
 from ibis.modules.auth.deps import CurrentClaims, require_owner_or_admin, require_role
 from ibis.modules.auth.models import UserRole
@@ -29,6 +29,7 @@ from ibis.modules.datasets.schemas import (
     DatasetPreview,
     EthicsReviewInput,
     FileRead,
+    KaggleChoice,
     KaggleImportRequest,
     KaggleImportResponse,
     SimilarDataset,
@@ -44,9 +45,11 @@ router = APIRouter(prefix="/datasets", tags=["datasets"])
 DbDep = Annotated[Session, Depends(get_db)]
 ContributorDep = Depends(require_role(UserRole.contributor))
 
-# L'import Kaggle est ouvert à tout compte connecté : le limiteur (par IP) empêche qu'un
-# seul poste sature le stockage et le worker de la VM avec des téléchargements en rafale.
-kaggle_import_rate_limit = Depends(rate_limit("kaggle_import", times=10, seconds=3600))
+# L'import Kaggle est ouvert à tout compte connecté : un quota empêche qu'un seul compte
+# sature le stockage et le worker de la VM. Il porte sur l'UTILISATEUR, pas sur l'IP :
+# une salle de TP derrière un NAT partagerait sinon un quota unique, et une classe entière
+# serait bloquée par les premiers arrivés.
+KAGGLE_IMPORTS_PER_HOUR = 20
 
 MAX_UPLOAD_FILES = 10
 
@@ -102,7 +105,6 @@ def get_stats(db: DbDep, _claims: CurrentClaims) -> CatalogStats:
     response_model=KaggleImportResponse,
     status_code=202,
     operation_id="importKaggleDataset",
-    dependencies=[kaggle_import_rate_limit],
 )
 def import_kaggle_dataset(
     payload: KaggleImportRequest, db: DbDep, claims: CurrentClaims
@@ -118,13 +120,33 @@ def import_kaggle_dataset(
     Réponse immédiate : le lien est validé et dédupliqué ici (synchrone, donc l'utilisateur
     sait tout de suite si son lien est mauvais) ; le téléchargement part au worker.
     """
+    enforce_quota(
+        "kaggle_import",
+        str(claims.user_id),
+        times=KAGGLE_IMPORTS_PER_HOUR,
+        seconds=3600,
+        message=(
+            f"Limite de {KAGGLE_IMPORTS_PER_HOUR} imports par heure atteinte. "
+            "Réessaie un peu plus tard."
+        ),
+        code="KAGGLE_IMPORT_QUOTA",
+    )
     ticket = kaggle_import.prepare(db, url=payload.url, user_id=claims.user_id)
 
+    if ticket.choices:
+        # Le notebook collé utilise plusieurs jeux : on ne devine pas à sa place.
+        return KaggleImportResponse(
+            choices=[KaggleChoice(ref=choice.ref, url=choice.url) for choice in ticket.choices],
+            resolved_from_notebook=True,
+        )
+
+    assert ticket.ref is not None  # sans choix, la référence est toujours résolue
     if ticket.existing_dataset_id is not None:
         return KaggleImportResponse(
             ref=ticket.ref.ref,
             existing_dataset_id=ticket.existing_dataset_id,
             duplicate_reason=ticket.duplicate_reason,
+            resolved_from_notebook=ticket.resolved_from_notebook,
         )
 
     job = jobs_service.create_job(
@@ -137,7 +159,11 @@ def import_kaggle_dataset(
         payload.access,
         str(claims.user_id) if claims.user_id else None,
     )
-    return KaggleImportResponse(ref=ticket.ref.ref, job=JobRead.model_validate(job))
+    return KaggleImportResponse(
+        ref=ticket.ref.ref,
+        job=JobRead.model_validate(job),
+        resolved_from_notebook=ticket.resolved_from_notebook,
+    )
 
 
 @router.post(

@@ -49,6 +49,25 @@ Un jalon = un incrément livrable ; chaque entrée correspond à un commit `feat
   `featureImpact` (anciens messages inclus).
 - **Garde-fou anti-hallucination étendu** : tolérance symétrique ÷100 (contexte « 24 % » →
   « 0,24 » accepté) ; rejets toujours loggués, replis « sans IA » inchangés.
+## Coller un notebook Kaggle marche aussi (20/07/2026)
+
+- **Le cas réel qui bloquait** : on cherche des données, on tombe sur un notebook (c'est ce que
+  les moteurs de recherche mettent en avant), on colle son lien — refus. Le message renvoyait à
+  un onglet « Data » qui **n'existe pas** sur une page de notebook. Le dataset y figure pourtant,
+  sous « Input », mais rien n'indique qu'il faut cliquer dessus pour récupérer son URL.
+- **Le notebook est désormais résolu automatiquement** vers le(s) jeu(x) qu'il utilise
+  (`kernel_dataset_sources`, endpoint `kernels/pull`). Un seul dataset → import direct, avec la
+  mention « ce lien était un notebook, j'ai retrouvé le jeu de données ». Plusieurs → la liste
+  est proposée, on ne devine pas à la place de l'utilisateur. Aucun → message décrivant ce qu'il
+  **voit réellement** (panneau « Input », clic sur le nom du dataset).
+- Le contrat de `kernels/pull` n'étant pas documenté publiquement, le parseur accepte **5 formes
+  de charge utile** et **dégrade** (liste vide → message actionnable) sur une forme inconnue,
+  plutôt que de casser l'import pour un champ renommé.
+- **Quota d'import passé par UTILISATEUR** (20/heure) au lieu de par IP (10/heure). Le limiteur
+  par IP se déclenchait dans la suite de tests elle-même — et aurait bloqué une salle de TP
+  entière derrière un NAT partagé, les premiers arrivés consommant le quota commun.
+  Nouveau `enforce_quota()` dans `ibis.core.ratelimit`, le limiteur par IP restant pour `/auth/*`.
+
 ## Erreurs d'API lisibles à l'écran (20/07/2026)
 
 - **« [object Object] » au lieu du message d'erreur.** Le dialogue d'import Kaggle faisait
