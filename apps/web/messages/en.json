@@ -2875,7 +2875,7 @@
     "updatedAt": "Last updated: {date}",
     "lastUpdate": "19 July 2026",
     "contact": "A question about this document, or a request regarding your data? Write to us at",
-    "contactEmail": "anthonyoutub@gmail.com",
+    "contactEmail": "anthony.rodrigues@zelian.fr",
     "readTerms": "Read the terms of service",
     "readPrivacy": "Read the privacy policy",
     "consent": "By creating an account, you accept the <terms>terms of service</terms> and the <privacy>privacy policy</privacy>.",
@@ -2885,7 +2885,7 @@
       "sections": {
         "controller": {
           "title": "Who processes your data",
-          "body": "The data controller under the GDPR is Anthony Rodrigues — Zelian, 60 rue François 1er, 75008 Paris, France, reachable at the email address given at the bottom of this page. IBIS-X grew out of an MSc research project in MIAGE (Université Paris 1 Panthéon-Sorbonne) and the service is available at ibisx.zelian.fr. No other organisation exploits your data."
+          "body": "The data controller under the GDPR is Zelian, a French SASU with share capital of €1, registered with the Paris Trade and Companies Register under number 992 855 155, whose registered office is at 60 rue François 1er, 75008 Paris, France, represented by its president Anthony Rodrigues. IBIS-X grew out of an MSc research project in MIAGE (Université Paris 1 Panthéon-Sorbonne) and the service is available at ibisx.zelian.fr. No other organisation exploits your data. For any question or request concerning your data, write to the address given at the bottom of this page."
         },
         "data": {
           "title": "The data we collect",
@@ -2978,7 +2978,17 @@
       "sections": {
         "purpose": {
           "title": "Purpose",
-          "body": "These terms set out the rules for accessing and using IBIS-X, an educational Machine Learning platform available at ibisx.zelian.fr. They form a contract between you and the publisher of the service, Anthony Rodrigues — Zelian, 60 rue François 1er, 75008 Paris, France. The privacy policy complements them and forms an integral part of them."
+          "body": "These terms set out the rules for accessing and using IBIS-X, an educational Machine Learning platform available at ibisx.zelian.fr. They form a contract between you and the publisher of the service, identified in the next section. The privacy policy complements them and forms an integral part of them."
+        },
+        "editor": {
+          "title": "Publisher and host",
+          "body": "Legal notices for the service, as required by article 6 of the French Act for Confidence in the Digital Economy.",
+          "items": [
+            "Publisher — Zelian, a French simplified joint-stock company with a sole shareholder, share capital €1, registered with the Paris Trade and Companies Register under number 992 855 155 (SIRET 992 855 155 00014, VAT FR57992855155, NAF code 6201Z), registered office at 60 rue François 1er, 75008 Paris, France.",
+            "Publication director — Anthony Rodrigues, president.",
+            "Contact — anthony.rodrigues@zelian.fr",
+            "Host — Hetzner Online GmbH, Industriestr. 25, 91710 Gunzenhausen, Germany."
+          ]
         },
         "service": {
           "title": "What the service offers",

@@ -2875,7 +2875,7 @@
     "updatedAt": "Dernière mise à jour : {date}",
     "lastUpdate": "19 juillet 2026",
     "contact": "Une question sur ce document, ou une demande concernant vos données ? Écrivez-nous à",
-    "contactEmail": "anthonyoutub@gmail.com",
+    "contactEmail": "anthony.rodrigues@zelian.fr",
     "readTerms": "Lire les conditions d'utilisation",
     "readPrivacy": "Lire la politique de confidentialité",
     "consent": "En créant un compte, vous acceptez les <terms>conditions d'utilisation</terms> et la <privacy>politique de confidentialité</privacy>.",
@@ -2885,7 +2885,7 @@
       "sections": {
         "controller": {
           "title": "Qui traite vos données",
-          "body": "Le responsable de traitement au sens du RGPD est Anthony Rodrigues — Zelian, 60 rue François 1er, 75008 Paris, joignable à l'adresse e-mail indiquée en bas de cette page. IBIS-X est né d'un travail de recherche de M2 MIAGE (Université Paris 1 Panthéon-Sorbonne) et le service est accessible à l'adresse ibisx.zelian.fr. Aucun autre organisme n'exploite vos données."
+          "body": "Le responsable de traitement au sens du RGPD est la société Zelian, SASU au capital de 1 €, immatriculée au RCS de Paris sous le numéro 992 855 155, dont le siège social est situé 60 rue François 1er, 75008 Paris, représentée par son président Anthony Rodrigues. IBIS-X est né d'un travail de recherche de M2 MIAGE (Université Paris 1 Panthéon-Sorbonne) et le service est accessible à l'adresse ibisx.zelian.fr. Aucun autre organisme n'exploite vos données. Pour toute question ou demande relative à vos données, écrivez à l'adresse indiquée en bas de cette page."
         },
         "data": {
           "title": "Les données que nous collectons",
@@ -2978,7 +2978,17 @@
       "sections": {
         "purpose": {
           "title": "Objet",
-          "body": "Les présentes conditions définissent les règles d'accès et d'usage d'IBIS-X, plateforme éducative d'apprentissage du Machine Learning accessible à l'adresse ibisx.zelian.fr. Elles forment un contrat entre vous et l'éditeur du service, Anthony Rodrigues — Zelian, 60 rue François 1er, 75008 Paris. La politique de confidentialité les complète et en fait partie intégrante."
+          "body": "Les présentes conditions définissent les règles d'accès et d'usage d'IBIS-X, plateforme éducative d'apprentissage du Machine Learning accessible à l'adresse ibisx.zelian.fr. Elles forment un contrat entre vous et l'éditeur du service, identifié à la section suivante. La politique de confidentialité les complète et en fait partie intégrante."
+        },
+        "editor": {
+          "title": "Éditeur et hébergeur",
+          "body": "Mentions légales du service, au sens de l'article 6 de la loi pour la confiance dans l'économie numérique.",
+          "items": [
+            "Éditeur — Zelian, société par actions simplifiée unipersonnelle au capital de 1 €, immatriculée au RCS de Paris sous le numéro 992 855 155 (SIRET 992 855 155 00014, TVA intracommunautaire FR57992855155, code NAF 6201Z), siège social 60 rue François 1er, 75008 Paris.",
+            "Directeur de la publication — Anthony Rodrigues, président.",
+            "Contact — anthony.rodrigues@zelian.fr",
+            "Hébergeur — Hetzner Online GmbH, Industriestr. 25, 91710 Gunzenhausen, Allemagne."
+          ]
         },
         "service": {
           "title": "Ce que le service propose",

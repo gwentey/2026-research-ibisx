@@ -10,7 +10,8 @@ Un jalon = un incrément livrable ; chaque entrée correspond à un commit `feat
   que les liens de l'écran de consentement soient atteignables sans compte). Coquille commune
   `LegalDocument` : header sticky de la landing, sommaire ancré en vis-à-vis sur desktop,
   sections numérotées à ancres stables (`#google`, `#cookies`…). Plan des documents dans
-  `lib/legal/documents.ts`, contenu intégralement i18n FR/EN.
+  `lib/legal/documents.ts`, contenu intégralement i18n FR/EN. Les CGU portent les mentions
+  légales LCEN (éditeur Zelian SASU, directeur de publication, hébergeur).
 - **Contenu établi sur un audit du code, pas sur un modèle générique** : champs réellement
   stockés, cookie `ibis_refresh` et clés `ibis:*` du navigateur, sous-traitants réels
   (Hetzner UE, Google OIDC, OpenRouter), déclaration **Limited Use** exigée par Google, et

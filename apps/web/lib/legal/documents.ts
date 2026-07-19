@@ -43,6 +43,9 @@ export const PRIVACY_SECTIONS: LegalSection[] = [
 
 export const TERMS_SECTIONS: LegalSection[] = [
   { id: "purpose", icon: FileTextIcon },
+  // Mentions légales LCEN (éditeur, directeur de publication, hébergeur) : leur place
+  // est en tête de document, juste après l'objet.
+  { id: "editor", icon: BuildingIcon },
   { id: "service", icon: SparklesIcon },
   { id: "account", icon: UserPlusIcon },
   { id: "acceptable", icon: HeartHandshakeIcon },
