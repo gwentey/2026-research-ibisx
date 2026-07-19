@@ -3,7 +3,7 @@
 | Champ         | Valeur              |
 |---------------|---------------------|
 | Module        | web/datasets        |
-| Version       | 0.2.0               |
+| Version       | 0.2.1               |
 | Date          | 2026-07-20          |
 | Source        | Rétro-ingénierie + import Kaggle (session 20/07/2026) |
 
@@ -180,6 +180,30 @@ Le `MetadataForm` est partagé entre le wizard d'upload (étape 3) et la page de
 | Score < 40 % | rouge | `constants.ts` |
 
 ---
+
+
+## Lecture des erreurs de l'API (`lib/api/errors.ts`)
+
+`apiErrorMessage(error, fallback)` et `apiErrorCode(error)` — deux fonctions pures, testées
+dans `tests/api/errors.test.ts`.
+
+**Le piège qu'elles couvrent** : l'API émet du HTTP 422 pour DEUX raisons distinctes, avec
+deux formes d'enveloppe incompatibles.
+
+| Enveloppe | Origine | Traitement |
+|-----------|---------|------------|
+| `{ detail: { code, message } }` | erreurs métier (`ibis.core.errors.error_payload`) | `message` affiché **tel quel** — il est rédigé pour l'utilisateur final |
+| `{ detail: [ { loc, msg, type } ] }` | validation de schéma Pydantic (FastAPI) | annote seulement le repli de l'appelant — `field required` / `loc: ["body","url"]` est technique |
+| `{ detail: "texte" }` | divers | affiché tel quel |
+| autre forme, `null`, `undefined` | — | repli de l'appelant |
+
+**Ne jamais faire `String(error.detail)`** : sur l'enveloppe métier, `detail` est un objet, ce
+qui produit littéralement « [object Object] » à l'écran et détruit l'explication du refus.
+Ce défaut a été constaté en production sur le dialogue d'import Kaggle. Le test de régression
+couvre 11 formes d'enveloppe et vérifie qu'aucune ne peut produire « [object ».
+
+Consommateurs : `kaggle-import-dialog.tsx`, `ethics-review-dialog.tsx`.
+`lib/auth/session.ts` conserve son propre extracteur de code (antérieur, périmètre auth).
 
 ## Tests existants
 

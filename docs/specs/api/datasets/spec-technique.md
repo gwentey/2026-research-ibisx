@@ -3,7 +3,7 @@
 | Champ         | Valeur              |
 |---------------|---------------------|
 | Module        | api/datasets        |
-| Version       | 0.2.0               |
+| Version       | 0.2.1               |
 | Date          | 2026-07-20          |
 | Source        | Rétro-ingénierie + import Kaggle (session 20/07/2026) |
 
@@ -270,6 +270,22 @@ schemas.py         → Schémas Pydantic I/O (StrictModel extra="forbid" sur tou
 | `KAGGLE_MAX_DATASET_MB` | Plafond taille dataset Kaggle (totalBytes + taille décompressée) | 200 Mo |
 
 ---
+
+
+### Messages de refus d'URL Kaggle (`parse_kaggle_url`)
+
+`NON_DATASET_SECTIONS` est un **dict** segment d'URL → libellé humain, pas un `set` :
+`code`/`kernels` → « un notebook », `competitions`/`c` → « une compétition », `models` →
+« un modèle », `discussions` → « une discussion », `learn` → « un cours ».
+
+Le message nomme la nature de la page ET indique où aller : « Ce lien pointe vers un notebook,
+pas vers un jeu de données. Ouvre l'onglet « Data » de la page, ou cherche le dataset sur
+kaggle.com/datasets — son adresse contient /datasets/. » Le segment brut (`code`, `c`,
+`kernels`) n'évoque rien pour un utilisateur non technique. Code d'erreur inchangé :
+`KAGGLE_URL_NOT_A_DATASET`.
+
+Ce refus est **synchrone dans la route** : aucun job n'est créé, donc rien n'apparaît dans les
+logs du worker — comportement normal, à ne pas confondre avec une panne.
 
 ## Tests existants
 
