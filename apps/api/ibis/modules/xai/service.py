@@ -93,6 +93,23 @@ def list_for_experiment(
     )
 
 
+def latest_completed_explanation(
+    db: Session, user_id: uuid.UUID, experiment_id: uuid.UUID
+) -> Explanation | None:
+    """Dernière explication TERMINÉE de l'expérience — source des questions suggérées
+    contextualisées (CDC évolutions §4 : citer la vraie variable dominante)."""
+    return db.scalars(
+        select(Explanation)
+        .where(
+            Explanation.experiment_id == experiment_id,
+            Explanation.user_id == user_id,
+            Explanation.status == ExplanationStatus.completed,
+        )
+        .order_by(Explanation.created_at.desc())
+        .limit(1)
+    ).first()
+
+
 # ------------------------------------ Chat ---------------------------------------------------
 
 

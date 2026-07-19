@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "generated_by": "zelian-framework@3.0.0",
-  "updated_at": "2026-07-19T19:28:07.316Z",
+  "updated_at": "2026-07-19T21:20:23.282Z",
   "entries": [
     {
       "id": "api/admin",
@@ -585,6 +585,22 @@
         "wizard"
       ],
       "updated_at": "2026-07-19T19:28:07.316Z"
+    },
+    {
+      "id": "web/xai",
+      "app": "web",
+      "module": "xai",
+      "label": "xai",
+      "spec_dir": "docs/specs/web/xai",
+      "code": [
+        "apps/web/lib/xai/features.ts",
+        "apps/web/components/ibis/xai/explanation-view.tsx",
+        "apps/web/components/ibis/xai/ibis-blocks.tsx",
+        "apps/web/components/ibis/xai/xai-tab.tsx",
+        "apps/web/components/ibis/xai/explanation-copilot.tsx"
+      ],
+      "keywords": [],
+      "updated_at": "2026-07-19T21:20:23.282Z"
     }
   ]
 }

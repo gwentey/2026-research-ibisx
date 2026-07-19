@@ -50,6 +50,21 @@ describe("parseInline", () => {
   it("** est prioritaire sur *", () => {
     expect(parseInline("**fort**")).toEqual([{ kind: "bold", value: "fort" }]);
   });
+  it("les underscores intra-mots (snake_case) ne déclenchent PAS l'italique", () => {
+    // « roc_auc = 0.84 et pr_auc » cassait : l'italique avalait les underscores.
+    expect(parseInline("roc_auc = 0.84 et pr_auc")).toEqual([
+      { kind: "text", value: "roc_auc = 0.84 et pr_auc" }
+    ]);
+    expect(parseInline("le modèle random_forest, rapide")).toEqual([
+      { kind: "text", value: "le modèle random_forest, rapide" }
+    ]);
+    // L'italique délimité par des frontières de mots continue de fonctionner.
+    expect(parseInline("un mot _souligné_ ici")).toEqual([
+      { kind: "text", value: "un mot " },
+      { kind: "italic", value: "souligné" },
+      { kind: "text", value: " ici" }
+    ]);
+  });
   it("plusieurs marques dans une phrase", () => {
     const tokens = parseInline("La variable ==revenu== pèse **0.41**.");
     expect(tokens.map((t) => t.kind)).toEqual(["text", "highlight", "text", "bold", "text"]);

@@ -3,6 +3,7 @@
 import pytest
 
 from ibis.modules.llm import xai_text
+from ibis.modules.xai import blocks as xai_blocks
 from ibis.modules.xai import quality
 
 # --------------------------- Complétude SHAP (axiome d'efficience) ---------------------------
@@ -109,15 +110,18 @@ def test_numbers_validation_accepts_high_precision_context_echo() -> None:
     assert xai_text.numbers_exist_in_context(echoed, context) is True
 
 
-def test_fallback_text_uses_only_real_values() -> None:
-    text = xai_text.fallback_text(
-        audience="novice",
+def test_fallback_uses_only_real_values() -> None:
+    # Le repli est désormais le document de blocs (CDC évolutions §2) — même invariant P2 :
+    # uniquement les vraies valeurs calculées, et l'honnêteté « sans IA » affichée.
+    doc = xai_blocks.fallback_document(
         language="fr",
+        audience="novice",
         metrics={"primary_metric": "f1_macro", "f1_macro": 0.85},
         importance=[{"feature": "petal_length", "value": 0.5}],
         task_type="classification",
         algorithm="random_forest",
     )
+    text = xai_blocks.to_plain_text(doc)
     assert "random_forest" in text
     assert "0.85" in text
     assert "petal_length" in text

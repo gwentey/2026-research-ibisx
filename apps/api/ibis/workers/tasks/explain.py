@@ -25,46 +25,92 @@ from ibis.workers.celery_app import celery_app
 logger = get_logger(__name__)
 
 
-def _generate_text(explanation: Explanation, experiment: Experiment, result: dict) -> dict:
-    """Texte adaptatif LLM avec anti-hallucination, sinon fallback déterministe (P2)."""
-    importance = result["values"].get("importance") or result["values"].get("contributions") or []
-    context = xai_text.build_context(
-        metrics=experiment.metrics or {},
+def _fallback_payload(
+    *,
+    language: str,
+    metrics: dict,
+    importance: list,
+    task_type: str,
+    algorithm: str,
+    audience: str,
+) -> dict:
+    """Repli déterministe commun chat/explication : document riche badgé « sans IA » (P2)."""
+    doc = xai_blocks.fallback_document(
+        language=language,
+        metrics=metrics,
         importance=importance,
-        task_type=str(experiment.preprocessing_config.get("task_type", "")),
-        algorithm=experiment.algorithm or "",
-        explanation_type=explanation.type.value,
-        local_values=result["values"] if explanation.type.value == "local" else None,
+        task_type=task_type,
+        algorithm=algorithm,
+        audience=audience,
     )
-    system, user = xai_text.build_prompt(
-        audience=explanation.audience_level, language=explanation.language, context=context
-    )
-    try:
-        for _attempt in range(2):  # régénération unique si nombre inventé
-            generated = llm_client.complete(system=system, user=user)
-            if xai_text.numbers_exist_in_context(generated.text, context):
-                return {
-                    "text": generated.text,
-                    "model_used": generated.model_used,
-                    "is_fallback": False,
-                    "tokens_used": generated.tokens_used,
-                }
-            logger.warning("xai_text.hallucination_detected", explanation_id=str(explanation.id))
-    except llm_client.LLMUnavailable as exc:
-        logger.info("xai_text.fallback", reason=str(exc))
     return {
-        "text": xai_text.fallback_text(
-            audience=explanation.audience_level,
-            language=explanation.language,
-            metrics=experiment.metrics or {},
-            importance=importance,
-            task_type=str(experiment.preprocessing_config.get("task_type", "")),
-            algorithm=experiment.algorithm or "",
-        ),
+        "content": xai_blocks.to_plain_text(doc),
+        "blocks": doc.model_dump(mode="json"),
         "model_used": "fallback",
         "is_fallback": True,
         "tokens_used": 0,
     }
+
+
+def _blocks_completion(
+    *, system: str, prompt: str, context: str, max_tokens: int, log_prefix: str
+) -> dict | None:
+    """Boucle LLM commune chat/explication (CDC évolutions §2) : jusqu'à 2 tentatives, sortie
+    JSON parsée puis validée (schéma ET anti-hallucination) ; None si aucune sortie valide."""
+    for attempt in range(2):
+        generated = llm_client.complete(
+            system=system, user=prompt, max_tokens=max_tokens, json_mode=True
+        )
+        try:
+            doc = xai_blocks.parse_document(generated.text)
+        except Exception as exc:  # JSON/schéma invalide → on retente
+            logger.info(log_prefix + ".invalid_blocks", attempt=attempt, reason=str(exc)[:200])
+            continue
+        if not xai_text.numbers_exist_in_context(xai_blocks.extract_text(doc), context):
+            logger.info(log_prefix + ".hallucinated_number", attempt=attempt)
+            continue
+        return {
+            "content": xai_blocks.to_plain_text(doc),
+            "blocks": doc.model_dump(mode="json"),
+            "model_used": generated.model_used,
+            "is_fallback": False,
+            "tokens_used": generated.tokens_used,
+        }
+    logger.info(log_prefix + ".fallback", reason="no_valid_answer")
+    return None
+
+
+def _generate_explanation_blocks(
+    *,
+    context: str,
+    language: str,
+    audience: str,
+    metrics: dict,
+    importance: list,
+    task_type: str,
+    algorithm: str,
+) -> dict:
+    """Explication v2 en blocs riches (CDC évolutions §2) — même contrat que le chat :
+    grammaire de blocs + anti-hallucination + repli déterministe par niveau. Le miroir texte
+    (`content`) alimente `text_explanation` (compat, copie, a11y, recherche)."""
+    system = xai_text.explanation_system_v2(language)
+    prompt = xai_text.explanation_prompt_v2(audience=audience, language=language, context=context)
+    try:
+        payload = _blocks_completion(
+            system=system, prompt=prompt, context=context, max_tokens=1400, log_prefix="xai_expl"
+        )
+        if payload is not None:
+            return payload
+    except llm_client.LLMUnavailable as exc:
+        logger.info("xai_expl.fallback", reason=str(exc)[:200])
+    return _fallback_payload(
+        language=language,
+        metrics=metrics,
+        importance=importance,
+        task_type=task_type,
+        algorithm=algorithm,
+        audience=audience,
+    )
 
 
 @celery_app.task(
@@ -155,15 +201,35 @@ def generate_explanation(self: object, explanation_id: str, job_id: str) -> str:
             progress=80,
             log_line="Rédaction de l'explication",
         )
-        text = _generate_text(explanation, experiment, result)
+        importance = (
+            result["values"].get("importance") or result["values"].get("contributions") or []
+        )
+        context = xai_text.build_context(
+            metrics=experiment.metrics or {},
+            importance=importance,
+            task_type=str(experiment.preprocessing_config.get("task_type", "")),
+            algorithm=experiment.algorithm or "",
+            explanation_type=explanation.type.value,
+            local_values=result["values"] if explanation.type.value == "local" else None,
+        )
+        payload = _generate_explanation_blocks(
+            context=context,
+            language=explanation.language,
+            audience=explanation.audience_level,
+            metrics=experiment.metrics or {},
+            importance=importance,
+            task_type=str(experiment.preprocessing_config.get("task_type", "")),
+            algorithm=experiment.algorithm or "",
+        )
 
         explanation.values = result["values"]
         explanation.viz_data = result["viz"]
         explanation.quality_kpis = result["kpis"]
-        explanation.text_explanation = text["text"]
-        explanation.model_used = text["model_used"]
-        explanation.is_fallback = text["is_fallback"]
-        explanation.tokens_used = text["tokens_used"]
+        explanation.text_explanation = payload["content"]
+        explanation.text_blocks = payload["blocks"]
+        explanation.model_used = payload["model_used"]
+        explanation.is_fallback = payload["is_fallback"]
+        explanation.tokens_used = payload["tokens_used"]
         explanation.processing_seconds = round(time.perf_counter() - started, 2)  # MESURÉ
         explanation.status = ExplanationStatus.completed
         explanation.progress = 100
@@ -224,30 +290,15 @@ def _answer_chat_blocks(
         question=question, context=context, history=history, language=language, audience=audience
     )
     try:
-        for attempt in range(2):
-            generated = llm_client.complete(
-                system=system, user=prompt, max_tokens=700, json_mode=True
-            )
-            try:
-                doc = xai_blocks.parse_document(generated.text)
-            except Exception as exc:  # JSON/schéma invalide → on retente
-                logger.info("xai_chat.invalid_blocks", attempt=attempt, reason=str(exc)[:200])
-                continue
-            if not xai_text.numbers_exist_in_context(xai_blocks.extract_text(doc), context):
-                logger.info("xai_chat.hallucinated_number", attempt=attempt)
-                continue
-            return {
-                "content": xai_blocks.to_plain_text(doc),
-                "blocks": doc.model_dump(mode="json"),
-                "model_used": generated.model_used,
-                "is_fallback": False,
-                "tokens_used": generated.tokens_used,
-            }
-        logger.info("xai_chat.fallback", reason="no_valid_answer")
+        payload = _blocks_completion(
+            system=system, prompt=prompt, context=context, max_tokens=700, log_prefix="xai_chat"
+        )
+        if payload is not None:
+            return payload
     except llm_client.LLMUnavailable as exc:
         logger.info("xai_chat.fallback", reason=str(exc)[:200])
 
-    doc = xai_blocks.fallback_document(
+    return _fallback_payload(
         language=language,
         metrics=metrics,
         importance=importance,
@@ -255,13 +306,6 @@ def _answer_chat_blocks(
         algorithm=algorithm,
         audience=audience,
     )
-    return {
-        "content": xai_blocks.to_plain_text(doc),
-        "blocks": doc.model_dump(mode="json"),
-        "model_used": "fallback",
-        "is_fallback": True,
-        "tokens_used": 0,
-    }
 
 
 @celery_app.task(name="ibis.workers.tasks.explain.answer_chat_question", soft_time_limit=120)

@@ -4,7 +4,8 @@
   langue UI ; température 0 (P4).
 - Anti-hallucination : le prompt ne contient QUE les vraies valeurs ; chaque nombre
   cité en sortie doit exister dans le contexte, sinon régénération puis fallback.
-- Fallback : template déterministe construit sur les vraies données (P2).
+- Fallback : document de blocs déterministe construit sur les vraies données (P2),
+  voir `ibis.modules.xai.blocks.fallback_document`.
 """
 
 import re
@@ -83,6 +84,87 @@ SYSTEM = {
 }
 
 
+def humanize_feature(name: str) -> str:
+    """Nom technique du pipeline → libellé lisible (CDC évolutions §1).
+
+    `cat__Sex_female` → « Sex = female », `num_median_0__Pclass` → « Pclass »,
+    `cat__Sex` (ordinal) → « Sex », nom sans préfixe → inchangé. Les colonnes
+    snake_case gardent leur sens : coupure au DERNIER « _ » (les catégories
+    multi-underscore sont plus rares que les colonnes multi-mots).
+    """
+    transformer, sep, rest = name.partition("__")
+    if not sep or not rest:
+        return name
+    if transformer == "cat" and "_" in rest:
+        column, _, category = rest.rpartition("_")
+        return f"{column.replace('_', ' ')} = {category}"
+    return rest.replace("_", " ")
+
+
+def format_share(value: float, total: float) -> str:
+    """Part entière de |value| dans total : « 24 % », « <1 % » sous 0.5 %.
+
+    Demi-parts vers le haut (parité exacte avec Math.round côté front).
+    """
+    if total <= 0:
+        return "0 %"
+    pct = abs(value) / total * 100
+    return "<1 %" if pct < 0.5 else f"{int(pct + 0.5)} %"
+
+
+def _round3(value: Any) -> str:
+    """Format lisible 3 décimales max, robuste aux valeurs non numériques."""
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        return str(value)
+    return f"{round(float(value), 3):g}"
+
+
+def _importance_line(importance: list[dict[str, Any]]) -> str | None:
+    """Importances en « part de l'importance affichée » — mêmes % que les graphiques.
+
+    Dénominateur = Σ|v| de la liste reçue ENTIÈRE (le top stocké, celui que le front
+    affiche) : le LLM et les charts citent exactement le même « 24 % ».
+    """
+    values = [float(i.get("value", i.get("contribution")) or 0) for i in importance]
+    total = sum(abs(v) for v in values)
+    if not values or total <= 0:
+        return None
+    signed = any("contribution" in item for item in importance)
+    parts = []
+    for item, raw in zip(importance, values, strict=True):
+        label = humanize_feature(str(item.get("feature", "?")))
+        share = format_share(raw, total)
+        if signed:
+            share += " ↗" if raw >= 0 else " ↘"
+        parts.append(f"{label} : {share}")
+    header = "Importances (part de l'importance affichée"
+    if signed:
+        header += ", ↗ pousse la prédiction vers le haut / ↘ vers le bas"
+    line = header + ") : " + ", ".join(parts)
+    if not signed:
+        # Totaux par variable one-hot (somme des % AFFICHÉS, pas des valeurs brutes) :
+        # le modèle agrège naturellement « Sex = male 25 % + Sex = female 20 % → 45 % » ;
+        # sans ce total dans le contexte, le garde-fou rejetait cette somme légitime.
+        totals: dict[str, int] = {}
+        counts: dict[str, int] = {}
+        for item, raw in zip(importance, values, strict=True):
+            label = humanize_feature(str(item.get("feature", "?")))
+            if " = " not in label:
+                continue
+            column = label.split(" = ")[0]
+            pct = abs(raw) / total * 100
+            totals[column] = totals.get(column, 0) + (0 if pct < 0.5 else int(pct + 0.5))
+            counts[column] = counts.get(column, 0) + 1
+        grouped = [
+            f"{column} (total modalités) : {value} %"
+            for column, value in totals.items()
+            if counts[column] >= 2 and value > 0
+        ]
+        if grouped:
+            line += "\nTotaux par variable (somme des modalités affichées) : " + ", ".join(grouped)
+    return line
+
+
 def build_context(
     *,
     metrics: dict[str, Any],
@@ -96,40 +178,20 @@ def build_context(
         f"Algorithme : {algorithm} | Tâche : {task_type} | Type d'explication : {explanation_type}"
     ]
     numeric_metrics = {k: v for k, v in metrics.items() if isinstance(v, (int, float))}
-    lines.append("Métriques réelles : " + ", ".join(f"{k}={v}" for k, v in numeric_metrics.items()))
-    if importance:
-        lines.append(
-            "Importances (top) : "
-            + ", ".join(
-                f"{i['feature']}={i.get('value', i.get('contribution'))}" for i in importance[:10]
-            )
-        )
+    lines.append(
+        "Métriques réelles (arrondies) : "
+        + ", ".join(f"{k}={_round3(v)}" for k, v in numeric_metrics.items())
+    )
+    importance_line = _importance_line(importance)
+    if importance_line:
+        lines.append(importance_line)
     if local_values:
         lines.append(
-            f"Prédiction locale : {local_values.get('prediction')} "
-            f"(base {local_values.get('base_value')}, classe {local_values.get('predicted_label')})"
+            f"Prédiction locale : {_round3(local_values.get('prediction'))} "
+            f"(base {_round3(local_values.get('base_value'))}, "
+            f"classe {local_values.get('predicted_label')})"
         )
     return "\n".join(lines)
-
-
-def build_prompt(*, audience: str, language: str, context: str) -> tuple[str, str]:
-    lang = "en" if language == "en" else "fr"
-    spec = AUDIENCE_SPECS.get(audience, AUDIENCE_SPECS["novice"])[lang]
-    if lang == "fr":
-        user = (
-            f"Explique ces résultats pour {spec}.\n"
-            "Structure : ① ce que le modèle a appris ② quelles variables comptent et pourquoi "
-            "③ à quel point s'y fier (métriques) ④ une limite à garder en tête.\n\n"
-            f"CONTEXTE (seules valeurs autorisées) :\n{context}"
-        )
-    else:
-        user = (
-            f"Explain these results for {spec}.\n"
-            "Structure: ① what the model learned ② which features matter and why "
-            "③ how much to trust it (metrics) ④ one limitation to keep in mind.\n\n"
-            f"CONTEXT (only allowed values):\n{context}"
-        )
-    return SYSTEM[lang], user
 
 
 NUMBER_RE = re.compile(r"\d+(?:[.,]\d+)?")
@@ -148,6 +210,9 @@ def numbers_exist_in_context(text: str, context: str) -> bool:
             context_numbers.add(
                 f"{value * 100:.{digits}f}".rstrip("0").rstrip(".")
             )  # % équivalents
+            context_numbers.add(
+                f"{value / 100:.{digits}f}".rstrip("0").rstrip(".")
+            )  # écho décimal d'un % affiché (24 → 0.24)
     foreign: list[str] = []
     for raw in NUMBER_RE.findall(text.replace(",", ".")):
         normalized = f"{float(raw):g}"
@@ -159,145 +224,6 @@ def numbers_exist_in_context(text: str, context: str) -> bool:
         # Diagnostic : quels nombres cités par l'IA ne sont pas dans le contexte (→ rejet).
         logger.info("xai_text.foreign_numbers", numbers=foreign[:10])
     return not foreign
-
-
-def _g(value: Any) -> str:
-    """Format court d'un nombre (0.83 → « 0.83 »), robuste aux valeurs non numériques."""
-    if isinstance(value, bool) or not isinstance(value, (int, float)):
-        return str(value)
-    return f"{float(value):g}"
-
-
-def fallback_text(
-    *,
-    audience: str,
-    language: str,
-    metrics: dict[str, Any],
-    importance: list[dict[str, Any]],
-    task_type: str,
-    algorithm: str,
-) -> str:
-    """Template déterministe sur les VRAIES données, ADAPTÉ au niveau (adaptatif §5.3).
-
-    Trois formulations distinctes (novice → analogie + langage courant ; intermédiaire →
-    orienté décision ; expert → terminologie), toujours ancrées sur les valeurs calculées et
-    toujours badgées « généré sans IA » (P2). Le novice reçoit l'essentiel (moins de variables).
-    """
-    en = language == "en"
-    primary = str(metrics.get("primary_metric", ""))
-    primary_value = metrics.get(primary) if primary else None
-    has_primary = bool(primary) and primary_value is not None
-
-    if audience == "novice":
-        top = [str(i["feature"]) for i in importance[:3]]  # l'essentiel, pas un mur de texte
-        if en:
-            parts = [
-                f"In plain words: the {algorithm} model learned from examples to make "
-                f"predictions ({task_type}) — a bit like learning to recognise a fruit after "
-                "seeing many of them.",
-                (
-                    f"Its main score ({primary}) is {_g(primary_value)}: the closer to 1, "
-                    "the better."
-                    if has_primary
-                    else "Its main score is unavailable here."
-                ),
-                (
-                    "What counted most: " + ", ".join(top) + "."
-                    if top
-                    else "Which information counted most is unavailable."
-                ),
-                "This summary was generated without AI, from the computed values only.",
-            ]
-        else:
-            parts = [
-                f"Pour faire simple : le modèle {algorithm} a appris, à partir d'exemples, à "
-                f"faire des prédictions ({task_type}) — un peu comme on apprend à reconnaître un "
-                "fruit après en avoir vu beaucoup.",
-                (
-                    f"Sa note principale ({primary}) est de {_g(primary_value)} : plus c'est "
-                    "proche de 1, mieux c'est."
-                    if has_primary
-                    else "Sa note principale n'est pas disponible ici."
-                ),
-                (
-                    "Ce qui a le plus compté : " + ", ".join(top) + "."
-                    if top
-                    else "L'information qui a le plus compté n'est pas disponible."
-                ),
-                "Ce résumé a été généré sans IA, uniquement à partir des valeurs calculées.",
-            ]
-        return " ".join(parts)
-
-    top = [str(i["feature"]) for i in importance[:5]]
-    if audience == "expert":
-        if en:
-            parts = [
-                f"Model {algorithm} — {task_type} task.",
-                (
-                    f"Main metric {primary} = {_g(primary_value)} "
-                    "(see the full grid for macro metrics)."
-                    if has_primary
-                    else "Main metric unavailable."
-                ),
-                (
-                    "Most influential features, by decreasing importance: " + ", ".join(top) + "."
-                    if top
-                    else "Feature importance unavailable."
-                ),
-                "Summary generated without AI, from the computed values only.",
-            ]
-        else:
-            parts = [
-                f"Modèle {algorithm} — tâche de {task_type}.",
-                (
-                    f"Métrique principale {primary} = {_g(primary_value)} "
-                    "(voir la grille complète pour les macro-métriques)."
-                    if has_primary
-                    else "Métrique principale indisponible."
-                ),
-                (
-                    "Variables les plus influentes, par importance décroissante : "
-                    + ", ".join(top)
-                    + "."
-                    if top
-                    else "Importance des variables indisponible."
-                ),
-                "Résumé généré sans IA, à partir des seules valeurs calculées.",
-            ]
-        return " ".join(parts)
-
-    # intermediate (défaut) : structuré, orienté décision.
-    if en:
-        parts = [
-            f"The {algorithm} model was trained for a {task_type} task.",
-            (
-                f"Main metric {primary} = {_g(primary_value)}."
-                if has_primary
-                else "Main metric unavailable."
-            ),
-            (
-                "The most influential features are: " + ", ".join(top) + "."
-                if top
-                else "Feature importance is unavailable."
-            ),
-            "This summary was generated without AI, from the computed values only.",
-        ]
-        return " ".join(parts)
-    parts = [
-        f"Le modèle {algorithm} a été entraîné pour une tâche de {task_type}.",
-        (
-            f"Métrique principale {primary} = {_g(primary_value)}."
-            if has_primary
-            else "Métrique principale indisponible."
-        ),
-        (
-            "Les variables les plus influentes sont : " + ", ".join(top) + "."
-            if top
-            else "L'importance des variables est indisponible."
-        ),
-        "Ce résumé a été généré sans IA, uniquement à partir des valeurs calculées.",
-    ]
-    return " ".join(parts)
 
 
 # ------------------------------------ Chat (CDC §9.6) ---------------------------------------
@@ -346,7 +272,9 @@ _BLOCKS_GRAMMAR = (
     "Tonalités (tone) — sémantiques, JAMAIS décoratives : "
     '"positive" = pousse vers / favorable, "negative" = pousse contre / risque, '
     '"warning" = limite ou prudence, "accent" = point clé / variable dominante, '
-    '"neutral" = neutre. featureImpact.direction : "up" (favorable) ou "down" (défavorable).'
+    '"neutral" = neutre. featureImpact.direction : "up" (favorable) ou "down" (défavorable). '
+    "Limites STRICTES : 16 blocs max ; keyValue ≤ 8 paires ; featureImpact ≤ 10 barres ; "
+    "table ≤ 14 lignes et 5 colonnes ; list ≤ 12 puces."
 )
 
 _BLOCKS_GRAMMAR_EN = (
@@ -363,7 +291,9 @@ _BLOCKS_GRAMMAR_EN = (
     "Tones — semantic, NEVER decorative: "
     '"positive" = pushes toward / favorable, "negative" = pushes against / risk, '
     '"warning" = limitation or caution, "accent" = key point / dominant feature, '
-    '"neutral" = neutral. featureImpact.direction: "up" (favorable) or "down" (unfavorable).'
+    '"neutral" = neutral. featureImpact.direction: "up" (favorable) or "down" (unfavorable). '
+    "STRICT limits: 16 blocks max; keyValue ≤ 8 pairs; featureImpact ≤ 10 bars; "
+    "table ≤ 14 rows and 5 columns; list ≤ 12 bullets."
 )
 
 
@@ -372,6 +302,43 @@ def chat_system_v2(language: str, audience: str = "intermediate") -> str:
     lang = "en" if language == "en" else "fr"
     grammar = _BLOCKS_GRAMMAR_EN if lang == "en" else _BLOCKS_GRAMMAR
     return SYSTEM[lang] + "\n\n" + _audience_tone(audience, lang) + "\n\n" + grammar
+
+
+# ------------------------------ Explication v2 : blocs riches (CDC évolutions §2) -------------
+
+
+def explanation_system_v2(language: str) -> str:
+    """Système explication v2 = anti-hallucination + contrat de blocs (même grammaire que le
+    chat). Le NIVEAU est porté par le prompt utilisateur ; le contrat de blocs et
+    l'anti-hallucination restent constants quel que soit le niveau."""
+    lang = "en" if language == "en" else "fr"
+    grammar = _BLOCKS_GRAMMAR_EN if lang == "en" else _BLOCKS_GRAMMAR
+    return SYSTEM[lang] + "\n\n" + grammar
+
+
+def explanation_prompt_v2(*, audience: str, language: str, context: str) -> str:
+    """Prompt d'explication en blocs, adapté au niveau (longueur/ton d'AUDIENCE_SPECS)."""
+    lang = "en" if language == "en" else "fr"
+    spec = AUDIENCE_SPECS.get(audience, AUDIENCE_SPECS["novice"])[lang]
+    if lang == "fr":
+        return (
+            f"Rédige l'explication de ces résultats pour {spec}.\n"
+            "Structure en blocs : ① ce que le modèle a appris (paragraphe) ② quelles variables "
+            "comptent et pourquoi (featureImpact ou tableau) ③ à quel point s'y fier (keyValue "
+            "ou tableau des métriques) ④ une limite à garder en tête (callout warning).\n"
+            "8 blocs maximum. Cite les nombres tels qu'affichés dans le contexte (arrondis / "
+            "en %) — ne re-dérive jamais une précision supérieure.\n\n"
+            f"CONTEXTE (seules valeurs autorisées) :\n{context}"
+        )
+    return (
+        f"Write the explanation of these results for {spec}.\n"
+        "Structure in blocks: ① what the model learned (paragraph) ② which features matter "
+        "and why (featureImpact or table) ③ how much to trust it (keyValue or metrics table) "
+        "④ one limitation to keep in mind (warning callout).\n"
+        "8 blocks maximum. Quote numbers exactly as displayed in the context (rounded / in %) "
+        "— never re-derive extra precision.\n\n"
+        f"CONTEXT (only allowed values):\n{context}"
+    )
 
 
 def chat_prompt_v2(
@@ -393,7 +360,8 @@ def chat_prompt_v2(
             f"{tone}\n"
             "Rédige une réponse claire et STRUCTURÉE en blocs (≤ 6 blocs, ≤ 120 mots au total). "
             "Utilise un tableau ou featureImpact quand cela éclaire vraiment, un callout pour une "
-            "limite. Appuie-toi UNIQUEMENT sur le contexte."
+            "limite. Cite les nombres tels qu'affichés dans le contexte (arrondis / en %). "
+            "Appuie-toi UNIQUEMENT sur le contexte."
         )
     return (
         f"CONTEXT (only allowed values):\n{context}\n\n"
@@ -402,20 +370,45 @@ def chat_prompt_v2(
         f"{tone}\n"
         "Write a clear, STRUCTURED answer in blocks (≤ 6 blocks, ≤ 120 words total). "
         "Use a table or featureImpact only when it truly helps, a callout for a limitation. "
+        "Quote numbers exactly as displayed in the context (rounded / in %). "
         "Rely ONLY on the context."
     )
 
 
-def suggested_questions(task_type: str, language: str, audience: str | None = None) -> list[str]:
+def suggested_questions(
+    task_type: str,
+    language: str,
+    audience: str | None = None,
+    *,
+    top_feature: str | None = None,
+    metric_name: str | None = None,
+    metric_value: Any | None = None,
+) -> list[str]:
     """Questions suggérées contextuelles — déterministes (pas de LLM requis), adaptées au
-    niveau (adaptatif §5.2) : le novice se voit proposer des questions en langage courant."""
+    niveau (adaptatif §5.2) : le novice se voit proposer des questions en langage courant.
+
+    Contextualisées (CDC évolutions §4) : quand la dernière explication fournit la variable
+    dominante (nom humanisé) et la métrique principale, les questions citent le VRAI modèle
+    (« Pourquoi « Sex » domine-t-elle ? », « Un score f1 de 0.732, puis-je m'y fier ? »).
+    Sans contexte, repli sur les formulations génériques d'origine.
+    """
     en = language == "en"
+    value = _round3(metric_value) if metric_value is not None else None
+    has_metric = bool(metric_name) and value is not None
     if audience == "novice":
         if en:
             common = [
                 "In plain words, what did the model learn?",
-                "Can I trust this result, simply put?",
-                "Which piece of information mattered most, and why?",
+                (
+                    f"Is a {metric_name} of {value} good or not?"
+                    if has_metric
+                    else "Can I trust this result, simply put?"
+                ),
+                (
+                    f"Why did “{top_feature}” matter so much?"
+                    if top_feature
+                    else "Which piece of information mattered most, and why?"
+                ),
             ]
             return (
                 [*common, "The confusion matrix — like what, in everyday terms?"]
@@ -424,8 +417,16 @@ def suggested_questions(task_type: str, language: str, audience: str | None = No
             )
         common = [
             "En clair, qu'a appris le modèle ?",
-            "Puis-je faire confiance à ce résultat, simplement ?",
-            "Quelle information a le plus compté, et pourquoi ?",
+            (
+                f"Un score {metric_name} de {value}, c'est bon ou pas ?"
+                if has_metric
+                else "Puis-je faire confiance à ce résultat, simplement ?"
+            ),
+            (
+                f"Pourquoi « {top_feature} » a-t-il autant compté ?"
+                if top_feature
+                else "Quelle information a le plus compté, et pourquoi ?"
+            ),
         ]
         return (
             [*common, "La matrice de confusion, c'est comme quoi au quotidien ?"]
@@ -435,8 +436,16 @@ def suggested_questions(task_type: str, language: str, audience: str | None = No
 
     if en:
         common = [
-            "Why does the top feature dominate the prediction?",
-            "Can I trust these results?",
+            (
+                f"Why does “{top_feature}” dominate the prediction?"
+                if top_feature
+                else "Why does the top feature dominate the prediction?"
+            ),
+            (
+                f"Can I trust a {metric_name} of {value}?"
+                if has_metric
+                else "Can I trust these results?"
+            ),
             "What should I improve before using this model?",
         ]
         return (
@@ -445,8 +454,16 @@ def suggested_questions(task_type: str, language: str, audience: str | None = No
             else [*common, "What does the MAE mean in practice?"]
         )
     common = [
-        "Pourquoi la variable dominante pèse-t-elle autant ?",
-        "Puis-je me fier à ces résultats ?",
+        (
+            f"Pourquoi la variable « {top_feature} » domine-t-elle la prédiction ?"
+            if top_feature
+            else "Pourquoi la variable dominante pèse-t-elle autant ?"
+        ),
+        (
+            f"Un score {metric_name} de {value}, puis-je m'y fier ?"
+            if has_metric
+            else "Puis-je me fier à ces résultats ?"
+        ),
         "Que devrais-je améliorer avant d'utiliser ce modèle ?",
     ]
     return (

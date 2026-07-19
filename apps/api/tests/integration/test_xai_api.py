@@ -183,6 +183,34 @@ def test_explanation_debits_credit_and_lists(worker_client: TestClient, trained:
     assert len(history) >= 1
 
 
+def test_explanation_results_include_blocks(worker_client: TestClient, trained: dict) -> None:
+    """CDC évolutions §2 : l'explication est aussi servie en blocs riches (même contrat que le
+    chat). Sans clé LLM, le repli déterministe fournit un document badgé « sans IA » et le
+    miroir texte (`text_explanation`) reste rempli (compat)."""
+    results = run_explanation(worker_client, trained, {"type": "global"})
+    assert results["text_blocks"] is not None
+    assert results["text_blocks"]["blocks"]
+    assert results["is_fallback"] is True  # pas de clé LLM en test → repli
+    assert results["text_explanation"]
+
+
+def test_suggested_questions_cite_real_model(worker_client: TestClient, trained: dict) -> None:
+    """CDC évolutions §4 : après une explication terminée, les suggestions citent la vraie
+    variable dominante (nom humanisé, colonne seule pour un one-hot) — plus de liste générique."""
+    from ibis.modules.llm.xai_text import humanize_feature
+
+    results = run_explanation(worker_client, trained, {"type": "global"})
+    top_raw = str(results["values"]["importance"][0]["feature"])
+    top_column = humanize_feature(top_raw).split(" = ")[0]
+
+    suggestions = worker_client.get(
+        f"/api/v1/experiments/{trained['experiment']['id']}/suggested-questions",
+        headers=trained["headers"],
+    ).json()
+    assert len(suggestions) == 4
+    assert any(top_column in question for question in suggestions)
+
+
 def test_chat_session_quota_and_fallback(worker_client: TestClient, trained: dict) -> None:
     from ibis.workers.tasks.explain import answer_chat_question
 

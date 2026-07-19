@@ -3,9 +3,9 @@
 | Champ         | Valeur              |
 |---------------|---------------------|
 | Module        | api/xai             |
-| Version       | 0.1.0               |
+| Version       | 0.2.0               |
 | Date          | 2026-07-19          |
-| Source        | Rétro-ingénierie    |
+| Source        | Rétro-ingénierie + évolutions XAI §2/§3/§4 |
 
 ---
 
@@ -21,7 +21,7 @@ fairness.py        — Calcul d'équité par groupe (fonction pure compute_group
 quality.py         — KPI de qualité (fonctions pures : complétude, stabilité, fidélité, accord, parcimonie)
 blocks.py          — Schéma BlockDocument (Pydantic), parsing LLM, fallback déterministe
 models.py          — ORM SQLAlchemy : Explanation, ChatSession, ChatMessage
-workers/tasks/explain.py — Tâches Celery : generate_explanation (queue xai), answer_chat_question (queue llm)
+workers/tasks/explain.py — Tâches Celery : generate_explanation (queue xai), answer_chat_question (queue llm) ; helpers factorisés _blocks_completion, _fallback_payload, _generate_explanation_blocks
 ```
 
 La séparation entre `engine.py`/`fairness.py`/`quality.py` (pur calcul, pas d'I/O DB) et `service.py`/`workers/tasks/explain.py` (I/O DB, Celery) est explicite et voulue : les fonctions pures sont testables isolément.
@@ -32,15 +32,16 @@ La séparation entre `engine.py`/`fairness.py`/`quality.py` (pur calcul, pas d'I
 
 | Fichier | Rôle | Lignes |
 |---------|------|--------|
-| `apps/api/ibis/modules/xai/routes.py` | Endpoints FastAPI XAI (explications, test-instances, fairness, chat) | ~266 |
-| `apps/api/ibis/modules/xai/service.py` | Création/lecture des entités, débit crédits, dispatch Celery, purge sessions | ~190 |
+| `apps/api/ibis/modules/xai/routes.py` | Endpoints FastAPI XAI (explications, test-instances, fairness, chat) ; ExplanationResults expose text_blocks ; getSuggestedQuestions enrichi (top feature humanisée + métrique) | ~286 |
+| `apps/api/ibis/modules/xai/service.py` | Création/lecture des entités, débit crédits, dispatch Celery, purge sessions ; NOUVEAU latest_completed_explanation(db, user_id, experiment_id) | ~207 |
 | `apps/api/ibis/modules/xai/engine.py` | SHAP global/local, LIME global/local, test-instances, load_experiment_context | ~426 |
 | `apps/api/ibis/modules/xai/fairness.py` | compute_group_fairness (pure), fairness_report (wrapper) | ~126 |
 | `apps/api/ibis/modules/xai/quality.py` | KPI : shap_completeness, rank_stability, inter_method_agreement, parsimony, lime_fidelity | ~86 |
-| `apps/api/ibis/modules/xai/blocks.py` | BlockDocument Pydantic, parse_document, fallback_document, to_plain_text | ~286 |
-| `apps/api/ibis/modules/xai/models.py` | ORM Explanation, ChatSession, ChatMessage | ~105 |
-| `apps/api/ibis/workers/tasks/explain.py` | Tâches Celery : generate_explanation, answer_chat_question, _generate_text, _answer_chat_blocks | ~327 |
-| `apps/api/ibis/modules/llm/xai_text.py` | Prompts adaptatifs, build_context, numbers_exist_in_context, fallback_text | ~60+ |
+| `apps/api/ibis/modules/xai/blocks.py` | BlockDocument Pydantic, parse_document, fallback_document (humanisé, Poids %), to_plain_text | ~313 |
+| `apps/api/ibis/modules/xai/models.py` | ORM Explanation (+ text_blocks JSONB nullable migration 0009), ChatSession, ChatMessage | ~108 |
+| `apps/api/ibis/workers/tasks/explain.py` | _blocks_completion (boucle LLM commune), _fallback_payload (repli commun), _generate_explanation_blocks (explication en blocs), generate_explanation, answer_chat_question | ~503 |
+| `apps/api/ibis/modules/llm/xai_text.py` | Helpers humanize_feature/format_share, build_context, prompts explication v2 + chat v2, numbers_exist_in_context, suggested_questions | ~353 |
+| `apps/api/alembic/versions/0009_explanation_blocks.py` | Migration : ajout colonne explanations.text_blocks (JSONB nullable) | ~33 |
 
 ---
 
@@ -68,7 +69,8 @@ La séparation entre `engine.py`/`fairness.py`/`quality.py` (pur calcul, pas d'I
 | `values` | JSONB | importance/contributions + métadonnées seeds |
 | `quality_kpis` | JSONB | KPI calculés ou absents (jamais de valeur fictive) |
 | `viz_data` | JSONB | beeswarm, waterfall, method_comparison |
-| `text_explanation` | TEXT | texte généré (LLM ou fallback) |
+| `text_blocks` | JSONB nullable | BlockDocument sérialisé (évolution §2, migration 0009) — rendu par le frontend |
+| `text_explanation` | TEXT | miroir texte de text_blocks via to_plain_text() ; repli rétrocompatible (LLM ou fallback) |
 | `model_used` | VARCHAR(120) | identifiant modèle LLM ou "fallback" |
 | `is_fallback` | BOOL | true si pas de clé LLM ou après 2 échecs |
 | `tokens_used` | INT | 0 si fallback |
@@ -180,8 +182,11 @@ Tone = "neutral" | "accent" | "positive" | "negative" | "warning"
 - **Pure functions + side-effect layer** : `engine.py`, `fairness.py`, `quality.py`, `blocks.py` sont des fonctions pures sans I/O DB. Toutes les opérations DB se font dans `service.py` et `workers/tasks/explain.py`.
 - **Discriminated union (Pydantic v2)** : `BlockDocument` utilise `Field(discriminator="type")` pour le dispatching polymorphique des blocs.
 - **Extra="ignore" sur les blocs** : les modèles `_Block` utilisent `ConfigDict(extra="ignore")` pour absorber les champs superflu d'une réponse LLM sans erreur.
-- **Two-pass anti-hallucination** : le worker tente jusqu'à 2 fois la génération LLM, vérifiant que tous les nombres cités existent dans le contexte (`numbers_exist_in_context`). Sinon fallback déterministe.
-- **Mirroring texte + blocs** : `ChatMessage.content` est toujours le miroir texte de `blocks` via `to_plain_text()` — pour l'accessibilité, la recherche, et les clients qui ne savent pas rendre les blocs.
+- **Two-pass anti-hallucination (boucle factorisée)** : `_blocks_completion` est la boucle LLM commune (2 tentatives) partagée par `_generate_explanation_blocks` et `_answer_chat_blocks`. Sur échec, `_fallback_payload` fournit le repli commun (`blocks.fallback_document` adapté par audience).
+- **Double miroir text_blocks + text_explanation** : `Explanation.text_blocks` stocke le `BlockDocument` sérialisé pour le rendu frontend ; `text_explanation` en est le miroir texte (`to_plain_text`) — accessibilité, repli rétrocompatible, recherche. Même convention que `ChatMessage.content / blocks`.
+- **Mirroring texte + blocs (chat)** : `ChatMessage.content` est toujours le miroir texte de `blocks` via `to_plain_text()` — accessibilité, recherche, et repli pour clients sans rendu blocs.
+- **fallback_document humanisé** : `blocks.fallback_document` importe `humanize_feature` / `format_share` de `llm.xai_text` pour afficher les noms de variables lisibles et les poids en pourcentage (colonne « Poids (%) ») — même formatage que le contexte LLM.
+- **getSuggestedQuestions enrichi** : la route `/suggested-questions` appelle `service.latest_completed_explanation` pour extraire la variable dominante humanisée et la métrique principale, puis les passe à `xai_text.suggested_questions` — les questions citent les vraies valeurs calculées.
 
 ---
 
@@ -207,12 +212,12 @@ Tone = "neutral" | "accent" | "positive" | "negative" | "warning"
 
 | Fichier | Ce qu'il teste | Statut |
 |---------|---------------|--------|
-| `tests/unit/test_xai_quality.py` | Fonctions pures quality.py (complétude, stabilité, parcimonie, fidélité, accord) | Existant |
-| `tests/unit/test_xai_blocks.py` | parse_document, fallback_document, to_plain_text, strip_fences | Existant |
-| `tests/unit/test_xai_text.py` | Prompts adaptatifs, build_context, numbers_exist_in_context | Existant |
+| `tests/unit/test_xai_quality.py` | Fonctions pures quality.py (complétude, stabilité, parcimonie, fidélité, accord) | Existant (~96 lignes) |
+| `tests/unit/test_xai_blocks.py` | parse_document, fallback_document (humanisation noms, format %, table Poids %), to_plain_text, strip_fences | Existant (~377 lignes) |
+| `tests/unit/test_xai_text.py` | humanize_feature, format_share, build_context %, numbers_exist_in_context ÷100, explanation_system_v2/prompt_v2, suggested_questions contextualisées | Existant (~279 lignes) |
 | `tests/unit/test_fairness.py` | compute_group_fairness (binaire + multiclasse + edge cases) | Existant |
-| `tests/integration/test_xai_api.py` | Endpoints HTTP (avec DB de test, modèle réel) | Existant |
-| Tests worker `generate_explanation` | Non trouvé — voir zones d'incertitude | Absent |
+| `tests/integration/test_xai_api.py` | Endpoints HTTP (avec DB de test, modèle réel) — +28 lignes pour text_blocks et suggested-questions enrichies | Existant |
+| Tests worker `generate_explanation` | Couverture worker Celery directe | Absent |
 
 ---
 

@@ -1642,6 +1642,12 @@ export type ExplanationResults = {
      */
     status: string;
     /**
+     * Text Blocks
+     */
+    text_blocks?: {
+        [key: string]: unknown;
+    } | null;
+    /**
      * Text Explanation
      */
     text_explanation: string | null;

@@ -8,7 +8,7 @@ from pydantic import ValidationError
 from ibis.modules.llm import client as llm_client
 from ibis.modules.llm import xai_text
 from ibis.modules.xai import blocks
-from ibis.workers.tasks.explain import _answer_chat_blocks
+from ibis.workers.tasks.explain import _answer_chat_blocks, _generate_explanation_blocks
 
 CONTEXT = (
     "Algorithme : random_forest | Tâche : classification | Type d'explication : global\n"
@@ -73,6 +73,38 @@ def test_parse_rejects_non_json() -> None:
         blocks.parse_document("désolé, je ne peux pas répondre en JSON")
 
 
+def test_parse_clamps_overlong_lists_instead_of_rejecting() -> None:
+    """Constaté en réel (vue expert) : le LLM liste 10 métriques dans un keyValue plafonné
+    à 8 → le document entier partait au repli. On tronque au plafond, on ne rejette pas."""
+    payload = {
+        "blocks": [
+            {
+                "type": "keyValue",
+                "items": [{"label": f"m{i}", "value": str(i)} for i in range(10)],
+            },
+            {
+                "type": "featureImpact",
+                "items": [{"feature": f"v{i}", "weight": 0.1} for i in range(12)],
+            },
+            {"type": "list", "items": [f"point {i}" for i in range(15)]},
+        ]
+    }
+    doc = blocks.parse_document(json.dumps(payload))
+    key_value, feature_impact, bullet_list = doc.blocks
+    assert isinstance(key_value, blocks.KeyValueBlock) and len(key_value.items) == 8
+    assert isinstance(feature_impact, blocks.FeatureImpactBlock)
+    assert len(feature_impact.items) == 10
+    assert isinstance(bullet_list, blocks.ListBlock) and len(bullet_list.items) == 12
+
+
+def test_parse_accepts_long_expert_paragraph() -> None:
+    # Une explication expert (~320 mots) peut tenir dans un seul paragraphe long.
+    doc = blocks.parse_document(
+        json.dumps({"blocks": [{"type": "paragraph", "text": "mot " * 450}]})
+    )
+    assert isinstance(doc.blocks[0], blocks.ParagraphBlock)
+
+
 # ---------------------------------------------------------------- extraction / miroir
 
 
@@ -105,19 +137,48 @@ def test_document_round_trips_through_dump() -> None:
 
 
 def test_fallback_document_is_valid_and_grounded() -> None:
+    metrics = {"primary_metric": "accuracy", "accuracy": 0.83}
+    importance = [{"feature": "revenu", "value": 0.41}, {"feature": "age", "value": 0.19}]
     doc = blocks.fallback_document(
         language="fr",
-        metrics={"primary_metric": "accuracy", "accuracy": 0.83},
-        importance=[{"feature": "revenu", "value": 0.41}, {"feature": "age", "value": 0.19}],
+        metrics=metrics,
+        importance=importance,
         task_type="classification",
         algorithm="random_forest",
     )
     assert isinstance(doc, blocks.BlockDocument)
     types = [b.type for b in doc.blocks]
     assert "paragraph" in types and "table" in types and "callout" in types
-    # Chaque nombre du fallback existe dans un contexte bâti sur les mêmes valeurs.
-    context = "accuracy=0.83, revenu=0.41, age=0.19"
+    # Chaque nombre du fallback existe dans le contexte réellement servi au LLM (build_context).
+    context = xai_text.build_context(
+        metrics=metrics,
+        importance=importance,
+        task_type="classification",
+        algorithm="random_forest",
+        explanation_type="global",
+        local_values=None,
+    )
     assert xai_text.numbers_exist_in_context(blocks.extract_text(doc), context) is True
+
+
+def test_fallback_document_humanizes_and_shows_percents() -> None:
+    doc = blocks.fallback_document(
+        language="fr",
+        metrics={"primary_metric": "accuracy", "accuracy": 0.83},
+        importance=[
+            {"feature": "cat__Sex_female", "value": 0.242421},
+            {"feature": "num_median_0__Pclass", "value": 0.5},
+            {"feature": "num_median_0__Fare", "value": 0.257579},
+        ],
+        task_type="classification",
+        algorithm="random_forest",
+    )
+    table = next(b for b in doc.blocks if b.type == "table")
+    assert table.columns == ["Variable", "Poids (%)"]
+    texts = [cell.text for row in table.rows for cell in row]
+    assert "Sex = female" in texts
+    assert "24 %" in texts
+    assert all("cat__" not in t and "num_median_0__" not in t for t in texts)
 
 
 def test_fallback_document_varies_by_audience() -> None:
@@ -195,6 +256,58 @@ def test_worker_falls_back_when_llm_unavailable(monkeypatch: pytest.MonkeyPatch)
 
     monkeypatch.setattr(llm_client, "complete", _raise)
     payload = _answer_chat_blocks(**_kwargs(None))
+    assert payload["is_fallback"] is True
+    assert payload["model_used"] == "fallback"
+
+
+# ---------------------------------------------------------------- worker : explication v2
+
+
+EXPLANATION_DOC = {
+    "schema_version": 1,
+    "blocks": [
+        {"type": "paragraph", "text": "La variable ==revenu== pèse **0.41** dans la décision."},
+        {"type": "callout", "tone": "warning", "title": "Limite", "text": "Jeu de test limité."},
+    ],
+}
+
+
+def _expl_kwargs() -> dict:
+    return dict(
+        context=CONTEXT,
+        language="fr",
+        audience="novice",
+        metrics={"primary_metric": "accuracy", "accuracy": 0.83},
+        importance=[{"feature": "revenu", "value": 0.41}],
+        task_type="classification",
+        algorithm="random_forest",
+    )
+
+
+def test_explanation_blocks_valid(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(llm_client, "complete", lambda **_: _result(json.dumps(EXPLANATION_DOC)))
+    payload = _generate_explanation_blocks(**_expl_kwargs())
+    assert payload["is_fallback"] is False
+    assert payload["blocks"]["blocks"][0]["type"] == "paragraph"
+    assert "revenu" in payload["content"]  # miroir texte → text_explanation (compat)
+
+
+def test_explanation_blocks_fall_back_on_hallucination(monkeypatch: pytest.MonkeyPatch) -> None:
+    bad = {"blocks": [{"type": "paragraph", "text": "Le score vaut 0.99 exactement."}]}
+    monkeypatch.setattr(llm_client, "complete", lambda **_: _result(json.dumps(bad)))
+    payload = _generate_explanation_blocks(**_expl_kwargs())
+    assert payload["is_fallback"] is True  # 0.99 absent du contexte → 2 essais → repli
+    assert payload["blocks"]["blocks"]  # repli riche par-audience (document valide)
+
+
+def test_explanation_blocks_fall_back_when_llm_unavailable(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    def _raise(**_):  # type: ignore[no-untyped-def]
+        raise llm_client.LLMUnavailable("no key")
+
+    monkeypatch.setattr(llm_client, "complete", _raise)
+    payload = _generate_explanation_blocks(**_expl_kwargs())
     assert payload["is_fallback"] is True
     assert payload["model_used"] == "fallback"
 
