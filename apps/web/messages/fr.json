@@ -172,11 +172,22 @@
     "taskLabel": "Tâche",
     "briefingTitle": "L'enquête",
     "objectivesTitle": "Tes objectifs",
+    "debriefRealResult": "Ce résultat est réel : entraîné sur de vraies données, mesuré, jamais simulé.",
+    "debriefRemaining": "Encore un objectif pour boucler l'enquête : {objective}.",
+    "downloadHint": "Ton modèle est téléchargeable en haut de page — un vrai artefact réutilisable.",
+    "metricFallback": "résultat obtenu",
     "task": {
       "classification": "Classification",
       "regression": "Régression"
     },
     "debriefTitle": "Enquête bouclée",
+    "debriefLead": "Bravo — enquête « {title} » bouclée.",
+    "debriefMetric": "Un vrai modèle, entraîné sur de vraies données : {metric}.",
+    "debriefPont": {
+      "novice": "Tu viens de voir un pipeline de ML complet réussir, de bout en bout.",
+      "debutant": "Le facteur le plus déterminant est actionnable — le type de conclusion qu'un chercheur publie.",
+      "confirme": "Métriques réelles, modèle téléchargeable : c'est le geste exact d'un travail de recherche."
+    },
     "notFound": "Défi introuvable.",
     "resolveError": "Impossible d'ouvrir le jeu de données de ce défi pour le moment.",
     "objectives": {

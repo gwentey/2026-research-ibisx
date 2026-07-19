@@ -172,11 +172,22 @@
     "taskLabel": "Task",
     "briefingTitle": "The investigation",
     "objectivesTitle": "Your objectives",
+    "debriefRealResult": "This result is real: trained on real data, measured, never simulated.",
+    "debriefRemaining": "One objective left to close the investigation: {objective}.",
+    "downloadHint": "Your model can be downloaded at the top of the page — a real, reusable artefact.",
+    "metricFallback": "result obtained",
     "task": {
       "classification": "Classification",
       "regression": "Regression"
     },
     "debriefTitle": "Investigation complete",
+    "debriefLead": "Well done — investigation «{title}» complete.",
+    "debriefMetric": "A real model, trained on real data: {metric}.",
+    "debriefPont": {
+      "novice": "You just watched a full ML pipeline succeed, end to end.",
+      "debutant": "The most decisive factor is actionable — the kind of conclusion a researcher publishes.",
+      "confirme": "Real metrics, a downloadable model: this is exactly the gesture of research work."
+    },
     "notFound": "Challenge not found.",
     "resolveError": "Could not open this challenge's dataset right now.",
     "objectives": {

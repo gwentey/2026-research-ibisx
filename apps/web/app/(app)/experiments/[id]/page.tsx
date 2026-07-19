@@ -22,6 +22,7 @@ import { Item, ItemContent, ItemDescription, ItemGroup, ItemMedia, ItemSeparator
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { MissionStepper } from "@/components/ibis/mission-stepper";
+import { ChallengeDebrief } from "@/components/ibis/challenges/challenge-debrief";
 import { XaiTab } from "@/components/ibis/xai/xai-tab";
 import {
   CompositeScoreCard,
@@ -253,6 +254,8 @@ export default function ExperimentResultsPage({
           </div>
         </div>
       </div>
+
+      <ChallengeDebrief experiment={experiment} results={results} />
 
       <Tabs defaultValue="performance" className="space-y-4">
         <TabsList>
