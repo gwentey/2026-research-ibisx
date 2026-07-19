@@ -3,9 +3,9 @@
 | Champ         | Valeur              |
 |---------------|---------------------|
 | Module        | api/llm             |
-| Version       | 0.1.0               |
+| Version       | 0.2.0               |
 | Date          | 2026-07-19          |
-| Source        | Rétro-ingénierie    |
+| Source        | Rétro-ingénierie + évolutions XAI §1/§3/§4 |
 
 ---
 
@@ -16,10 +16,15 @@ Le module `api/llm` est organisé en trois fichiers fonctionnellement distincts 
 - **`client.py`** — Couche transport vers OpenRouter. Aucune logique métier. Soulève
   `LLMUnavailable` sur tout échec. Retourne un `LLMResult` (text, model_used, tokens_used,
   is_fallback).
-- **`xai_text.py`** — Logique de prompt XAI : construction du contexte (`build_context`),
-  génération des prompts adaptatifs (`build_prompt`, `chat_system_v2`, `chat_prompt_v2`),
-  fallbacks déterministes (`fallback_text`), post-validation anti-hallucination
-  (`numbers_exist_in_context`), questions suggérées (`suggested_questions`).
+- **`xai_text.py`** — Logique de prompt XAI : helpers de formatage lisible
+  (`humanize_feature`, `format_share`, `_round3`, `_importance_line`), construction du
+  contexte (`build_context` — métriques et importances en %, valeurs locales arrondies 3 déc.),
+  génération des prompts adaptatifs pour le chat (`chat_system_v2`, `chat_prompt_v2`) et pour
+  les explications en blocs (`explanation_system_v2`, `explanation_prompt_v2`),
+  post-validation anti-hallucination (`numbers_exist_in_context` — tolère 24 ↔ 0.24),
+  questions suggérées contextualisées (`suggested_questions` — cite la vraie variable
+  dominante et la vraie métrique). `build_prompt` et `fallback_text` (chemin texte plat)
+  ont été supprimés ; le repli est désormais `blocks.fallback_document`.
 - **`guides.py`** — Logique de prompt pour les guides de datasets : construction du contexte
   (`dataset_context`), prompt guide (`build_prompt`), fallback déterministe (`fallback_guide`),
   payload de réponse (`guide_payload`).
@@ -34,13 +39,13 @@ consommé par des workers Celery et une route XAI.
 | Fichier | Rôle | Lignes |
 |---------|------|--------|
 | `apps/api/ibis/modules/llm/client.py` | Client HTTP synchrone OpenRouter, exception LLMUnavailable, dataclass LLMResult | ~88 |
-| `apps/api/ibis/modules/llm/xai_text.py` | Prompts XAI adaptatifs, fallback textuel, chat v1/v2, validation anti-hallucination, questions suggérées | ~446 |
+| `apps/api/ibis/modules/llm/xai_text.py` | Helpers formatage lisible (humanize_feature, format_share), build_context, prompts adaptatifs chat v2 + explication v2, numbers_exist_in_context, suggested_questions | ~353 |
 | `apps/api/ibis/modules/llm/guides.py` | Prompts guide dataset, fallback guide, payload de réponse | ~146 |
-| `apps/api/ibis/workers/tasks/explain.py` | Worker XAI : appelle xai_text + llm_client pour explications et chat | ~300 |
+| `apps/api/ibis/workers/tasks/explain.py` | Worker XAI : _blocks_completion factorisé, _generate_explanation_blocks, generate_explanation, answer_chat_question | ~503 |
 | `apps/api/ibis/workers/tasks/guide.py` | Worker guide dataset : appelle guides + llm_client | ~60 |
 | `apps/api/ibis/modules/xai/routes.py` | Route `/suggested-questions` : appelle directement xai_text.suggested_questions | ~270 |
 | `apps/api/ibis/core/config.py` | Paramètres LLM : openrouter_api_key, llm_model, llm_max_tokens, llm_timeout_seconds | ~80 |
-| `apps/api/tests/unit/test_xai_text.py` | Tests unitaires de xai_text (adaptatif, fallback, chat v2, questions suggérées) | ~76 |
+| `apps/api/tests/unit/test_xai_text.py` | Tests unitaires de xai_text (humanize_feature, format_share, build_context %, numbers_exist_in_context ÷100, explanation_system_v2, explanation_prompt_v2, suggested_questions contextualisées) | ~279 |
 
 ---
 
@@ -50,8 +55,10 @@ Le module `api/llm` n'a pas de table propre. Il écrit indirectement via les wor
 
 - `datasets.ai_guide` (JSONB) — champ sur la table `datasets`, peuplé par le worker `guide.py`
   avec le payload `{ text, model_used, is_fallback, language, tokens_used, generated_at }`.
-- `explanations.text_explanation` (TEXT), `explanations.model_used` (VARCHAR),
-  `explanations.is_fallback` (BOOLEAN) — peuplés par le worker `explain.py`.
+- `explanations.text_explanation` (TEXT), `explanations.text_blocks` (JSONB, depuis migration 0009),
+  `explanations.model_used` (VARCHAR), `explanations.is_fallback` (BOOLEAN) — peuplés par le
+  worker `explain.py`. `text_blocks` contient le `BlockDocument` sérialisé ;
+  `text_explanation` en est le miroir texte (`to_plain_text`).
 - `chat_messages.content` (TEXT), `chat_messages.blocks` (JSONB), `chat_messages.model_used`,
   `chat_messages.is_fallback` — peuplés par le worker `explain.py` (réponses chat v2).
 
@@ -103,10 +110,13 @@ infrastructure.
 
 ### Anti-hallucination en deux couches
 
-1. **Au prompt** : le contexte ne contient que les vraies valeurs numériques calculées.
+1. **Au prompt** : le contexte ne contient que les vraies valeurs numériques calculées (importances
+   en %, valeurs locales arrondies 3 déc.). La consigne « cite les nombres tels qu'affichés » est
+   injectée dans `chat_prompt_v2` et `explanation_prompt_v2`.
 2. **Post-génération** : `numbers_exist_in_context()` scanne la sortie et compare chaque nombre à
-   l'ensemble des valeurs du contexte (avec tolérance sur les arrondis 0–4 décimales et les
-   équivalents pourcentage). Les petits ordinaux (1, 2, 3, 4, 5, 10, 100) sont tolérés.
+   l'ensemble des valeurs du contexte (avec tolérance sur les arrondis 0–4 décimales, les
+   équivalents pourcentage, et désormais la tolérance symétrique ÷100 : 24 ↔ 0,24). Les petits
+   ordinaux (1, 2, 3, 4, 5, 10, 100) sont tolérés.
 
 ### Génération adaptative par niveau (AUDIENCE_SPECS / AUDIENCE_CHAT_TONE)
 
@@ -114,21 +124,35 @@ Deux dictionnaires `AUDIENCE_SPECS` et `AUDIENCE_CHAT_TONE` mappent `(audience, 
 instructions de ton et de longueur. Le niveau `audience` est lu depuis `explanation.audience_level`
 (capturé immuablement à la création de l'explication — voir RETRO-002).
 
-Le fallback `fallback_text()` implémente 3 formulations distinctes :
-- Novice : analogie fruit + 3 variables max + badge "sans IA"
-- Intermediate : structure décision + 5 variables + badge
-- Expert : terminologie exacte + 5 variables + badge
+Le fallback déterministe pour les explications est désormais `blocks.fallback_document` (adapté par
+audience, humanisé) — `fallback_text` (texte plat) a été supprimé.
 
-### Chat v1 vs chat v2
+### Prompts chat v2 et explication v2
 
-- **v1** (`chat_prompt` / `chat_system`) : réponse texte libre, limite 120 mots, historique
-  10 tours. Toujours présente dans le code mais non utilisée par le worker actuel.
-- **v2** (`chat_prompt_v2` / `chat_system_v2`) : réponse JSON `BlockDocument`, `json_mode=True`,
-  `max_tokens=700`, même limite historique 10 tours. Utilisée par le worker `answer_chat_question`.
+- **Chat v2** (`chat_prompt_v2` / `chat_system_v2`) : réponse JSON `BlockDocument`,
+  `json_mode=True`, `max_tokens=700`, historique 10 tours. Utilisée par le worker
+  `answer_chat_question`.
+- **Explication v2** (`explanation_prompt_v2` / `explanation_system_v2`) : même grammaire de blocs
+  que le chat, `max_tokens=1400`. Nouvelle (évolution §2) — utilisée par le worker
+  `_generate_explanation_blocks`.
 
-Le système v2 compose : prompt anti-hallucination + directive de niveau d'audience + grammaire JSON
-des blocs (7 types, 5 tonalités sémantiques). La grammaire est injectée en clair dans le prompt
-système pour guider le modèle vers un JSON strict.
+Les deux systèmes composent : directive de niveau d'audience + grammaire JSON des blocs (7 types,
+5 tonalités sémantiques) + consigne anti-hallucination numérique.
+
+### Helpers de formatage lisible (humanize_feature, format_share)
+
+- `humanize_feature(name)` : `"cat__Sex_female"` → `"Sex = female"`. Dépréfixe les encodages
+  sklearn (`cat__`, `num__`), détecte le motif `colonne_valeur` pour les variables catégorielles.
+- `format_share(value, total)` : produit `"24 %"`, `"<1 %"`, demi-parts arrondies vers le haut.
+- `_importance_line(feature, value, total)` : formate une ligne d'importance en « part de
+  l'importance affichée » avec flèches ↗/↘ pour les contributions locales signées.
+
+### Questions suggérées contextualisées
+
+`suggested_questions(task_type, language, audience, *, top_feature=None, metric_name=None,
+metric_value=None)` génère des questions templatisées qui citent la vraie variable dominante et la
+vraie métrique. En l'absence de contexte (`top_feature=None`), un jeu de questions génériques est
+retourné.
 
 ### Boucle de régénération (2 tentatives max)
 
@@ -142,13 +166,12 @@ effectuée avant basculement en fallback. Ce seuil de 2 est codé en dur.
 
 | Fichier | Ce qu'il teste | Statut |
 |---------|---------------|--------|
-| `apps/api/tests/unit/test_xai_text.py` | fallback_text varie par audience et cite les vraies valeurs ; novice cite ≤ 3 variables ; chat_system_v2 injecte la directive de niveau et la grammaire ; chat_prompt_v2 varie par audience ; suggested_questions retourne 4 questions et varie par niveau | Existant |
+| `apps/api/tests/unit/test_xai_text.py` | `humanize_feature` (cas catégoriels, nettoyage préfixes), `format_share` (arrondi, <1%), `build_context` (importances en %, arrondi 3 déc.), `numbers_exist_in_context` (tolérance ÷100), `explanation_system_v2` (directive audience, grammaire blocs), `explanation_prompt_v2` (variation audience/langue), `suggested_questions` contextualisées (top_feature, metric_name) | Existant (~279 lignes) |
 | `apps/api/tests/unit/test_config.py` | Vérifie la présence des paramètres LLM dans les settings | Existant |
 
 Tests absents :
 - Tests unitaires de `client.py` (mock httpx)
 - Tests unitaires de `guides.py` (fallback_guide, dataset_context)
-- Tests de `numbers_exist_in_context` en isolation (couverture des arrondis et des ordinaux tolérés)
 - Tests d'intégration du worker `guide.py` (flow complet LLM + fallback)
 
 ---
