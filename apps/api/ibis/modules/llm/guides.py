@@ -54,18 +54,18 @@ GUIDE_INSTRUCTIONS = {
         "contexte, sans séparateur de milliers et sans en dériver de nouveaux."
     ),
     "en": (
-        "Write the guide for this dataset in 4 sections, each introduced by a \"heading\" "
+        'Write the guide for this dataset in 4 sections, each introduced by a "heading" '
         "block carrying EXACTLY this title, in this order:\n"
         "① “What this dataset is for” — one paragraph, then a keyValue “ID card” block "
-        "(rows, columns, missing values, domain). Value tones: \"positive\" when reassuring "
-        "(no missing values), \"warning\" for a point of caution, \"accent\" for the key "
+        '(rows, columns, missing values, domain). Value tones: "positive" when reassuring '
+        '(no missing values), "warning" for a point of caution, "accent" for the key '
         "figure.\n"
         "② “Plausible target columns” — a table (columns: Column, Type, Why this target). "
         'Use the "accent" tone for the most plausible target. If no target column stands '
         "out, say so in a paragraph.\n"
         "③ “Suitable ML tasks” — a table (Task, Target, Note) or a list if a single task is "
         "declared.\n"
-        "④ “Precautions” — a list of watch-outs, then a \"warning\" callout block for the "
+        '④ “Precautions” — a list of watch-outs, then a "warning" callout block for the '
         "single most important limitation.\n"
         "12 blocks maximum, 320 words in total. Copy numbers EXACTLY as they appear in the "
         "context, without thousands separators, and never derive new ones."
@@ -217,9 +217,7 @@ def fallback_document(dataset: Dataset, language: str) -> rich.BlockDocument:
         blocks.append(
             rich.TableBlock(
                 type="table",
-                columns=(
-                    ["Colonne", "Type", "Piste"] if fr else ["Column", "Type", "Direction"]
-                ),
+                columns=(["Colonne", "Type", "Piste"] if fr else ["Column", "Type", "Direction"]),
                 rows=[
                     [
                         rich.Cell(text=name, tone="accent" if index == 0 else "neutral"),

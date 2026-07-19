@@ -59,9 +59,7 @@ def generate_dataset_guide(self: object, job_id: str, dataset_id: str, language:
         context = guides.dataset_context(dataset)
         payload: dict | None = None
         try:
-            payload = _generate_blocks(
-                system=system, user=user, context=context, language=language
-            )
+            payload = _generate_blocks(system=system, user=user, context=context, language=language)
         except llm_client.LLMUnavailable as exc:
             logger.info("guide.unavailable", dataset_id=dataset_id, reason=str(exc)[:200])
 
