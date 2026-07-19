@@ -124,10 +124,10 @@ for (const locale of ["fr", "en"] as const) {
     const importanceTitle = t(m, "xai.charts.importance").split(" (")[0];
     await expect(page.getByText(new RegExp(importanceTitle)).first()).toBeVisible();
 
-    // --- 8. Chat XAI (repli déterministe marqué si aucune clé LLM — P2) -----------------
-    await page.getByRole("button", { name: t(m, "xai.chat.start") }).click();
+    // --- 8. Copilote d'explication (dock bas ; repli déterministe marqué si aucune clé LLM — P2) --
+    await page.getByRole("button", { name: t(m, "xai.copilot.open") }).click();
     const question = locale === "fr" ? "Quelle variable compte le plus ?" : "Which feature matters most?";
-    await page.getByPlaceholder(t(m, "xai.chat.placeholder")).fill(question);
+    await page.getByPlaceholder(t(m, "xai.copilot.placeholder")).fill(question);
     await page.getByRole("button", { name: t(m, "xai.chat.send"), exact: true }).click();
     await expect(page.getByText(question)).toBeVisible();
     await expect(page.getByText(t(m, "xai.chat.waiting"))).toBeHidden({ timeout: 150_000 });
