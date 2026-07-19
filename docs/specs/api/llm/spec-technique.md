@@ -3,9 +3,9 @@
 | Champ         | Valeur              |
 |---------------|---------------------|
 | Module        | api/llm             |
-| Version       | 0.2.0               |
-| Date          | 2026-07-19          |
-| Source        | Rétro-ingénierie + évolutions XAI §1/§3/§4 |
+| Version       | 0.3.0               |
+| Date          | 2026-07-20          |
+| Source        | Rétro-ingénierie + évolutions XAI §1/§3/§4 + Guide IA blocs riches |
 
 ---
 
@@ -25,9 +25,20 @@ Le module `api/llm` est organisé en trois fichiers fonctionnellement distincts 
   questions suggérées contextualisées (`suggested_questions` — cite la vraie variable
   dominante et la vraie métrique). `build_prompt` et `fallback_text` (chemin texte plat)
   ont été supprimés ; le repli est désormais `blocks.fallback_document`.
-- **`guides.py`** — Logique de prompt pour les guides de datasets : construction du contexte
-  (`dataset_context`), prompt guide (`build_prompt`), fallback déterministe (`fallback_guide`),
-  payload de réponse (`guide_payload`).
+- **`guides.py`** — Logique de prompt pour les guides de datasets, **en blocs riches depuis la
+  v2** (même contrat que le copilote XAI) : construction du contexte (`dataset_context`), prompt
+  guide (`build_prompt` — system = honnêteté + `blocks_grammar` restreinte), repli déterministe
+  en blocs (`fallback_document`) et son miroir texte (`fallback_guide`), garde-fou
+  anti-hallucination adapté (`numbers_are_grounded`, `normalize_thousands`), payload de réponse
+  (`guide_payload`, champ `blocks` ajouté).
+
+  Deux décisions locales, hors politique ADR (`06-adr-policy.md`) :
+  - **`featureImpact` exclu de la grammaire du guide** (`_EXCLUDED_BLOCKS`) : un dataset n'a
+    aucun poids de variable calculé. Le modèle en inventerait, et `extract_text` ignore
+    volontairement les poids — la post-validation anti-hallucination ne les rattraperait pas.
+  - **Recollage des séparateurs de milliers avant validation** (`normalize_thousands`) :
+    `NUMBER_RE` découpe « 4 177 » en `4` + `177`, et `177` étant absent du contexte, un guide
+    pourtant exact basculait en repli. La normalisation est appliquée au texte ET au contexte.
 
 Le module ne contient pas de routes FastAPI, ni de modèles SQLAlchemy. Il est exclusivement
 consommé par des workers Celery et une route XAI.
@@ -40,11 +51,12 @@ consommé par des workers Celery et une route XAI.
 |---------|------|--------|
 | `apps/api/ibis/modules/llm/client.py` | Client HTTP synchrone OpenRouter, exception LLMUnavailable, dataclass LLMResult | ~88 |
 | `apps/api/ibis/modules/llm/xai_text.py` | Helpers formatage lisible (humanize_feature, format_share), build_context, prompts adaptatifs chat v2 + explication v2, numbers_exist_in_context, suggested_questions | ~353 |
-| `apps/api/ibis/modules/llm/guides.py` | Prompts guide dataset, fallback guide, payload de réponse | ~146 |
+| `apps/api/ibis/modules/llm/guides.py` | Prompts guide dataset **en blocs**, grammaire restreinte, fallback_document, garde-fou nombres, payload | ~300 |
 | `apps/api/ibis/workers/tasks/explain.py` | Worker XAI : _blocks_completion factorisé, _generate_explanation_blocks, generate_explanation, answer_chat_question | ~503 |
-| `apps/api/ibis/workers/tasks/guide.py` | Worker guide dataset : appelle guides + llm_client | ~60 |
+| `apps/api/ibis/workers/tasks/guide.py` | Worker guide dataset : `_generate_blocks` (json_mode, 2 tentatives, validation), repli en blocs | ~95 |
 | `apps/api/ibis/modules/xai/routes.py` | Route `/suggested-questions` : appelle directement xai_text.suggested_questions | ~270 |
 | `apps/api/ibis/core/config.py` | Paramètres LLM : openrouter_api_key, llm_model, llm_max_tokens, llm_timeout_seconds | ~80 |
+| `apps/api/tests/unit/test_guide_blocks.py` | Tests unitaires du guide v2 (grammaire restreinte, repli riche, tonalité des manquants, séparateurs de milliers, payload) | ~150 |
 | `apps/api/tests/unit/test_xai_text.py` | Tests unitaires de xai_text (humanize_feature, format_share, build_context %, numbers_exist_in_context ÷100, explanation_system_v2, explanation_prompt_v2, suggested_questions contextualisées) | ~279 |
 
 ---
@@ -54,7 +66,9 @@ consommé par des workers Celery et une route XAI.
 Le module `api/llm` n'a pas de table propre. Il écrit indirectement via les workers :
 
 - `datasets.ai_guide` (JSONB) — champ sur la table `datasets`, peuplé par le worker `guide.py`
-  avec le payload `{ text, model_used, is_fallback, language, tokens_used, generated_at }`.
+  avec le payload `{ text, blocks, model_used, is_fallback, language, tokens_used, generated_at }`.
+  `blocks` est un `BlockDocument` sérialisé (absent sur les guides antérieurs à la v2 — le front
+  retombe alors sur le rendu Markdown de `text`). Colonne JSONB déjà libre : aucune migration.
 - `explanations.text_explanation` (TEXT), `explanations.text_blocks` (JSONB, depuis migration 0009),
   `explanations.model_used` (VARCHAR), `explanations.is_fallback` (BOOLEAN) — peuplés par le
   worker `explain.py`. `text_blocks` contient le `BlockDocument` sérialisé ;
@@ -169,9 +183,11 @@ effectuée avant basculement en fallback. Ce seuil de 2 est codé en dur.
 | `apps/api/tests/unit/test_xai_text.py` | `humanize_feature` (cas catégoriels, nettoyage préfixes), `format_share` (arrondi, <1%), `build_context` (importances en %, arrondi 3 déc.), `numbers_exist_in_context` (tolérance ÷100), `explanation_system_v2` (directive audience, grammaire blocs), `explanation_prompt_v2` (variation audience/langue), `suggested_questions` contextualisées (top_feature, metric_name) | Existant (~279 lignes) |
 | `apps/api/tests/unit/test_config.py` | Vérifie la présence des paramètres LLM dans les settings | Existant |
 
+| `apps/api/tests/unit/test_guide_blocks.py` | Guide v2 : grammaire restreinte (featureImpact absent), repli riche en blocs, tonalité des valeurs manquantes, séparateurs de milliers (`normalize_thousands`), payload `{text, blocks}` | Existant (13 tests, 20/07/2026) |
+
 Tests absents :
 - Tests unitaires de `client.py` (mock httpx)
-- Tests unitaires de `guides.py` (fallback_guide, dataset_context)
+- Tests unitaires de `guides.py` champ `fallback_guide` / `dataset_context` (partiellement couverts par `test_guide_blocks.py`)
 - Tests d'intégration du worker `guide.py` (flow complet LLM + fallback)
 
 ---

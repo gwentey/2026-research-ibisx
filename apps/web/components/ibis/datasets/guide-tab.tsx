@@ -4,6 +4,8 @@ import { useRef, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { SparklesIcon } from "lucide-react";
 
+import { GuideIntro } from "@/components/ibis/datasets/guide-intro";
+import { IbisBlocks } from "@/components/ibis/xai/ibis-blocks";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -11,16 +13,19 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { getDataset, requestAiGuide } from "@/lib/api/generated";
 import type { DatasetDetail } from "@/lib/api/generated";
+import { getBlocks } from "@/lib/xai/blocks";
 
 type GuideData = {
   text: string;
+  /** Document de blocs riches (guide v2). Absent sur les guides générés avant la v2. */
+  blocks?: unknown;
   model_used: string;
   is_fallback: boolean;
   language: string;
   generated_at: string;
 };
 
-/** Rendu minimaliste du guide (titres ## + paragraphes) — pas de HTML injecté. */
+/** Repli de rendu pour les guides v1 (markdown : titres ## + paragraphes) — pas de HTML injecté. */
 function GuideText({ text }: { text: string }) {
   return (
     <div className="space-y-3 text-sm leading-relaxed">
@@ -52,6 +57,7 @@ export function GuideTab({
   const sourceRef = useRef<EventSource | null>(null);
 
   const guide = dataset.ai_guide as GuideData | null;
+  const blocks = getBlocks(guide?.blocks);
 
   const generate = async () => {
     setRunning(true);
@@ -122,10 +128,18 @@ export function GuideTab({
         </Alert>
       ) : null}
 
+      {/* Annoncé AVANT l'action tant qu'aucun guide n'existe ; replié ensuite. */}
+      <GuideIntro collapsible={Boolean(guide)} />
+
       {guide ? (
         <Card>
           <CardContent className="pt-6">
-            <GuideText text={guide.text} />
+            {blocks.length > 0 ? (
+              // Guide v2 : mêmes blocs riches que le copilote XAI (tableaux, tuiles, callouts).
+              <IbisBlocks blocks={blocks} />
+            ) : (
+              <GuideText text={guide.text} />
+            )}
             <p className="text-muted-foreground mt-4 text-xs">
               {t("guideDate", {
                 date: new Date(guide.generated_at).toLocaleString(locale)

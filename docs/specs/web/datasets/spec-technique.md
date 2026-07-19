@@ -3,9 +3,9 @@
 | Champ         | Valeur              |
 |---------------|---------------------|
 | Module        | web/datasets        |
-| Version       | 0.1.0               |
-| Date          | 2026-07-19          |
-| Source        | Rétro-ingénierie    |
+| Version       | 0.2.0               |
+| Date          | 2026-07-20          |
+| Source        | Rétro-ingénierie + Guide IA blocs riches |
 
 ---
 
@@ -30,7 +30,8 @@ apps/web/components/ibis/datasets/
 ├── ethical-criteria-grid.tsx  ← Grille 10 critères éthiques
 ├── files-tab.tsx              ← Onglet fichiers + téléchargement
 ├── filters-sheet.tsx          ← Panneau filtres facettés
-├── guide-tab.tsx              ← Onglet guide IA (SSE)
+├── guide-intro.tsx            ← Bloc d'intention annoncée (AiAssistPanel, motif IA unifié)
+├── guide-tab.tsx              ← Onglet guide IA (SSE + IbisBlocks v2 / repli Markdown v1)
 ├── metadata-form.tsx          ← Formulaire métadonnées (3 sections)
 ├── overview-tab.tsx           ← Onglet aperçu général
 ├── preview-tab.tsx            ← Onglet prévisualisation données
@@ -64,7 +65,8 @@ apps/web/lib/datasets/
 | `apps/web/components/ibis/datasets/dataset-detail-header.tsx` | Bandeau fiche : stats, download, lien "utiliser dans un projet" | ~207 |
 | `apps/web/components/ibis/datasets/ethical-criteria-grid.tsx` | Grille tristate 10 critères éthiques + barre segmentée | ~82 |
 | `apps/web/components/ibis/datasets/filters-sheet.tsx` | Panneau Sheet (slide-in) : domaines, tâches, plages numériques, éthique, compteur live | ~323 |
-| `apps/web/components/ibis/datasets/guide-tab.tsx` | Guide IA : SSE EventSource, Progress, badge fallback/modèle | ~142 |
+| `apps/web/components/ibis/datasets/guide-intro.tsx` | Bloc d'intention annoncée (AiAssistPanel) : les 4 sections produites, honnêteté, durée — affiché avant génération, replié après | ~100 |
+| `apps/web/components/ibis/datasets/guide-tab.tsx` | Guide IA : SSE EventSource, Progress, badge fallback/modèle ; rend IbisBlocks quand `ai_guide.blocks` existe (v2), repli Markdown pour guides antérieurs ; intègre GuideIntro | ~165 |
 | `apps/web/components/ibis/datasets/metadata-form.tsx` | Formulaire 3 sections : TagPicker, TristateSelect, switches | ~363 |
 | `apps/web/components/ibis/datasets/overview-tab.tsx` | Onglet Vue d'ensemble : fiche technique, métriques qualité, datasets similaires | ~263 |
 | `apps/web/components/ibis/datasets/preview-tab.tsx` | Onglet Aperçu : tableau de données réelles, stats par colonne | ~130 |
@@ -138,8 +140,14 @@ La heatmap de scoring utilise un `<table>` DOM natif (pas de librairie de visual
 ### Domain visual system
 9 domaines connus sont mappés statiquement vers {LucideIcon, DomainPatternId, ChartToken, monogram, vignette CSS class}. Les domaines inconnus reçoivent un token chart déterministe via un hash djb2 simplifié. Toutes les classes Tailwind sont écrites littéralement (pas de concaténation dynamique) pour la compatibilité JIT.
 
-### Guide IA avec EventSource
+### Guide IA avec EventSource et blocs riches (v2)
 La génération du guide IA ouvre un `EventSource` sur `/api/v1/jobs/{id}/events` après avoir déclenché la génération. Sur l'événement `progress`, si le statut est `completed`, le dataset est rechargé et l'EventSource est fermé. En cas d'erreur SSE (`onerror`), l'EventSource est fermé sans marquer l'état comme échoué.
+
+Depuis la v2, `guide-tab.tsx` distingue deux cas selon la présence de `ai_guide.blocks` :
+- **Présent** : `IbisBlocks` est utilisé (même rendu que le copilote XAI — tableaux tonaux, tuiles clé/valeur, callouts).
+- **Absent** : repli sur `GuideText` (rendu Markdown) pour les guides générés avant la v2.
+
+`guide-intro.tsx` (motif `AiAssistPanel`) s'affiche avant la première génération pour annoncer les 4 sections produites, le bénéfice concret, l'honnêteté et la durée. Le composant se replie en une ligne cliquable une fois le guide disponible. L'état d'ouverture n'est mémorisé que sur le choix explicite de l'utilisateur (`const open = manual ?? !collapsible`) pour éviter le reste de l'écran repoussé hors de la fenêtre lors du passage `collapsible=false → true`.
 
 ### Formulaire de métadonnées en 3 sections
 Le `MetadataForm` est partagé entre le wizard d'upload (étape 3) et la page de complétion. Les 3 sections (Général, Technique, Éthique) ont des ancres HTML (`id="section-{name}"`) utilisées par la navigation par scroll dans `CompleteMetadataPage`. Le `TristateSelect` encode les valeurs boolean|null en strings "true"/"false"/"null" pour le composant `<Select>`.
@@ -169,8 +177,9 @@ Le `MetadataForm` est partagé entre le wizard d'upload (étape 3) et la page de
 
 | Fichier | Ce qu'il teste | Statut |
 |---------|----------------|--------|
-| Tests Vitest `web/datasets` | Non identifié dans les 17 fichiers listés par discovery.md | À vérifier |
-| Tests Playwright e2e | Les 3 specs e2e couvrent le parcours mission (wizard ML) — datasets catalogue non couvert explicitement | Partiel |
+| Tests Vitest `web/datasets` | Non identifié dans les fichiers listés par discovery.md | À vérifier |
+| `apps/web/e2e/guide.spec.ts` | Parcours complet : inscription → onboarding → dataset Abalone → onglet Guide ; vérifie l'intention annoncée avant génération, le rendu en blocs riches après, et le repli automatique de GuideIntro | Existant (v2, 20/07/2026) |
+| Tests Playwright e2e (missions) | Les 3 specs e2e couvrent le parcours mission (wizard ML) — catalogue non couvert | Partiel |
 
 ---
 
