@@ -3,7 +3,6 @@
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { ArrowDownIcon } from "lucide-react";
 
 import {
   HoverCard,
@@ -68,31 +67,35 @@ export function ScoreHeatmap({ results, criteria }: ScoreHeatmapProps) {
                   {t("resultsTitle")}
                 </th>
                 <th className="bg-muted/50 p-2 align-bottom font-medium">{t("score")}</th>
-                {/* En-têtes verticaux : le libellé complet tient sans troncature, les
-                    colonnes restent étroites → la matrice entière reste visible. */}
-                {criteria.map((criterion) => (
-                  <th
-                    key={criterion}
-                    className={cn(
-                      "bg-muted/50 hover:bg-muted h-40 cursor-pointer p-0 align-bottom font-medium transition-colors",
-                      sortBy === criterion && "text-primary"
-                    )}
-                    onClick={() => setSortBy(sortBy === criterion ? null : criterion)}
-                    title={t(`criteria.${criterion}` as never)}>
-                    <div className="flex h-full flex-col items-center justify-end gap-1.5 px-1 pb-2">
-                      <ArrowDownIcon
+                {/* En-têtes EN DIAGONALE (≈45°, façon Excel) : libellé complet lisible tête à
+                    peine inclinée, colonnes étroites → matrice entière visible, header 2× moins
+                    haut qu'en vertical. Le span est hors-flux (absolute) donc n'élargit pas la
+                    colonne. Colonne-tampon finale à droite pour ne pas rogner le dernier libellé. */}
+                {criteria.map((criterion) => {
+                  const active = sortBy === criterion;
+                  return (
+                    <th
+                      key={criterion}
+                      className={cn(
+                        "group/col bg-muted/50 hover:bg-muted relative h-[104px] cursor-pointer align-bottom font-medium transition-colors",
+                        active && "border-primary border-b-2"
+                      )}
+                      onClick={() => setSortBy(active ? null : criterion)}
+                      title={t(`criteria.${criterion}` as never)}>
+                      <span
                         className={cn(
-                          "size-3 shrink-0 transition-opacity",
-                          sortBy === criterion ? "opacity-100" : "opacity-0"
-                        )}
-                        aria-hidden="true"
-                      />
-                      <span className="rotate-180 tracking-tight whitespace-nowrap [writing-mode:vertical-rl]">
+                          "absolute bottom-1.5 left-1/2 origin-bottom-left -rotate-45 pl-1 text-left tracking-tight whitespace-nowrap transition-colors",
+                          active
+                            ? "text-primary font-semibold"
+                            : "text-foreground/75 group-hover/col:text-foreground"
+                        )}>
                         {t(`criteria.${criterion}` as never)}
                       </span>
-                    </div>
-                  </th>
-                ))}
+                    </th>
+                  );
+                })}
+                {/* Tampon : réserve la place où le dernier libellé en diagonale « monte ». */}
+                <th className="bg-muted/50 w-12" aria-hidden="true" />
               </tr>
             </thead>
             <tbody>
@@ -175,6 +178,8 @@ export function ScoreHeatmap({ results, criteria }: ScoreHeatmapProps) {
                       </td>
                     );
                   })}
+                  {/* Tampon (aligné avec l'en-tête). */}
+                  <td aria-hidden="true" />
                 </tr>
               ))}
             </tbody>

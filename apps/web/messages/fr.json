@@ -156,6 +156,7 @@
     },
     "activity": {
       "title": "Activités récentes",
+      "subtitle": "Vos derniers entraînements et explications",
       "empty": "Aucune activité pour l'instant — lancez votre premier entraînement depuis un projet.",
       "experiment": "Entraînement",
       "explanation": "Explication",
@@ -176,6 +177,7 @@
     },
     "recentProjects": {
       "title": "Projets récents",
+      "subtitle": "Reprenez là où vous vous êtes arrêté",
       "empty": "Aucun projet — créez le premier.",
       "open": "Ouvrir",
       "emptyTitle": "Aucun projet pour l'instant",
@@ -294,6 +296,8 @@
       "year": "Année",
       "citations": "citations",
       "ethical": "Éthique",
+      "ethicalHint": "Score éthique : évaluation de la qualité éthique du dataset (biais, transparence, anonymisation, consentement…). Plus il est élevé, plus le dataset respecte ces critères.",
+      "ethicalOutOf": "sur 100",
       "split": "Pré-divisé",
       "anonymized": "Anonymisé",
       "temporal": "Temporel",
@@ -433,7 +437,15 @@
       "addedOn": "Ajouté le {date}",
       "updatedOn": "Mis à jour le {date}",
       "journeyLabel": "Où situer ce dataset",
-      "projectFromDataset": "Projet — {name}"
+      "projectFromDataset": "Projet — {name}",
+      "howToTitle": "Comment utiliser ce dataset ?",
+      "howStep1Title": "Explorez",
+      "howStep1Body": "Parcourez les colonnes, l’aperçu et le guide IA ci-dessous.",
+      "howStep2Title": "Créez un projet",
+      "howStep2Body": "Définissez votre objectif et vos critères éthiques.",
+      "howStep3Title": "Entraînez & comprenez",
+      "howStep3Body": "Lancez un modèle, puis obtenez des explications guidées par l’IA.",
+      "howHere": "Vous êtes ici"
     },
     "uploadWizard": {
       "title": "Ajouter un dataset au catalogue",
@@ -806,6 +818,7 @@
     },
     "step8": {
       "recap": "Récapitulatif complet",
+      "recapHint": "La recette complète de votre entraînement — chaque réglage que vous avez validé.",
       "dataset": "Dataset",
       "target": "Cible",
       "task": "Tâche",
@@ -844,7 +857,10 @@
       "9": "Votre modèle est prêt — place aux résultats."
     },
     "aiGuide": "Guide-moi avec l’IA",
-    "aiTitle": "Assistance IA"
+    "aiTitle": "Assistance IA",
+    "aiAvailable": "Une recommandation IA est disponible pour cette étape",
+    "aiApply": "Appliquer la recommandation IA",
+    "aiChoose": "Je choisis moi-même"
   },
   "experiments": {
     "resultsTitle": "Résultats de l'expérience",

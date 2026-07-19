@@ -12,7 +12,14 @@ import {
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle
+} from "@/components/ui/card";
 import { Empty, EmptyDescription, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
 import {
   Item,
@@ -86,6 +93,7 @@ export function RecentActivityTimeline({ items }: { items: ActivityItem[] }) {
           <ActivityIcon className="size-4" />
           {t("activity.title")}
         </CardTitle>
+        <CardDescription>{t("activity.subtitle")}</CardDescription>
       </CardHeader>
       <CardContent className="flex-1">
         {items.length === 0 ? (

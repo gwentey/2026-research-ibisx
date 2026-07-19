@@ -156,6 +156,7 @@
     },
     "activity": {
       "title": "Recent activity",
+      "subtitle": "Your latest trainings and explanations",
       "empty": "No activity yet — start your first training from a project.",
       "experiment": "Training",
       "explanation": "Explanation",
@@ -176,6 +177,7 @@
     },
     "recentProjects": {
       "title": "Recent projects",
+      "subtitle": "Pick up right where you left off",
       "empty": "No project — create the first one.",
       "open": "Open",
       "emptyTitle": "No project yet",
@@ -294,6 +296,8 @@
       "year": "Year",
       "citations": "citations",
       "ethical": "Ethics",
+      "ethicalHint": "Ethical score: an assessment of the dataset's ethical quality (bias, transparency, anonymization, consent…). The higher it is, the better the dataset meets these criteria.",
+      "ethicalOutOf": "out of 100",
       "split": "Pre-split",
       "anonymized": "Anonymized",
       "temporal": "Temporal",
@@ -433,7 +437,15 @@
       "addedOn": "Added on {date}",
       "updatedOn": "Updated on {date}",
       "journeyLabel": "Where this dataset fits",
-      "projectFromDataset": "Project — {name}"
+      "projectFromDataset": "Project — {name}",
+      "howToTitle": "How to use this dataset?",
+      "howStep1Title": "Explore",
+      "howStep1Body": "Browse the columns, preview and AI guide below.",
+      "howStep2Title": "Create a project",
+      "howStep2Body": "Set your objective and ethical criteria.",
+      "howStep3Title": "Train & understand",
+      "howStep3Body": "Run a model, then get AI-guided explanations.",
+      "howHere": "You are here"
     },
     "uploadWizard": {
       "title": "Add a dataset to the catalog",
@@ -806,6 +818,7 @@
     },
     "step8": {
       "recap": "Full recap",
+      "recapHint": "The full recipe for your training run — every setting you confirmed.",
       "dataset": "Dataset",
       "target": "Target",
       "task": "Task",
@@ -844,7 +857,10 @@
       "9": "Your model is ready — on to the results."
     },
     "aiGuide": "Guide me with AI",
-    "aiTitle": "AI assistance"
+    "aiTitle": "AI assistance",
+    "aiAvailable": "An AI recommendation is available for this step",
+    "aiApply": "Apply the AI recommendation",
+    "aiChoose": "I'll choose myself"
   },
   "experiments": {
     "resultsTitle": "Experiment results",

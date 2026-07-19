@@ -112,11 +112,20 @@ export default function DashboardPage() {
         : { icon: TrendingDownIcon, label: t("kpis.successLow") }
       : null;
 
+  // Le chiffre « monte » à l'arrivée (count-up) quand la valeur est un vrai nombre ; quand
+  // la donnée est absente on garde « — » (jamais un faux 0 — P1). suffix collé au chiffre.
+  const hasSuccess = data.kpis.success_rate !== null && data.kpis.success_rate !== undefined;
+  const hasDuration =
+    data.kpis.average_duration_seconds !== null &&
+    data.kpis.average_duration_seconds !== undefined;
+
   const kpiTiles = [
     {
       icon: FlaskConicalIcon,
       tone: "chart-1" as const,
       label: t("kpis.experiments"),
+      count: data.kpis.total_experiments,
+      suffix: undefined,
       value: String(data.kpis.total_experiments),
       trend: null
     },
@@ -124,6 +133,8 @@ export default function DashboardPage() {
       icon: FolderIcon,
       tone: "chart-2" as const,
       label: t("kpis.projects"),
+      count: data.kpis.active_projects,
+      suffix: undefined,
       value: String(data.kpis.active_projects),
       trend: null
     },
@@ -132,21 +143,18 @@ export default function DashboardPage() {
       tone: "chart-3" as const,
       label: t("kpis.successRate"),
       // Taux ABSENT tant qu'aucune expérience terminée — jamais un faux 0 % (P1)
-      value:
-        data.kpis.success_rate !== null && data.kpis.success_rate !== undefined
-          ? `${Math.round(data.kpis.success_rate * 100)}%`
-          : t("kpis.noData"),
+      count: hasSuccess ? Math.round(data.kpis.success_rate! * 100) : null,
+      suffix: "%",
+      value: t("kpis.noData"),
       trend: successTrend
     },
     {
       icon: TimerIcon,
       tone: "chart-4" as const,
       label: t("kpis.avgDuration"),
-      value:
-        data.kpis.average_duration_seconds !== null &&
-        data.kpis.average_duration_seconds !== undefined
-          ? `${data.kpis.average_duration_seconds}s`
-          : t("kpis.noData"),
+      count: hasDuration ? data.kpis.average_duration_seconds : null,
+      suffix: "s",
+      value: t("kpis.noData"),
       trend: null
     }
   ];
@@ -157,24 +165,37 @@ export default function DashboardPage() {
         {name ? t("welcome", { name }) : t("welcomeFallback")}
       </h1>
 
-      <MissionHeroCard pendingDraft={data.pending_draft} />
+      <div className="animate-rise-in">
+        <MissionHeroCard pendingDraft={data.pending_draft} />
+      </div>
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        {kpiTiles.map((tile) => (
-          <StatTile
+        {kpiTiles.map((tile, index) => (
+          // Cascade d'arrivée : chaque tuile se relève avec un léger décalage, en même temps
+          // que son chiffre grimpe (count-up). Décoratif → neutralisé sous reduced-motion.
+          <div
             key={tile.label}
-            icon={tile.icon}
-            tone={tile.tone}
-            label={tile.label}
-            value={tile.value}
-            trend={tile.trend}
-          />
+            className="animate-rise-in"
+            style={{ animationDelay: `${80 + index * 70}ms` }}>
+            <StatTile
+              icon={tile.icon}
+              tone={tile.tone}
+              label={tile.label}
+              value={tile.value}
+              count={tile.count}
+              suffix={tile.suffix}
+              trend={tile.trend}
+            />
+          </div>
         ))}
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-3">
-        <RecentActivityTimeline items={data.recent_activity} />
-        <RecentProjectsList projects={data.recent_projects} />
+      {/* Activité et projets récents plafonnés à 5 lignes chacun : cartes de même hauteur,
+          « Voir tout » en pied pour le reste. La grille étire les deux cartes à la hauteur
+          de la plus grande (align-items: stretch). */}
+      <div className="animate-rise-in grid gap-4 lg:grid-cols-3" style={{ animationDelay: "380ms" }}>
+        <RecentActivityTimeline items={data.recent_activity.slice(0, 5)} />
+        <RecentProjectsList projects={data.recent_projects.slice(0, 5)} />
       </div>
 
       {/* « Ce que je peux faire ensuite » : tuiles d'action vivantes (routes existantes). */}

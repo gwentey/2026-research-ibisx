@@ -14,6 +14,7 @@ import {
   BreadcrumbSeparator
 } from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { DomainPattern } from "@/components/ibis/datasets/domain-pattern";
 import { downloadDatasetFile } from "@/lib/api/generated";
 import type { DatasetDetail } from "@/lib/api/generated";
@@ -126,9 +127,16 @@ export function DatasetDetailHeader({
                 <Badge variant="outline">
                   {dataset.access === "public" ? t("card.public") : t("card.private")}
                 </Badge>
-                <Badge variant="secondary" className={scoreColorClass(ethicalPercent)}>
-                  {t("card.ethical")} {ethicalPercent}%
-                </Badge>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Badge
+                      variant="secondary"
+                      className={cn("cursor-help", scoreColorClass(ethicalPercent))}>
+                      {t("card.ethical")} {ethicalPercent}%
+                    </Badge>
+                  </TooltipTrigger>
+                  <TooltipContent className="max-w-xs">{t("card.ethicalHint")}</TooltipContent>
+                </Tooltip>
               </div>
               {dataset.objective ? (
                 <p className="text-muted-foreground max-w-2xl text-sm leading-snug">

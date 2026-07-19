@@ -25,21 +25,12 @@ import {
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Item,
-  ItemContent,
-  ItemDescription,
-  ItemGroup,
-  ItemMedia,
-  ItemTitle
-} from "@/components/ui/item";
 import { Progress } from "@/components/ui/progress";
 import { Switch } from "@/components/ui/switch";
-import { AiAssistButton, AiAssistPanel } from "@/components/ibis/ai-assist";
+import { AiAssist } from "@/components/ibis/ai-assist";
 import { getExperiment, getMe, startExperiment } from "@/lib/api/generated";
 import type { DatasetDetail } from "@/lib/api/generated";
 import type { QualityData } from "@/app/wizard/page";
@@ -71,7 +62,6 @@ export function Step6Algorithm({
   const t = useTranslations("wizard.step6");
   const tw = useTranslations("wizard");
   const store = useWizardStore();
-  const [aiOpen, setAiOpen] = useState(true);
   const cards = algorithms as unknown as AlgorithmCard[];
   const rows = quality?.analysis.row_count ?? 0;
   const cols = quality?.analysis.column_count ?? 0;
@@ -86,27 +76,28 @@ export function Step6Algorithm({
 
   return (
     <div className="space-y-4">
-      {/* Aide IA — même motif partout : déclencheur en haut à droite + panneau dégradé IA. */}
-      <div className="flex justify-end">
-        <AiAssistButton
-          open={aiOpen}
-          onToggle={() => setAiOpen((open) => !open)}
-          label={tw("aiGuide")}
-        />
-      </div>
-      {aiOpen ? (
-        <AiAssistPanel title={tw("aiTitle")}>
-          <p className="text-sm">
-            {t("aiReco", {
-              algo: t(`names.${recommended}` as never),
-              reason:
-                recommended === "decision_tree"
-                  ? t("reasonSmall", { rows })
-                  : t("reasonLarge", { rows, cols })
-            })}
-          </p>
-        </AiAssistPanel>
-      ) : null}
+      {/* Aide IA — motif UNIQUE (AiAssist). « Appliquer » sélectionne l'algorithme recommandé
+          (preset équilibré + défauts). */}
+      <AiAssist
+        title={tw("aiTitle")}
+        guideLabel={tw("aiGuide")}
+        availableLabel={tw("aiAvailable")}
+        applyLabel={tw("aiApply")}
+        chooseLabel={tw("aiChoose")}
+        onApply={() => {
+          const rec = cards.find((card) => card.key === recommended);
+          if (rec) choose(rec.key, rec.defaults);
+        }}>
+        <p className="text-sm">
+          {t("aiReco", {
+            algo: t(`names.${recommended}` as never),
+            reason:
+              recommended === "decision_tree"
+                ? t("reasonSmall", { rows })
+                : t("reasonLarge", { rows, cols })
+          })}
+        </p>
+      </AiAssist>
       <div className="grid gap-4 sm:grid-cols-2">
         {cards.map((card) => {
           const active = store.algorithm === card.key;
@@ -169,7 +160,6 @@ export function Step7Hyperparameters({ algorithms }: { algorithms: Record<string
   const t = useTranslations("wizard.step7");
   const tw = useTranslations("wizard");
   const store = useWizardStore();
-  const [aiOpen, setAiOpen] = useState(true);
   const card = (algorithms as unknown as AlgorithmCard[]).find((c) => c.key === store.algorithm);
   if (!card) return null;
 
@@ -187,19 +177,16 @@ export function Step7Hyperparameters({ algorithms }: { algorithms: Record<string
 
   return (
     <div className="space-y-4">
-      {/* Aide IA — même motif partout : déclencheur en haut à droite + panneau dégradé IA. */}
-      <div className="flex justify-end">
-        <AiAssistButton
-          open={aiOpen}
-          onToggle={() => setAiOpen((open) => !open)}
-          label={tw("aiGuide")}
-        />
-      </div>
-      {aiOpen ? (
-        <AiAssistPanel title={tw("aiTitle")}>
-          <p className="text-sm">{t("aiReco")}</p>
-        </AiAssistPanel>
-      ) : null}
+      {/* Aide IA — motif UNIQUE (AiAssist). « Appliquer » pose le préréglage équilibré. */}
+      <AiAssist
+        title={tw("aiTitle")}
+        guideLabel={tw("aiGuide")}
+        availableLabel={tw("aiAvailable")}
+        applyLabel={tw("aiApply")}
+        chooseLabel={tw("aiChoose")}
+        onApply={() => applyPreset("balanced")}>
+        <p className="text-sm">{t("aiReco")}</p>
+      </AiAssist>
       <div className="flex flex-wrap gap-2">
         {["balanced", "high_precision", "fast", "custom"].map((preset) => (
           <button
@@ -216,9 +203,9 @@ export function Step7Hyperparameters({ algorithms }: { algorithms: Record<string
           </button>
         ))}
       </div>
-      <Card>
-        <CardContent className="grid gap-4 pt-6 sm:grid-cols-2">
-          {Object.entries(card.schema.properties).map(([name, spec]) => {
+      {/* Paramètres — card-free (cohérence : mêmes cases bordées, sans grosse carte). */}
+      <div className="grid gap-4 sm:grid-cols-2">
+        {Object.entries(card.schema.properties).map(([name, spec]) => {
             const value = store.hyperparameters[name] ?? spec.default;
             if (spec.type === "boolean") {
               return (
@@ -269,8 +256,7 @@ export function Step7Hyperparameters({ algorithms }: { algorithms: Record<string
               </div>
             );
           })}
-        </CardContent>
-      </Card>
+      </div>
     </div>
   );
 }
@@ -430,63 +416,89 @@ export function Step8Launch({
     });
   };
 
-  const recap: { icon: typeof DatabaseIcon; label: string; value: string }[] = [
-    { icon: DatabaseIcon, label: t("dataset"), value: dataset.display_name },
-    { icon: TargetIcon, label: t("target"), value: store.targetColumn ?? "" },
-    { icon: LightbulbIcon, label: t("task"), value: store.taskType ?? "" },
+  // Récap : chaque ligne = un réglage réellement transmis à l'entraînement. Teinte chart-N
+  // purement tonale (monochrome), pour une lecture « fiche recette » claire et pédagogique.
+  const recap: {
+    icon: typeof DatabaseIcon;
+    tone: string;
+    label: string;
+    value: string;
+  }[] = [
+    { icon: DatabaseIcon, tone: "bg-chart-1/10 text-chart-1", label: t("dataset"), value: dataset.display_name },
+    { icon: TargetIcon, tone: "bg-chart-2/10 text-chart-2", label: t("target"), value: store.targetColumn ?? "" },
+    { icon: LightbulbIcon, tone: "bg-chart-3/10 text-chart-3", label: t("task"), value: store.taskType ?? "" },
     {
       icon: EraserIcon,
+      tone: "bg-chart-4/10 text-chart-4",
       label: t("cleaning"),
       value: t("cleaningValue", { count: Object.keys(store.columnStrategies).length })
     },
     {
       icon: SplitIcon,
+      tone: "bg-chart-5/20 text-foreground",
       label: t("split"),
       value: `${Math.round((1 - store.testSize) * 100)} / ${Math.round(store.testSize * 100)} · random_state=42`
     },
     {
       icon: SlidersHorizontalIcon,
+      tone: "bg-chart-1/10 text-chart-1",
       label: t("prep"),
       value: `${store.scalingEnabled ? store.scalingMethod : "—"} · ${store.encoding}`
     },
     {
       icon: Settings2Icon,
+      tone: "bg-chart-2/10 text-chart-2",
       label: t("algo"),
       value: `${store.algorithm} (${store.preset})`
     }
   ];
 
   return (
-    <div className="space-y-4">
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-base">{t("recap")}</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <ItemGroup className="grid gap-2 sm:grid-cols-2">
-            {recap.map((row) => (
-              <Item key={row.label} variant="outline" size="sm">
-                <ItemMedia variant="icon">
-                  <row.icon />
-                </ItemMedia>
-                <ItemContent className="gap-0.5">
-                  <ItemDescription className="text-xs">{row.label}</ItemDescription>
-                  <ItemTitle className="truncate text-sm font-semibold">{row.value}</ItemTitle>
-                </ItemContent>
-              </Item>
-            ))}
-          </ItemGroup>
-          <div className="bg-muted/40 flex items-center gap-2 rounded-lg border p-3 text-sm">
-            <CoinsIcon className="text-primary size-4 shrink-0" />
-            {t("cost", { credits: user?.credits ?? 0 })}
-          </div>
-        </CardContent>
-      </Card>
-
+    <div className="space-y-6">
+      {/* Récapitulatif — card-free (cohérence). En-tête pédagogique + « fiche recette » :
+          chaque tuile est un réglage validé, avec sa tuile-icône tonale. */}
       {state === "idle" || state === "starting" ? (
-        <Card>
-          <CardContent className="space-y-4 pt-6">
-            <label className="flex items-center gap-2.5 text-sm">
+        <>
+          <div className="space-y-4">
+            <div className="flex items-start gap-3">
+              <div className="bg-primary/10 text-primary flex size-9 shrink-0 items-center justify-center rounded-lg">
+                <RocketIcon className="size-5" />
+              </div>
+              <div className="space-y-0.5">
+                <h2 className="font-semibold">{t("recap")}</h2>
+                <p className="text-muted-foreground text-sm">{t("recapHint")}</p>
+              </div>
+            </div>
+
+            <div className="grid gap-2 sm:grid-cols-2">
+              {recap.map((row) => (
+                <div
+                  key={row.label}
+                  className="flex items-center gap-3 rounded-lg border p-3">
+                  <div
+                    className={cn(
+                      "flex size-9 shrink-0 items-center justify-center rounded-lg",
+                      row.tone
+                    )}>
+                    <row.icon className="size-4" />
+                  </div>
+                  <div className="min-w-0 space-y-0.5">
+                    <p className="text-muted-foreground text-xs">{row.label}</p>
+                    <p className="truncate text-sm font-semibold">{row.value}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="bg-muted/40 flex items-center gap-2 rounded-lg border p-3 text-sm">
+              <CoinsIcon className="text-primary size-4 shrink-0" />
+              {t("cost", { credits: user?.credits ?? 0 })}
+            </div>
+          </div>
+
+          {/* Confirmation + lancement — card-free, mis en avant. */}
+          <div className="space-y-4 border-t pt-6">
+            <label className="hover:border-primary/40 flex cursor-pointer items-center gap-2.5 rounded-lg border p-3 text-sm transition-colors">
               <Checkbox checked={confirmed} onCheckedChange={(c) => setConfirmed(c === true)} />
               {t("confirm")}
             </label>
@@ -499,51 +511,48 @@ export function Step8Launch({
                 {state === "starting" ? t("launching") : t("launch")}
               </Button>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </>
       ) : null}
 
+      {/* Console — panneau bordé (pas de Card), en-tête + progression + traitement IA + logs. */}
       {state === "running" || state === "completed" ? (
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center justify-between text-base">
-              <span className="flex items-center gap-2">
-                <TerminalIcon className="text-muted-foreground size-4" />
-                {t("console")}
-              </span>
-              {queuePosition !== null && queuePosition > 0 ? (
-                <Badge variant="outline">{t("queued", { position: queuePosition })}</Badge>
-              ) : null}
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <div className="flex items-center gap-3">
-              <Progress value={Math.max(displayProgress, progress)} className="h-2" />
-              <span className="text-muted-foreground w-10 text-right font-mono text-xs">
-                {Math.round(Math.max(displayProgress, progress))}%
-              </span>
-            </div>
-            {state === "running" ? (
-              <p className="text-ai flex items-center gap-2 text-sm font-medium">
-                <Loader2Icon className="size-4 animate-spin" />
-                {t("processing")}
-              </p>
+        <div className="space-y-3 rounded-xl border p-4">
+          <div className="flex items-center justify-between">
+            <span className="flex items-center gap-2 font-semibold">
+              <TerminalIcon className="text-muted-foreground size-4" />
+              {t("console")}
+            </span>
+            {queuePosition !== null && queuePosition > 0 ? (
+              <Badge variant="outline">{t("queued", { position: queuePosition })}</Badge>
             ) : null}
-            <ul className="bg-muted max-h-56 space-y-0.5 overflow-auto rounded-md p-3 font-mono text-xs leading-relaxed">
-              {logs.map((line, index) => (
-                <li key={index} className={index === logs.length - 1 ? "" : "text-muted-foreground"}>
-                  {line}
-                </li>
-              ))}
-            </ul>
-            {state === "running" ? (
-              <Button variant="outline" size="sm" onClick={() => void cancel()}>
-                <XCircleIcon />
-                {t("cancel")}
-              </Button>
-            ) : null}
-          </CardContent>
-        </Card>
+          </div>
+          <div className="flex items-center gap-3">
+            <Progress value={Math.max(displayProgress, progress)} className="h-2" />
+            <span className="text-muted-foreground w-10 text-right font-mono text-xs">
+              {Math.round(Math.max(displayProgress, progress))}%
+            </span>
+          </div>
+          {state === "running" ? (
+            <p className="text-ai flex items-center gap-2 text-sm font-medium">
+              <Loader2Icon className="size-4 animate-spin" />
+              {t("processing")}
+            </p>
+          ) : null}
+          <ul className="bg-muted max-h-56 space-y-0.5 overflow-auto rounded-md p-3 font-mono text-xs leading-relaxed">
+            {logs.map((line, index) => (
+              <li key={index} className={index === logs.length - 1 ? "" : "text-muted-foreground"}>
+                {line}
+              </li>
+            ))}
+          </ul>
+          {state === "running" ? (
+            <Button variant="outline" size="sm" onClick={() => void cancel()}>
+              <XCircleIcon />
+              {t("cancel")}
+            </Button>
+          ) : null}
+        </div>
       ) : null}
 
       {state === "cancelled" ? (

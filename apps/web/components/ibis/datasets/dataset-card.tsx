@@ -18,6 +18,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { DomainPattern } from "@/components/ibis/datasets/domain-pattern";
 import { ProgressRing } from "@/components/ibis/progress-ring";
 import type { DatasetCard as DatasetCardData } from "@/lib/api/generated";
@@ -68,24 +69,35 @@ export function DatasetCard({ dataset }: { dataset: DatasetCardData }) {
         </Badge>
       </div>
 
-      {/* Médaillon de score éthique, chevauchant la vignette (ProgressRing du wizard) */}
-      <div className="-mt-7 flex px-5">
-        <div className="bg-background relative flex size-14 items-center justify-center rounded-full border shadow-sm">
-          <ProgressRing
-            value={ethicalPercent}
-            size={56}
-            strokeWidth={4}
-            trackClassName="stroke-border"
-            progressClassName="stroke-current"
-            className={scoreColorClass(ethicalPercent)}
-          />
-          <span
-            className={cn(
-              "absolute inset-0 grid place-items-center text-[11px] font-bold",
-              scoreColorClass(ethicalPercent)
-            )}>
-            {ethicalPercent}%
-          </span>
+      {/* Médaillon de score éthique, chevauchant la vignette (ProgressRing du wizard).
+          Libellé « Éthique » VISIBLE à côté + tooltip explicatif : on ne laisse plus un
+          pourcentage nu sans dire ce qu'il mesure (plateforme éducative). */}
+      <div className="-mt-7 flex items-end gap-2.5 px-5">
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <div className="bg-background relative flex size-14 cursor-help items-center justify-center rounded-full border shadow-sm">
+              <ProgressRing
+                value={ethicalPercent}
+                size={56}
+                strokeWidth={4}
+                trackClassName="stroke-border"
+                progressClassName="stroke-current"
+                className={scoreColorClass(ethicalPercent)}
+              />
+              <span
+                className={cn(
+                  "absolute inset-0 grid place-items-center text-[11px] font-bold",
+                  scoreColorClass(ethicalPercent)
+                )}>
+                {ethicalPercent}%
+              </span>
+            </div>
+          </TooltipTrigger>
+          <TooltipContent className="max-w-xs">{t("ethicalHint")}</TooltipContent>
+        </Tooltip>
+        <div className="pb-1 leading-tight">
+          <p className="text-xs font-medium">{t("ethical")}</p>
+          <p className="text-muted-foreground text-[11px]">{t("ethicalOutOf")}</p>
         </div>
       </div>
 

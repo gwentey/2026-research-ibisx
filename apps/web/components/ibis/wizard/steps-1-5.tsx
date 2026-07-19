@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { useTranslations } from "next-intl";
 import {
   CheckCircle2Icon,
@@ -42,7 +42,7 @@ import {
   TableHeader,
   TableRow
 } from "@/components/ui/table";
-import { AiAssistButton, AiAssistPanel } from "@/components/ibis/ai-assist";
+import { AiAssist } from "@/components/ibis/ai-assist";
 import type { DatasetDetail, DatasetPreview } from "@/lib/api/generated";
 import type { QualityData } from "@/app/wizard/page";
 import { useWizardStore, type WizardState } from "@/lib/wizard/store";
@@ -243,8 +243,8 @@ export function Step2Target({
   quality: QualityData | null;
 }) {
   const t = useTranslations("wizard.step2");
+  const tw = useTranslations("wizard");
   const store = useWizardStore();
-  const [assistOpen, setAssistOpen] = useState(true);
   const columns = dataset.files[0]?.columns ?? [];
 
   const suggested = useMemo(
@@ -349,118 +349,97 @@ export function Step2Target({
   };
 
   return (
-    <div className="space-y-4">
-      {/* Objectif de prédiction — UI STANDARD (choisir n'est pas de l'IA). L'aide IA
-          s'annonce partout de la même façon : déclencheur « Guide-moi avec l'IA » en HAUT
-          À DROITE (AiAssistButton) → panneau pointillé + dégradé violet/bleu (AiAssistPanel). */}
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between gap-3 space-y-0">
-          <CardTitle className="text-base">{t("objectiveCardTitle")}</CardTitle>
-          <AiAssistButton
-            open={assistOpen}
-            onToggle={() => setAssistOpen((open) => !open)}
-            label={t("aiGuide")}
-          />
-        </CardHeader>
-        <CardContent className="space-y-5">
-          <div>
-            <Label>{t("targetLabel")}</Label>
-            <Select
-              value={store.targetColumn ?? undefined}
-              onValueChange={(value) => store.set("targetColumn", value)}>
-              <SelectTrigger className="mt-2 w-full max-w-md">
-                <SelectValue placeholder={t("targetPlaceholder")} />
-              </SelectTrigger>
-              <SelectContent>
-                {columns.map((column) => (
-                  <SelectItem key={column.id} value={column.name}>
-                    {column.name} · {column.dtype_interpreted}
-                    {column.name === suggested ? ` — ${t("suggested")}` : ""}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div>
-            <Label>{t("taskLabel")}</Label>
-            <div className="mt-2 grid gap-3 sm:grid-cols-2">
-              {taskCard("classification")}
-              {taskCard("regression")}
-            </div>
-          </div>
-
-          {assistOpen ? (
-            <AiAssistPanel title={t("aiTitle")}>
-              <p className="text-sm">
-                {t("analysisOf", { name: dataset.display_name })}
-                {dataset.objective ? (
-                  <span className="text-muted-foreground"> — {dataset.objective}</span>
-                ) : null}
-              </p>
-              {target ? (
-                <div className="flex flex-wrap gap-x-6 gap-y-1.5 text-sm">
-                  <span className="flex items-center gap-1.5">
-                    <ListIcon className="text-ai size-3.5" />
-                    <span className="text-muted-foreground">{t("targetInfo")} :</span>
-                    <span className="font-medium">{target}</span>
-                  </span>
-                  <span className="flex items-center gap-1.5">
-                    <GaugeIcon className="text-ai size-3.5" />
-                    <span className="text-muted-foreground">{t("dtypeInfo")} :</span>
-                    <span className="font-medium">
-                      {meta.isCategorical ? t("dtypeCategorical") : t("dtypeNumeric")}
-                    </span>
-                  </span>
-                </div>
-              ) : (
-                <p className="text-muted-foreground text-sm">{t("targetPlaceholder")}</p>
-              )}
-
-              {target ? (
-                <Alert className="border-ai/40 bg-background/70">
-                  <LightbulbIcon className="text-ai" />
-                  <AlertTitle className="text-ai">{t("finalTitle")}</AlertTitle>
-                  <AlertDescription>
-                    {t("aiReco", {
-                      task: recommendedLabel,
-                      reason: t(
-                        meta.recommendedTask === "classification"
-                          ? "reasonCategorical"
-                          : "reasonNumeric",
-                        { column: target, count: meta.uniqueCount }
-                      )
-                    })}
-                  </AlertDescription>
-                </Alert>
-              ) : null}
-
-              {target ? (
-                <div className="flex flex-wrap gap-2">
-                  <Button
-                    className="bg-ai text-ai-foreground hover:bg-ai/90"
-                    onClick={() => store.set("taskType", meta.recommendedTask)}>
-                    <CheckCircle2Icon />
-                    {t("applyFinal", { task: recommendedLabel })}
-                  </Button>
-                  <Button variant="outline" onClick={() => setAssistOpen(false)}>
-                    <XIcon />
-                    {t("chooseMyself")}
-                  </Button>
-                </div>
-              ) : null}
-            </AiAssistPanel>
+    <div className="space-y-6">
+      {/* Aide IA — motif UNIQUE partout (AiAssist) : barre teintée pleine largeur fermée,
+          panneau pointillé + « Appliquer la recommandation IA » / « Je choisis moi-même »
+          ouvert, éclatement à la fermeture. On n'applique que si une cible est choisie. */}
+      <AiAssist
+        title={tw("aiTitle")}
+        guideLabel={tw("aiGuide")}
+        availableLabel={tw("aiAvailable")}
+        applyLabel={tw("aiApply")}
+        chooseLabel={tw("aiChoose")}
+        onApply={target ? () => store.set("taskType", meta.recommendedTask) : undefined}>
+        <p className="text-sm">
+          {t("analysisOf", { name: dataset.display_name })}
+          {dataset.objective ? (
+            <span className="text-muted-foreground"> — {dataset.objective}</span>
           ) : null}
+        </p>
+        {target ? (
+          <div className="flex flex-wrap gap-x-6 gap-y-1.5 text-sm">
+            <span className="flex items-center gap-1.5">
+              <ListIcon className="text-ai size-3.5" />
+              <span className="text-muted-foreground">{t("targetInfo")} :</span>
+              <span className="font-medium">{target}</span>
+            </span>
+            <span className="flex items-center gap-1.5">
+              <GaugeIcon className="text-ai size-3.5" />
+              <span className="text-muted-foreground">{t("dtypeInfo")} :</span>
+              <span className="font-medium">
+                {meta.isCategorical ? t("dtypeCategorical") : t("dtypeNumeric")}
+              </span>
+            </span>
+          </div>
+        ) : (
+          <p className="text-muted-foreground text-sm">{t("targetPlaceholder")}</p>
+        )}
+        {target ? (
+          <Alert className="border-ai/40 bg-background/70">
+            <LightbulbIcon className="text-ai" />
+            <AlertTitle className="text-ai">{t("finalTitle")}</AlertTitle>
+            <AlertDescription>
+              {t("aiReco", {
+                task: recommendedLabel,
+                reason: t(
+                  meta.recommendedTask === "classification"
+                    ? "reasonCategorical"
+                    : "reasonNumeric",
+                  { column: target, count: meta.uniqueCount }
+                )
+              })}
+            </AlertDescription>
+          </Alert>
+        ) : null}
+      </AiAssist>
 
-          {meta.blocking ? (
-            <Alert variant="destructive">
-              <TriangleAlertIcon />
-              <AlertTitle>{t("blockTitle")}</AlertTitle>
-              <AlertDescription>{t("blockBody", { column: target ?? "" })}</AlertDescription>
-            </Alert>
-          ) : null}
-        </CardContent>
-      </Card>
+      {/* Contrôles — card-free, comme l'étape « Choix de l'algorithme » (cohérence demandée). */}
+      <div className="space-y-5">
+        <div>
+          <Label>{t("targetLabel")}</Label>
+          <Select
+            value={store.targetColumn ?? undefined}
+            onValueChange={(value) => store.set("targetColumn", value)}>
+            <SelectTrigger className="mt-2 w-full max-w-md">
+              <SelectValue placeholder={t("targetPlaceholder")} />
+            </SelectTrigger>
+            <SelectContent>
+              {columns.map((column) => (
+                <SelectItem key={column.id} value={column.name}>
+                  {column.name} · {column.dtype_interpreted}
+                  {column.name === suggested ? ` — ${t("suggested")}` : ""}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div>
+          <Label>{t("taskLabel")}</Label>
+          <div className="mt-2 grid gap-3 sm:grid-cols-2">
+            {taskCard("classification")}
+            {taskCard("regression")}
+          </div>
+        </div>
+
+        {meta.blocking ? (
+          <Alert variant="destructive">
+            <TriangleAlertIcon />
+            <AlertTitle>{t("blockTitle")}</AlertTitle>
+            <AlertDescription>{t("blockBody", { column: target ?? "" })}</AlertDescription>
+          </Alert>
+        ) : null}
+      </div>
 
       <Understand title={t("understand")} body={t("understandBody")} />
     </div>
@@ -631,48 +610,47 @@ export function Step4Split({ quality }: { quality: QualityData | null }) {
   const trainPct = Math.round((1 - store.testSize) * 100);
 
   return (
-    <div className="space-y-4">
-      <Card>
-        <CardContent className="space-y-6 pt-6">
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <Label>{t("testSize", { pct: Math.round(store.testSize * 100) })}</Label>
-              <Badge variant="outline" className="font-mono text-xs">
-                {trainPct} / {Math.round(store.testSize * 100)}
-              </Badge>
-            </div>
-            <Slider
-              value={[store.testSize * 100]}
-              min={10}
-              max={50}
-              step={5}
-              onValueChange={([value]) => store.set("testSize", value / 100)}
-            />
+    <div className="space-y-6">
+      {/* Réglages — card-free, comme l'étape « Choix de l'algorithme » (cohérence demandée). */}
+      <div className="space-y-6">
+        <div className="space-y-3">
+          <div className="flex items-center justify-between">
+            <Label>{t("testSize", { pct: Math.round(store.testSize * 100) })}</Label>
+            <Badge variant="outline" className="font-mono text-xs">
+              {trainPct} / {Math.round(store.testSize * 100)}
+            </Badge>
           </div>
+          <Slider
+            value={[store.testSize * 100]}
+            min={10}
+            max={50}
+            step={5}
+            onValueChange={([value]) => store.set("testSize", value / 100)}
+          />
+        </div>
 
-          <div className="space-y-2">
-            <div className="flex h-9 w-full overflow-hidden rounded-md border">
-              <div
-                className="bg-primary text-primary-foreground flex items-center justify-center text-xs font-medium transition-all duration-300"
-                style={{ width: `${100 - store.testSize * 100}%` }}>
-                {t("trainRows", { count: total - testRows })}
-              </div>
-              <div
-                className="bg-muted text-foreground flex items-center justify-center text-xs transition-all duration-300"
-                style={{ width: `${store.testSize * 100}%` }}>
-                {t("testRows", { count: testRows })}
-              </div>
+        <div className="space-y-2">
+          <div className="flex h-9 w-full overflow-hidden rounded-md border">
+            <div
+              className="bg-primary text-primary-foreground flex items-center justify-center text-xs font-medium transition-all duration-300"
+              style={{ width: `${100 - store.testSize * 100}%` }}>
+              {t("trainRows", { count: total - testRows })}
             </div>
-            {store.taskType === "classification" ? (
-              <p className="text-muted-foreground text-sm">{t("stratified")}</p>
-            ) : null}
+            <div
+              className="bg-muted text-foreground flex items-center justify-center text-xs transition-all duration-300"
+              style={{ width: `${store.testSize * 100}%` }}>
+              {t("testRows", { count: testRows })}
+            </div>
           </div>
+          {store.taskType === "classification" ? (
+            <p className="text-muted-foreground text-sm">{t("stratified")}</p>
+          ) : null}
+        </div>
 
-          <Badge variant="outline" className="font-mono">
-            {t("seed")}
-          </Badge>
-        </CardContent>
-      </Card>
+        <Badge variant="outline" className="font-mono">
+          {t("seed")}
+        </Badge>
+      </div>
       <Understand title={t("understand")} body={t("understandBody")} />
     </div>
   );
@@ -683,7 +661,6 @@ export function Step5Prep({ quality }: { quality: QualityData | null }) {
   const t = useTranslations("wizard.step5");
   const tw = useTranslations("wizard");
   const store = useWizardStore();
-  const [aiOpen, setAiOpen] = useState(true);
   const hasOutliers = (quality?.analysis.columns ?? []).some(
     (column) => column.outliers.percentage > 10
   );
@@ -703,71 +680,68 @@ export function Step5Prep({ quality }: { quality: QualityData | null }) {
   );
 
   return (
-    <div className="space-y-4">
-      <Card>
-        <CardContent className="space-y-6 pt-6">
-          {/* Aide IA — même motif que l'étape 2 : déclencheur en HAUT À DROITE puis panneau
-              pointillé + dégradé violet/bleu, avec un conseil basé sur les données réelles. */}
-          <div className="flex justify-end">
-            <AiAssistButton
-              open={aiOpen}
-              onToggle={() => setAiOpen((open) => !open)}
-              label={tw("aiGuide")}
+    <div className="space-y-6">
+      {/* Aide IA — motif UNIQUE (AiAssist). « Appliquer » pose la reco réelle : robuste si des
+          valeurs aberrantes ont été détectées à l'étape 3, sinon standard, + encodage one-hot. */}
+      <AiAssist
+        title={tw("aiTitle")}
+        guideLabel={tw("aiGuide")}
+        availableLabel={tw("aiAvailable")}
+        applyLabel={tw("aiApply")}
+        chooseLabel={tw("aiChoose")}
+        onApply={() => {
+          store.set("scalingEnabled", true);
+          store.set("scalingMethod", hasOutliers ? "robust" : "standard");
+          store.set("encoding", "onehot");
+        }}>
+        <Alert className="border-ai/40 bg-background/70">
+          <LightbulbIcon className="text-ai" />
+          <AlertDescription>{hasOutliers ? t("aiRecoOutliers") : t("aiReco")}</AlertDescription>
+        </Alert>
+      </AiAssist>
+
+      {/* Réglages — card-free, comme l'étape « Choix de l'algorithme » (cohérence demandée). */}
+      <div className="space-y-6">
+        <div>
+          <div className="flex items-center justify-between">
+            <div>
+              <Label>{t("scaling")}</Label>
+              <p className="text-muted-foreground text-xs">{t("scalingHint")}</p>
+            </div>
+            <Switch
+              checked={store.scalingEnabled}
+              onCheckedChange={(checked) => store.set("scalingEnabled", checked)}
             />
           </div>
-
-          {aiOpen ? (
-            <AiAssistPanel title={tw("aiTitle")}>
-              <Alert className="border-ai/40 bg-background/70">
-                <LightbulbIcon className="text-ai" />
-                <AlertDescription>
-                  {hasOutliers ? t("aiRecoOutliers") : t("aiReco")}
-                </AlertDescription>
-              </Alert>
-            </AiAssistPanel>
-          ) : null}
-
-          <div>
-            <div className="flex items-center justify-between">
-              <div>
-                <Label>{t("scaling")}</Label>
-                <p className="text-muted-foreground text-xs">{t("scalingHint")}</p>
-              </div>
-              <Switch
-                checked={store.scalingEnabled}
-                onCheckedChange={(checked) => store.set("scalingEnabled", checked)}
-              />
-            </div>
-            {store.scalingEnabled ? (
-              <div className="mt-3 grid gap-2 sm:grid-cols-3">
-                {(["standard", "minmax", "robust"] as const).map((method) =>
-                  optionCard(
-                    method,
-                    store.scalingMethod === method,
-                    () => store.set("scalingMethod", method),
-                    t(`methods.${method}`)
-                  )
-                )}
-              </div>
-            ) : null}
-          </div>
-
-          <div>
-            <Label>{t("encoding")}</Label>
-            <div className="mt-2 grid gap-2 sm:grid-cols-2">
-              {(["onehot", "ordinal"] as const).map((encoding) =>
+          {store.scalingEnabled ? (
+            <div className="mt-3 grid gap-2 sm:grid-cols-3">
+              {(["standard", "minmax", "robust"] as const).map((method) =>
                 optionCard(
-                  encoding,
-                  store.encoding === encoding,
-                  () => store.set("encoding", encoding),
-                  t(`encodings.${encoding}`)
+                  method,
+                  store.scalingMethod === method,
+                  () => store.set("scalingMethod", method),
+                  t(`methods.${method}`)
                 )
               )}
             </div>
+          ) : null}
+        </div>
+
+        <div>
+          <Label>{t("encoding")}</Label>
+          <div className="mt-2 grid gap-2 sm:grid-cols-2">
+            {(["onehot", "ordinal"] as const).map((encoding) =>
+              optionCard(
+                encoding,
+                store.encoding === encoding,
+                () => store.set("encoding", encoding),
+                t(`encodings.${encoding}`)
+              )
+            )}
           </div>
-          <Badge variant="secondary">{t("applied")}</Badge>
-        </CardContent>
-      </Card>
+        </div>
+        <Badge variant="secondary">{t("applied")}</Badge>
+      </div>
     </div>
   );
 }

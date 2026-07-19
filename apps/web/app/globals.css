@@ -156,6 +156,70 @@
     }
   }
 
+  /* Entrée « à l'arrivée » du cockpit : montée douce (opacité + léger relevé). Utilisée en
+     cascade (animation-delay inline) sur les tuiles KPI et les cartes du dashboard. Le
+     count-up des chiffres (CountAnimation) est l'autre moitié du geste. */
+  --animate-rise-in: rise-in 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+
+  @keyframes rise-in {
+    from {
+      opacity: 0;
+      transform: translateY(0.75rem);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Motif d'aide IA — fermeture « bulle qui éclate » : quand on applique (ou décline) la
+     recommandation, le panneau pointillé gonfle légèrement puis éclate (fond + flou),
+     pendant que quelques éclats filent vers l'extérieur. Réutilisé partout où l'on
+     déclenche « Guide-moi avec l'IA ». */
+  @keyframes ai-burst {
+    0% {
+      transform: scale(1);
+      opacity: 1;
+      filter: blur(0);
+    }
+    28% {
+      transform: scale(1.03);
+      opacity: 1;
+    }
+    100% {
+      transform: scale(0.9);
+      opacity: 0;
+      filter: blur(5px);
+    }
+  }
+
+  /* Éclat individuel : file du centre vers (--tx, --ty) en s'estompant. */
+  @keyframes ai-shard {
+    0% {
+      transform: translate(0, 0) scale(0.3);
+      opacity: 0;
+    }
+    35% {
+      opacity: 1;
+    }
+    100% {
+      transform: translate(var(--tx), var(--ty)) scale(1);
+      opacity: 0;
+    }
+  }
+
+  /* Ouverture douce du panneau IA (léger gonflement + fondu). */
+  @keyframes ai-pop-in {
+    from {
+      opacity: 0;
+      transform: scale(0.97) translateY(-2px);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+  }
+
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -221,6 +285,34 @@
 
   .font-display {
     font-weight: var(--display-weight);
+  }
+
+  /* Accessibilité : l'entrée en cascade du dashboard est purement décorative — on la
+     neutralise entièrement pour qui demande moins de mouvement (contenu visible d'emblée). */
+  @media (prefers-reduced-motion: reduce) {
+    .animate-rise-in {
+      animation: none !important;
+    }
+  }
+
+  /* Motif d'aide IA — animations partagées (panneau + éclats + ouverture). */
+  .ai-burst {
+    animation: ai-burst 0.42s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    transform-origin: center;
+  }
+  .ai-shard {
+    animation: ai-shard 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+  .ai-pop-in {
+    animation: ai-pop-in 0.28s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ai-burst,
+    .ai-shard,
+    .ai-pop-in {
+      animation: none !important;
+    }
   }
 
   [data-slot="button"],

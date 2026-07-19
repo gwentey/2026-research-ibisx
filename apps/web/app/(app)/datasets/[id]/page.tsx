@@ -9,11 +9,11 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DatasetDetailHeader } from "@/components/ibis/datasets/dataset-detail-header";
+import { DatasetHowToUse } from "@/components/ibis/datasets/dataset-how-to-use";
 import { FilesTab } from "@/components/ibis/datasets/files-tab";
 import { GuideTab } from "@/components/ibis/datasets/guide-tab";
 import { OverviewTab } from "@/components/ibis/datasets/overview-tab";
 import { PreviewTab } from "@/components/ibis/datasets/preview-tab";
-import { MissionStepper } from "@/components/ibis/mission-stepper";
 import { getDataset, getSimilarDatasets } from "@/lib/api/generated";
 import type { DatasetDetail, SimilarDataset } from "@/lib/api/generated";
 import { useAuthStore } from "@/lib/auth/store";
@@ -75,12 +75,9 @@ export default function DatasetDetailPage({ params }: { params: Promise<{ id: st
     <div className="space-y-6">
       <DatasetDetailHeader dataset={dataset} canEdit={canEdit} />
 
-      {/* Repère de parcours CADRÉ (page de consultation atteinte depuis le catalogue,
-          hors mission active) : panneau muted distinct + légende de tête pour lever la
-          confusion « stepper vs onglets ». Sépare visuellement en-tête → repère → onglets. */}
-      <div className="rounded-lg border bg-muted/30 px-4 py-3">
-        <MissionStepper current="dataset" label={td("journeyLabel")} />
-      </div>
+      {/* Guide éducatif « Comment utiliser ce dataset ? » (remplace l'ancien « Où situer ce
+          dataset », jugé déroutant) : parcours en 3 temps qui APPREND quoi faire ensuite. */}
+      <DatasetHowToUse />
 
       <Tabs defaultValue="overview" className="space-y-4">
         <TabsList>

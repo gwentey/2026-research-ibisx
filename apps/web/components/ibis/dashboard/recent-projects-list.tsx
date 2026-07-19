@@ -5,7 +5,14 @@ import { useLocale, useTranslations } from "next-intl";
 import { ArrowRightIcon, ClockIcon, FolderIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle
+} from "@/components/ui/card";
 import { Empty, EmptyDescription, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
 import {
   Item,
@@ -74,6 +81,7 @@ export function RecentProjectsList({ projects }: { projects: RecentProject[] }) 
           <FolderIcon className="size-4" />
           {t("recentProjects.title")}
         </CardTitle>
+        <CardDescription>{t("recentProjects.subtitle")}</CardDescription>
       </CardHeader>
       {/* flex-1 : pousse le CardFooter tout en bas quand la grille étire la carte (plus de « Voir tout » au milieu). */}
       <CardContent className="flex-1">
