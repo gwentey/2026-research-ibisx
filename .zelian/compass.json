@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "generated_by": "zelian-framework@3.0.0",
-  "updated_at": "2026-07-19T21:20:23.282Z",
+  "updated_at": "2026-07-19T22:21:59.169Z",
   "entries": [
     {
       "id": "api/admin",
@@ -76,12 +76,16 @@
         "apps/api/ibis/modules/datasets/models.py",
         "apps/api/ibis/modules/datasets/schemas.py",
         "apps/api/tests/integration/test_datasets.py",
-        "apps/api/tests/unit/test_profiling.py"
+        "apps/api/tests/unit/test_profiling.py",
+        "apps/api/ibis/modules/datasets/kaggle_client.py",
+        "apps/api/ibis/modules/datasets/kaggle_import.py",
+        "apps/api/ibis/modules/datasets/enrichment.py",
+        "apps/api/ibis/workers/tasks/kaggle.py"
       ],
       "keywords": [
         "datasets"
       ],
-      "updated_at": "2026-07-19T19:28:07.305Z"
+      "updated_at": "2026-07-19T22:21:53.797Z"
     },
     {
       "id": "api/experiments",
@@ -415,12 +419,17 @@
         "apps/web/components/ibis/scoring/results-list.tsx",
         "apps/web/lib/datasets/constants.ts",
         "apps/web/lib/datasets/domain-visuals.ts",
-        "apps/web/lib/datasets/use-catalog.ts"
+        "apps/web/lib/datasets/use-catalog.ts",
+        "apps/web/components/ibis/datasets/kaggle-import-dialog.tsx",
+        "apps/web/components/ibis/datasets/dataset-attribution.tsx",
+        "apps/web/components/ibis/datasets/ethics-review-dialog.tsx",
+        "apps/web/components/ibis/datasets/ethics-review-banner.tsx",
+        "apps/web/lib/datasets/ethics-review.ts"
       ],
       "keywords": [
         "datasets"
       ],
-      "updated_at": "2026-07-19T19:28:07.313Z"
+      "updated_at": "2026-07-19T22:21:59.169Z"
     },
     {
       "id": "web/experiments",

@@ -3,9 +3,9 @@
 | Champ         | Valeur              |
 |---------------|---------------------|
 | Module        | web/datasets        |
-| Version       | 0.1.0               |
-| Date          | 2026-07-19          |
-| Source        | Rétro-ingénierie    |
+| Version       | 0.2.1               |
+| Date          | 2026-07-20          |
+| Source        | Rétro-ingénierie + import Kaggle (session 20/07/2026) |
 
 ---
 
@@ -23,16 +23,20 @@ apps/web/app/(app)/datasets/
 └── score/page.tsx             ← Scoring pondéré (heatmap/liste)
 
 apps/web/components/ibis/datasets/
-├── dataset-card.tsx           ← Carte catalogue (grille)
+├── dataset-card.tsx           ← Carte catalogue (grille) — +owner, is_verified, source_kind, license_name
+├── dataset-attribution.tsx    ← Bloc attribution importeur (avatar + pseudo + source Kaggle)
 ├── dataset-detail-header.tsx  ← Bandeau fiche détail
 ├── dataset-how-to-use.tsx     ← Guide pédagogique statique
 ├── domain-pattern.tsx         ← Motifs SVG par domaine (filigrane)
 ├── ethical-criteria-grid.tsx  ← Grille 10 critères éthiques
+├── ethics-review-banner.tsx   ← Bandeau si des suggestions IA attendent une revue humaine
+├── ethics-review-dialog.tsx   ← Dialog tristate revue éthique (proposition IA + justification + choix humain)
 ├── files-tab.tsx              ← Onglet fichiers + téléchargement
 ├── filters-sheet.tsx          ← Panneau filtres facettés
 ├── guide-tab.tsx              ← Onglet guide IA (SSE)
+├── kaggle-import-dialog.tsx   ← Dialog import communautaire (coller URL Kaggle + suivi job async)
 ├── metadata-form.tsx          ← Formulaire métadonnées (3 sections)
-├── overview-tab.tsx           ← Onglet aperçu général
+├── overview-tab.tsx           ← Onglet aperçu général — +attribution, ethics-review-banner
 ├── preview-tab.tsx            ← Onglet prévisualisation données
 ├── upload-dropzone.tsx        ← Zone de dépôt (drag-and-drop)
 ├── upload-preview-table.tsx   ← Tableau d'aperçu post-analyse
@@ -46,6 +50,7 @@ apps/web/components/ibis/scoring/
 apps/web/lib/datasets/
 ├── constants.ts               ← ETHICAL_KEYS, SORT_KEYS, PAGE_SIZES, formatCount, scoreColorClass
 ├── domain-visuals.ts          ← Mapping domaine → visuel (icon, pattern, token chart, monogram)
+├── ethics-review.ts           ← Logique d'affichage revue éthique (hasPendingSuggestions, shouldShowBanner)
 └── use-catalog.ts             ← Hook useCatalog (state machine catalogue)
 ```
 
@@ -55,18 +60,22 @@ apps/web/lib/datasets/
 
 | Fichier | Rôle | Lignes |
 |---------|------|--------|
-| `apps/web/app/(app)/datasets/page.tsx` | Catalogue : search, sort, pagination, vue grille/tableau | ~375 |
+| `apps/web/app/(app)/datasets/page.tsx` | Catalogue : search, sort, pagination, vue grille/tableau — +bouton import Kaggle (KaggleImportDialog) | ~398 |
 | `apps/web/app/(app)/datasets/[id]/page.tsx` | Fiche détail : charge dataset + similaires, orchestre 4 onglets | ~117 |
 | `apps/web/app/(app)/datasets/[id]/complete/page.tsx` | Complétion métadonnées : charge, édite, sauvegarde + taux de remplissage | ~189 |
 | `apps/web/app/(app)/datasets/upload/page.tsx` | Wizard upload 3 étapes : analyse → aperçu → métadonnées | ~209 |
 | `apps/web/app/(app)/datasets/score/page.tsx` | Scoring pondéré : profils, weights, re-scoring debouncé 400 ms | ~141 |
-| `apps/web/components/ibis/datasets/dataset-card.tsx` | Carte catalogue : vignette tonale, ProgressRing score éthique, badges | ~190 |
+| `apps/web/components/ibis/datasets/dataset-card.tsx` | Carte catalogue : vignette tonale, ProgressRing score éthique, badges — +badge Vérifié/Communauté, attribution owner, licence | ~199 |
+| `apps/web/components/ibis/datasets/dataset-attribution.tsx` | Bloc attribution : avatar importeur (`GET /users/{id}/avatar`), pseudo, lien source Kaggle | ~74 |
+| `apps/web/components/ibis/datasets/ethics-review-banner.tsx` | Bandeau conditionnel (hasPendingSuggestions) sur la fiche dataset | ~55 |
+| `apps/web/components/ibis/datasets/ethics-review-dialog.tsx` | Dialog revue éthique : proposition IA + justification, select tristate, POST ethics-review | ~216 |
+| `apps/web/components/ibis/datasets/kaggle-import-dialog.tsx` | Dialog import : saisie URL, validation synchrone, suivi état job (polling), erreurs riches | ~333 |
 | `apps/web/components/ibis/datasets/dataset-detail-header.tsx` | Bandeau fiche : stats, download, lien "utiliser dans un projet" | ~207 |
 | `apps/web/components/ibis/datasets/ethical-criteria-grid.tsx` | Grille tristate 10 critères éthiques + barre segmentée | ~82 |
 | `apps/web/components/ibis/datasets/filters-sheet.tsx` | Panneau Sheet (slide-in) : domaines, tâches, plages numériques, éthique, compteur live | ~323 |
 | `apps/web/components/ibis/datasets/guide-tab.tsx` | Guide IA : SSE EventSource, Progress, badge fallback/modèle | ~142 |
 | `apps/web/components/ibis/datasets/metadata-form.tsx` | Formulaire 3 sections : TagPicker, TristateSelect, switches | ~363 |
-| `apps/web/components/ibis/datasets/overview-tab.tsx` | Onglet Vue d'ensemble : fiche technique, métriques qualité, datasets similaires | ~263 |
+| `apps/web/components/ibis/datasets/overview-tab.tsx` | Onglet Vue d'ensemble : fiche technique, métriques qualité, datasets similaires — +DatasetAttribution, EthicsReviewBanner | ~273 |
 | `apps/web/components/ibis/datasets/preview-tab.tsx` | Onglet Aperçu : tableau de données réelles, stats par colonne | ~130 |
 | `apps/web/components/ibis/datasets/files-tab.tsx` | Onglet Fichiers : colonnes profiling, PII, téléchargement authentifié | ~109 |
 | `apps/web/components/ibis/datasets/upload-dropzone.tsx` | Drag-and-drop (useFileUpload hook), formats acceptés CSV/XLSX/JSON/Parquet, max 100 Mo | ~128 |
@@ -76,6 +85,7 @@ apps/web/lib/datasets/
 | `apps/web/lib/datasets/constants.ts` | ETHICAL_KEYS (10 critères), SORT_KEYS, PAGE_SIZES, formatCount, scoreColorClass | ~63 |
 | `apps/web/lib/datasets/domain-visuals.ts` | Mapping 9 domaines → {icon, pattern, chartToken, monogram, vignette}, hash déterministe repli | ~164 |
 | `apps/web/lib/datasets/use-catalog.ts` | Hook : state machine (loading/ready/error), debounce 300 ms, requestId race-prevention | ~123 |
+| `apps/web/lib/datasets/ethics-review.ts` | Utilitaires revue éthique : `hasPendingSuggestions()`, `shouldShowBanner()`, `applyEthicsReview()` | ~45 |
 
 ---
 
@@ -84,8 +94,11 @@ apps/web/lib/datasets/
 Ce module est 100 % frontend. Le schéma BDD est documenté dans `docs/specs/api/datasets/spec-technique.md`. Les types TypeScript utilisés dans ce module sont générés depuis le contrat OpenAPI.
 
 Types principaux consommés depuis `@/lib/api/generated` :
-- `DatasetCard` — données carte catalogue (id, display_name, domain, task, ethical_score, instances_number, features_number, global_missing_percentage, split, anonymization_applied, temporal_factors, access, year, num_citations, updated_at, objective)
-- `DatasetDetail` — données fiche complète (tous les champs de DatasetCard + files, ethical_criteria, ai_guide, completeness, sources, availability, storage_uri, etc.)
+- `DatasetCard` — données carte catalogue (id, display_name, domain, task, ethical_score, instances_number, features_number, global_missing_percentage, split, anonymization_applied, temporal_factors, access, year, num_citations, updated_at, objective) — **+owner, is_verified, source_kind, license_name**
+- `DatasetOwner` — `{id, pseudo, avatar_url}` — importeur affiché sur les cartes communautaires
+- `DatasetDetail` — données fiche complète (tous les champs de DatasetCard + files, ethical_criteria, ai_guide, completeness, sources, availability, storage_uri, etc.) — **+ethics_suggestions, ethics_reviewed_at, source_ref**
+- `KaggleImportRequest` — payload import communautaire (`{url: string, visibility?: string}`)
+- `KaggleImportResponse` — réponse import (`{job_id: string, message: string}`)
 - `DatasetPage` — réponse paginée du catalogue (items, total, total_pages, page, page_size)
 - `DatasetFacets` — facettes disponibles (domains[], tasks[] avec count)
 - `SimilarDataset` — paire {dataset: DatasetCard, reason: string}
@@ -110,6 +123,9 @@ Types principaux consommés depuis `@/lib/api/generated` :
 | POST | `/datasets/{id}/ai-guide` | `GuideTab` | Oui (contributor+) |
 | POST | `/datasets/analyze` | `UploadDatasetPage` | Oui (contributor+) |
 | POST | `/datasets` | `UploadDatasetPage` | Oui (contributor+) |
+| POST | `/datasets/import/kaggle` | `KaggleImportDialog` | Oui (tout compte connecté) |
+| POST | `/datasets/{id}/ethics-review` | `EthicsReviewDialog` | Oui (propriétaire ou admin) |
+| GET | `/users/{id}/avatar` | `DatasetAttribution` | Non (public) |
 | PATCH | `/datasets/{id}` | `CompleteMetadataPage` | Oui (admin ou créateur) |
 | GET | `/datasets/{id}/files/{file_id}/download` | `FilesTab`, `DatasetDetailHeader` | Oui |
 | GET | `/scoring/profiles` | `ScorePage` | Oui |
@@ -165,12 +181,36 @@ Le `MetadataForm` est partagé entre le wizard d'upload (étape 3) et la page de
 
 ---
 
+
+## Lecture des erreurs de l'API (`lib/api/errors.ts`)
+
+`apiErrorMessage(error, fallback)` et `apiErrorCode(error)` — deux fonctions pures, testées
+dans `tests/api/errors.test.ts`.
+
+**Le piège qu'elles couvrent** : l'API émet du HTTP 422 pour DEUX raisons distinctes, avec
+deux formes d'enveloppe incompatibles.
+
+| Enveloppe | Origine | Traitement |
+|-----------|---------|------------|
+| `{ detail: { code, message } }` | erreurs métier (`ibis.core.errors.error_payload`) | `message` affiché **tel quel** — il est rédigé pour l'utilisateur final |
+| `{ detail: [ { loc, msg, type } ] }` | validation de schéma Pydantic (FastAPI) | annote seulement le repli de l'appelant — `field required` / `loc: ["body","url"]` est technique |
+| `{ detail: "texte" }` | divers | affiché tel quel |
+| autre forme, `null`, `undefined` | — | repli de l'appelant |
+
+**Ne jamais faire `String(error.detail)`** : sur l'enveloppe métier, `detail` est un objet, ce
+qui produit littéralement « [object Object] » à l'écran et détruit l'explication du refus.
+Ce défaut a été constaté en production sur le dialogue d'import Kaggle. Le test de régression
+couvre 11 formes d'enveloppe et vérifie qu'aucune ne peut produire « [object ».
+
+Consommateurs : `kaggle-import-dialog.tsx`, `ethics-review-dialog.tsx`.
+`lib/auth/session.ts` conserve son propre extracteur de code (antérieur, périmètre auth).
+
 ## Tests existants
 
 | Fichier | Ce qu'il teste | Statut |
 |---------|----------------|--------|
-| Tests Vitest `web/datasets` | Non identifié dans les 17 fichiers listés par discovery.md | À vérifier |
-| Tests Playwright e2e | Les 3 specs e2e couvrent le parcours mission (wizard ML) — datasets catalogue non couvert explicitement | Partiel |
+| `apps/web/tests/datasets/ethics-review.test.ts` | `hasPendingSuggestions`, `shouldShowBanner`, `applyEthicsReview` dans `ethics-review.ts` | Ajouté (~96 lignes) |
+| Tests Playwright e2e | Les 3 specs e2e couvrent le parcours mission (wizard ML) — datasets catalogue et import Kaggle non couverts par e2e | Partiel |
 
 ---
 
@@ -187,3 +227,12 @@ Le passage des filtres du catalogue vers le scorer utilise `sessionStorage` (don
 
 ### 4. Heatmap en DOM natif (pas de librairie chart)
 La ScoreHeatmap est rendue en `<table>` DOM natif pour garder le contrôle complet sur le tri interactif par colonne, les en-têtes diagonaux CSS, et les tooltips HoverCard/Tooltip de shadcn/ui. L'absence de librairie (D3, Recharts) évite le bridging DOM/React et simplifie la navigation clavier.
+
+### 5. Import Kaggle en dialog avec suivi de job
+`KaggleImportDialog` orchestre le flux d'import en deux phases : validation synchrone (l'URL est soumise, les erreurs immédiates — mauvais lien, doublon, licence refusée — remontent directement), puis suivi de job asynchrone (polling sur `/jobs/{id}` jusqu'à `completed` ou `failed`). La dialog reste ouverte et affiche l'avancement ; une erreur de job affiche le message retourné par l'API.
+
+### 6. Revue éthique extraite en lib testable
+La logique d'affichage du bandeau et du dialog de revue éthique est extraite dans `lib/datasets/ethics-review.ts` (fonctions pures, sans dépendance React). `hasPendingSuggestions(dataset)` retourne vrai si `ethics_suggestions` contient au moins une proposition et qu'au moins un critère correspondant est encore NULL. `shouldShowBanner(dataset, currentUser)` ajoute la condition d'ownership. Cette extraction permet des tests unitaires sans mock de composant.
+
+### 7. i18n ajoutée pour les nouvelles features
+Clés i18n ajoutées dans `messages/fr.json` et `messages/en.json` : `datasets.kaggleImport.*`, `datasets.attribution.*`, `datasets.ethicsReview.*`. Toutes les chaînes visibles dans les nouveaux composants passent par `useTranslations`.
