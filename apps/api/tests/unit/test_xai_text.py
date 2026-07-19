@@ -1,5 +1,6 @@
 """Adaptation au niveau (adaptatif §5) : le repli d'explication, le chat et les suggestions
-varient selon l'audience, tout en restant ancrés sur les vraies valeurs et badgés « sans IA » (P2)."""
+varient selon l'audience, tout en restant ancrés sur les vraies valeurs
+et badgés « sans IA » (P2)."""
 
 from ibis.modules.llm import xai_text
 
@@ -19,7 +20,11 @@ def _fallback(audience: str, language: str = "fr") -> str:
 
 
 def test_fallback_text_varies_by_audience() -> None:
-    novice, intermediate, expert = _fallback("novice"), _fallback("intermediate"), _fallback("expert")
+    novice, intermediate, expert = (
+        _fallback("novice"),
+        _fallback("intermediate"),
+        _fallback("expert"),
+    )
     # Trois formulations distinctes (§5.3) — plus un texte unique servi à tous les niveaux.
     assert novice != intermediate and intermediate != expert and novice != expert
     # Toujours badgé « sans IA », quel que soit le niveau (P2).

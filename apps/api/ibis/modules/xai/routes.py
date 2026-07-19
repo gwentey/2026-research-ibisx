@@ -169,9 +169,7 @@ def get_fairness_report(
     """
     experiment = get_experiment(db, claims.user_id, experiment_id)
     loaded = engine.load_experiment_context(db, experiment)
-    return fairness.fairness_report(
-        loaded, sensitive_column=sensitive_column, favorable=favorable
-    )
+    return fairness.fairness_report(loaded, sensitive_column=sensitive_column, favorable=favorable)
 
 
 @router.get(
