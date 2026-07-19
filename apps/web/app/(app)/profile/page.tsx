@@ -8,6 +8,7 @@ import { CoinsIcon, CreditCardIcon, PaletteIcon, ShieldIcon, UserIcon } from "lu
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { DisciplineSelector } from "@/components/ibis/lenses/discipline-selector";
 import { PreferencesTab } from "@/components/ibis/profile/preferences-tab";
 import { ProfileHeader } from "@/components/ibis/profile/profile-header";
 import { ProfileTab } from "@/components/ibis/profile/profile-tab";
@@ -57,8 +58,9 @@ function ProfileContent() {
         <TabsContent value="security">
           <SecurityTab user={user} />
         </TabsContent>
-        <TabsContent value="preferences">
+        <TabsContent value="preferences" className="space-y-4">
           <PreferencesTab user={user} />
+          <DisciplineSelector />
         </TabsContent>
         <TabsContent value="credits">
           <Card>

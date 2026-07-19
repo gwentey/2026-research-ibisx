@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { Markdown } from "@/components/ui/custom/prompt/markdown";
+import { CausalCaveat } from "@/components/ibis/causal-caveat";
 import type { ExplanationResults } from "@/lib/api/generated";
 import { cn } from "@/lib/utils";
 
@@ -276,6 +277,7 @@ export function ExplanationView({
                   <Bar dataKey="value" fill="var(--chart-1)" radius={3} />
                 </BarChart>
               </ChartContainer>
+              <CausalCaveat className="mt-3" />
             </CardContent>
           </Card>
         </div>
