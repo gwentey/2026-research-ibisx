@@ -752,6 +752,12 @@
         "badLink": "This link is not a valid Kaggle dataset page.",
         "unreachable": "Cannot track the import. Please try again shortly.",
         "generic": "The import did not complete."
+      },
+      "notebookResolved": "That link was a notebook: I found the dataset it uses.",
+      "choices": {
+        "title": "Several datasets",
+        "body": "This notebook uses {count}. Pick the one to import:",
+        "pick": "Pick"
       }
     },
     "attribution": {

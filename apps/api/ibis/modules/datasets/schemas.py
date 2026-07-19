@@ -281,14 +281,25 @@ class KaggleImportRequest(StrictModel):
     access: Literal["public", "private"] = "public"
 
 
-class KaggleImportResponse(BaseModel):
-    """Réponse immédiate : soit un job lancé, soit le dataset déjà présent."""
+class KaggleChoice(BaseModel):
+    """Un dataset candidat, quand un notebook en utilise plusieurs."""
 
-    ref: str  # « uciml/iris »
+    ref: str  # « alice/mon-jeu »
+    url: str
+
+
+class KaggleImportResponse(BaseModel):
+    """Réponse immédiate : job lancé, dataset déjà présent, ou choix à faire."""
+
+    ref: str = ""  # « uciml/iris » — vide quand un choix est requis
     job: JobRead | None = None
     #: Renseignés quand le jeu existe déjà — le front redirige au lieu de créer un doublon.
     existing_dataset_id: uuid.UUID | None = None
     duplicate_reason: str | None = None
+    #: Vrai quand le lien collé était un notebook et qu'on a trouvé SON dataset.
+    resolved_from_notebook: bool = False
+    #: Plusieurs datasets derrière le notebook : à l'utilisateur de trancher.
+    choices: list[KaggleChoice] = Field(default_factory=list)
 
 
 class EthicsReviewInput(StrictModel):

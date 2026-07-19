@@ -5,15 +5,21 @@ le téléchargement et l'enrichissement partent au worker (file `maintenance`).
 """
 
 import uuid
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from ibis.core.config import get_settings
+from ibis.core.errors import InvalidInputError
 from ibis.core.logging import get_logger
 from ibis.modules.datasets import enrichment
-from ibis.modules.datasets.kaggle_client import KaggleClient, KaggleRef, parse_kaggle_url
+from ibis.modules.datasets.kaggle_client import (
+    KaggleClient,
+    KaggleRef,
+    KernelRef,
+    parse_kaggle_link,
+)
 from ibis.modules.datasets.models import Dataset
 from ibis.modules.datasets.profiling import profile_dataframe, read_dataframe
 from ibis.modules.datasets.service import create_dataset, slugify
@@ -31,10 +37,14 @@ def source_ref_for(ref: KaggleRef) -> str:
 class ImportTicket:
     """Ce que la route renvoie tout de suite."""
 
-    ref: KaggleRef
+    ref: KaggleRef | None = None
     #: Renseigné quand le jeu existe déjà : on renvoie l'existant au lieu d'un doublon.
     existing_dataset_id: uuid.UUID | None = None
     duplicate_reason: str | None = None
+    #: Vrai quand le lien collé était un notebook et qu'on a trouvé SON dataset.
+    resolved_from_notebook: bool = False
+    #: Plusieurs datasets derrière le notebook : c'est à l'utilisateur de choisir.
+    choices: list[KaggleRef] = field(default_factory=list)
 
 
 def find_existing(db: Session, ref: KaggleRef, *, user_id: uuid.UUID | None) -> Dataset | None:
@@ -70,9 +80,55 @@ def unique_slug(db: Session, base: str) -> str:
     return f"{candidate}-{uuid.uuid4().hex[:8]}"
 
 
-def prepare(db: Session, *, url: str, user_id: uuid.UUID | None) -> ImportTicket:
-    """Validation synchrone : lien lisible, pas déjà présent. Aucun réseau ici."""
-    ref = parse_kaggle_url(url)
+def resolve_notebook(kernel: KernelRef, *, client: KaggleClient | None = None) -> list[KaggleRef]:
+    """Datasets utilisés par un notebook. Erreur PARLANTE si on n'en trouve aucun."""
+    owned = client is None
+    kaggle = client or _client_from_settings()
+    try:
+        refs = kaggle.kernel_dataset_sources(kernel)
+    finally:
+        if owned:
+            kaggle.close()
+
+    if not refs:
+        raise InvalidInputError(
+            "Ce lien est un notebook, et je n'ai pas réussi à retrouver le jeu de données "
+            "qu'il utilise. Sur la page du notebook, regarde le panneau de droite : sous "
+            "« Input », clique sur le nom du dataset — la page qui s'ouvre est celle à "
+            "coller ici (son adresse contient /datasets/).",
+            code="KAGGLE_NOTEBOOK_NO_DATASET",
+        )
+    return refs
+
+
+def prepare(
+    db: Session,
+    *,
+    url: str,
+    user_id: uuid.UUID | None,
+    client: KaggleClient | None = None,
+) -> ImportTicket:
+    """Validation synchrone : lien lisible, notebook résolu, doublon écarté."""
+    link = parse_kaggle_link(url)
+
+    if isinstance(link, KernelRef):
+        # Le lien collé est un notebook : on retrouve le dataset pour l'utilisateur plutôt
+        # que de lui apprendre à naviguer dans Kaggle.
+        refs = resolve_notebook(link, client=client)
+        if len(refs) > 1:
+            return ImportTicket(choices=refs)
+        return _ticket_for(db, refs[0], user_id=user_id, resolved_from_notebook=True)
+
+    return _ticket_for(db, link, user_id=user_id)
+
+
+def _ticket_for(
+    db: Session,
+    ref: KaggleRef,
+    *,
+    user_id: uuid.UUID | None,
+    resolved_from_notebook: bool = False,
+) -> ImportTicket:
     existing = find_existing(db, ref, user_id=user_id)
     if existing is not None:
         reason = (
@@ -80,8 +136,13 @@ def prepare(db: Session, *, url: str, user_id: uuid.UUID | None) -> ImportTicket
             if existing.access == "public"
             else "Tu as déjà importé ce dataset."
         )
-        return ImportTicket(ref=ref, existing_dataset_id=existing.id, duplicate_reason=reason)
-    return ImportTicket(ref=ref)
+        return ImportTicket(
+            ref=ref,
+            existing_dataset_id=existing.id,
+            duplicate_reason=reason,
+            resolved_from_notebook=resolved_from_notebook,
+        )
+    return ImportTicket(ref=ref, resolved_from_notebook=resolved_from_notebook)
 
 
 def run_import(

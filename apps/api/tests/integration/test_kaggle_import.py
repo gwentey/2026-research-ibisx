@@ -295,3 +295,91 @@ class TestRunImport:
         )
 
         assert first.dataset_name != second.dataset_name
+
+
+class TestNotebookResolution:
+    """Un chercheur colle le notebook trouvé via Google — on retrouve SON dataset."""
+
+    def _fake_kernel_client(self, refs: list[str]):
+        import httpx
+
+        from ibis.modules.datasets.kaggle_client import KaggleClient
+
+        payload = {"metadata": {"datasetDataSources": [{"reference": r} for r in refs]}}
+        return KaggleClient(
+            username="u",
+            key="k",
+            transport=httpx.MockTransport(lambda _r: httpx.Response(200, json=payload)),
+        )
+
+    def _patch(self, monkeypatch: pytest.MonkeyPatch, refs: list[str]) -> None:
+        client = self._fake_kernel_client(refs)
+        monkeypatch.setattr(
+            "ibis.modules.datasets.kaggle_import._client_from_settings", lambda: client
+        )
+
+    def test_should_import_the_single_dataset_behind_a_notebook(
+        self,
+        client: TestClient,
+        db_session: Session,
+        no_celery: list[tuple],
+        monkeypatch: pytest.MonkeyPatch,
+    ) -> None:
+        self._patch(monkeypatch, ["amirmotefaker/supply-chain-dataset"])
+        headers = promote(client, db_session, "nb1@ex.org", UserRole.user)
+
+        response = client.post(
+            "/api/v1/datasets/import/kaggle",
+            json={"url": "https://www.kaggle.com/code/amirmotefaker/supply-chain-analysis/"},
+            headers=headers,
+        )
+
+        assert response.status_code == 202
+        body = response.json()
+        assert body["ref"] == "amirmotefaker/supply-chain-dataset"
+        assert body["resolved_from_notebook"] is True
+        assert no_celery, "l'import doit partir sur le dataset résolu"
+
+    def test_should_offer_a_choice_when_the_notebook_uses_several_datasets(
+        self,
+        client: TestClient,
+        db_session: Session,
+        no_celery: list[tuple],
+        monkeypatch: pytest.MonkeyPatch,
+    ) -> None:
+        self._patch(monkeypatch, ["alice/first", "bob/second"])
+        headers = promote(client, db_session, "nb2@ex.org", UserRole.user)
+
+        response = client.post(
+            "/api/v1/datasets/import/kaggle",
+            json={"url": "https://www.kaggle.com/code/someone/analysis"},
+            headers=headers,
+        )
+
+        body = response.json()
+        assert [c["ref"] for c in body["choices"]] == ["alice/first", "bob/second"]
+        assert body["choices"][0]["url"].endswith("/datasets/alice/first")
+        assert not no_celery, "on ne devine pas lequel importer"
+
+    def test_should_explain_where_to_look_when_no_dataset_is_found(
+        self,
+        client: TestClient,
+        db_session: Session,
+        no_celery: list[tuple],
+        monkeypatch: pytest.MonkeyPatch,
+    ) -> None:
+        """Message actionnable : décrire ce que l'utilisateur VOIT, pas un onglet inexistant."""
+        self._patch(monkeypatch, [])
+        headers = promote(client, db_session, "nb3@ex.org", UserRole.user)
+
+        response = client.post(
+            "/api/v1/datasets/import/kaggle",
+            json={"url": "https://www.kaggle.com/code/someone/analysis"},
+            headers=headers,
+        )
+
+        assert response.status_code == 422
+        message = response.json()["detail"]["message"]
+        assert "Input" in message  # le panneau réellement affiché par Kaggle
+        assert "/datasets/" in message
+        assert not no_celery
