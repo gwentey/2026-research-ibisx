@@ -30,8 +30,18 @@ MAX_DATASET_BYTES = 200 * 1024 * 1024
 
 TABULAR_SUFFIXES = {".csv", ".tsv", ".xlsx", ".xls"}
 
-#: Sections kaggle.com qui ne sont pas des datasets — refus explicite plutôt que parsing hasardeux.
-NON_DATASET_SECTIONS = {"competitions", "c", "code", "kernels", "models", "discussions", "learn"}
+#: Sections kaggle.com qui ne sont pas des datasets — refus explicite plutôt que parsing
+#: hasardeux. La valeur est le mot que verra l'utilisateur : « code » ou « c » ne lui
+#: évoquent rien, « un notebook » ou « une compétition » lui disent quoi corriger.
+NON_DATASET_SECTIONS = {
+    "competitions": "une compétition",
+    "c": "une compétition",
+    "code": "un notebook",
+    "kernels": "un notebook",
+    "models": "un modèle",
+    "discussions": "une discussion",
+    "learn": "un cours",
+}
 
 _SEGMENT = r"[A-Za-z0-9][A-Za-z0-9._-]*"
 _BARE_REF_RE = re.compile(rf"^{_SEGMENT}/{_SEGMENT}$")
@@ -130,9 +140,11 @@ def parse_kaggle_url(url: str) -> KaggleRef:
     if segments and segments[0] == "datasets":
         segments = segments[1:]
     elif segments and segments[0] in NON_DATASET_SECTIONS:
+        kind = NON_DATASET_SECTIONS[segments[0]]
         raise InvalidInputError(
-            f"Ce lien pointe vers « {segments[0]} », pas vers un dataset. "
-            "Seules les pages /datasets/ sont importables.",
+            f"Ce lien pointe vers {kind}, pas vers un jeu de données. Ouvre l'onglet "
+            "« Data » de la page, ou cherche le dataset sur kaggle.com/datasets — "
+            "son adresse contient /datasets/.",
             code="KAGGLE_URL_NOT_A_DATASET",
         )
 
