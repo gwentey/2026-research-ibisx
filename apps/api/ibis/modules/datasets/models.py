@@ -2,13 +2,16 @@
 
 import uuid
 from datetime import datetime
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from sqlalchemy import BigInteger, Boolean, Float, ForeignKey, Integer, SmallInteger, String, Text
 from sqlalchemy.dialects.postgresql import ARRAY, JSONB, UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from ibis.db.base import Base, Timestamped, UUIDPk
+
+if TYPE_CHECKING:  # évite un import circulaire auth <-> datasets à l'exécution
+    from ibis.modules.auth.models import User
 
 
 class Dataset(UUIDPk, Timestamped, Base):
@@ -66,6 +69,31 @@ class Dataset(UUIDPk, Timestamped, Base):
     created_by: Mapped[uuid.UUID | None] = mapped_column(
         UUID(as_uuid=True), ForeignKey("users.id", ondelete="SET NULL"), index=True
     )
+
+    # --- Provenance & confiance (import communautaire) ---
+    # `upload` (multipart) | `seed` (YAML embarqué) | `kaggle` (lien collé).
+    source_kind: Mapped[str] = mapped_column(String(20), default="upload")
+    # Clé de déduplication, ex. « kaggle:uciml/iris ». L'unicité est PARTIELLE (index
+    # `uq_datasets_source_ref_public`, seulement sur access='public') : le catalogue public
+    # n'a jamais deux fois le même jeu, mais chacun garde le droit d'en avoir une copie privée.
+    source_ref: Mapped[str | None] = mapped_column(String(160), index=True)
+    license_name: Mapped[str | None] = mapped_column(String(160))
+    # Badge « Vérifié IBIS-X » — vrai pour le catalogue curé, faux pour les imports communautaires.
+    # Explicite plutôt que déduit de `created_by IS NULL` (zone d'ombre levée, spec §Questions).
+    is_verified: Mapped[bool] = mapped_column(Boolean, default=False, index=True)
+
+    # --- Éthique : suggéré ≠ vérifié ---
+    # Les 10 critères ci-dessus restent NULL tant qu'un HUMAIN n'a pas tranché. Les propositions
+    # de l'IA vivent ici, séparées, et ne comptent jamais dans le score éthique.
+    ethics_suggestions: Mapped[dict[str, Any] | None] = mapped_column(JSONB)
+    ethics_reviewed_at: Mapped[datetime | None] = mapped_column()
+    ethics_reviewed_by: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("users.id", ondelete="SET NULL")
+    )
+
+    # `selectin` : la carte catalogue affiche l'attribution, donc l'owner est TOUJOURS lu.
+    # Le charger avec la liste évite une requête par ligne (N+1) sur une page de 96 résultats.
+    owner: Mapped["User | None"] = relationship("User", foreign_keys=[created_by], lazy="selectin")
 
     files: Mapped[list["DatasetFile"]] = relationship(
         back_populates="dataset", cascade="all, delete-orphan", order_by="DatasetFile.created_at"

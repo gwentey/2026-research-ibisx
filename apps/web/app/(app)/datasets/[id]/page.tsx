@@ -99,7 +99,12 @@ export default function DatasetDetailPage({ params }: { params: Promise<{ id: st
           </TabsTrigger>
         </TabsList>
         <TabsContent value="overview">
-          <OverviewTab dataset={dataset} similar={similar} />
+          <OverviewTab
+            dataset={dataset}
+            similar={similar}
+            canEdit={canEdit}
+            onReviewed={setDataset}
+          />
         </TabsContent>
         <TabsContent value="files">
           <FilesTab dataset={dataset} />

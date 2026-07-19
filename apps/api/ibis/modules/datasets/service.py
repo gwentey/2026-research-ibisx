@@ -9,6 +9,7 @@ import math
 import re
 import unicodedata
 import uuid
+from datetime import UTC, datetime
 from typing import Any
 
 import pandas as pd
@@ -322,6 +323,29 @@ def template_defaults_for_domains(db: Session, domains: list[str]) -> dict[str, 
         if template is not None:
             return dict(template.defaults)
     return {}
+
+
+def review_ethics(
+    db: Session,
+    dataset: Dataset,
+    values: dict[str, bool | None],
+    *,
+    reviewer_id: uuid.UUID | None,
+) -> Dataset:
+    """Applique la validation humaine des critères éthiques.
+
+    Revue PARTIELLE : seuls les critères présents dans `values` sont écrits. Les autres
+    gardent leur valeur — une revue en plusieurs fois ne doit rien effacer.
+    """
+    for name, value in values.items():
+        if name in ETHICAL_CRITERIA:  # ceinture et bretelles : le schéma valide déjà
+            setattr(dataset, name, value)
+
+    dataset.ethics_reviewed_at = datetime.now(UTC).replace(tzinfo=None)
+    dataset.ethics_reviewed_by = reviewer_id
+    db.commit()
+    db.refresh(dataset)
+    return dataset
 
 
 def create_dataset(

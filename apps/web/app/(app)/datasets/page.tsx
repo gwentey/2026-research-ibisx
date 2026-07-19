@@ -43,6 +43,7 @@ import {
   TableRow
 } from "@/components/ui/table";
 import { DatasetCard } from "@/components/ibis/datasets/dataset-card";
+import { KaggleImportDialog } from "@/components/ibis/datasets/kaggle-import-dialog";
 import { FiltersSheet } from "@/components/ibis/datasets/filters-sheet";
 import { getDatasetFacets } from "@/lib/api/generated";
 import type { DatasetFacets } from "@/lib/api/generated";
@@ -91,12 +92,15 @@ export default function DatasetsPage() {
           <p className="text-muted-foreground mt-1 text-sm">{t("subtitle")}</p>
         </div>
         {canUpload ? (
-          <Button asChild>
-            <Link href="/datasets/upload">
-              <PlusIcon />
-              {t("upload")}
-            </Link>
-          </Button>
+          <div className="flex flex-wrap items-center gap-2">
+            <KaggleImportDialog onImported={() => catalog.reload()} />
+            <Button asChild>
+              <Link href="/datasets/upload">
+                <PlusIcon />
+                {t("upload")}
+              </Link>
+            </Button>
+          </div>
         ) : null}
       </div>
 
