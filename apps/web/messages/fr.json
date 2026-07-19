@@ -767,6 +767,12 @@
         "badLink": "Ce lien n'est pas une page de dataset Kaggle valide.",
         "unreachable": "Impossible de suivre l'import. Réessaie dans un instant.",
         "generic": "L'import n'a pas abouti."
+      },
+      "notebookResolved": "Ce lien était un notebook : j'ai retrouvé le jeu de données qu'il utilise.",
+      "choices": {
+        "title": "Plusieurs jeux de données",
+        "body": "Ce notebook en utilise {count}. Choisis celui à importer :",
+        "pick": "Choisir"
       }
     },
     "attribution": {

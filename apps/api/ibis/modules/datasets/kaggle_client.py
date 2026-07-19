@@ -30,8 +30,21 @@ MAX_DATASET_BYTES = 200 * 1024 * 1024
 
 TABULAR_SUFFIXES = {".csv", ".tsv", ".xlsx", ".xls"}
 
-#: Sections kaggle.com qui ne sont pas des datasets — refus explicite plutôt que parsing hasardeux.
-NON_DATASET_SECTIONS = {"competitions", "c", "code", "kernels", "models", "discussions", "learn"}
+#: Sections kaggle.com qui ne sont pas des datasets — refus explicite plutôt que parsing
+#: hasardeux. La valeur est le mot que verra l'utilisateur : « code » ou « c » ne lui
+#: évoquent rien, « un notebook » ou « une compétition » lui disent quoi corriger.
+NON_DATASET_SECTIONS = {
+    "competitions": "une compétition",
+    "c": "une compétition",
+    "code": "un notebook",
+    "kernels": "un notebook",
+    "models": "un modèle",
+    "discussions": "une discussion",
+    "learn": "un cours",
+}
+
+#: Sections qui désignent un notebook — résolvables vers le(s) dataset(s) qu'il utilise.
+KERNEL_SECTIONS = {"code", "kernels"}
 
 _SEGMENT = r"[A-Za-z0-9][A-Za-z0-9._-]*"
 _BARE_REF_RE = re.compile(rf"^{_SEGMENT}/{_SEGMENT}$")
@@ -71,6 +84,22 @@ class KaggleRef:
     @property
     def url(self) -> str:
         return f"{KAGGLE_BASE_URL}/datasets/{self.ref}"
+
+
+@dataclass(frozen=True)
+class KernelRef:
+    """Référence d'un notebook Kaggle — n'est pas un dataset, mais en désigne souvent un."""
+
+    owner: str
+    slug: str
+
+    @property
+    def ref(self) -> str:
+        return f"{self.owner}/{self.slug}"
+
+    @property
+    def url(self) -> str:
+        return f"{KAGGLE_BASE_URL}/code/{self.ref}"
 
 
 @dataclass
@@ -130,9 +159,11 @@ def parse_kaggle_url(url: str) -> KaggleRef:
     if segments and segments[0] == "datasets":
         segments = segments[1:]
     elif segments and segments[0] in NON_DATASET_SECTIONS:
+        kind = NON_DATASET_SECTIONS[segments[0]]
         raise InvalidInputError(
-            f"Ce lien pointe vers « {segments[0]} », pas vers un dataset. "
-            "Seules les pages /datasets/ sont importables.",
+            f"Ce lien pointe vers {kind}, pas vers un jeu de données. Ouvre l'onglet "
+            "« Data » de la page, ou cherche le dataset sur kaggle.com/datasets — "
+            "son adresse contient /datasets/.",
             code="KAGGLE_URL_NOT_A_DATASET",
         )
 
@@ -148,6 +179,29 @@ def parse_kaggle_url(url: str) -> KaggleRef:
         raise InvalidInputError("Lien Kaggle illisible.", code="KAGGLE_URL_INVALID")
 
     return KaggleRef(owner=owner, slug=slug)
+
+
+def parse_kaggle_link(url: str) -> KaggleRef | KernelRef:
+    """Accepte une page de dataset OU de notebook, et dit laquelle c'est.
+
+    Un utilisateur qui cherche des données tombe très souvent sur un notebook : c'est ce que
+    les moteurs de recherche mettent en avant. Plutôt que de le renvoyer à une navigation
+    qu'il ne devinera pas, on reconnaît le notebook pour pouvoir le résoudre ensuite.
+    """
+    candidate = (url or "").strip()
+    if "://" not in candidate and "/" in candidate and _BARE_REF_RE.match(candidate):
+        return parse_kaggle_url(candidate)
+    if "://" not in candidate:
+        candidate = f"https://{candidate}"
+
+    parsed = urlparse(candidate)
+    segments = [segment for segment in parsed.path.split("/") if segment]
+    if parsed.hostname in KAGGLE_HOSTS and len(segments) >= 3 and segments[0] in KERNEL_SECTIONS:
+        owner, slug = segments[1], segments[2]
+        if re.fullmatch(_SEGMENT, owner) and re.fullmatch(_SEGMENT, slug):
+            return KernelRef(owner=owner, slug=slug)
+
+    return parse_kaggle_url(url)
 
 
 def _is_safe_member(name: str) -> bool:
@@ -239,6 +293,51 @@ class KaggleClient:
             tags=[str(tag) for tag in (payload.get("keywords") or [])],
             usability_rating=payload.get("usabilityRating"),
         )
+
+    def kernel_dataset_sources(self, ref: KernelRef) -> list[KaggleRef]:
+        """Datasets utilisés par un notebook (« Input » sur la page Kaggle).
+
+        Le contrat de cette réponse n'est pas documenté publiquement et varie selon la
+        version de l'API : on accepte plusieurs formes et on DÉGRADE (liste vide) sur une
+        forme inconnue, plutôt que de casser l'import pour un champ renommé.
+        """
+        response = self._get(
+            f"/api/v1/kernels/pull?user_name={ref.owner}&kernel_slug={ref.slug}",
+            KaggleRef(ref.owner, ref.slug),
+        )
+        try:
+            payload = response.json()
+        except ValueError:
+            return []
+        if not isinstance(payload, dict):
+            return []
+
+        container = (
+            payload.get("metadata") if isinstance(payload.get("metadata"), dict) else payload
+        )
+        raw: object = None
+        for key in ("datasetDataSources", "dataset_sources", "datasetSources"):
+            value = container.get(key) if isinstance(container, dict) else None
+            if isinstance(value, list):
+                raw = value
+                break
+        if not isinstance(raw, list):
+            return []
+
+        refs: list[KaggleRef] = []
+        for item in raw:
+            reference = item if isinstance(item, str) else None
+            if isinstance(item, dict):
+                candidate = item.get("reference") or item.get("ref")
+                reference = candidate if isinstance(candidate, str) else None
+            if not reference or "/" not in reference:
+                continue
+            owner, _, slug = reference.partition("/")
+            if re.fullmatch(_SEGMENT, owner) and re.fullmatch(_SEGMENT, slug):
+                candidate_ref = KaggleRef(owner=owner, slug=slug)
+                if candidate_ref not in refs:
+                    refs.append(candidate_ref)
+        return refs
 
     def ensure_within_size_cap(
         self, meta: KaggleDatasetMeta, *, max_bytes: int = MAX_DATASET_BYTES

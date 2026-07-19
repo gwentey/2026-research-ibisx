@@ -14,6 +14,7 @@ import {
   DialogTitle,
   DialogTrigger
 } from "@/components/ui/dialog";
+import { apiErrorMessage } from "@/lib/api/errors";
 import { reviewDatasetEthics } from "@/lib/api/generated";
 import type { DatasetDetail } from "@/lib/api/generated";
 import { ETHICAL_KEYS, type EthicalKey } from "@/lib/datasets/constants";
@@ -76,7 +77,7 @@ export function EthicsReviewDialog({
     setSaving(false);
 
     if (apiError || !data) {
-      setError(t("error"));
+      setError(apiErrorMessage(apiError, t("error")));
       return;
     }
     onReviewed?.(data);

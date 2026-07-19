@@ -1926,6 +1926,22 @@ export type JobRow = {
 export type JobStatus = 'pending' | 'running' | 'completed' | 'failed' | 'cancelled';
 
 /**
+ * KaggleChoice
+ *
+ * Un dataset candidat, quand un notebook en utilise plusieurs.
+ */
+export type KaggleChoice = {
+    /**
+     * Ref
+     */
+    ref: string;
+    /**
+     * Url
+     */
+    url: string;
+};
+
+/**
  * KaggleImportRequest
  *
  * Import depuis un lien Kaggle collé par l'utilisateur.
@@ -1944,9 +1960,13 @@ export type KaggleImportRequest = {
 /**
  * KaggleImportResponse
  *
- * Réponse immédiate : soit un job lancé, soit le dataset déjà présent.
+ * Réponse immédiate : job lancé, dataset déjà présent, ou choix à faire.
  */
 export type KaggleImportResponse = {
+    /**
+     * Choices
+     */
+    choices?: Array<KaggleChoice>;
     /**
      * Duplicate Reason
      */
@@ -1959,7 +1979,11 @@ export type KaggleImportResponse = {
     /**
      * Ref
      */
-    ref: string;
+    ref?: string;
+    /**
+     * Resolved From Notebook
+     */
+    resolved_from_notebook?: boolean;
 };
 
 /**
