@@ -205,6 +205,8 @@
       "regression": "Regression"
     },
     "debriefTitle": "Investigation complete",
+    "debriefCollapse": "Collapse recap",
+    "debriefExpand": "Expand recap",
     "debriefLead": "Well done — investigation «{title}» complete.",
     "debriefMetric": "A real model, trained on real data: {metric}.",
     "debriefScoreHint": "This score runs from 0 to 1: the closer to 1, the better the model sees. No need to be an expert — what matters is understanding WHY it decides, in the next step.",

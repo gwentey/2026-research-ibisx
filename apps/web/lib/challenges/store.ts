@@ -26,10 +26,14 @@ interface QuestState {
   // Traceur replié à la demande de l'utilisateur : il flotte au-dessus des vraies pages, donc on
   // le laisse le masquer temporairement (révèle un bouton caché) puis le redéployer quand il veut.
   collapsed: boolean;
+  // Récap de débrief réduit : préférence GLOBALE (pas liée à un défi) — l'encart de fin d'enquête
+  // est verbeux, l'utilisateur peut le réduire à son en-tête. Persiste entre défis et sessions.
+  debriefCollapsed: boolean;
   start: (slug: string) => void;
   markObjective: (id: ObjectiveId) => void;
   quit: () => void;
   setCollapsed: (next: boolean) => void;
+  setDebriefCollapsed: (next: boolean) => void;
   isCompleted: (slug: string) => boolean;
 }
 
@@ -40,9 +44,11 @@ export const useQuestStore = create<QuestState>()(
       done: [],
       completed: [],
       collapsed: false,
+      debriefCollapsed: false,
 
       // Démarrer une enquête redéploie toujours le traceur : on ne veut pas qu'un repli hérité
-      // d'un défi précédent masque le nouveau parcours.
+      // d'un défi précédent masque le nouveau parcours. La préférence de récap réduit
+      // (debriefCollapsed), elle, est globale et n'est PAS réinitialisée ici.
       start: (slug) => set({ activeSlug: slug, done: [], collapsed: false }),
 
       markObjective: (id) => {
@@ -65,6 +71,8 @@ export const useQuestStore = create<QuestState>()(
 
       setCollapsed: (next) => set({ collapsed: next }),
 
+      setDebriefCollapsed: (next) => set({ debriefCollapsed: next }),
+
       isCompleted: (slug) => get().completed.includes(slug)
     }),
     {
@@ -77,7 +85,8 @@ export const useQuestStore = create<QuestState>()(
         activeSlug: state.activeSlug,
         done: state.done,
         completed: state.completed,
-        collapsed: state.collapsed
+        collapsed: state.collapsed,
+        debriefCollapsed: state.debriefCollapsed
       })
     }
   )

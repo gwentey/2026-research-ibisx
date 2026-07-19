@@ -4,7 +4,13 @@ import { useQuestStore } from "@/lib/challenges/store";
 import type { ObjectiveId } from "@/lib/challenges/types";
 
 function reset() {
-  useQuestStore.setState({ activeSlug: null, done: [], completed: [], collapsed: false });
+  useQuestStore.setState({
+    activeSlug: null,
+    done: [],
+    completed: [],
+    collapsed: false,
+    debriefCollapsed: false
+  });
 }
 
 describe("store de quête", () => {
@@ -63,5 +69,22 @@ describe("store de quête", () => {
     useQuestStore.getState().setCollapsed(true);
     useQuestStore.getState().start("iris-hello-world");
     expect(useQuestStore.getState().collapsed).toBe(false);
+  });
+
+  it("le récap de débrief est déployé par défaut (debriefCollapsed=false)", () => {
+    expect(useQuestStore.getState().debriefCollapsed).toBe(false);
+  });
+
+  it("setDebriefCollapsed réduit puis redéploie le récap", () => {
+    useQuestStore.getState().setDebriefCollapsed(true);
+    expect(useQuestStore.getState().debriefCollapsed).toBe(true);
+    useQuestStore.getState().setDebriefCollapsed(false);
+    expect(useQuestStore.getState().debriefCollapsed).toBe(false);
+  });
+
+  it("la préférence de récap réduit survit au démarrage d'un nouveau défi", () => {
+    useQuestStore.getState().setDebriefCollapsed(true);
+    useQuestStore.getState().start("iris-hello-world");
+    expect(useQuestStore.getState().debriefCollapsed).toBe(true);
   });
 });
