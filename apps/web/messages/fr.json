@@ -429,6 +429,7 @@
   "status": {
     "title": "État du système",
     "subtitle": "Santé de la plateforme IBIS-X et démonstration du socle temps réel.",
+    "backToDashboard": "Retour au tableau de bord",
     "apiHealth": "API",
     "workerHealth": "Worker",
     "database": "Base de données",
