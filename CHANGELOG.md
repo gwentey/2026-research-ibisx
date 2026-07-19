@@ -3,6 +3,21 @@
 Refonte complète from scratch (voir [JALONS.md](JALONS.md) et [docs/refonte/](docs/refonte/)).
 Un jalon = un incrément livrable ; chaque entrée correspond à un commit `feat: jalon N`.
 
+## Fix sécurité — plus de lien de réinitialisation en clair dans les logs (19/07/2026)
+
+- **`send_email` sans SMTP ne logge plus le corps de l'email en production.** Le fallback
+  « pas de `SMTP_HOST` → on logge tout » (destinataire, sujet, corps) exposait le lien de
+  réinitialisation émis par `POST /auth/forgot-password` (valable 1 h) à quiconque lit
+  `docker compose logs` : prise de contrôle possible de tout compte ayant demandé un reset.
+  `SMTP_HOST` n'étant pas garanti configuré en production (défaut vide), le risque était réel.
+- Le fallback verbeux est désormais **conditionné à un environnement non-production**
+  (`settings.is_production`) — logger le lien reste pratique en dev. En production sans SMTP,
+  seul un avertissement `mailer.not_configured` est émis, avec le `user_id` et **jamais** le
+  jeton, le lien ni l'adresse email (ARCH §13 : aucune PII ni secret dans les logs).
+- `send_email` accepte un `user_id` optionnel pour tracer l'échec sans PII ; `forgot-password`
+  le renseigne. Tests : `tests/unit/test_mailer.py` (le corps n'atteint pas le logger en
+  production, le lien reste loggé en dev).
+
 ## Pages légales publiques — prérequis validation Google OAuth (19/07/2026)
 
 - **`/legal/privacy` et `/legal/terms`** : politique de confidentialité et conditions

@@ -143,11 +143,13 @@ Variables d'environnement consommées :
 - **`ROLE_ORDER` dict** : la hiérarchie des rôles est encodée dans un dictionnaire `{UserRole: int}` plutôt que dans une logique ordinale sur l'enum, pour rester explicite et résistant à une réorganisation future de l'ordre de déclaration de l'enum.
 - **`StrictModel` (extra="forbid")** : tous les schémas d'écriture héritent de `StrictModel` pour rejeter tout champ inattendu avec HTTP 422 — cf. ADR-007.
 - **Argon2id defaults** : l'implémentation utilise les paramètres par défaut de `argon2-cffi` (time_cost=3, memory_cost=65536 soit 64 MiB). Aucun paramètre custom n'est passé.
+- **Fallback mailer conditionné à l'environnement** : `ibis/core/mailer.py` logge le contenu complet de l'email quand `SMTP_HOST` est vide — utile en dev pour récupérer le lien de reset. Ce fallback est strictement réservé aux environnements non-production (`settings.is_production`), car le corps porte un lien de réinitialisation valable 1 h : le logger en production reviendrait à donner la prise de contrôle de tout compte à quiconque lit `docker compose logs`. En production sans SMTP, `send_email` émet uniquement `mailer.not_configured` (niveau `warning`) avec le `user_id` — jamais le jeton, le lien ni l'adresse email (ARCH §13).
 
 ## Tests existants
 
 | Fichier | Ce qu'il teste | Statut |
 |---------|---------------|--------|
 | `apps/api/tests/integration/test_auth.py` | Register auto-login, duplicate email, weak password, login ok/wrong, refresh rotation, vol détecté (famille révoquée), logout, forgot+reset flow, rate limit 429 | Existant |
+| `apps/api/tests/unit/test_mailer.py` | Fallback sans SMTP : en production le corps de l'email (lien de reset) n'atteint jamais le logger — seul `mailer.not_configured` + `user_id` ; hors production le lien reste loggé | Existant |
 | Tests unitaires `security.py` | Non trouvés dans ce périmètre | Absent (déduit) |
 | Tests RBAC par matrice | Mentionnés dans ADR-003 "testés par la matrice CDC §3.2" — fichier non identifié ici | À confirmer |
