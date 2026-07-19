@@ -1227,7 +1227,7 @@
       "comparison": "SHAP ↔ LIME comparison",
       "baseValue": "Base value: {value}",
       "prediction": "Prediction: {value} {label}",
-      "importanceHint": "The longer the bar, the more that feature weighs in the model's decisions.",
+      "importanceHint": "Each feature's share of the displayed importance (in %): the longer the bar, the more that feature weighs in the model's decisions.",
       "waterfallHint": "Start from a base value (the average), then each feature pushes the prediction one way or the other.",
       "comparisonHint": "Two methods, two ways to measure importance. Strong agreement between them = a more reliable explanation.",
       "pushesUp": "Pushes the prediction up",

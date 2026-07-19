@@ -83,6 +83,65 @@ SYSTEM = {
 }
 
 
+def humanize_feature(name: str) -> str:
+    """Nom technique du pipeline → libellé lisible (CDC évolutions §1).
+
+    `cat__Sex_female` → « Sex = female », `num_median_0__Pclass` → « Pclass »,
+    `cat__Sex` (ordinal) → « Sex », nom sans préfixe → inchangé. Les colonnes
+    snake_case gardent leur sens : coupure au DERNIER « _ » (les catégories
+    multi-underscore sont plus rares que les colonnes multi-mots).
+    """
+    transformer, sep, rest = name.partition("__")
+    if not sep or not rest:
+        return name
+    if transformer == "cat" and "_" in rest:
+        column, _, category = rest.rpartition("_")
+        return f"{column.replace('_', ' ')} = {category}"
+    return rest.replace("_", " ")
+
+
+def format_share(value: float, total: float) -> str:
+    """Part entière de |value| dans total : « 24 % », « <1 % » sous 0.5 %.
+
+    Demi-parts vers le haut (parité exacte avec Math.round côté front).
+    """
+    if total <= 0:
+        return "0 %"
+    pct = abs(value) / total * 100
+    return "<1 %" if pct < 0.5 else f"{int(pct + 0.5)} %"
+
+
+def _round3(value: Any) -> str:
+    """Format lisible 3 décimales max, robuste aux valeurs non numériques."""
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        return str(value)
+    return f"{round(float(value), 3):g}"
+
+
+def _importance_line(importance: list[dict[str, Any]]) -> str | None:
+    """Importances en « part de l'importance affichée » — mêmes % que les graphiques.
+
+    Dénominateur = Σ|v| de la liste reçue ENTIÈRE (le top stocké, celui que le front
+    affiche) : le LLM et les charts citent exactement le même « 24 % ».
+    """
+    values = [float(i.get("value", i.get("contribution")) or 0) for i in importance]
+    total = sum(abs(v) for v in values)
+    if not values or total <= 0:
+        return None
+    signed = any("contribution" in item for item in importance)
+    parts = []
+    for item, raw in zip(importance, values, strict=True):
+        label = humanize_feature(str(item.get("feature", "?")))
+        share = format_share(raw, total)
+        if signed:
+            share += " ↗" if raw >= 0 else " ↘"
+        parts.append(f"{label} : {share}")
+    header = "Importances (part de l'importance affichée"
+    if signed:
+        header += ", ↗ pousse la prédiction vers le haut / ↘ vers le bas"
+    return header + ") : " + ", ".join(parts)
+
+
 def build_context(
     *,
     metrics: dict[str, Any],
@@ -96,18 +155,18 @@ def build_context(
         f"Algorithme : {algorithm} | Tâche : {task_type} | Type d'explication : {explanation_type}"
     ]
     numeric_metrics = {k: v for k, v in metrics.items() if isinstance(v, (int, float))}
-    lines.append("Métriques réelles : " + ", ".join(f"{k}={v}" for k, v in numeric_metrics.items()))
-    if importance:
-        lines.append(
-            "Importances (top) : "
-            + ", ".join(
-                f"{i['feature']}={i.get('value', i.get('contribution'))}" for i in importance[:10]
-            )
-        )
+    lines.append(
+        "Métriques réelles (arrondies) : "
+        + ", ".join(f"{k}={_round3(v)}" for k, v in numeric_metrics.items())
+    )
+    importance_line = _importance_line(importance)
+    if importance_line:
+        lines.append(importance_line)
     if local_values:
         lines.append(
-            f"Prédiction locale : {local_values.get('prediction')} "
-            f"(base {local_values.get('base_value')}, classe {local_values.get('predicted_label')})"
+            f"Prédiction locale : {_round3(local_values.get('prediction'))} "
+            f"(base {_round3(local_values.get('base_value'))}, "
+            f"classe {local_values.get('predicted_label')})"
         )
     return "\n".join(lines)
 
@@ -119,14 +178,18 @@ def build_prompt(*, audience: str, language: str, context: str) -> tuple[str, st
         user = (
             f"Explique ces résultats pour {spec}.\n"
             "Structure : ① ce que le modèle a appris ② quelles variables comptent et pourquoi "
-            "③ à quel point s'y fier (métriques) ④ une limite à garder en tête.\n\n"
+            "③ à quel point s'y fier (métriques) ④ une limite à garder en tête.\n"
+            "Cite les nombres tels qu'affichés dans le contexte (arrondis / en %) — "
+            "ne re-dérive jamais une précision supérieure.\n\n"
             f"CONTEXTE (seules valeurs autorisées) :\n{context}"
         )
     else:
         user = (
             f"Explain these results for {spec}.\n"
             "Structure: ① what the model learned ② which features matter and why "
-            "③ how much to trust it (metrics) ④ one limitation to keep in mind.\n\n"
+            "③ how much to trust it (metrics) ④ one limitation to keep in mind.\n"
+            "Quote numbers exactly as displayed in the context (rounded / in %) — "
+            "never re-derive extra precision.\n\n"
             f"CONTEXT (only allowed values):\n{context}"
         )
     return SYSTEM[lang], user
@@ -148,6 +211,9 @@ def numbers_exist_in_context(text: str, context: str) -> bool:
             context_numbers.add(
                 f"{value * 100:.{digits}f}".rstrip("0").rstrip(".")
             )  # % équivalents
+            context_numbers.add(
+                f"{value / 100:.{digits}f}".rstrip("0").rstrip(".")
+            )  # écho décimal d'un % affiché (24 → 0.24)
     foreign: list[str] = []
     for raw in NUMBER_RE.findall(text.replace(",", ".")):
         normalized = f"{float(raw):g}"
@@ -159,13 +225,6 @@ def numbers_exist_in_context(text: str, context: str) -> bool:
         # Diagnostic : quels nombres cités par l'IA ne sont pas dans le contexte (→ rejet).
         logger.info("xai_text.foreign_numbers", numbers=foreign[:10])
     return not foreign
-
-
-def _g(value: Any) -> str:
-    """Format court d'un nombre (0.83 → « 0.83 »), robuste aux valeurs non numériques."""
-    if isinstance(value, bool) or not isinstance(value, (int, float)):
-        return str(value)
-    return f"{float(value):g}"
 
 
 def fallback_text(
@@ -189,14 +248,14 @@ def fallback_text(
     has_primary = bool(primary) and primary_value is not None
 
     if audience == "novice":
-        top = [str(i["feature"]) for i in importance[:3]]  # l'essentiel, pas un mur de texte
+        top = [humanize_feature(str(i["feature"])) for i in importance[:3]]  # l'essentiel
         if en:
             parts = [
                 f"In plain words: the {algorithm} model learned from examples to make "
                 f"predictions ({task_type}) — a bit like learning to recognise a fruit after "
                 "seeing many of them.",
                 (
-                    f"Its main score ({primary}) is {_g(primary_value)}: the closer to 1, "
+                    f"Its main score ({primary}) is {_round3(primary_value)}: the closer to 1, "
                     "the better."
                     if has_primary
                     else "Its main score is unavailable here."
@@ -214,7 +273,7 @@ def fallback_text(
                 f"faire des prédictions ({task_type}) — un peu comme on apprend à reconnaître un "
                 "fruit après en avoir vu beaucoup.",
                 (
-                    f"Sa note principale ({primary}) est de {_g(primary_value)} : plus c'est "
+                    f"Sa note principale ({primary}) est de {_round3(primary_value)} : plus c'est "
                     "proche de 1, mieux c'est."
                     if has_primary
                     else "Sa note principale n'est pas disponible ici."
@@ -228,13 +287,13 @@ def fallback_text(
             ]
         return " ".join(parts)
 
-    top = [str(i["feature"]) for i in importance[:5]]
+    top = [humanize_feature(str(i["feature"])) for i in importance[:5]]
     if audience == "expert":
         if en:
             parts = [
                 f"Model {algorithm} — {task_type} task.",
                 (
-                    f"Main metric {primary} = {_g(primary_value)} "
+                    f"Main metric {primary} = {_round3(primary_value)} "
                     "(see the full grid for macro metrics)."
                     if has_primary
                     else "Main metric unavailable."
@@ -250,7 +309,7 @@ def fallback_text(
             parts = [
                 f"Modèle {algorithm} — tâche de {task_type}.",
                 (
-                    f"Métrique principale {primary} = {_g(primary_value)} "
+                    f"Métrique principale {primary} = {_round3(primary_value)} "
                     "(voir la grille complète pour les macro-métriques)."
                     if has_primary
                     else "Métrique principale indisponible."
@@ -271,7 +330,7 @@ def fallback_text(
         parts = [
             f"The {algorithm} model was trained for a {task_type} task.",
             (
-                f"Main metric {primary} = {_g(primary_value)}."
+                f"Main metric {primary} = {_round3(primary_value)}."
                 if has_primary
                 else "Main metric unavailable."
             ),
@@ -286,7 +345,7 @@ def fallback_text(
     parts = [
         f"Le modèle {algorithm} a été entraîné pour une tâche de {task_type}.",
         (
-            f"Métrique principale {primary} = {_g(primary_value)}."
+            f"Métrique principale {primary} = {_round3(primary_value)}."
             if has_primary
             else "Métrique principale indisponible."
         ),
@@ -393,7 +452,8 @@ def chat_prompt_v2(
             f"{tone}\n"
             "Rédige une réponse claire et STRUCTURÉE en blocs (≤ 6 blocs, ≤ 120 mots au total). "
             "Utilise un tableau ou featureImpact quand cela éclaire vraiment, un callout pour une "
-            "limite. Appuie-toi UNIQUEMENT sur le contexte."
+            "limite. Cite les nombres tels qu'affichés dans le contexte (arrondis / en %). "
+            "Appuie-toi UNIQUEMENT sur le contexte."
         )
     return (
         f"CONTEXT (only allowed values):\n{context}\n\n"
@@ -402,6 +462,7 @@ def chat_prompt_v2(
         f"{tone}\n"
         "Write a clear, STRUCTURED answer in blocks (≤ 6 blocks, ≤ 120 words total). "
         "Use a table or featureImpact only when it truly helps, a callout for a limitation. "
+        "Quote numbers exactly as displayed in the context (rounded / in %). "
         "Rely ONLY on the context."
     )
 

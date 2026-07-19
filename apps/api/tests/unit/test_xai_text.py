@@ -2,10 +2,129 @@
 varient selon l'audience, tout en restant ancrés sur les vraies valeurs
 et badgés « sans IA » (P2)."""
 
+import re
+
 from ibis.modules.llm import xai_text
 
 METRICS = {"primary_metric": "accuracy", "accuracy": 0.83}
 IMPORTANCE = [{"feature": "revenu", "value": 0.41}, {"feature": "age", "value": 0.19}]
+
+
+# ------------------------------- Nombres lisibles (CDC évolutions §1) -------------------------
+
+
+def test_humanize_feature_onehot() -> None:
+    assert xai_text.humanize_feature("cat__Sex_female") == "Sex = female"
+    assert xai_text.humanize_feature("cat__Embarked_S") == "Embarked = S"
+    # Colonne snake_case : coupure au DERNIER « _ » (design D1).
+    assert xai_text.humanize_feature("cat__niveau_etude_Bac") == "niveau etude = Bac"
+
+
+def test_humanize_feature_numeric_ordinal_and_plain() -> None:
+    assert xai_text.humanize_feature("num_median_0__Pclass") == "Pclass"
+    assert xai_text.humanize_feature("num_mean_2__fare_amount") == "fare amount"
+    assert xai_text.humanize_feature("cat__Sex") == "Sex"  # ordinal, pas de catégorie
+    assert xai_text.humanize_feature("age") == "age"  # déjà lisible
+
+
+def test_format_share_rounds_half_up_and_floors_dust() -> None:
+    assert xai_text.format_share(0.242421, 1.0) == "24 %"
+    assert xai_text.format_share(0.125, 1.0) == "13 %"  # demi-part vers le haut (12.5)
+    assert xai_text.format_share(0.003, 1.0) == "<1 %"
+    assert xai_text.format_share(-0.24, 1.0) == "24 %"  # magnitude
+    assert xai_text.format_share(0.5, 0.0) == "0 %"  # total nul, jamais d'exception
+
+
+TITANIC_IMPORTANCE = [
+    {"feature": "cat__Sex_female", "value": 0.242421},
+    {"feature": "num_median_0__Pclass", "value": 0.5},
+    {"feature": "num_median_0__Fare", "value": 0.257579},
+]
+
+
+def _titanic_context() -> str:
+    return xai_text.build_context(
+        metrics={"primary_metric": "accuracy", "accuracy": 0.8324451, "f1": 0.77},
+        importance=TITANIC_IMPORTANCE,
+        task_type="classification",
+        algorithm="random_forest",
+        explanation_type="global",
+        local_values=None,
+    )
+
+
+def test_build_context_shows_percents_not_raw_floats() -> None:
+    ctx = _titanic_context()
+    assert "0.242421" not in ctx  # plus jamais de float brut
+    assert "cat__" not in ctx and "num_median_0__" not in ctx
+    assert "Sex = female : 24 %" in ctx
+    assert "accuracy=0.832" in ctx  # métrique arrondie 3 déc.
+
+
+def test_build_context_percents_sum_to_about_100() -> None:
+    line = next(
+        ligne for ligne in _titanic_context().splitlines() if ligne.startswith("Importances")
+    )
+    percents = [int(m) for m in re.findall(r"(\d+) %", line)]
+    assert len(percents) == 3
+    assert 97 <= sum(percents) <= 103
+
+
+def test_build_context_local_contributions_keep_direction() -> None:
+    ctx = xai_text.build_context(
+        metrics={"accuracy": 0.83},
+        importance=[
+            {"feature": "cat__Sex_female", "contribution": 0.3},
+            {"feature": "num_median_0__Age", "contribution": -0.1},
+        ],
+        task_type="classification",
+        algorithm="random_forest",
+        explanation_type="local",
+        local_values={
+            "prediction": 0.8712345,
+            "base_value": 0.62111,
+            "predicted_label": "survived",
+        },
+    )
+    assert "Sex = female : 75 % ↗" in ctx
+    assert "Age : 25 % ↘" in ctx
+    assert "0.871" in ctx and "0.621" in ctx  # valeurs locales arrondies 3 déc.
+
+
+def test_fallback_text_humanizes_feature_names() -> None:
+    text = xai_text.fallback_text(
+        audience="novice",
+        language="fr",
+        metrics=METRICS,
+        importance=TITANIC_IMPORTANCE,
+        task_type="classification",
+        algorithm="random_forest",
+    )
+    assert "cat__" not in text and "num_median_0__" not in text
+    assert "Sex = female" in text
+
+
+def test_guard_accepts_percent_and_decimal_echo() -> None:
+    ctx = _titanic_context()
+    assert xai_text.numbers_exist_in_context("Le sexe pèse environ 24 % ici.", ctx) is True
+    # Écho décimal d'un % affiché (24 → 0,24) : toléré via la symétrie ÷100.
+    assert xai_text.numbers_exist_in_context("La part du sexe vaut 0,24 environ.", ctx) is True
+
+
+def test_guard_still_rejects_foreign_numbers() -> None:
+    ctx = _titanic_context()
+    assert xai_text.numbers_exist_in_context("Le score magique est 0.37.", ctx) is False
+
+
+def test_prompts_ask_to_quote_numbers_as_displayed() -> None:
+    _, user_fr = xai_text.build_prompt(audience="novice", language="fr", context="ctx")
+    _, user_en = xai_text.build_prompt(audience="novice", language="en", context="ctx")
+    assert "tels qu'affichés" in user_fr
+    assert "as displayed" in user_en
+    chat_fr = xai_text.chat_prompt_v2(question="q", context="ctx", history=[], language="fr")
+    chat_en = xai_text.chat_prompt_v2(question="q", context="ctx", history=[], language="en")
+    assert "tels qu'affichés" in chat_fr
+    assert "as displayed" in chat_en
 
 
 def _fallback(audience: str, language: str = "fr") -> str:

@@ -13,6 +13,7 @@ import { Markdown } from "@/components/ui/custom/prompt/markdown";
 import { CausalCaveat } from "@/components/ibis/causal-caveat";
 import type { ExplanationResults, XaiAudience } from "@/lib/api/generated";
 import { cn } from "@/lib/utils";
+import { humanizeFeature, roundLabel } from "@/lib/xai/features";
 
 // Recette de style markdown (pas de plugin prose dans ce projet → sélecteurs utilitaires).
 const PROSE = cn(
@@ -194,6 +195,21 @@ export function ExplanationView({
     | { shap: { feature: string; value: number }[]; lime: { feature: string; value: number }[] }
     | undefined;
 
+  // Nombres lisibles (CDC évolutions §1) : labels humanisés + parts en % entiers — mêmes
+  // valeurs que le contexte servi au LLM (dénominateur = liste affichée entière).
+  const importanceTotal = (globalImportance ?? []).reduce(
+    (sum, item) => sum + Math.abs(item.value),
+    0
+  );
+  const importanceData = globalImportance?.map((item) => ({
+    feature: humanizeFeature(item.feature),
+    pct: importanceTotal > 0 ? Math.round((Math.abs(item.value) / importanceTotal) * 100) : 0
+  }));
+  const waterfallData = waterfall?.map((item) => ({
+    ...item,
+    feature: humanizeFeature(item.feature)
+  }));
+
   // Contexte « QUEL exemple » (explication locale) — répond à « de quel élément parle-t-on ? ».
   const isLocal = explanation.type === "local";
   const instanceIndex = (explanation.instance_ref as { index?: number } | null)?.index;
@@ -203,7 +219,7 @@ export function ExplanationView({
     predictedLabel != null && String(predictedLabel) !== ""
       ? String(predictedLabel)
       : predictionRaw !== undefined && predictionRaw !== null
-        ? String(predictionRaw)
+        ? roundLabel(predictionRaw)
         : null;
 
   // Révélation en cascade : chaque bloc émerge d'un flou, décalé — le résultat se
@@ -310,7 +326,7 @@ export function ExplanationView({
 
       {/* Colonne principale étroite (écran − sidebar) : on empile en 1 colonne pour garder des
           cartes homogènes et sans trou, quel que soit le type d'explication. */}
-      {globalImportance ? (
+      {importanceData ? (
         <div {...step()}>
           <Card>
             <CardHeader>
@@ -325,15 +341,19 @@ export function ExplanationView({
               <ChartContainer
                 config={chartConfig}
                 className="w-full"
-                style={{ height: globalImportance.length * 24 + 40 }}>
+                style={{ height: importanceData.length * 24 + 40 }}>
                 <BarChart
-                  data={[...globalImportance].reverse()}
+                  data={[...importanceData].reverse()}
                   layout="vertical"
                   margin={{ left: 40 }}>
                   <XAxis type="number" hide />
                   <YAxis dataKey="feature" type="category" width={150} tick={{ fontSize: 10 }} />
-                  <ChartTooltip content={<ChartTooltipContent />} />
-                  <Bar dataKey="value" fill="var(--chart-1)" radius={3} />
+                  <ChartTooltip
+                    content={
+                      <ChartTooltipContent formatter={(value) => `${Number(value)} %`} />
+                    }
+                  />
+                  <Bar dataKey="pct" fill="var(--chart-1)" radius={3} />
                 </BarChart>
               </ChartContainer>
               <CausalCaveat className="mt-3" />
@@ -342,7 +362,7 @@ export function ExplanationView({
         </div>
       ) : null}
 
-      {waterfall ? (
+      {waterfallData ? (
         <div {...step()}>
           <Card>
             <CardHeader>
@@ -352,11 +372,11 @@ export function ExplanationView({
               </p>
               <p className="text-muted-foreground text-xs">
                 {values["base_value"] !== undefined
-                  ? t("charts.baseValue", { value: String(values["base_value"]) })
+                  ? t("charts.baseValue", { value: roundLabel(values["base_value"]) })
                   : null}{" "}
                 {values["prediction"] !== undefined
                   ? t("charts.prediction", {
-                      value: String(values["prediction"]),
+                      value: roundLabel(values["prediction"]),
                       label: String(values["predicted_label"] ?? "")
                     })
                   : null}
@@ -380,14 +400,21 @@ export function ExplanationView({
               <ChartContainer
                 config={chartConfig}
                 className="w-full"
-                style={{ height: waterfall.length * 26 + 40 }}>
-                <BarChart data={[...waterfall].reverse()} layout="vertical" margin={{ left: 40 }}>
+                style={{ height: waterfallData.length * 26 + 40 }}>
+                <BarChart
+                  data={[...waterfallData].reverse()}
+                  layout="vertical"
+                  margin={{ left: 40 }}>
                   <XAxis type="number" tick={{ fontSize: 10 }} />
                   <YAxis dataKey="feature" type="category" width={150} tick={{ fontSize: 10 }} />
-                  <ChartTooltip content={<ChartTooltipContent />} />
+                  <ChartTooltip
+                    content={
+                      <ChartTooltipContent formatter={(value) => roundLabel(Number(value))} />
+                    }
+                  />
                   <CartesianGrid strokeDasharray="3 3" horizontal={false} />
                   <Bar dataKey="contribution" radius={3}>
-                    {[...waterfall].reverse().map((entry, index) => (
+                    {[...waterfallData].reverse().map((entry, index) => (
                       <Cell
                         key={index}
                         fill={entry.contribution >= 0 ? "var(--score-4)" : "var(--destructive)"}
@@ -416,7 +443,9 @@ export function ExplanationView({
                   <p className="mb-1 text-xs font-medium uppercase">{method}</p>
                   {comparison[method].map((item) => (
                     <div key={item.feature} className="flex items-center gap-2 text-xs">
-                      <span className="w-32 truncate">{item.feature}</span>
+                      <span className="w-32 truncate" title={humanizeFeature(item.feature)}>
+                        {humanizeFeature(item.feature)}
+                      </span>
                       <div className="bg-muted h-1.5 flex-1 rounded">
                         <div
                           className="bg-primary h-1.5 rounded"

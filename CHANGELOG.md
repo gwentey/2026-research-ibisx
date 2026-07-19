@@ -3,6 +3,20 @@
 Refonte complète from scratch (voir [JALONS.md](JALONS.md) et [docs/refonte/](docs/refonte/)).
 Un jalon = un incrément livrable ; chaque entrée correspond à un commit `feat: jalon N`.
 
+## Évolution XAI 1 — Nombres lisibles (19/07/2026)
+
+- **Importances en %** : le contexte servi au LLM (explication + chat) présente les importances
+  en « part de l'importance affichée » (% entiers, dénominateur = top affiché par les
+  graphiques), les métriques et valeurs locales arrondies à 3 décimales, avec consigne « cite
+  les nombres tels qu'affichés ». Fini `0.242421` — le modèle dit « ≈ 24 % ».
+- **Noms de variables humanisés** (`humanize_feature` + miroir front `lib/xai/features.ts`) :
+  `cat__Sex_female` → « Sex = female », `num_median_0__Pclass` → « Pclass » — appliqué au
+  contexte LLM, aux replis déterministes (texte + tableau du chat, désormais en « Poids (%) »),
+  aux graphiques (importance globale en %, waterfall, comparaison SHAP/LIME) et aux barres
+  `featureImpact` (anciens messages inclus).
+- **Garde-fou anti-hallucination étendu** : tolérance symétrique ÷100 (contexte « 24 % » →
+  « 0,24 » accepté) ; rejets toujours loggués, replis « sans IA » inchangés.
+
 ## Récap de défi réductible (19/07/2026)
 
 - **Débrief de fin d'enquête repliable** (`ChallengeDebrief`) : l'encart de résultats gardait

@@ -1227,7 +1227,7 @@
       "comparison": "Comparaison SHAP ↔ LIME",
       "baseValue": "Valeur de base : {value}",
       "prediction": "Prédiction : {value} {label}",
-      "importanceHint": "Plus la barre est longue, plus la variable pèse dans les décisions du modèle.",
+      "importanceHint": "Part de chaque variable dans l'importance affichée (en %) : plus la barre est longue, plus la variable pèse dans les décisions du modèle.",
       "waterfallHint": "On part d'une valeur de base (la moyenne), puis chaque variable pousse la prédiction dans un sens ou l'autre.",
       "comparisonHint": "Deux méthodes, deux façons de mesurer l'importance. Un fort accord entre elles = explication d'autant plus fiable.",
       "pushesUp": "Pousse la prédiction vers le haut",

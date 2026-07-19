@@ -17,6 +17,8 @@ from typing import Annotated, Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
+from ibis.modules.llm.xai_text import format_share, humanize_feature
+
 SCHEMA_VERSION = 1
 
 # Tonalités sémantiques — mappées côté front sur les tokens du kit (jamais de hex ici).
@@ -191,7 +193,7 @@ def _fmt(value: Any) -> str:
     if isinstance(value, bool):
         return str(value)
     if isinstance(value, (int, float)):
-        return f"{float(value):g}"
+        return f"{round(float(value), 3):g}"  # 3 déc. max — cohérent avec le contexte LLM
     return str(value)
 
 
@@ -251,7 +253,7 @@ def fallback_document(
     )
 
     if fr:
-        table_cols = ["Variable", "Poids"]
+        table_cols = ["Variable", "Poids (%)"]
         note_title = "Réponse générée sans IA"
         note_text = (
             "L'assistant est momentanément indisponible : ce résumé s'appuie uniquement "
@@ -259,7 +261,7 @@ def fallback_document(
         )
         no_imp = "L'importance des variables n'est pas disponible pour cette explication."
     else:
-        table_cols = ["Feature", "Weight"]
+        table_cols = ["Feature", "Weight (%)"]
         note_title = "Generated without AI"
         note_text = (
             "The assistant is momentarily unavailable: this summary relies only on the "
@@ -271,15 +273,16 @@ def fallback_document(
 
     top = importance[:6]
     if top:
-        rows: list[list[Cell]] = []
-        for item in top:
-            value = item.get("value", item.get("contribution", 0))
-            rows.append(
-                [
-                    Cell(text=str(item.get("feature", "?"))),
-                    Cell(text=_fmt(round(float(value or 0), 3))),
-                ]
-            )
+        # Mêmes % que le contexte LLM et les graphiques : dénominateur = liste reçue ENTIÈRE.
+        values = [float(i.get("value", i.get("contribution")) or 0) for i in importance]
+        total = sum(abs(v) for v in values)
+        rows: list[list[Cell]] = [
+            [
+                Cell(text=humanize_feature(str(item.get("feature", "?")))),
+                Cell(text=format_share(value, total)),
+            ]
+            for item, value in zip(importance[:6], values[:6], strict=True)
+        ]
         blocks.append(TableBlock(type="table", columns=table_cols, rows=rows))
     else:
         blocks.append(ParagraphBlock(type="paragraph", text=no_imp))

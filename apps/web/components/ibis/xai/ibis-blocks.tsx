@@ -28,6 +28,7 @@ import {
   TONE_TEXT,
   type Tone
 } from "@/lib/xai/blocks";
+import { humanizeFeature } from "@/lib/xai/features";
 import { cn } from "@/lib/utils";
 
 // Rendu du contrat de blocs XAI v2 (CDC copilote §5). Chaque bloc → un composant du kit ;
@@ -190,8 +191,9 @@ function BlockView({ block }: { block: Block }) {
             const pct = Math.min(100, (Math.abs(item.weight) / max) * 100);
             return (
               <div key={index} className="flex items-center gap-2 text-xs">
-                <span className="w-28 shrink-0 truncate" title={item.feature}>
-                  {item.feature}
+                {/* Humanisation au rendu : normalise aussi les anciens messages (noms bruts). */}
+                <span className="w-28 shrink-0 truncate" title={humanizeFeature(item.feature)}>
+                  {humanizeFeature(item.feature)}
                 </span>
                 <div className="bg-muted h-2 flex-1 overflow-hidden rounded">
                   <div
