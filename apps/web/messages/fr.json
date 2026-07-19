@@ -205,6 +205,8 @@
       "regression": "Régression"
     },
     "debriefTitle": "Enquête bouclée",
+    "debriefCollapse": "Réduire le récap",
+    "debriefExpand": "Développer le récap",
     "debriefLead": "Bravo — enquête « {title} » bouclée.",
     "debriefMetric": "Un vrai modèle, entraîné sur de vraies données : {metric}.",
     "debriefScoreHint": "Ce score va de 0 à 1 : plus il est proche de 1, plus le modèle voit juste. Pas besoin d'être expert — l'essentiel est de comprendre POURQUOI il décide, à l'étape suivante.",
