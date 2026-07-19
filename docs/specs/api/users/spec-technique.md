@@ -3,9 +3,9 @@
 | Champ         | Valeur              |
 |---------------|---------------------|
 | Module        | api/users           |
-| Version       | 0.1.0               |
-| Date          | 2026-07-19          |
-| Source        | Rétro-ingénierie    |
+| Version       | 0.2.0               |
+| Date          | 2026-07-20          |
+| Source        | Rétro-ingénierie + route avatar publique (session 20/07/2026) |
 
 ---
 
@@ -25,7 +25,7 @@ Deux dépendances externes au module sont appelées directement depuis `routes.p
 
 | Fichier | Rôle | Lignes |
 |---------|------|--------|
-| `apps/api/ibis/modules/users/routes.py` | Déclaration des 7 endpoints REST, injection de dépendances | ~78 |
+| `apps/api/ibis/modules/users/routes.py` | Déclaration des 8 endpoints REST, injection de dépendances | ~94 |
 | `apps/api/ibis/modules/users/service.py` | Logique métier : onboarding, mise à jour profil, changement de mot de passe, avatar, suppression | ~101 |
 | `apps/api/ibis/modules/auth/schemas.py` | Schémas Pydantic partagés : `UserRead`, `OnboardingRequest`, `ProfileUpdateRequest`, `PasswordChangeRequest`, `AccountDeleteRequest` | ~106 |
 | `apps/api/ibis/modules/auth/models.py` | Modèle `User`, enums `UserRole`/`XaiAudience`/`EducationLevel`, fonction `derive_xai_audience` | ~134 |
@@ -74,8 +74,11 @@ La suppression d'un `User` déclenche une cascade `ON DELETE CASCADE` sur `refre
 | PUT | `/users/me/avatar` | `uploadAvatar` | Upload et normalisation de l'avatar | JWT requis |
 | GET | `/users/me/avatar` | `getMyAvatar` | Streaming de l'avatar en WebP | JWT requis |
 | POST | `/users/me/delete` | `deleteAccount` | Suppression de compte (204) | JWT requis |
+| GET | `/users/{user_id}/avatar` | `getUserAvatar` | Streaming de l'avatar en WebP (image seule) | JWT requis |
 
-Tous les endpoints sont préfixés `/api/v1` par le routeur principal. Tous les schemas d'entrée utilisent `extra="forbid"` (héritage `StrictModel`) — tout champ inattendu renvoie 422.
+Tous les endpoints sont préfixés `/api/v1` par le routeur principal. Tous les schémas d'entrée utilisent `extra="forbid"` (héritage `StrictModel`) — tout champ inattendu renvoie 422.
+
+**Note :** `GET /users/{user_id}/avatar` sert les avatars des importeurs sur les cartes du catalogue datasets. Elle est **publique au sens du contenu** (n'importe quel utilisateur connecté peut lire l'avatar de n'importe quel autre) mais **exige un JWT** comme le reste du catalogue (`CurrentClaims`) : le catalogue lui-même n'est pas consultable sans compte. Elle ne renvoie QUE l'image — aucune autre donnée de compte n'est exposée. Absence d'avatar (utilisateur inconnu, `avatar_path` NULL, ou fichier absent du storage) → **404 `NO_AVATAR`**. Distincte de `GET /users/me/avatar`, qui renvoie toujours l'avatar de l'appelant.
 
 ---
 
