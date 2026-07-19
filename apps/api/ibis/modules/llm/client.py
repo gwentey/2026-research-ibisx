@@ -44,6 +44,7 @@ def complete(
     if not settings.openrouter_api_key:
         raise LLMUnavailable("OPENROUTER_API_KEY absente")
 
+    budget = max_tokens or settings.llm_max_tokens
     payload: dict[str, object] = {
         "model": settings.llm_model,
         "messages": [
@@ -51,12 +52,20 @@ def complete(
             {"role": "user", "content": user},
         ],
         "temperature": temperature,
-        "max_tokens": max_tokens or settings.llm_max_tokens,
+        "max_tokens": budget,
     }
     # json_mode : force une sortie JSON stricte (chat XAI v2 → blocs). Le contrat exact
     # est validé en Pydantic côté appelant ; ici on incite juste le modèle au JSON pur.
     if json_mode:
         payload["response_format"] = {"type": "json_object"}
+    # Modèles à raisonnement (ex. openai/gpt-5-mini) : leur réflexion est décomptée du
+    # budget de sortie et ils imposent leur température par défaut. On envoie l'effort de
+    # raisonnement demandé, on retire la température (sinon 400), et on garantit une marge
+    # suffisante — sinon la réflexion consomme tout et `content` revient null (→ repli).
+    if settings.llm_reasoning_effort:
+        payload["reasoning"] = {"effort": settings.llm_reasoning_effort}
+        payload.pop("temperature", None)
+        payload["max_tokens"] = max(budget, settings.llm_max_tokens)
     try:
         response = httpx.post(
             f"{OPENROUTER_BASE_URL}/chat/completions",
