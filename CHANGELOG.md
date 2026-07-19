@@ -49,6 +49,22 @@ Un jalon = un incrément livrable ; chaque entrée correspond à un commit `feat
   `featureImpact` (anciens messages inclus).
 - **Garde-fou anti-hallucination étendu** : tolérance symétrique ÷100 (contexte « 24 % » →
   « 0,24 » accepté) ; rejets toujours loggués, replis « sans IA » inchangés.
+## Import Kaggle ouvert à tout compte connecté (20/07/2026)
+
+- **Le bouton « Importer depuis Kaggle » n'apparaissait pour personne** en dehors des
+  contributeurs : il avait été placé derrière le même garde `canUpload` que l'upload libre, et la
+  route portait `ContributorDep`. Or un catalogue communautaire dont seuls les contributeurs peuvent
+  alimenter n'a rien de communautaire.
+- **L'import Kaggle est désormais ouvert à tout compte connecté**, alors que l'upload libre
+  (`POST /datasets`) reste réservé aux contributeurs. L'asymétrie est délibérée : l'import est
+  strictement plus contraint qu'un upload — source publique identifiée, licence vérifiée, taille
+  plafonnée, doublons écartés, attribution nominative, et **aucun octet arbitraire** déposé sur le
+  serveur par le client. C'est l'attribution visible qui sert de garde-fou social, pas le rôle.
+- **Limiteur par IP** (10 imports/heure, `ibis.core.ratelimit`) : ouvrir l'import à tous exposait
+  sinon le stockage et le worker de la VM à des téléchargements en rafale.
+- Test de non-régression explicite : ouvrir l'import ne doit **pas** avoir ouvert l'upload libre.
+- Règle 15 de `docs/specs/api/datasets/spec-fonctionnel.md` mise à jour en conséquence.
+
 ## Import Kaggle par lien + catalogue communautaire (19/07/2026)
 
 Le catalogue plafonnait à 28 datasets parce que chaque entrée exigeait un JSON de métadonnées

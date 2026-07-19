@@ -6513,7 +6513,7 @@
     },
     "/api/v1/datasets/import/kaggle": {
       "post": {
-        "description": "Import depuis un lien Kaggle collé — contributor+.\n\nRéponse immédiate : le lien est validé et dédupliqué ici (synchrone, donc l'utilisateur\nsait tout de suite si son lien est mauvais) ; le téléchargement part au worker.",
+        "description": "Import depuis un lien Kaggle collé — TOUT compte connecté.\n\nVolontairement plus ouvert que `POST /datasets` (contributor+) : l'import Kaggle est\nstrictement plus contraint qu'un upload libre — la source est un jeu public identifié,\nla licence est vérifiée, la taille plafonnée, les doublons écartés et l'attribution\nnominative. L'utilisateur ne dépose aucun octet arbitraire sur le serveur.\nContrepartie : un limiteur protège le stockage et le worker de la VM.\n\nRéponse immédiate : le lien est validé et dédupliqué ici (synchrone, donc l'utilisateur\nsait tout de suite si son lien est mauvais) ; le téléchargement part au worker.",
         "operationId": "importKaggleDataset",
         "requestBody": {
           "content": {
