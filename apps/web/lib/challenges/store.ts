@@ -23,9 +23,13 @@ interface QuestState {
   activeSlug: string | null;
   done: ObjectiveId[];
   completed: string[];
+  // Traceur replié à la demande de l'utilisateur : il flotte au-dessus des vraies pages, donc on
+  // le laisse le masquer temporairement (révèle un bouton caché) puis le redéployer quand il veut.
+  collapsed: boolean;
   start: (slug: string) => void;
   markObjective: (id: ObjectiveId) => void;
   quit: () => void;
+  setCollapsed: (next: boolean) => void;
   isCompleted: (slug: string) => boolean;
 }
 
@@ -35,8 +39,11 @@ export const useQuestStore = create<QuestState>()(
       activeSlug: null,
       done: [],
       completed: [],
+      collapsed: false,
 
-      start: (slug) => set({ activeSlug: slug, done: [] }),
+      // Démarrer une enquête redéploie toujours le traceur : on ne veut pas qu'un repli hérité
+      // d'un défi précédent masque le nouveau parcours.
+      start: (slug) => set({ activeSlug: slug, done: [], collapsed: false }),
 
       markObjective: (id) => {
         const { activeSlug, done, completed } = get();
@@ -56,6 +63,8 @@ export const useQuestStore = create<QuestState>()(
 
       quit: () => set({ activeSlug: null, done: [] }),
 
+      setCollapsed: (next) => set({ collapsed: next }),
+
       isCompleted: (slug) => get().completed.includes(slug)
     }),
     {
@@ -67,7 +76,8 @@ export const useQuestStore = create<QuestState>()(
       partialize: (state) => ({
         activeSlug: state.activeSlug,
         done: state.done,
-        completed: state.completed
+        completed: state.completed,
+        collapsed: state.collapsed
       })
     }
   )

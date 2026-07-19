@@ -1,4 +1,25 @@
 {
+  "audience": {
+    "viewAs": "Voir en tant que",
+    "you": "vous",
+    "short": {
+      "novice": "Novice",
+      "intermediate": "Intermédiaire",
+      "expert": "Expert"
+    },
+    "desc": {
+      "novice": "Analogies simples, l'essentiel seulement.",
+      "intermediate": "Structuré, orienté décision.",
+      "expert": "Terminologie exacte, tous les détails."
+    },
+    "backToMine": "Revenir à mon niveau ({level})",
+    "warnAbove": "Vous êtes {profile} dans IBIS-X. Cette vue s'adresse à un public {effective} et pourrait être difficile à interpréter.",
+    "belowNote": "Vue simplifiée (niveau {effective}).",
+    "adjustProfile": "Ce niveau ne vous convient pas ? Ajuster mon profil",
+    "noviceFraming": "On vous montre l'essentiel. Passez en Intermédiaire ou Expert (ci-dessus) pour tout voir.",
+    "advancedTitle": "Détails avancés",
+    "advancedHint": "Repliés pour votre niveau — dépliez si vous voulez tout voir."
+  },
   "common": {
     "appName": "IBIS-X",
     "loading": "Chargement…",
@@ -138,7 +159,8 @@
     "adminJobs": "Supervision des jobs",
     "platform": "Plateforme",
     "profile": "Profil",
-    "systemStatus": "État du système"
+    "systemStatus": "État du système",
+    "formation": "Apprendre"
   },
   "challenges": {
     "title": "Défis",
@@ -163,6 +185,8 @@
     "resume": "Reprendre l'enquête",
     "replay": "Relancer l'enquête",
     "quit": "Quitter le défi",
+    "collapse": "Replier le traceur",
+    "expand": "Rouvrir le traceur",
     "backToList": "Tous les défis",
     "next": "Défi suivant",
     "currentObjective": "Objectif",
@@ -1210,6 +1234,10 @@
     "text": {
       "title": "Explication",
       "audience": "Niveau : {level}",
+      "generatedAs": "Généré en vue {level}",
+      "regenerateHint": "Rédigée en vue {generated}, alors que vous consultez en vue {effective}.",
+      "regenerateAs": "Regénérer en vue {level}",
+      "regenerateCost": "1 crédit",
       "fallbackBadge": "Généré sans IA (repli déterministe)",
       "modelBadge": "Modèle : {model}",
       "method": "Méthode : {method}",
@@ -1256,7 +1284,18 @@
       "globalBody": "Quelles variables comptent le plus, en moyenne, sur toutes les prédictions.",
       "localTitle": "Un exemple précis",
       "localBody": "Pourquoi le modèle a répondu ce qu'il a répondu, pour un exemple donné.",
-      "cta": "Configurez votre demande, puis lancez « Générer l'explication »."
+      "cta": "Configurez votre demande, puis lancez « Générer l'explication ».",
+      "novice": "Pas besoin d'être expert : on vous explique tout en mots simples, avec des analogies du quotidien."
+    },
+    "reading": {
+      "title": "Comment lire cette explication",
+      "subtitle": "Trois réflexes pour un premier coup d'œil, sans jargon.",
+      "step1Title": "Regardez le score",
+      "step1Body": "La note globale, en haut, dit à quel point on peut se fier au modèle.",
+      "step2Title": "Voyez ce qui a compté",
+      "step2Body": "Les barres les plus longues sont les informations qui ont le plus pesé.",
+      "step3Title": "Lisez le résumé en clair",
+      "step3Body": "Un texte en langage courant traduit les chiffres — et le copilote répond à vos questions."
     },
     "generating": {
       "title": "L'IA génère votre explication…",
@@ -1572,5 +1611,1259 @@
     "disparityNone": "Pas de disparité majeure",
     "caveat": "Une disparité mesurée signale un traitement inégal entre groupes ; elle ne prouve pas à elle seule une discrimination — croise toujours avec le contexte des données.",
     "errorGeneric": "Analyse indisponible pour cette variable — essaie une variable catégorielle à faibles modalités, comme le sexe."
+  },
+  "formation": {
+    "home": {
+      "title": "Apprendre l'IA",
+      "subtitle": "Comprends l'intelligence artificielle — la vraie, pas seulement ChatGPT — et apprends à t'en servir, du tout premier concept jusqu'à ton propre modèle entraîné.",
+      "pitchLabel": "La promesse",
+      "pitch": "Tu arrives peut-être en pensant que l'IA, c'est ChatGPT. Tu repartiras en ayant entraîné, évalué et expliqué ton propre modèle — et en sachant dire pourquoi il décide.",
+      "globalProgress": "{done} / {total} leçons",
+      "moreSoon": "Les cursus Praticien et Analyste arrivent bientôt.",
+      "recommendedAfter": "Conseillé ensuite",
+      "lessonCount": "{count, plural, one {# leçon} other {# leçons}}",
+      "cursusDone": "Terminé",
+      "resume": "Reprendre",
+      "startCursus": "Commencer",
+      "moduleLabel": "Module {index}",
+      "practiceTag": "Pratique",
+      "lessonPosition": "Leçon {index} / {total}",
+      "notFound": "Ce contenu n'existe pas (ou plus).",
+      "backToAcademy": "Retour à l'Académie"
+    },
+    "blocks": {
+      "mythLabel": "Idée reçue",
+      "realityLabel": "En réalité",
+      "notionLabel": "Carte-notion",
+      "notionExample": "Exemple :",
+      "quizLabel": "Quiz éclair",
+      "quizCorrect": "Bien vu !",
+      "quizRetry": "Pas tout à fait — réessaie.",
+      "practiceLabel": "Mise en pratique",
+      "practiceCta": "Passe à la pratique",
+      "practiceTarget": "Défi : {challenge}",
+      "readyToFinish": "Tu peux valider la leçon.",
+      "answerToFinish": "Réponds au quiz pour valider la leçon.",
+      "finishLesson": "Valider la leçon",
+      "caseLabel": "Étude de cas",
+      "caseTakeaway": "À retenir"
+    },
+    "grades": {
+      "curieux": "Curieux",
+      "eveille": "Éveillé",
+      "apprenti": "Apprenti",
+      "praticien": "Praticien",
+      "analyste": "Analyste"
+    },
+    "cursus": {
+      "eveil": {
+        "title": "Éveil",
+        "tagline": "Comprends enfin ce qu'est vraiment l'intelligence artificielle.",
+        "subtitle": "Un premier pas tout en douceur, sans maths ni jargon. Tu vas découvrir que l'IA ne se résume pas à ChatGPT, et surtout comment fonctionne l'IA qui prédit — celle que tu apprendras à construire dans IBIS-X."
+      },
+      "fondations": {
+        "title": "Fondations",
+        "tagline": "Les bases concrètes du Machine Learning",
+        "subtitle": "Le vocabulaire et les gestes essentiels, jusqu'à ta première vraie mise en pratique : entraîner un modèle sur le jeu de données Titanic."
+      },
+      "praticien": {
+        "title": "Praticien",
+        "tagline": "Construis un modèle, et évalue-le sans te mentir.",
+        "subtitle": "Prépare les données, choisis un algorithme, mesure honnêtement ce que vaut ton modèle — et comprends enfin pourquoi il décide."
+      },
+      "analyste": {
+        "title": "Analyste",
+        "tagline": "Le niveau chercheur : rigueur, éthique et honnêteté.",
+        "subtitle": "Mesure l'incertitude, traque les biais, distingue corrélation et causalité, et transforme un modèle en résultat défendable."
+      }
+    },
+    "modules": {
+      "ia-pas-que-chatgpt": {
+        "title": "L'IA, ce n'est pas que ChatGPT",
+        "tagline": "Sépare l'IA qui discute de la foule d'IA discrètes qui prédisent en silence."
+      },
+      "comment-une-machine-apprend": {
+        "title": "Comment une machine apprend",
+        "tagline": "Des exemples, des données, une recette apprise : le mécanisme derrière la prédiction."
+      },
+      "a-quoi-ca-sert": {
+        "title": "À quoi ça sert vraiment",
+        "tagline": "Où l'IA prédictive agit déjà dans ta vie — et où elle se trompe."
+      },
+      "le-vocabulaire-du-ml": {
+        "title": "Le vocabulaire du ML",
+        "tagline": "Lignes, colonnes, features, cible : les mots de base."
+      },
+      "le-jeu-de-donnees": {
+        "title": "Le jeu de données",
+        "tagline": "D'où viennent les données, et comment on les prépare honnêtement."
+      },
+      "entrainer-un-premier-modele": {
+        "title": "Entraîner un premier modèle",
+        "tagline": "Ce que veut dire « entraîner », l'arbre de décision, et ta première enquête."
+      },
+      "preparer-les-donnees": {
+        "title": "Préparer les données",
+        "tagline": "Avant d'entraîner un modèle, on nettoie et on met en forme les données. Cases vides, catégories, échelles : les gestes qui font toute la différence."
+      },
+      "les-algorithmes": {
+        "title": "Les algorithmes",
+        "tagline": "Arbre, forêt, coefficients : découvre les modèles qui apprennent à prédire, et comment choisir le bon."
+      },
+      "evaluer-honnetement": {
+        "title": "Évaluer honnêtement un modèle",
+        "tagline": "Un bon score ne prouve rien tout seul. Apprends à juger un modèle sans te faire piéger."
+      },
+      "comprendre-pourquoi": {
+        "title": "Comprendre pourquoi il décide",
+        "tagline": "Ouvre la boîte : vois ce que le modèle utilise pour décider, et où sont les limites."
+      },
+      "mesurer-lincertitude": {
+        "title": "Mesurer l'incertitude",
+        "tagline": "Un chiffre seul ne suffit pas : apprends à dire à quel point tu es sûr de lui."
+      },
+      "ethique-et-equite": {
+        "title": "Éthique et équité",
+        "tagline": "D'où viennent les biais, comment les auditer, et pourquoi c'est ton problème."
+      },
+      "correlation-et-causalite": {
+        "title": "Corrélation et causalité",
+        "tagline": "Varier ensemble n'est pas se causer : distingue prédire, expliquer et agir."
+      },
+      "du-resultat-au-livrable": {
+        "title": "Du résultat au livrable",
+        "tagline": "Trace, documente, assume : transforme un modèle en résultat qu'on peut citer."
+      }
+    },
+    "lessons": {
+      "le-grand-malentendu": {
+        "title": "Le grand malentendu",
+        "summary": "Non, l'IA ne se résume pas à ChatGPT. Distinguons d'abord deux mondes que tout oppose : l'IA qui génère et l'IA qui prédit.",
+        "myth": {
+          "myth": "L'intelligence artificielle, c'est ChatGPT : une IA à qui on parle et qui répond.",
+          "reality": "ChatGPT n'est qu'une IA parmi des milliers. La plupart des IA ne discutent pas : elles prédisent, trient, détectent, recommandent — souvent sans qu'on les voie."
+        },
+        "visual": {
+          "title": "Deux grandes familles",
+          "body": "D'un côté, l'IA générative fabrique du contenu neuf : du texte (ChatGPT), des images, du code. De l'autre, l'IA prédictive répond à une question précise à partir de données : ce mail est-il un spam ? ce patient est-il à risque ? Dans IBIS-X, c'est cette seconde famille que tu vas apprendre à construire toi-même.",
+          "caption": "Générer du contenu ≠ prédire une réponse. Deux métiers différents."
+        },
+        "quiz": {
+          "question": "Laquelle de ces tâches relève de l'IA prédictive ?",
+          "options": [
+            "Écrire le résumé d'un long article",
+            "Estimer si un client va résilier son abonnement",
+            "Générer une image à partir d'une phrase"
+          ],
+          "explanation": "Estimer une issue (résiliera / ne résiliera pas) à partir de données, c'est de la prédiction. Rédiger un résumé et générer une image relèvent, eux, du génératif."
+        }
+      },
+      "chatgpt-demystifie": {
+        "title": "ChatGPT démystifié",
+        "summary": "Derrière la conversation, ChatGPT fait une chose très simple à comprendre : deviner le mot suivant, encore et encore.",
+        "myth": {
+          "myth": "ChatGPT comprend mes questions et sait des choses, comme une personne très cultivée.",
+          "reality": "ChatGPT ne « sait » rien. Il a lu énormément de textes et a appris à prédire quel mot vient probablement après les précédents. Il enchaîne des mots plausibles, sans comprendre leur sens."
+        },
+        "visual": {
+          "title": "Un devineur de mot suivant",
+          "body": "Imagine un jeu : je te donne un début de phrase, tu proposes le mot d'après. « Le ciel est… » → « bleu ». ChatGPT joue à ce jeu à grande échelle, entraîné sur des milliards de phrases. Il choisit à chaque fois un mot vraisemblable, puis recommence avec ce nouveau mot. C'est cette mécanique répétée qui donne l'illusion d'une conversation.",
+          "caption": "Il ne réfléchit pas à la réponse : il calcule le mot le plus probable."
+        },
+        "quiz": {
+          "question": "Comment ChatGPT produit-il une réponse ?",
+          "options": [
+            "Il cherche la vérité dans une base de données de faits vérifiés",
+            "Il ressent le sens de ta question et y réfléchit",
+            "Il prédit mot après mot ce qui est le plus probable de suivre"
+          ],
+          "explanation": "ChatGPT est un prédicteur de texte : il choisit à chaque étape le mot le plus plausible d'après ce qu'il a lu. Il ne consulte pas une base de vérités et ne « ressent » rien."
+        }
+      },
+      "lia-predictive": {
+        "title": "L'IA prédictive, celle qu'on construit ici",
+        "summary": "C'est le cœur d'IBIS-X : apprendre à une machine à prédire une catégorie ou un nombre à partir de données.",
+        "visual": {
+          "title": "Une question, des données, une réponse",
+          "body": "L'IA prédictive part de données que tu possèdes déjà et répond à une question précise. Deux formes reviennent tout le temps. Prédire une catégorie : ce mail est-il un spam ou non ? Prédire un nombre : combien coûtera cet appartement ? Tu fournis des exemples passés, la machine apprend le lien, puis elle répond sur des cas nouveaux.",
+          "caption": "Catégorie ou nombre : dans les deux cas, on prédit à partir du passé."
+        },
+        "quiz": {
+          "question": "Quel est le point commun de toutes les IA prédictives ?",
+          "options": [
+            "Elles estiment une réponse à partir de données passées",
+            "Elles inventent du texte ou des images inédites",
+            "Elles ont besoin de discuter avec un humain pour fonctionner"
+          ],
+          "explanation": "Une IA prédictive apprend sur des exemples passés pour estimer une réponse sur des cas nouveaux. Créer du contenu ou dialoguer n'est pas son rôle."
+        }
+      },
+      "la-carte-des-ia": {
+        "title": "La carte des IA",
+        "summary": "Générative, prédictive, mais aussi recommandation ou vision : une petite carte pour ranger chaque IA à sa place.",
+        "visual": {
+          "title": "Où se range chaque IA ?",
+          "body": "Pense à une carte avec plusieurs continents. Le génératif fabrique du neuf : ChatGPT y habite. Le prédictif estime une réponse : l'anti-spam de ta boîte mail s'y trouve. D'autres régions existent, comme la recommandation (Netflix qui devine le film que tu aimeras) ou la vision (reconnaître un visage sur une photo). Beaucoup d'outils combinent plusieurs régions.",
+          "caption": "Une même carte, plusieurs continents : chaque IA a son adresse."
+        },
+        "quiz": {
+          "question": "Netflix qui te suggère un film relève surtout de quelle famille ?",
+          "options": [
+            "L'IA générative, car il crée un film pour toi",
+            "La recommandation, une cousine de l'IA prédictive",
+            "Aucune : ce ne sont que des choix faits par des humains"
+          ],
+          "explanation": "Suggérer un contenu selon tes goûts, c'est de la recommandation : une proche parente du prédictif. Netflix ne fabrique pas le film et ne choisit pas à la main pour chaque abonné."
+        }
+      },
+      "apprendre-par-lexemple": {
+        "title": "Apprendre par l'exemple",
+        "summary": "Le secret n'est pas magique : on montre à la machine des milliers d'exemples déjà étiquetés, et elle en dégage une règle.",
+        "visual": {
+          "title": "Des milliers d'exemples étiquetés",
+          "body": "Pour apprendre à trier les spams, on ne programme pas de règles à la main. On montre à la machine des milliers de mails déjà marqués « spam » ou « normal ». Elle repère peu à peu ce qui distingue les deux, puis applique ce qu'elle a appris à un mail jamais vu. C'est comme un enfant à qui l'on montre beaucoup de chats jusqu'à ce qu'il reconnaisse un chat inconnu.",
+          "caption": "Beaucoup d'exemples corrigés → une règle apprise toute seule."
+        },
+        "quiz": {
+          "question": "De quoi la machine a-t-elle besoin pour apprendre par l'exemple ?",
+          "options": [
+            "D'une longue liste de règles écrites par un expert",
+            "De rien : elle devine toute seule sans données",
+            "D'exemples passés déjà étiquetés avec la bonne réponse"
+          ],
+          "explanation": "L'apprentissage par l'exemple repose sur des cas passés dont on connaît déjà la réponse. La machine en tire la règle elle-même, sans qu'on ait à l'écrire."
+        }
+      },
+      "les-donnees-carburant": {
+        "title": "Les données, le carburant",
+        "summary": "Sans données, pas d'IA. Mais attention : ce n'est pas la quantité qui compte le plus, c'est la qualité.",
+        "myth": {
+          "myth": "Pour avoir une bonne IA, il suffit d'accumuler le plus de données possible.",
+          "reality": "Plus de données ne veut pas dire meilleure IA. Des données fausses, mal rangées ou peu représentatives peuvent dégrader le résultat. Un jeu propre et bien choisi vaut mieux qu'une montagne de données douteuses."
+        },
+        "visual": {
+          "title": "Le carburant de la machine",
+          "body": "Les données sont à l'IA ce que l'essence est à une voiture : sans elles, rien ne roule. Mais un mauvais carburant abîme le moteur. Des données incomplètes, biaisées ou mal étiquetées produisent une IA qui se trompe avec assurance. Avant d'entraîner quoi que ce soit, on regarde donc d'abord si les données sont propres et fiables.",
+          "caption": "Mauvais carburant, mauvais trajet : la qualité passe avant la quantité."
+        },
+        "quiz": {
+          "question": "Qu'est-ce qui compte le plus pour bien entraîner une IA ?",
+          "options": [
+            "La qualité et la fiabilité des données",
+            "Le plus gros volume de données possible, sans exception",
+            "La vitesse de l'ordinateur qui fait les calculs"
+          ],
+          "explanation": "Des données propres, fiables et représentatives priment sur la quantité brute. Une montagne de données douteuses mène surtout à une IA qui se trompe."
+        }
+      },
+      "un-modele-cest-quoi": {
+        "title": "Un modèle, c'est quoi ?",
+        "summary": "Le fameux « modèle » n'est pas un cerveau. C'est une recette apprise, qu'on peut inspecter et réutiliser.",
+        "visual": {
+          "title": "Une recette apprise, pas un cerveau",
+          "body": "Après l'entraînement, tout ce que la machine a appris est rangé dans un objet : le modèle. Vois-le comme une recette de cuisine tirée de milliers d'essais. Tu lui donnes des ingrédients (les données d'un cas nouveau), il te rend un plat (la prédiction). Ce modèle est un fichier concret : on peut le télécharger, le partager, le réutiliser et même l'inspecter pour comprendre ses choix.",
+          "caption": "Un modèle = une recette apprise, rangée dans un fichier."
+        },
+        "quiz": {
+          "question": "Qu'est-ce qu'un modèle d'IA, au fond ?",
+          "options": [
+            "Un cerveau électronique conscient de ce qu'il fait",
+            "Une recette apprise à partir de données, rangée dans un fichier",
+            "Une simple copie de toutes les données d'entraînement"
+          ],
+          "explanation": "Un modèle est le résultat de l'apprentissage : une recette qui transforme des entrées en prédiction. Ce n'est ni un cerveau conscient ni une simple copie des données."
+        }
+      },
+      "lia-au-quotidien": {
+        "title": "L'IA au quotidien",
+        "summary": "Sans t'en rendre compte, tu croises l'IA prédictive plusieurs fois par jour. Petit tour d'horizon.",
+        "visual": {
+          "title": "Déjà partout autour de toi",
+          "body": "L'IA prédictive travaille discrètement dans ta journée. Ta messagerie écarte les spams. Ta banque bloque un paiement qui ressemble à une fraude. Un hôpital repère les patients à surveiller en priorité. Une usine prévoit qu'une machine va tomber en panne avant qu'elle ne casse. Aucune de ces IA ne discute : elles prédisent, silencieusement, pour t'aider.",
+          "caption": "L'IA la plus utile est souvent celle qu'on ne voit jamais."
+        },
+        "quiz": {
+          "question": "Parmi ces usages, lequel repose sur de l'IA prédictive ?",
+          "options": [
+            "Un logiciel qui écrit un poème sur commande",
+            "Un outil qui génère une illustration pour ta présentation",
+            "Une banque qui bloque un paiement suspect en temps réel"
+          ],
+          "explanation": "Repérer un paiement suspect, c'est estimer un risque à partir de données passées : de la prédiction. Écrire un poème ou générer une illustration relève du génératif."
+        }
+      },
+      "ce-que-lia-ne-sait-pas": {
+        "title": "Ce que l'IA ne sait pas",
+        "summary": "L'IA impressionne, mais elle a de vraies limites : pas de bon sens, et des ratés dès qu'on sort de ce qu'elle a vu.",
+        "myth": {
+          "myth": "L'IA est neutre et infaillible : si la machine le dit, c'est que c'est vrai.",
+          "reality": "L'IA se trompe, parfois avec assurance. Elle n'a pas de bon sens et généralise mal face à des situations trop différentes de ses exemples. Elle reflète aussi les défauts des données sur lesquelles elle a appris."
+        },
+        "visual": {
+          "title": "Solide dans son couloir, perdue en dehors",
+          "body": "Une IA entraînée sur des cas très proches de la réalité peut être excellente… tant qu'on reste dans son couloir. Sors-la de ce qu'elle a vu, et elle répond quand même, souvent à côté, sans jamais dire « je ne sais pas ». Elle n'a ni bon sens ni recul : elle applique une recette. C'est pourquoi un humain doit garder la main sur les décisions importantes.",
+          "caption": "Une IA ne doute pas d'elle-même : à toi de garder l'œil critique."
+        },
+        "quiz": {
+          "question": "Que faut-il garder en tête face à une réponse d'IA ?",
+          "options": [
+            "Elle peut se tromper, même quand elle a l'air très sûre",
+            "Elle est neutre et objective par nature",
+            "Elle reconnaît toujours quand elle ne sait pas répondre"
+          ],
+          "explanation": "Une IA peut être confiante et fausse à la fois : elle n'a pas de bon sens et ne signale pas ses propres limites. Un regard humain reste indispensable."
+        }
+      },
+      "quand-lia-se-trompe": {
+        "title": "Quand l'IA se trompe",
+        "summary": "Ses erreurs ne sont pas anodines : quand une IA hérite des biais de ses données, elle peut nuire à de vraies personnes.",
+        "visual": {
+          "title": "Quand les biais des données deviennent des injustices",
+          "body": "Une IA apprend sur des données produites par des humains, avec leurs déséquilibres. Un outil de tri de candidatures entraîné sur un passé déséquilibré peut écarter injustement certains profils. Un outil d'aide à la justice peut reproduire les inégalités des décisions passées. L'IA amplifie alors, à grande échelle, des biais déjà présents. C'est le point de départ de la réflexion sur l'éthique.",
+          "caption": "Une IA n'invente pas ses biais : elle hérite de ceux des données."
+        },
+        "quiz": {
+          "question": "D'où viennent le plus souvent les biais d'une IA ?",
+          "options": [
+            "D'une volonté propre de la machine de faire le mal",
+            "Des données déséquilibrées ou injustes sur lesquelles elle a appris",
+            "D'une erreur de calcul rare et purement technique"
+          ],
+          "explanation": "Une IA reproduit les déséquilibres présents dans ses données d'entraînement. Elle n'a pas de volonté propre : ses biais reflètent ceux du passé qu'on lui a montré."
+        }
+      },
+      "lignes-et-colonnes": {
+        "title": "Lignes et colonnes",
+        "summary": "Un jeu de données, c'est un tableau. Chaque ligne est un individu, chaque colonne une caractéristique.",
+        "visual": {
+          "title": "Le tableau, brique de base",
+          "body": "Imagine la liste des passagers d'un bateau. Chaque ligne décrit une personne : c'est une observation. Chaque colonne décrit une même caractéristique pour tout le monde : l'âge, la classe du billet, le sexe. Un jeu de données, ce n'est rien de plus que ce tableau.",
+          "caption": "Lignes = qui / Colonnes = quoi."
+        },
+        "quiz": {
+          "question": "Dans un tableau de passagers, que représente une ligne ?",
+          "options": [
+            "Une caractéristique mesurée sur tout le monde, comme l'âge.",
+            "Un passager, avec toutes ses caractéristiques.",
+            "Le total de tous les passagers du tableau."
+          ],
+          "explanation": "Une ligne, c'est un individu : une observation. Les caractéristiques, elles, se lisent en colonnes."
+        }
+      },
+      "features-et-cible": {
+        "title": "Les features et la cible",
+        "summary": "Parmi les colonnes, certaines servent d'indices (les features) et une seule est la réponse à deviner (la cible).",
+        "visual": {
+          "title": "Les indices et la réponse",
+          "body": "Reprenons le tableau des passagers. Les colonnes comme l'âge, la classe ou le sexe sont des indices : on les appelle les features. La colonne « a survécu ? » est la réponse qu'on veut deviner : c'est la cible. Le modèle apprend à relier les indices à la réponse.",
+          "caption": "Features = les indices / Cible = la réponse."
+        },
+        "quiz": {
+          "question": "On veut prédire si un passager a survécu. Quelle colonne est la cible ?",
+          "options": [
+            "La colonne « a survécu ? », la réponse à deviner.",
+            "La colonne « âge », un indice parmi d'autres.",
+            "Toutes les colonnes à la fois, sans distinction."
+          ],
+          "explanation": "La cible, c'est ce qu'on cherche à prédire : ici, la survie. Les autres colonnes sont les features qui servent d'indices."
+        }
+      },
+      "classification-vs-regression": {
+        "title": "Classer ou chiffrer ?",
+        "summary": "Deviner une catégorie (survivra ou non), c'est de la classification. Deviner un nombre (un prix, une note), c'est de la régression.",
+        "visual": {
+          "title": "Deux façons de prédire",
+          "body": "Parfois, on veut ranger dans des cases : ce passager a-t-il survécu, oui ou non ? Cette réponse est une catégorie, on parle de classification. D'autres fois, on veut un nombre précis : le prix d'un billet, la note d'un élève. Là, on parle de régression. La question qu'on pose décide du type.",
+          "caption": "Catégorie = classer / Nombre = chiffrer."
+        },
+        "quiz": {
+          "question": "Prédire la note exacte d'un élève sur 20, c'est quel type de problème ?",
+          "options": [
+            "De la classification, car on trie les élèves.",
+            "Ni l'un ni l'autre : une note ne se prédit pas.",
+            "De la régression, car la réponse est un nombre."
+          ],
+          "explanation": "Une note sur 20 est un nombre : c'est de la régression. Si la réponse était « reçu / recalé », ce serait de la classification."
+        }
+      },
+      "dou-viennent-les-donnees": {
+        "title": "D'où viennent les données ?",
+        "summary": "Avant d'entraîner quoi que ce soit, IBIS-X vérifie d'où viennent les données et les note sur des critères d'éthique.",
+        "visual": {
+          "title": "Pas de données sans provenance",
+          "body": "Les données ne tombent pas du ciel : elles viennent d'enquêtes, de capteurs, de registres. Avant de s'en servir, IBIS-X leur donne un score éthique. Il regarde si l'échantillon représente bien les gens concernés, si le consentement a été recueilli, et s'il existe des biais. Des données mal collectées donnent un modèle injuste.",
+          "caption": "On juge la source avant d'entraîner."
+        },
+        "quiz": {
+          "question": "Pourquoi IBIS-X note-t-il les données sur des critères d'éthique avant de les utiliser ?",
+          "options": [
+            "Pour rendre l'entraînement plus rapide.",
+            "Parce que des données biaisées ou non consenties mènent à un modèle injuste.",
+            "Parce que c'est obligatoire pour ouvrir un fichier."
+          ],
+          "explanation": "La qualité éthique de la source déteint sur le modèle : biais, représentativité et consentement comptent autant que les chiffres."
+        }
+      },
+      "train-test": {
+        "title": "Entraînement et test",
+        "summary": "On cache une partie des données pour tester le modèle dessus, comme un examen dont on n'a pas vu le sujet.",
+        "visual": {
+          "title": "L'analogie de l'examen",
+          "body": "On coupe le tableau en deux. La plus grande part sert à entraîner le modèle : ce sont ses révisions. L'autre part, qu'il n'a jamais vue, sert à le tester : c'est le jour de l'examen. Si on l'interrogeait sur ses révisions, il aurait 20/20 sans rien prouver. Cacher une partie, c'est la seule façon de mesurer honnêtement.",
+          "caption": "On ne révise pas sur le sujet du bac."
+        },
+        "quiz": {
+          "question": "Pourquoi garder des données de test que le modèle n'a jamais vues ?",
+          "options": [
+            "Pour vérifier honnêtement s'il sait généraliser à du nouveau.",
+            "Pour qu'il apprenne deux fois et retienne mieux.",
+            "Parce qu'un tableau est toujours trop grand pour tout traiter."
+          ],
+          "explanation": "Tester sur des données inédites, c'est comme un examen : ça mesure ce que le modèle a vraiment compris, pas ce qu'il a mémorisé."
+        }
+      },
+      "la-qualite-des-donnees": {
+        "title": "La qualité des données",
+        "summary": "Des trous, des oublis, un échantillon mal choisi : la qualité des données décide de tout.",
+        "myth": {
+          "myth": "Les données sont objectives : ce sont des chiffres, donc c'est neutre.",
+          "reality": "Non. Les données reflètent qui les a collectées et sur qui. Un échantillon mal choisi ou des valeurs manquantes introduisent des biais bien réels."
+        },
+        "visual": {
+          "title": "Des données jamais parfaites",
+          "body": "Dans un vrai tableau, des cases sont vides : un âge non renseigné, une note manquante. C'est ce qu'on appelle les valeurs manquantes. Et si on n'a interrogé qu'une partie des gens, l'échantillon penche d'un côté. Un modèle nourri de données bancales apprend, lui aussi, de travers.",
+          "caption": "Données bancales, modèle bancal."
+        },
+        "quiz": {
+          "question": "Un jeu de données ne contient que des passagers de première classe. Quel est le risque ?",
+          "options": [
+            "Aucun : plus les données se ressemblent, mieux c'est.",
+            "Le modèle sera juste plus lent à entraîner.",
+            "L'échantillon est biaisé : le modèle généralisera mal aux autres classes."
+          ],
+          "explanation": "Un échantillon qui ne représente qu'une partie des gens biaise le modèle. La quantité ne remplace jamais la représentativité."
+        }
+      },
+      "quest-ce-quentrainer": {
+        "title": "Qu'est-ce qu'entraîner ?",
+        "summary": "Entraîner un modèle, c'est ajuster peu à peu une recette pour qu'elle colle aux exemples, sans tricher.",
+        "visual": {
+          "title": "Ajuster une recette",
+          "body": "Entraîner, ce n'est pas magique. On montre au modèle des exemples dont on connaît la réponse. À chaque erreur, il ajuste un peu sa recette pour se tromper moins la fois d'après. Petit à petit, la recette colle mieux aux exemples. Le but n'est pas de mémoriser, mais de dégager une règle qui marchera sur du nouveau.",
+          "caption": "Se tromper moins, exemple après exemple."
+        },
+        "quiz": {
+          "question": "Que fait un modèle pendant l'entraînement ?",
+          "options": [
+            "Il recopie le tableau pour le retrouver plus tard.",
+            "Il ajuste sa recette pour réduire ses erreurs sur les exemples.",
+            "Il invente de nouvelles colonnes tout seul."
+          ],
+          "explanation": "Entraîner, c'est corriger peu à peu la recette pour se tromper de moins en moins, sans se contenter de mémoriser."
+        }
+      },
+      "larbre-de-decision": {
+        "title": "L'arbre de décision",
+        "summary": "L'arbre de décision est le modèle le plus lisible : une simple suite de questions oui/non. C'est un vrai algorithme d'IBIS-X.",
+        "visual": {
+          "title": "Une suite de questions oui/non",
+          "body": "Un arbre de décision pose des questions en cascade. Est-ce une femme ? Si oui, une branche ; si non, une autre. Voyageait-elle en première classe ? Chaque réponse mène à une nouvelle question, jusqu'à une décision : survivra ou non. C'est lisible, on peut suivre le chemin du doigt. Et ce n'est pas un jouet : IBIS-X entraîne de vrais arbres.",
+          "caption": "Descends les branches jusqu'à la réponse."
+        },
+        "quiz": {
+          "question": "Pourquoi dit-on que l'arbre de décision est un modèle lisible ?",
+          "options": [
+            "On peut suivre la suite de questions oui/non qui mène à sa décision.",
+            "Parce qu'il n'utilise jamais qu'une seule colonne.",
+            "Parce qu'il donne toujours la bonne réponse."
+          ],
+          "explanation": "Un arbre trace un chemin de questions simples qu'on peut relire pas à pas. C'est ce qui le rend transparent, contrairement à d'autres modèles."
+        }
+      },
+      "ta-premiere-enquete": {
+        "title": "Ta première enquête",
+        "summary": "Tu as les repères. Il est temps d'entraîner un vrai modèle sur un vrai jeu de données.",
+        "visual": {
+          "title": "Tes derniers repères",
+          "body": "Récapitulons. Un jeu de données est un tableau : des lignes (les individus) et des colonnes (les caractéristiques). Parmi elles, les features servent d'indices et la cible est la réponse. On sépare entraînement et test pour rester honnête. Et l'arbre de décision, lisible, apprend une suite de questions. Tu as tout pour te lancer.",
+          "caption": "Les repères en poche, direction la pratique."
+        },
+        "practice": {
+          "title": "Mène l'enquête Titanic",
+          "body": "Passe à la pratique avec le Défi Titanic. À partir de 891 passagers réels, tu vas entraîner un vrai arbre de décision, obtenir un vrai résultat et découvrir ce qui a le plus pesé sur la survie. Pas de simulation : le modèle est réel, l'entraînement reproductible. Prêt à mener ta première enquête ?"
+        }
+      },
+      "valeurs-manquantes": {
+        "title": "Les valeurs manquantes",
+        "summary": "Dans la vraie vie, des cases restent vides. Deux choix : jeter la ligne, ou la remplir intelligemment.",
+        "visual": {
+          "title": "Des cases vides dans le tableau",
+          "body": "Imagine un fichier de dossiers médicaux : pour certains patients, l'âge ou le poids n'a pas été noté. Le modèle ne sait pas quoi faire d'une case vide. Deux options s'offrent à toi. Supprimer les lignes trouées — simple, mais tu perds des exemples. Ou imputer : remplir le vide avec une valeur raisonnable, par la moyenne, la médiane, ou des méthodes plus fines comme KNN et MICE. IBIS-X sait faire tout ça pour de vrai.",
+          "caption": "Une case vide : la supprimer, ou la remplir intelligemment."
+        },
+        "quiz": {
+          "question": "Quelques patients n'ont pas d'âge renseigné. Que peux-tu faire dans IBIS-X ?",
+          "options": [
+            "Rien : le modèle ignore tout seul les cases vides sans qu'on s'en occupe.",
+            "Imputer la valeur manquante, par exemple avec la médiane des âges connus.",
+            "Remplacer chaque case vide par un zéro, c'est toujours la meilleure solution."
+          ],
+          "explanation": "Imputer, c'est remplir le vide avec une valeur raisonnable (moyenne, médiane, KNN, MICE). Le modèle ne gère pas les cases vides tout seul, et mettre un zéro fausse souvent le résultat."
+        }
+      },
+      "encoder-les-categories": {
+        "title": "Encoder les catégories",
+        "summary": "Un modèle ne comprend que des nombres. Les mots comme « rouge » ou « femme » doivent devenir des chiffres.",
+        "visual": {
+          "title": "Du texte vers des nombres",
+          "body": "Un modèle ne mange que des nombres : il ne sait pas lire « rouge », « vert » ou « bleu ». Il faut donc traduire ces catégories en chiffres. Deux façons de faire. Le one-hot crée une colonne par catégorie (est-ce rouge ? oui/non), idéal quand il n'y a pas d'ordre. L'encodage ordinal range les catégories sur une échelle (petit < moyen < grand), quand l'ordre a du sens. IBIS-X applique réellement ces deux encodages.",
+          "caption": "« rouge », « vert », « bleu » → des colonnes de nombres."
+        },
+        "quiz": {
+          "question": "Pourquoi faut-il encoder une colonne « couleur » qui contient « rouge », « vert », « bleu » ?",
+          "options": [
+            "Parce qu'un modèle ne traite que des nombres, pas du texte.",
+            "Parce que les couleurs prennent trop de place en mémoire.",
+            "Parce qu'il faut toujours réduire une colonne à une seule valeur."
+          ],
+          "explanation": "Un modèle ne sait calculer qu'avec des nombres. On transforme donc « rouge/vert/bleu » en chiffres, par one-hot (une colonne par catégorie) ou encodage ordinal (quand un ordre existe)."
+        }
+      },
+      "mettre-a-lechelle": {
+        "title": "Mettre à l'échelle",
+        "summary": "Un salaire va jusqu'à des milliers, un âge jusqu'à cent. Sans précaution, la grande colonne écrase la petite.",
+        "visual": {
+          "title": "Tout le monde sur la même échelle",
+          "body": "Imagine deux colonnes : l'âge (de 0 à 100) et le salaire (de 0 à 5000). Pour certains modèles, la colonne aux grands nombres pèse mécaniquement plus lourd — le salaire écrase l'âge, juste parce que ses chiffres sont plus gros. Mettre à l'échelle, c'est ramener toutes les colonnes dans une plage comparable, pour qu'aucune ne domine à cause de son unité. IBIS-X propose plusieurs recettes réelles : standard, minmax et robust.",
+          "caption": "Grande colonne, petite colonne : on les remet à égalité."
+        },
+        "quiz": {
+          "question": "Pourquoi mettre à l'échelle l'âge et le salaire avant l'entraînement ?",
+          "options": [
+            "Pour supprimer les valeurs manquantes de ces colonnes.",
+            "Pour transformer ces nombres en catégories lisibles.",
+            "Pour éviter que la colonne aux grands nombres écrase les autres."
+          ],
+          "explanation": "Sans mise à l'échelle, une colonne aux grands nombres (le salaire) pèse plus lourd qu'une petite (l'âge), juste à cause de son unité. Standard, minmax ou robust les ramènent à une plage comparable."
+        }
+      },
+      "la-fuite-de-donnees": {
+        "title": "La fuite de données",
+        "summary": "Un score presque parfait, ce n'est pas toujours bon signe. Parfois, une colonne « triche » sans qu'on s'en rende compte.",
+        "myth": {
+          "myth": "Mon modèle a 99 % de bonnes réponses : c'est forcément un excellent modèle.",
+          "reality": "Un score trop beau cache parfois une triche. Si une colonne contient un indice qui ne serait pas disponible au moment de la vraie prédiction, le modèle « voit la réponse » à l'avance. Son score est gonflé, mais il s'effondrera dans la vraie vie."
+        },
+        "visual": {
+          "title": "Quand une colonne donne la réponse",
+          "body": "La fuite de données, c'est quand une information qui ne devrait pas être là se glisse dans l'entraînement. Exemple : pour prédire si un patient est malade, une colonne « traitement prescrit » est déjà remplie. Le modèle apprend « traitement rempli = malade » et obtient un score énorme — mais dans la vraie vie, au moment de prédire, ce traitement n'existe pas encore. Pour éviter ça, IBIS-X n'ajuste ses préparations (imputation, encodage, mise à l'échelle) que sur les données d'entraînement, jamais sur les données de test.",
+          "caption": "Un indice qui ne sera pas là en vrai : le score ment."
+        },
+        "quiz": {
+          "question": "Comment IBIS-X limite-t-il la fuite de données ?",
+          "options": [
+            "En n'ajustant les préparations que sur les données d'entraînement, jamais sur le test.",
+            "En choisissant toujours le modèle qui obtient le plus haut score.",
+            "En supprimant toutes les colonnes numériques du jeu de données."
+          ],
+          "explanation": "La fuite survient quand des informations du test « fuitent » dans l'entraînement. IBIS-X calcule ses transformations uniquement sur l'entraînement, puis les applique au test : le test reste un examen honnête."
+        }
+      },
+      "de-larbre-a-la-foret": {
+        "title": "De l'arbre à la forêt",
+        "summary": "Un seul arbre de décision peut se tromper. Des centaines d'arbres qui votent ensemble se trompent moins.",
+        "visual": {
+          "title": "La sagesse de la foule",
+          "body": "Un arbre de décision pose une suite de questions (« l'âge est-il supérieur à 50 ? ») pour aboutir à une prédiction. Simple, mais un seul arbre est fragile : il peut se laisser piéger par un détail. La forêt aléatoire entraîne des centaines d'arbres légèrement différents, puis les fait voter. La réponse majoritaire est plus stable et plus robuste — comme un jury vaut mieux qu'un seul juge. Arbre de décision et forêt aléatoire sont deux vrais modèles d'IBIS-X.",
+          "caption": "Beaucoup d'arbres qui votent : plus solide qu'un seul."
+        },
+        "quiz": {
+          "question": "Qu'est-ce qu'une forêt aléatoire ?",
+          "options": [
+            "Un arbre de décision unique, mais beaucoup plus grand.",
+            "De nombreux arbres légèrement différents qui votent pour une réponse commune.",
+            "Une méthode pour remplir les valeurs manquantes du jeu de données."
+          ],
+          "explanation": "Une forêt aléatoire réunit des centaines d'arbres et fait voter leurs prédictions. Cette « sagesse de la foule » la rend plus robuste qu'un arbre seul."
+        }
+      },
+      "la-regression-logistique": {
+        "title": "La régression logistique",
+        "summary": "Un modèle qui donne un poids chiffré à chaque variable — le langage des chercheurs pour lire l'importance de chaque facteur.",
+        "visual": {
+          "title": "Un poids pour chaque variable",
+          "body": "La régression logistique attribue à chaque variable un poids, appelé coefficient. Son signe dit le sens (ce facteur augmente ou diminue le risque) et sa taille dit l'importance. C'est le langage favori des chercheurs, car il se lit et s'explique facilement. Honnêteté : ce modèle à coefficients n'est pas encore disponible dans le pipeline d'IBIS-X — il arrive. On te l'explique ici pour comprendre, sans prétendre pouvoir le lancer tout de suite.",
+          "caption": "Chaque variable reçoit un coefficient : signe et importance."
+        },
+        "quiz": {
+          "question": "Qu'apporte le coefficient d'une variable dans une régression logistique ?",
+          "options": [
+            "Il remplit automatiquement les valeurs manquantes de la variable.",
+            "Il transforme la variable en une image lisible par le modèle.",
+            "Il indique le sens et l'importance de cette variable dans la prédiction."
+          ],
+          "explanation": "Le coefficient donne le sens (par son signe) et le poids (par sa taille) d'une variable. C'est ce qui rend la régression logistique si lisible. Note : ce modèle n'est pas encore disponible dans IBIS-X, il arrive."
+        }
+      },
+      "comment-choisir-un-algo": {
+        "title": "Comment choisir un algo",
+        "summary": "Il n'existe pas d'algorithme parfait pour tout. Le bon choix dépend de tes données et de ce que tu cherches.",
+        "myth": {
+          "myth": "Il existe un meilleur algorithme dans l'absolu, qu'il faut utiliser à chaque fois.",
+          "reality": "Aucun modèle ne gagne à tous les coups. Un algorithme très performant peut être illisible ; un algorithme très clair peut être moins précis. Le bon choix dépend de tes données, de ta priorité (comprendre ou performer) et se décide en comparant."
+        },
+        "visual": {
+          "title": "Un compromis, pas un champion",
+          "body": "Choisir un algorithme, c'est arbitrer entre trois choses. La lisibilité : peux-tu expliquer ses décisions ? La performance : se trompe-t-il souvent ? Les données : en as-tu assez, et de quelle forme ? Un arbre unique est très lisible mais parfois moins précis ; une forêt aléatoire performe souvent mieux mais s'explique moins. La bonne méthode : essayer plusieurs modèles sur tes données et comparer leurs résultats, ce qu'IBIS-X te permet de faire.",
+          "caption": "Lisibilité, performance, données : on pèse, on essaie, on compare."
+        },
+        "quiz": {
+          "question": "Comment choisir le bon algorithme pour un problème ?",
+          "options": [
+            "En essayant plusieurs modèles sur ses données et en comparant les résultats.",
+            "En prenant toujours le même algorithme, réputé meilleur partout.",
+            "En choisissant celui dont le nom est le plus récent."
+          ],
+          "explanation": "Aucun algorithme n'est meilleur dans l'absolu : tout est compromis entre lisibilité, performance et données. On essaie plusieurs modèles et on compare leurs résultats sur son propre jeu."
+        }
+      },
+      "laccuracy-et-son-piege": {
+        "title": "L'accuracy et son piège",
+        "summary": "99 % de bonnes réponses peut cacher un modèle inutile. Découvre pourquoi l'exactitude, seule, peut mentir.",
+        "myth": {
+          "myth": "99 % de bonnes réponses, c'est forcément un excellent modèle.",
+          "reality": "Pas toujours. Imagine une maladie rare : 99 personnes sur 100 sont saines. Un modèle qui répond « sain » à tout le monde a 99 % d'exactitude… et rate 100 % des malades. Le score brille, mais le modèle est inutile."
+        },
+        "visual": {
+          "title": "L'exactitude peut mentir",
+          "body": "L'exactitude (accuracy) compte simplement la part de réponses correctes. Quand une classe est bien plus rare que l'autre, ce chiffre devient trompeur. Un modèle paresseux qui dit toujours le cas fréquent gagne un score énorme sans jamais repérer ce qui compte vraiment.",
+          "caption": "Un score élevé n'est rassurant que si les classes sont équilibrées."
+        },
+        "quiz": {
+          "question": "Sur 1 000 personnes dont 10 malades, un modèle dit « sain » à tout le monde. Quelle est son exactitude, et son problème ?",
+          "options": [
+            "Exactitude faible, donc le modèle est mauvais et facile à repérer.",
+            "Exactitude de 99 %, mais il ne détecte aucun malade : le score cache l'échec.",
+            "Exactitude de 50 %, car il y a deux classes possibles."
+          ],
+          "explanation": "Il a raison sur les 990 personnes saines, soit 99 % d'exactitude. Mais il rate les 10 malades. Avec des classes déséquilibrées, l'exactitude seule ne suffit jamais à juger un modèle."
+        }
+      },
+      "precision-rappel-f1": {
+        "title": "Précision, rappel, F1",
+        "summary": "Deux questions que l'accuracy ne pose jamais : quand le modèle dit « oui », a-t-il raison ? et attrape-t-il tous les vrais cas ?",
+        "visual": {
+          "title": "Précision et rappel : deux questions différentes",
+          "body": "La précision demande : quand le modèle dit « positif », a-t-il raison ? Le rappel demande : parmi tous les vrais positifs, combien en attrape-t-il ? Un test de dépistage peut sonner l'alarme souvent (bon rappel) mais se tromper beaucoup (faible précision), ou l'inverse. Le F1 combine les deux en un seul chiffre pour les résumer.",
+          "caption": "Précision = ai-je raison quand j'alerte ? Rappel = est-ce que je rate des cas ? F1 = l'équilibre des deux."
+        },
+        "quiz": {
+          "question": "Un test de dépistage veut surtout ne rater aucun malade, quitte à donner quelques fausses alertes. Quelle métrique doit-il privilégier ?",
+          "options": [
+            "La précision, pour n'alerter que quand c'est certain.",
+            "L'exactitude, car elle résume tout à elle seule.",
+            "Le rappel, pour attraper le maximum de vrais malades."
+          ],
+          "explanation": "Ne rater aucun malade, c'est maximiser le rappel : attraper tous les vrais positifs. On accepte alors quelques fausses alertes (précision plus basse). Le F1 aide à voir si l'équilibre reste raisonnable."
+        }
+      },
+      "la-matrice-de-confusion": {
+        "title": "La matrice de confusion",
+        "summary": "Un tableau à quatre cases qui montre non seulement combien de fois le modèle se trompe, mais comment. À toi de le manipuler.",
+        "visual": {
+          "title": "Les quatre cases de la vérité",
+          "body": "La matrice de confusion range chaque prédiction dans un tableau à quatre cases : vrais positifs, faux positifs, vrais négatifs, faux négatifs. D'un coup d'œil, tu vois non seulement combien de fois le modèle se trompe, mais surtout comment il se trompe. Essaie par toi-même juste en dessous : déplace le seuil de décision et regarde les quatre cases se remplir et se vider en direct.",
+          "caption": "Les quatre cases racontent le type d'erreur, pas seulement leur nombre."
+        },
+        "quiz": {
+          "question": "Dans une matrice de confusion, que représente un « faux négatif » ?",
+          "options": [
+            "Un vrai cas positif que le modèle a classé « négatif » à tort : il l'a manqué.",
+            "Un cas négatif correctement classé « négatif ».",
+            "Une fausse alerte : un cas sain classé « positif »."
+          ],
+          "explanation": "Un faux négatif, c'est un vrai positif que le modèle a laissé passer en le disant « négatif ». En dépistage, ce sont les malades manqués : souvent l'erreur la plus grave à surveiller."
+        }
+      },
+      "le-surapprentissage": {
+        "title": "Le sur-apprentissage",
+        "summary": "Un modèle qui récite par cœur ses données peut échouer sur du neuf. Vois l'écart se creuser en direct.",
+        "myth": {
+          "myth": "Mon modèle est parfait sur mes données, donc il est parfait.",
+          "reality": "Un modèle peut apprendre tes exemples par cœur, avec leurs détails et leur hasard, au lieu d'apprendre la règle générale. Il brille sur ce qu'il connaît déjà et s'effondre sur du neuf. C'est le sur-apprentissage : un élève qui récite le corrigé mais bloque au moindre exercice inédit."
+        },
+        "visual": {
+          "title": "Apprendre la règle, pas la réciter",
+          "body": "Un bon modèle capte la tendance de fond ; un modèle sur-appris colle à chaque point, même au bruit. La vraie question n'est jamais « est-il bon sur les données d'entraînement ? » mais « tient-il sur des données qu'il n'a jamais vues ? ». Essaie par toi-même juste en dessous : augmente la profondeur du modèle et regarde-le passer d'une courbe raisonnable à un tracé qui se contorsionne pour tout mémoriser.",
+          "caption": "Plus un modèle épouse chaque détail, plus il risque d'avoir appris par cœur."
+        },
+        "quiz": {
+          "question": "Un modèle a 100 % de réussite sur les données d'entraînement mais 60 % sur des données nouvelles. Que se passe-t-il probablement ?",
+          "options": [
+            "Il est excellent : 100 % prouve qu'il a tout compris.",
+            "Il sur-apprend : il a mémorisé l'entraînement au lieu d'apprendre la règle générale.",
+            "Les données nouvelles sont forcément erronées."
+          ],
+          "explanation": "Un écart énorme entre l'entraînement et le neuf est la signature du sur-apprentissage. Le modèle a retenu les exemples par cœur ; il ne sait pas généraliser. Seul le score sur des données jamais vues compte vraiment."
+        }
+      },
+      "la-boite-noire": {
+        "title": "La boîte noire",
+        "summary": "Certains modèles décident sans qu'on voie pourquoi. Pourquoi c'est un problème — et ce qu'on peut y faire.",
+        "visual": {
+          "title": "Décider sans montrer pourquoi",
+          "body": "Certains modèles sont une boîte noire : ils donnent une réponse, mais sans qu'on voie le raisonnement qui y mène. Tant que tout va bien, on s'en accommode. Mais dès qu'il faut faire confiance, justifier une décision devant la loi ou corriger une erreur, ne pas comprendre le « pourquoi » devient un vrai problème.",
+          "caption": "Une réponse sans explication est difficile à vérifier, à défendre et à réparer."
+        },
+        "quiz": {
+          "question": "Pourquoi une décision « boîte noire » pose-t-elle problème dans un contexte sensible, par exemple pour refuser un crédit ?",
+          "options": [
+            "Parce qu'une boîte noire est toujours moins précise qu'un modèle simple.",
+            "Parce qu'on ne peut ni justifier la décision, ni la contester, ni repérer une erreur ou un biais.",
+            "Parce qu'un modèle boîte noire ne peut jamais se tromper."
+          ],
+          "explanation": "Le souci n'est pas la précision mais l'opacité. Sans voir le pourquoi, impossible de justifier la décision auprès de la personne, de la contester équitablement ou de détecter un biais. D'où le besoin d'ouvrir la boîte."
+        }
+      },
+      "importance-et-shap": {
+        "title": "L'importance des variables et SHAP",
+        "summary": "Quelles variables ont le plus pesé sur une décision ? IBIS-X sait le mesurer et te le montrer.",
+        "visual": {
+          "title": "Voir ce qui a pesé dans la balance",
+          "body": "Pour ouvrir la boîte, on mesure quelles variables ont le plus pesé sur une décision. L'importance des variables classe les facteurs du plus au moins influent. SHAP va plus loin : pour un cas précis, il montre ce qui a poussé la décision vers le « oui » et ce qui l'a tirée vers le « non ». IBIS-X calcule vraiment ces valeurs sur ton modèle.",
+          "caption": "Importance = quels facteurs comptent le plus. SHAP = comment chacun a poussé une décision précise."
+        },
+        "quiz": {
+          "question": "Que t'apporte SHAP que l'importance globale des variables ne donne pas ?",
+          "options": [
+            "Il explique, cas par cas, ce qui a poussé la décision vers l'un ou l'autre résultat.",
+            "Il garantit que le modèle ne se trompe jamais sur ce cas.",
+            "Il prouve quelle variable est la cause réelle du résultat."
+          ],
+          "explanation": "L'importance globale donne un classement d'ensemble. SHAP descend au niveau d'un cas individuel et montre la contribution de chaque variable à cette décision-là. Attention : il montre l'influence, pas la cause."
+        }
+      },
+      "importance-nest-pas-cause": {
+        "title": "Importance n'est pas cause",
+        "summary": "Le garde-fou le plus important du cursus : ce qu'un modèle utilise n'est pas ce qui cause le résultat.",
+        "myth": {
+          "myth": "SHAP me dit ce qui CAUSE le résultat.",
+          "reality": "Non. SHAP montre ce que le modèle UTILISE pour décider, pas ce qui provoque réellement les choses dans le monde. Si le modèle s'appuie sur une variable simplement corrélée au résultat, SHAP la mettra en avant sans qu'elle en soit la cause. Corrélation n'est pas causalité : c'est le garde-fou d'honnêteté à ne jamais oublier."
+        },
+        "visual": {
+          "title": "Ce que le modèle utilise ≠ ce qui cause",
+          "body": "Un modèle peut fortement s'appuyer sur une variable qui accompagne le résultat sans le provoquer. Exemple : les ventes de glaces montent en même temps que les noyades, car il fait chaud ; la glace ne cause pas la noyade. SHAP dirait « la glace pèse lourd » sans que ce soit la cause. Lis toujours l'explicabilité comme « ce que le modèle regarde », jamais comme une preuve de cause à effet.",
+          "caption": "SHAP éclaire le raisonnement du modèle, pas les lois de cause à effet du monde réel."
+        },
+        "quiz": {
+          "question": "SHAP montre que la variable « nombre d'absences » pèse lourd dans la prédiction de décrochage scolaire. Que peux-tu conclure ?",
+          "options": [
+            "Que réduire les absences fera automatiquement baisser le décrochage.",
+            "Que les absences sont la cause prouvée du décrochage.",
+            "Que le modèle s'appuie fortement sur cette variable, sans que cela prouve un lien de cause à effet."
+          ],
+          "explanation": "SHAP révèle ce que le modèle utilise, pas ce qui cause quoi. Les absences peuvent être un signe accompagnant d'autres difficultés réelles. Conclure à une cause demanderait une tout autre étude. Corrélation n'est pas causalité."
+        }
+      },
+      "ta-deuxieme-enquete": {
+        "title": "Ta deuxième enquête",
+        "summary": "Tu sais préparer, évaluer et expliquer. Mets tout en œuvre sur de vraies données d'élèves.",
+        "visual": {
+          "title": "Prêt pour une vraie enquête",
+          "body": "Tu sais maintenant lire un modèle sans te faire avoir : repérer le piège de l'exactitude, peser précision et rappel, lire la matrice de confusion, débusquer le sur-apprentissage, puis ouvrir la boîte avec l'importance et SHAP, sans confondre influence et cause. Il est temps de passer de la théorie à une vraie enquête sur de vraies données.",
+          "caption": "Tu as les outils pour juger un modèle honnêtement et comprendre ses décisions."
+        },
+        "practice": {
+          "title": "Mène l'enquête « décrochage scolaire »",
+          "body": "Lance le Défi « décrochage scolaire » : tu vas travailler sur de vraies données d'élèves, entraîner un vrai modèle, l'évaluer honnêtement (exactitude, précision, rappel, F1, matrice de confusion) et lire pourquoi il décide grâce à l'importance des variables et à SHAP. Aucune simulation : le modèle est réel et le résultat reproductible. À toi de mener l'enquête du début à la fin."
+        }
+      },
+      "un-seul-split-est-fragile": {
+        "title": "Un seul découpage est fragile",
+        "summary": "Tester sur un unique échantillon, c'est jouer sa note à pile ou face. La validation croisée rejoue plusieurs découpages.",
+        "visual": {
+          "title": "Un seul découpage, un résultat qui tremble",
+          "body": "Quand tu coupes tes données une seule fois en « entraînement » et « test », le score dépend beaucoup du hasard de cette coupe. Tombe sur un test facile, ton modèle brille ; tombe sur un test difficile, il déçoit. La validation croisée (k-fold) rejoue plusieurs découpages différents et fait la moyenne. Tu obtiens un résultat plus stable, moins dépendant de la chance.",
+          "caption": "Un split unique = une photo ; la validation croisée = un film."
+        },
+        "quiz": {
+          "question": "Pourquoi la validation croisée donne-t-elle un résultat plus fiable qu'un seul découpage ?",
+          "options": [
+            "Parce qu'elle utilise un modèle plus puissant",
+            "Parce qu'elle rejoue plusieurs découpages et moyenne les scores",
+            "Parce qu'elle supprime les données difficiles"
+          ],
+          "explanation": "La validation croisée n'améliore pas le modèle : elle teste sur plusieurs découpages et fait la moyenne, ce qui réduit l'effet du hasard d'un unique split. À noter : elle n'est pas encore dans le pipeline IBIS-X, elle figure sur la feuille de route. On l'explique ici pour comprendre la logique."
+        }
+      },
+      "intervalles-de-confiance": {
+        "title": "Les intervalles de confiance",
+        "summary": "« 82 % » ne veut pas dire grand-chose sans marge. Découvre le « ± combien » qui rend un chiffre sérieux.",
+        "visual": {
+          "title": "« 82 % », oui, mais à combien près ?",
+          "body": "Annoncer « mon modèle atteint 82 % » sans marge, c'est promettre une précision qu'on ne connaît pas. L'intervalle de confiance ajoute la fourchette : « 82 % ± 3 % » dit honnêtement où se situe la vraie valeur. Plus l'échantillon est petit, plus la fourchette est large. Un intervalle qui chevauche celui d'un autre modèle signifie qu'on ne peut pas les départager.",
+          "caption": "Un chiffre nu cache son incertitude ; l'intervalle la révèle."
+        },
+        "quiz": {
+          "question": "Que t'apprend un intervalle de confiance que le chiffre « 82 % » seul ne dit pas ?",
+          "options": [
+            "L'ampleur de l'incertitude autour de ce chiffre",
+            "Le nom de l'algorithme utilisé",
+            "Le temps d'entraînement du modèle"
+          ],
+          "explanation": "L'intervalle de confiance quantifie la marge d'erreur autour du score : « 82 % ± combien ». C'est ce qui permet de dire si deux modèles sont vraiment différents. Honnêteté : ce calcul n'est pas encore intégré au pipeline IBIS-X, il est à venir."
+        }
+      },
+      "la-reproductibilite": {
+        "title": "La reproductibilité",
+        "summary": "Mêmes données, même graine, même résultat : ce qui rend une analyse vérifiable — et c'est natif dans IBIS-X.",
+        "visual": {
+          "title": "Mêmes graines, mêmes fruits",
+          "body": "Beaucoup d'algorithmes contiennent du hasard : ordre des données, initialisation, tirages. Sans contrôle, deux entraînements donnent deux résultats légèrement différents. En fixant la graine aléatoire (random_state=42), tu forces le hasard à se répéter à l'identique. Dans IBIS-X, c'est réel et natif : mêmes données + même graine → exactement le même résultat, à chaque fois.",
+          "caption": "La graine fixe le hasard : le résultat devient rejouable."
+        },
+        "quiz": {
+          "question": "Que garantit une graine aléatoire fixée (random_state=42) dans IBIS-X ?",
+          "options": [
+            "Que le modèle sera forcément plus précis",
+            "Que l'entraînement ira plus vite",
+            "Que le même entraînement redonne exactement le même résultat"
+          ],
+          "explanation": "Fixer la graine rend le hasard reproductible : mêmes données et même graine produisent le même résultat, ni plus précis ni plus rapide. C'est réel et natif dans IBIS-X, socle de tout résultat défendable."
+        }
+      },
+      "dou-viennent-les-biais": {
+        "title": "D'où viennent les biais",
+        "summary": "Un modèle n'invente pas ses préjugés : il les hérite des données et de la société. Voyons comment.",
+        "visual": {
+          "title": "Le modèle apprend le monde tel qu'il est, injustices comprises",
+          "body": "Un modèle n'invente pas ses biais : il les hérite. Des données historiques marquées par des discriminations passées lui apprennent à les reproduire. Un échantillon non représentatif (un groupe sous-représenté) le rend aveugle à ce groupe. Et une boucle de rétroaction — le modèle influence les données futures qu'il ré-apprend — amplifie le tout.",
+          "caption": "Données injustes en entrée, décisions injustes en sortie."
+        },
+        "quiz": {
+          "question": "Quelle est une source majeure des biais d'un modèle ?",
+          "options": [
+            "Le langage de programmation utilisé",
+            "Des données historiques qui reflètent des injustices passées",
+            "Le fait d'avoir fixé une graine aléatoire"
+          ],
+          "explanation": "Les biais viennent surtout des données et de la société : historiques injustes, échantillons non représentatifs, boucles de rétroaction. Ni le langage ni la graine n'en sont la cause — la graine ne fait que rendre le résultat reproductible."
+        }
+      },
+      "auditer-lequite": {
+        "title": "Auditer l'équité",
+        "summary": "Un bon score global peut masquer une injustice envers un groupe. Apprends à la mesurer.",
+        "visual": {
+          "title": "Traite-t-il tout le monde équitablement ?",
+          "body": "Auditer l'équité, c'est vérifier qu'un modèle ne défavorise pas systématiquement un groupe. Deux idées clés : la parité (des taux de décision comparables entre groupes) et l'égalité des chances (à situation égale, mêmes chances d'un bon résultat). Dans IBIS-X, c'est concret : les Défis d'équité te font auditer le biais via la XAI (SHAP, importance) sur de vrais datasets.",
+          "caption": "Auditer, ce n'est pas croire le modèle sur parole : c'est le mesurer."
+        },
+        "quiz": {
+          "question": "Qu'est-ce qu'auditer l'équité d'un modèle ?",
+          "options": [
+            "Mesurer s'il traite équitablement les différents groupes",
+            "Vérifier qu'il tourne assez vite",
+            "S'assurer qu'il utilise toutes les colonnes disponibles"
+          ],
+          "explanation": "Auditer l'équité, c'est mesurer le traitement des groupes (parité, égalité des chances), pas la vitesse ni le nombre de colonnes. Dans IBIS-X, cet audit se fait réellement via la XAI dans les Défis d'équité."
+        }
+      },
+      "anatomie-dun-fiasco": {
+        "title": "Anatomie d'un fiasco",
+        "summary": "Un cas réel où un algorithme a nui à des gens — et ce qu'il nous apprend.",
+        "case": {
+          "title": "COMPAS : un score de récidive au biais racial",
+          "context": "Aux États-Unis, l'outil COMPAS attribue à des prévenus un « score de risque » de récidive, utilisé pour éclairer des décisions judiciaires (caution, peine). En 2016, l'enquête de ProPublica a analysé des milliers de scores en Floride en les comparant aux récidives réelles.",
+          "problem": "L'enquête a montré que, à comportement futur égal, les prévenus noirs étaient bien plus souvent classés « à haut risque » à tort, tandis que les prévenus blancs étaient plus souvent classés « à faible risque » à tort. Le modèle avait appris des données historiques d'un système judiciaire déjà inégalitaire, et il reproduisait cette inégalité sous une apparence de neutralité chiffrée.",
+          "takeaway": "Un score n'est pas neutre parce qu'il est chiffré. Sans audit d'équité par groupe, un modèle peut blanchir une discrimination en la présentant comme objective. Toujours confronter les erreurs du modèle aux groupes concernés, pas seulement à la précision globale."
+        },
+        "quiz": {
+          "question": "Quel a été le problème central révélé par ProPublica sur COMPAS en 2016 ?",
+          "options": [
+            "Le modèle était trop lent pour être utilisé au tribunal",
+            "Le modèle ignorait complètement les récidives passées",
+            "Le modèle classait à tort les prévenus noirs « à haut risque » bien plus souvent"
+          ],
+          "explanation": "ProPublica a montré un biais racial : à comportement futur comparable, les prévenus noirs étaient plus souvent étiquetés à tort « à haut risque ». Le problème n'était ni la vitesse ni l'ignorance des récidives, mais l'inégalité de traitement héritée de données historiques injustes."
+        }
+      },
+      "ta-troisieme-enquete": {
+        "title": "Ta troisième enquête",
+        "summary": "Tu sais mesurer et douter. Mets-le à l'épreuve : audite le biais d'un vrai modèle.",
+        "visual": {
+          "title": "De la théorie à un vrai audit de biais",
+          "body": "Tu as vu d'où viennent les biais et comment les nommer. Place à la pratique sur des données réelles. Le dataset Adult Census (revenus) sert à prédire si une personne gagne plus d'un certain seuil. Tu vas entraîner un vrai modèle, reproductible, puis inspecter ce sur quoi il s'appuie pour décider.",
+          "caption": "Passe du concept à la preuve : un modèle réel, un biais mesurable."
+        },
+        "practice": {
+          "title": "Défi : auditer l'équité sur les revenus (Adult Census)",
+          "body": "Lance le Défi d'audit d'équité : entraîne un vrai modèle sur Adult Census (résultat reproductible, random_state=42), puis ouvre la XAI (SHAP, importance) pour voir quelles variables pèsent dans la décision. Repère si des attributs sensibles — genre, origine — pèsent anormalement. Compare le traitement entre groupes et formule ton constat de biais, preuves à l'appui. Tout est réel : le modèle, les chiffres, le .joblib téléchargeable."
+        }
+      },
+      "correlation-nest-pas-causalite": {
+        "title": "Corrélation n'est pas causalité",
+        "summary": "Deux courbes qui montent ensemble ne prouvent rien. L'erreur la plus coûteuse de l'analyse.",
+        "myth": {
+          "myth": "Si deux choses varient ensemble, l'une cause forcément l'autre.",
+          "reality": "Deux variables peuvent monter et descendre ensemble sans lien direct : souvent, une troisième cause cachée les tire toutes les deux. La corrélation est un indice, jamais une preuve de cause."
+        },
+        "visual": {
+          "title": "Les glaces ne provoquent pas les noyades",
+          "body": "L'été, les ventes de glaces montent. L'été, les noyades augmentent aussi. Les deux courbes se suivent presque parfaitement : forte corrélation. Pourtant, personne ne se noie à cause d'un cornet. La vraie cause, cachée derrière les deux, c'est la chaleur : elle pousse à manger des glaces ET à se baigner. On appelle ça une corrélation fallacieuse.",
+          "caption": "Une variable cachée (l'été) peut créer un lien qui n'existe pas."
+        },
+        "quiz": {
+          "question": "Ventes de glaces et noyades augmentent ensemble. Que peut-on conclure ?",
+          "options": [
+            "Une cause commune cachée (la chaleur estivale) explique les deux",
+            "Les glaces rendent la baignade dangereuse",
+            "Réduire les ventes de glaces ferait baisser les noyades"
+          ],
+          "explanation": "C'est une corrélation fallacieuse : une troisième variable, la chaleur de l'été, fait monter les deux. Aucune ne cause l'autre, et agir sur les glaces ne changerait rien aux noyades."
+        }
+      },
+      "les-trois-registres": {
+        "title": "Prédire, expliquer, agir",
+        "summary": "Trois questions que l'on confond sans cesse — et ce qu'IBIS-X sait, ou non, y répondre.",
+        "visual": {
+          "title": "Trois questions qu'on confond trop souvent",
+          "body": "Prédire demande « que va-t-il se passer ? » — il suffit que le modèle vise juste. Expliquer/inférer demande « quel effet a réellement X ? » — on cherche à comprendre. Agir/causer demande « si je change X, Y bouge-t-il ? » — la question la plus exigeante. IBIS-X est solide sur le prédictif et l'explicabilité (SHAP, importance) ; l'inférence causale (différences de différences, variables instrumentales) n'y est pas encore. Sache où passe la frontière.",
+          "caption": "Prédire ≠ expliquer ≠ causer : trois questions, trois exigences."
+        },
+        "quiz": {
+          "question": "Quel registre répond à « si je change X, est-ce que Y change ? »",
+          "options": [
+            "La prédiction",
+            "L'action / la causalité",
+            "La reproductibilité"
+          ],
+          "explanation": "« Si je change X, Y bouge-t-il ? » est la question causale (agir). Prédire vise seulement à anticiper, la reproductibilité n'est pas un registre de question. IBIS-X couvre le prédictif et l'explicabilité, mais pas encore l'inférence causale."
+        }
+      },
+      "lempreinte-de-reproductibilite": {
+        "title": "L'empreinte de reproductibilité",
+        "summary": "Données, versions, graine : la trace qui rend ton résultat défendable.",
+        "visual": {
+          "title": "L'empreinte qui rend un résultat défendable",
+          "body": "Un résultat crédible peut être rejoué par un autre. Pour ça, il faut tracer trois choses : les données exactes utilisées, les versions des outils, et la graine aléatoire. C'est l'empreinte de reproductibilité. Dans IBIS-X, tu peux déjà télécharger le modèle entraîné au format .joblib, reproductible : une brique concrète de cette empreinte.",
+          "caption": "Données + versions + graine = un résultat qu'on peut rejouer."
+        },
+        "quiz": {
+          "question": "Que faut-il tracer pour qu'un résultat soit reproductible ?",
+          "options": [
+            "Uniquement le score final obtenu",
+            "Le nom de la personne qui a lancé le modèle",
+            "Les données, les versions des outils et la graine aléatoire"
+          ],
+          "explanation": "L'empreinte de reproductibilité, c'est données + versions + graine — pas seulement le score ni l'auteur. IBIS-X y contribue déjà en permettant de télécharger le modèle .joblib reproductible."
+        }
+      },
+      "vers-un-resultat-citable": {
+        "title": "Vers un résultat citable",
+        "summary": "D'un modèle à un résultat qu'on peut publier : méthode, limites, honnêteté.",
+        "visual": {
+          "title": "D'un modèle à un résultat qu'on peut citer",
+          "body": "Un modèle qui tourne n'est pas encore un résultat citable. Pour qu'on puisse s'y référer, il faut la méthode (ce que tu as fait, avec quelles données), les limites (ce que le modèle ne sait pas faire) et l'honnêteté sur les incertitudes. Dans IBIS-X, le modèle reproductible et l'audit XAI donnent déjà de la matière ; le rapport exportable complet, lui, est encore sur la feuille de route.",
+          "caption": "Méthode + limites + honnêteté = un résultat qu'on peut publier."
+        },
+        "quiz": {
+          "question": "Qu'est-ce qui distingue un résultat citable d'un simple modèle qui tourne ?",
+          "options": [
+            "La méthode documentée, les limites énoncées et l'honnêteté sur l'incertitude",
+            "Le fait d'avoir obtenu le score le plus élevé possible",
+            "Le fait d'avoir utilisé l'algorithme le plus récent"
+          ],
+          "explanation": "Un résultat citable s'appuie sur une méthode traçable, des limites assumées et de l'honnêteté — pas sur le score le plus haut ni l'algorithme le plus neuf. Dans IBIS-X, le rapport exportable complet reste à venir : autant le dire clairement."
+        }
+      }
+    },
+    "notions": {
+      "ia-generative-vs-predictive": {
+        "term": "IA générative vs IA prédictive",
+        "definition": "L'IA générative crée du contenu neuf (texte, image, son). L'IA prédictive estime une valeur ou une catégorie à partir d'exemples passés.",
+        "example": "ChatGPT rédige un poème (génératif) ; ta banque bloque un paiement suspect (prédictif)."
+      },
+      "llm-predicteur": {
+        "term": "Modèle de langage (LLM)",
+        "definition": "Un modèle de langage est une IA entraînée sur d'immenses quantités de texte pour prédire le mot le plus probable après les précédents. Il enchaîne des mots plausibles sans comprendre leur sens.",
+        "example": "ChatGPT complète « Le ciel est… » par « bleu » parce que ce mot est le plus probable, pas parce qu'il voit le ciel."
+      },
+      "ia-predictive": {
+        "term": "IA prédictive",
+        "definition": "Une IA qui apprend sur des exemples passés pour estimer une catégorie ou un nombre sur des cas nouveaux. C'est la famille au cœur d'IBIS-X.",
+        "example": "À partir d'annonces immobilières passées, prédire le prix d'un appartement mis en vente aujourd'hui."
+      },
+      "familles-ia": {
+        "term": "Familles d'IA",
+        "definition": "Les grandes catégories d'IA selon ce qu'elles font : générative (créer), prédictive (estimer), recommandation (suggérer), vision (reconnaître des images), et d'autres encore.",
+        "example": "ChatGPT est génératif, l'anti-spam est prédictif, les suggestions de Netflix relèvent de la recommandation."
+      },
+      "apprentissage-supervise": {
+        "term": "Apprentissage par l'exemple",
+        "definition": "Une façon d'entraîner une IA en lui montrant de nombreux exemples déjà étiquetés avec la bonne réponse. La machine en dégage elle-même une règle applicable à des cas nouveaux.",
+        "example": "Montrer des milliers de mails marqués « spam » ou « normal » pour qu'elle apprenne à trier un mail inconnu."
+      },
+      "donnees-carburant": {
+        "term": "Données",
+        "definition": "Les exemples passés qui servent à entraîner une IA. Sans elles, aucun apprentissage n'est possible ; leur qualité compte plus que leur quantité.",
+        "example": "Des relevés de température de plusieurs années servant à prédire la météo de demain."
+      },
+      "modele": {
+        "term": "Modèle",
+        "definition": "Le résultat concret de l'entraînement : une recette apprise qui transforme les données d'un cas en prédiction. On peut le télécharger, le partager et l'inspecter.",
+        "example": "Le fichier de modèle anti-spam qui, à partir d'un mail, répond « spam » ou « normal »."
+      },
+      "ia-quotidien": {
+        "term": "IA au quotidien",
+        "definition": "Les usages concrets et souvent invisibles de l'IA prédictive dans la vie de tous les jours : messagerie, banque, santé, industrie.",
+        "example": "Ta banque qui bloque en temps réel un paiement inhabituel qui ressemble à une fraude."
+      },
+      "limites-ia": {
+        "term": "Limites de l'IA",
+        "definition": "Ce que l'IA ne sait pas faire : elle n'a pas de bon sens, généralise mal hors de ses exemples et ne reconnaît pas ses propres erreurs.",
+        "example": "Une IA très fiable sur ses cas d'entraînement qui répond n'importe quoi, avec assurance, sur une situation inédite."
+      },
+      "biais-introduction": {
+        "term": "Biais",
+        "definition": "Un déséquilibre injuste hérité des données d'entraînement, que l'IA reproduit puis amplifie à grande échelle. Point de départ de la réflexion éthique.",
+        "example": "Un outil de tri de CV entraîné sur un passé déséquilibré qui écarte systématiquement certains profils."
+      },
+      "observations-variables": {
+        "term": "Observations et variables",
+        "definition": "Dans un jeu de données tabulaire, les observations sont les lignes (les individus) et les variables sont les colonnes (leurs caractéristiques).",
+        "example": "891 passagers du Titanic (observations) décrits par leur âge, leur sexe et leur classe (variables)."
+      },
+      "features-cible": {
+        "term": "Features et cible",
+        "definition": "Les features sont les colonnes qui servent d'indices au modèle ; la cible est la colonne qu'on cherche à prédire.",
+        "example": "L'âge et la classe (features) pour deviner si le passager a survécu (cible)."
+      },
+      "classification-vs-regression": {
+        "term": "Classification et régression",
+        "definition": "La classification prédit une catégorie ; la régression prédit un nombre.",
+        "example": "« Survivra ou non » (classification) ; « note sur 20 » (régression)."
+      },
+      "catalogue-ethique": {
+        "term": "Score éthique du catalogue",
+        "definition": "Avant tout usage, IBIS-X note un jeu de données sur des critères d'éthique : représentativité, consentement, biais.",
+        "example": "Un dataset qui ne représente qu'une seule classe sociale reçoit un score plus bas."
+      },
+      "train-test": {
+        "term": "Entraînement et test",
+        "definition": "On sépare les données en une partie pour entraîner le modèle et une partie, jamais vue, pour le tester honnêtement.",
+        "example": "80 % des passagers pour réviser, 20 % gardés pour l'examen."
+      },
+      "qualite-donnees": {
+        "term": "Qualité des données",
+        "definition": "L'état réel des données : valeurs manquantes, erreurs, biais d'échantillon. Elle conditionne la fiabilité du modèle.",
+        "example": "Des âges non renseignés ou un échantillon non représentatif faussent les prédictions."
+      },
+      "entrainer": {
+        "term": "Entraîner un modèle",
+        "definition": "Ajuster peu à peu la recette du modèle sur des exemples connus pour réduire ses erreurs, sans se contenter de mémoriser.",
+        "example": "Montrer des passagers dont on sait s'ils ont survécu, jusqu'à ce que le modèle prédise bien."
+      },
+      "arbre-decision": {
+        "term": "Arbre de décision",
+        "definition": "Un modèle lisible qui enchaîne des questions oui/non jusqu'à une décision. C'est un vrai algorithme d'IBIS-X.",
+        "example": "« Femme ? En première classe ? » puis prédiction de survie."
+      },
+      "valeurs-manquantes": {
+        "term": "Valeurs manquantes",
+        "definition": "Des cases vides dans les données, quand une information n'a pas été relevée. On peut supprimer les lignes concernées ou les imputer (les remplir intelligemment, par moyenne, médiane, KNN ou MICE).",
+        "example": "Le poids non noté pour certains patients d'un fichier médical."
+      },
+      "encodage": {
+        "term": "Encodage",
+        "definition": "La transformation de catégories en nombres pour qu'un modèle puisse les traiter. En one-hot (une colonne par catégorie) ou ordinal (les catégories rangées dans un ordre).",
+        "example": "La colonne « sexe » (« M »/« F ») transformée en 0 et 1."
+      },
+      "mise-a-lechelle": {
+        "term": "Mise à l'échelle",
+        "definition": "Ramener les colonnes numériques dans une plage comparable pour qu'aucune ne domine à cause de son unité. IBIS-X propose les recettes standard, minmax et robust.",
+        "example": "Ramener l'âge (0-100) et le salaire (0-5000) sur une même échelle avant l'entraînement."
+      },
+      "fuite-de-donnees": {
+        "term": "Fuite de données",
+        "definition": "Quand une information indisponible au moment de la vraie prédiction se glisse dans l'entraînement et gonfle artificiellement le score. On l'évite en n'ajustant les préparations que sur les données d'entraînement.",
+        "example": "Une colonne « traitement prescrit » qui révèle déjà que le patient est malade."
+      },
+      "foret-aleatoire": {
+        "term": "Forêt aléatoire",
+        "definition": "Un modèle qui entraîne de nombreux arbres de décision légèrement différents et fait voter leurs prédictions. Le vote majoritaire est plus stable qu'un arbre isolé. C'est un vrai modèle d'IBIS-X.",
+        "example": "Cent arbres qui votent chacun « survivra » ou « ne survivra pas » ; la majorité l'emporte."
+      },
+      "regression-logistique": {
+        "term": "Régression logistique",
+        "definition": "Un modèle qui attribue un coefficient (un poids) à chaque variable pour prédire une catégorie ; le signe donne le sens, la taille l'importance. Très lisible, il n'est pas encore disponible dans IBIS-X (il arrive).",
+        "example": "Un coefficient positif pour « âge » signifie que le risque augmente avec l'âge."
+      },
+      "choix-algorithme": {
+        "term": "Choix d'un algorithme",
+        "definition": "La décision, propre à chaque problème, du modèle à utiliser. Elle arbitre entre lisibilité, performance et données disponibles, et se tranche en comparant plusieurs modèles.",
+        "example": "Préférer un arbre lisible pour expliquer une décision, ou une forêt plus performante quand la précision prime."
+      },
+      "accuracy-piege": {
+        "term": "Le piège de l'exactitude",
+        "definition": "L'exactitude (accuracy) est la part de réponses correctes. Elle devient trompeuse quand une classe est bien plus rare que l'autre : un modèle peut afficher un score très élevé tout en ratant complètement la classe rare.",
+        "example": "Sur 1 000 dossiers dont 10 fraudes, un modèle qui dit « pas de fraude » partout atteint 99 % d'exactitude et ne détecte aucune fraude."
+      },
+      "precision-rappel-f1": {
+        "term": "Précision, rappel et F1",
+        "definition": "La précision mesure : quand le modèle dit « positif », a-t-il raison ? Le rappel mesure : parmi tous les vrais positifs, combien attrape-t-il ? Le F1 résume les deux en un seul chiffre pour juger leur équilibre.",
+        "example": "Un filtre anti-spam très prudent laisse peu de faux positifs (bonne précision) mais laisse passer du spam (rappel plus faible) ; le F1 dit si le compromis tient."
+      },
+      "matrice-de-confusion": {
+        "term": "La matrice de confusion",
+        "definition": "Un tableau à quatre cases qui croise la vérité et la prédiction : vrais positifs, faux positifs, vrais négatifs, faux négatifs. Elle montre non seulement combien d'erreurs, mais quel type d'erreurs commet le modèle.",
+        "example": "En dépistage, elle sépare clairement les malades manqués (faux négatifs) des fausses alertes (faux positifs), deux erreurs aux conséquences très différentes."
+      },
+      "surapprentissage": {
+        "term": "Le sur-apprentissage",
+        "definition": "Un modèle sur-apprend quand il mémorise les exemples d'entraînement, bruit compris, au lieu d'apprendre la règle générale. Résultat : excellent sur ses données, mauvais sur des données nouvelles.",
+        "example": "Un modèle avec 100 % de réussite à l'entraînement mais 60 % sur du neuf a récité par cœur au lieu de comprendre ; seul le score sur données jamais vues compte."
+      },
+      "boite-noire": {
+        "term": "La boîte noire",
+        "definition": "Un modèle « boîte noire » donne une réponse sans laisser voir le raisonnement qui y mène. Cela pose problème dès qu'il faut faire confiance, justifier une décision ou corriger une erreur.",
+        "example": "Un modèle qui refuse un crédit sans explication est difficile à contester et à contrôler : on ne peut ni justifier la décision ni repérer un biais éventuel."
+      },
+      "importance-shap": {
+        "term": "Importance des variables et SHAP",
+        "definition": "L'importance des variables classe les facteurs selon leur influence globale sur le modèle. SHAP descend au cas individuel et montre comment chaque variable a poussé une décision précise vers un résultat. IBIS-X les calcule réellement.",
+        "example": "Pour un élève donné, SHAP peut montrer que ses absences ont poussé la prédiction vers « décrochage » tandis que ses bonnes notes l'ont tirée vers « pas de décrochage »."
+      },
+      "correlation-causalite": {
+        "term": "Corrélation n'est pas causalité",
+        "definition": "SHAP et l'importance montrent ce que le modèle utilise pour décider, pas ce qui cause réellement le résultat. Une variable peut peser lourd simplement parce qu'elle accompagne le résultat, sans en être la cause.",
+        "example": "Les ventes de glaces et les noyades augmentent ensemble parce qu'il fait chaud ; la glace ne cause pas la noyade, même si un modèle s'appuierait volontiers dessus."
+      },
+      "validation-croisee": {
+        "term": "Validation croisée (k-fold)",
+        "definition": "Méthode qui découpe les données en plusieurs parts, entraîne et teste tour à tour sur chacune, puis moyenne les scores pour un résultat plus stable.",
+        "example": "En 5-fold, on entraîne 5 fois en changeant à chaque fois la part servant de test, puis on fait la moyenne des 5 scores. (Pas encore dans le pipeline IBIS-X : sur la feuille de route.)"
+      },
+      "intervalle-confiance": {
+        "term": "Intervalle de confiance",
+        "definition": "Fourchette qui entoure un chiffre estimé pour indiquer où se trouve probablement la vraie valeur : elle traduit l'incertitude de la mesure.",
+        "example": "« Précision 82 % ± 3 % » : la vraie précision se situe vraisemblablement entre 79 % et 85 %. (Calcul pas encore intégré à IBIS-X : à venir.)"
+      },
+      "reproductibilite": {
+        "term": "Reproductibilité",
+        "definition": "Propriété d'un résultat qu'on peut obtenir à l'identique en repartant des mêmes données et des mêmes réglages, dont la graine aléatoire.",
+        "example": "Avec random_state=42, relancer l'entraînement sur les mêmes données redonne exactement le même modèle. (Réel et natif dans IBIS-X.)"
+      },
+      "biais-sources": {
+        "term": "Sources de biais",
+        "definition": "Origines des injustices d'un modèle : données historiques marquées par des discriminations, échantillons non représentatifs, boucles de rétroaction.",
+        "example": "Un modèle de tri de CV entraîné sur des embauches passées majoritairement masculines apprend à défavoriser les candidatures féminines."
+      },
+      "equite-fairness": {
+        "term": "Équité (fairness)",
+        "definition": "Ensemble de critères vérifiant qu'un modèle traite comparablement les groupes : parité des taux de décision, égalité des chances à situation égale.",
+        "example": "Vérifier que le taux d'accord d'un prêt est comparable entre deux groupes à profil financier équivalent. (Audité via la XAI dans les Défis d'équité IBIS-X.)"
+      },
+      "correlations-fallacieuses": {
+        "term": "Corrélation fallacieuse",
+        "definition": "Lien statistique entre deux variables qui varient ensemble sans que l'une cause l'autre, souvent à cause d'une troisième variable cachée.",
+        "example": "Ventes de glaces et noyades montent ensemble l'été, non parce qu'elles se causent, mais à cause de la chaleur commune."
+      },
+      "prediction-inference-causalite": {
+        "term": "Prédiction, inférence, causalité",
+        "definition": "Trois registres distincts : prédire ce qui va arriver, expliquer l'effet d'une variable, ou établir qu'agir sur X change réellement Y.",
+        "example": "Prédire les ventes de demain, estimer l'effet du prix sur les ventes, ou tester si baisser le prix fait vraiment vendre plus. (IBIS-X : prédictif et explicabilité oui, inférence causale pas encore.)"
+      },
+      "empreinte-repro": {
+        "term": "Empreinte de reproductibilité",
+        "definition": "Ensemble des informations à conserver pour rejouer un résultat : données exactes, versions des outils et graine aléatoire.",
+        "example": "Archiver le dataset, la version des bibliothèques et random_state=42 permet à un collègue de retrouver le même modèle. (IBIS-X : .joblib reproductible téléchargeable.)"
+      },
+      "resultat-citable": {
+        "term": "Résultat citable",
+        "definition": "Résultat suffisamment documenté (méthode, limites, incertitudes) pour être référencé ou publié de façon défendable.",
+        "example": "Un rapport indiquant les données, la méthode, la marge d'erreur et les limites du modèle peut être cité dans un travail de recherche. (Rapport exportable complet : sur la feuille de route IBIS-X.)"
+      }
+    },
+    "playgrounds": {
+      "illustration": "Exemple pédagogique",
+      "confusion": {
+        "title": "Bac à sable : la matrice de confusion",
+        "intro": "Déplace le seuil de décision et regarde les quatre cases — et les métriques — bouger en direct.",
+        "thresholdLabel": "Seuil de décision",
+        "legendPos": "Cas réellement positifs",
+        "legendNeg": "Cas réellement négatifs",
+        "predictedPositive": "Prédit positif",
+        "predPos": "Prédit positif",
+        "predNeg": "Prédit négatif",
+        "actualPos": "Réel positif",
+        "actualNeg": "Réel négatif",
+        "tp": "Vrais positifs",
+        "fp": "Faux positifs",
+        "fn": "Faux négatifs",
+        "tn": "Vrais négatifs",
+        "precision": "Précision",
+        "recall": "Rappel",
+        "accuracy": "Exactitude",
+        "caption": "Un seuil bas attrape tous les positifs mais multiplie les fausses alertes ; un seuil haut fait l'inverse. Le bon réglage dépend de ce qui coûte le plus cher : rater un cas, ou déranger pour rien."
+      },
+      "overfitting": {
+        "title": "Bac à sable : le sur-apprentissage",
+        "intro": "Augmente la profondeur de l'arbre et observe l'écart entre entraînement et test se creuser.",
+        "depthLabel": "Profondeur de l'arbre",
+        "train": "Entraînement",
+        "test": "Test",
+        "gap": "Écart",
+        "caption": "Plus l'arbre est profond, mieux il récite ses données d'entraînement — mais au-delà d'un certain point il apprend le bruit et se trompe sur des données neuves. Cet écart qui se creuse, c'est le sur-apprentissage."
+      }
+    },
+    "glossary": {
+      "navLabel": "Glossaire",
+      "title": "Glossaire",
+      "subtitle": "Tous les termes de l'académie, à portée de clic. Où que tu voies un mot souligné en pointillés, survole-le pour sa définition.",
+      "searchPlaceholder": "Rechercher un terme…",
+      "count": "{count, plural, one {# terme} other {# termes}}",
+      "empty": "Aucun terme ne correspond à ta recherche.",
+      "learnMore": "Voir la leçon"
+    },
+    "badges": {
+      "premier-modele": {
+        "title": "Premier modèle",
+        "description": "Tu as entraîné ton tout premier modèle sur de vraies données."
+      },
+      "lire-matrice": {
+        "title": "Lecteur de matrice",
+        "description": "Tu sais lire une matrice de confusion."
+      },
+      "reperer-surapprentissage": {
+        "title": "Œil du sur-apprentissage",
+        "description": "Tu repères un modèle qui apprend par cœur."
+      },
+      "importance-vs-cause": {
+        "title": "Esprit critique",
+        "description": "Tu distingues ce qu'un modèle utilise de ce qui cause réellement."
+      },
+      "resultat-reproductible": {
+        "title": "Reproductible",
+        "description": "Tu sais pourquoi et comment un résultat se reproduit."
+      },
+      "auditer-equite": {
+        "title": "Auditeur d'équité",
+        "description": "Tu as audité le biais d'un vrai modèle."
+      }
+    },
+    "passport": {
+      "navLabel": "Passeport",
+      "certLabel": "Passeport IA",
+      "title": "Académie IBIS-X",
+      "certifiedLead": "Ce passeport atteste ton parcours dans l'Académie IBIS-X. Tu maîtrises de quoi entraîner, évaluer et expliquer un modèle.",
+      "progressLead": "Continue les cursus pour débloquer ton certificat et de nouveaux badges.",
+      "lessonsStat": "{done} / {total} leçons",
+      "notionsStat": "{count, plural, one {# notion} other {# notions}} collectées",
+      "badgesStat": "{count} / {total} badges",
+      "fingerprint": "Empreinte :",
+      "print": "Imprimer / PDF",
+      "cursusTitle": "Cursus",
+      "badgesTitle": "Badges de compétence"
+    }
   }
 }

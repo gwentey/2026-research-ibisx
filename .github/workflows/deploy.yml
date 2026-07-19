@@ -1,0 +1,69 @@
+# Déploiement production IBIS-X sur la VM Hetzner.
+# Déclencheur : tu merges `main` dans `production` (ou push direct sur `production`).
+# Tourne sur le runner self-hosted DÉDIÉ à ce repo (label `ibisx`), jamais sur celui d'un autre projet.
+# Opère dans /opt/ibisx (clone permanent, .env permanent, volumes Docker stables).
+name: Deploy production
+
+on:
+  push:
+    branches: [production]
+  workflow_dispatch: {}
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false # ne JAMAIS couper un déploiement en cours
+
+jobs:
+  deploy:
+    name: Déploiement VM Hetzner
+    runs-on: [self-hosted, ibisx]
+    env:
+      DEPLOY_DIR: /opt/ibisx
+      COMPOSE: "-f compose.prod.yml -f deploy/compose.vps.yml"
+    steps:
+      - name: Récupérer la branche production dans /opt/ibisx
+        run: |
+          cd "$DEPLOY_DIR"
+          git fetch --all --prune
+          git checkout production
+          git reset --hard origin/production
+
+      - name: Garde-fou .env (bloque si une variable requise manque sur la VM)
+        run: cd "$DEPLOY_DIR" && ./deploy/check-env.sh .env
+
+      - name: Sécurité — tout port publié DOIT être en 127.0.0.1 (protège nginx / 80 / 443)
+        run: |
+          cd "$DEPLOY_DIR"
+          # `cfg=$(...)` échoue le step si `config` est invalide (fail-closed).
+          cfg="$(docker compose $COMPOSE config)"
+          n_ports=$(printf '%s\n' "$cfg" | grep -c 'mode: ingress' || true)
+          n_local=$(printf '%s\n' "$cfg" | grep -c 'host_ip: 127.0.0.1' || true)
+          if [ "$n_ports" -ne "$n_local" ]; then
+            echo "❌ $n_ports port(s) publié(s) mais seulement $n_local en 127.0.0.1 :"
+            echo "   au moins un port serait exposé à Internet — abandon pour ne pas casser tes autres sites."
+            printf '%s\n' "$cfg" | grep -nE 'mode: ingress|host_ip|published|target'
+            exit 1
+          fi
+          echo "✅ Les $n_ports port(s) publié(s) sont tous en 127.0.0.1."
+
+      - name: Build + démarrage (migrations Alembic auto au boot de l'api)
+        run: cd "$DEPLOY_DIR" && docker compose $COMPOSE up -d --build --remove-orphans
+
+      - name: Attendre que l'API soit saine
+        run: |
+          cd "$DEPLOY_DIR"
+          for i in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:3200/api/v1/health >/dev/null 2>&1; then
+              echo "✅ API saine."; exit 0
+            fi
+            echo "…attente API ($i/30)"; sleep 5
+          done
+          echo "❌ API non saine après 150s — logs :"
+          docker compose $COMPOSE logs --tail=60 api web
+          exit 1
+
+      - name: Admin initial (idempotent)
+        run: cd "$DEPLOY_DIR" && docker compose $COMPOSE exec -T api ibis seed || true
+
+      - name: Nettoyage des images inutilisées
+        run: docker image prune -f

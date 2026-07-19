@@ -4,7 +4,7 @@ import { useQuestStore } from "@/lib/challenges/store";
 import type { ObjectiveId } from "@/lib/challenges/types";
 
 function reset() {
-  useQuestStore.setState({ activeSlug: null, done: [], completed: [] });
+  useQuestStore.setState({ activeSlug: null, done: [], completed: [], collapsed: false });
 }
 
 describe("store de quête", () => {
@@ -46,5 +46,22 @@ describe("store de quête", () => {
     useQuestStore.getState().quit();
     expect(useQuestStore.getState().activeSlug).toBeNull();
     expect(useQuestStore.getState().isCompleted("iris-hello-world")).toBe(true);
+  });
+
+  it("le traceur est déployé par défaut (collapsed=false)", () => {
+    expect(useQuestStore.getState().collapsed).toBe(false);
+  });
+
+  it("setCollapsed replie puis redéploie le traceur", () => {
+    useQuestStore.getState().setCollapsed(true);
+    expect(useQuestStore.getState().collapsed).toBe(true);
+    useQuestStore.getState().setCollapsed(false);
+    expect(useQuestStore.getState().collapsed).toBe(false);
+  });
+
+  it("start redéploie le traceur d'un défi replié", () => {
+    useQuestStore.getState().setCollapsed(true);
+    useQuestStore.getState().start("iris-hello-world");
+    expect(useQuestStore.getState().collapsed).toBe(false);
   });
 });

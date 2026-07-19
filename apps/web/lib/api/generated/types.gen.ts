@@ -1465,6 +1465,7 @@ export type ExplanationRead = {
  * ExplanationRequest
  */
 export type ExplanationRequest = {
+    audience?: XaiAudience | null;
     /**
      * Instance Index
      */
@@ -4119,6 +4120,10 @@ export type GetSuggestedQuestionsData = {
          * Language
          */
         language?: string;
+        /**
+         * Audience
+         */
+        audience?: XaiAudience | null;
     };
     url: '/api/v1/experiments/{experiment_id}/suggested-questions';
 };

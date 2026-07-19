@@ -3,6 +3,7 @@ import {
   DatabaseIcon,
   FlaskConicalIcon,
   FolderIcon,
+  GraduationCapIcon,
   HomeIcon,
   ListChecksIcon,
   ScaleIcon,
@@ -16,7 +17,14 @@ import {
 
 export interface NavItem {
   /** Clé de traduction dans le namespace `nav`. */
-  labelKey: "dashboard" | "datasets" | "challenges" | "projects" | "experiments" | "systemStatus";
+  labelKey:
+    | "dashboard"
+    | "datasets"
+    | "formation"
+    | "challenges"
+    | "projects"
+    | "experiments"
+    | "systemStatus";
   href: string;
   icon: LucideIcon;
 }
@@ -24,6 +32,7 @@ export interface NavItem {
 export const MAIN_NAV: NavItem[] = [
   { labelKey: "dashboard", href: "/dashboard", icon: HomeIcon },
   { labelKey: "datasets", href: "/datasets", icon: DatabaseIcon },
+  { labelKey: "formation", href: "/formation", icon: GraduationCapIcon },
   { labelKey: "challenges", href: "/challenges", icon: SwordsIcon },
   { labelKey: "projects", href: "/projects", icon: FolderIcon },
   { labelKey: "experiments", href: "/experiments", icon: FlaskConicalIcon },

@@ -209,16 +209,19 @@ def _answer_chat_blocks(
     importance: list,  # type: ignore[type-arg]
     task_type: str,
     algorithm: str,
+    audience: str = "intermediate",
 ) -> dict:  # type: ignore[type-arg]
     """Chat v2 : réponse en blocs validée + anti-hallucination, sinon fallback riche (P2).
 
     Boucle jusqu'à 2 tentatives LLM : une sortie invalide (JSON non conforme au schéma) OU
     citant un nombre absent du contexte est rejetée, puis on retente ; à l'échec on retombe
     sur un document déterministe (paragraphe + tableau des top-variables), badgé « sans IA ».
+
+    `audience` (adaptatif §5.2) pilote le TON — LLM comme repli parlent au niveau de l'explication.
     """
-    system = xai_text.chat_system_v2(language)
+    system = xai_text.chat_system_v2(language, audience)
     prompt = xai_text.chat_prompt_v2(
-        question=question, context=context, history=history, language=language
+        question=question, context=context, history=history, language=language, audience=audience
     )
     try:
         for attempt in range(2):
@@ -250,6 +253,7 @@ def _answer_chat_blocks(
         importance=importance,
         task_type=task_type,
         algorithm=algorithm,
+        audience=audience,
     )
     return {
         "content": xai_blocks.to_plain_text(doc),
@@ -304,6 +308,8 @@ def answer_chat_question(session_id: str, question: str) -> str:
             importance=importance,
             task_type=str(experiment.preprocessing_config.get("task_type", "")),
             algorithm=experiment.algorithm or "",
+            # Le chat parle au niveau de l'explication qu'il commente (adaptatif §5.2).
+            audience=explanation.audience_level,
         )
         db.add(
             ChatMessage(

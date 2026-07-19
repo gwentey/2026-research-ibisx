@@ -1,4 +1,25 @@
 {
+  "audience": {
+    "viewAs": "View as",
+    "you": "you",
+    "short": {
+      "novice": "Novice",
+      "intermediate": "Intermediate",
+      "expert": "Expert"
+    },
+    "desc": {
+      "novice": "Simple analogies, essentials only.",
+      "intermediate": "Structured, decision-oriented.",
+      "expert": "Exact terminology, every detail."
+    },
+    "backToMine": "Back to my level ({level})",
+    "warnAbove": "You are {profile} in IBIS-X. This view targets an {effective} audience and may be hard to interpret.",
+    "belowNote": "Simplified view ({effective} level).",
+    "adjustProfile": "This level doesn't fit you? Adjust my profile",
+    "noviceFraming": "You're seeing the essentials. Switch to Intermediate or Expert (above) to see everything.",
+    "advancedTitle": "Advanced details",
+    "advancedHint": "Collapsed for your level — expand to see everything."
+  },
   "common": {
     "appName": "IBIS-X",
     "loading": "Loading…",
@@ -138,7 +159,8 @@
     "adminJobs": "Job monitoring",
     "platform": "Platform",
     "profile": "Profile",
-    "systemStatus": "System status"
+    "systemStatus": "System status",
+    "formation": "Learn"
   },
   "challenges": {
     "title": "Challenges",
@@ -163,6 +185,8 @@
     "resume": "Resume the investigation",
     "replay": "Replay the investigation",
     "quit": "Leave the challenge",
+    "collapse": "Collapse the tracker",
+    "expand": "Reopen the tracker",
     "backToList": "All challenges",
     "next": "Next challenge",
     "currentObjective": "Objective",
@@ -1210,6 +1234,10 @@
     "text": {
       "title": "Explanation",
       "audience": "Level: {level}",
+      "generatedAs": "Generated for {level}",
+      "regenerateHint": "Written for {generated}, while you're viewing as {effective}.",
+      "regenerateAs": "Regenerate for {level}",
+      "regenerateCost": "1 credit",
       "fallbackBadge": "Generated without AI (deterministic fallback)",
       "modelBadge": "Model: {model}",
       "method": "Method: {method}",
@@ -1256,7 +1284,18 @@
       "globalBody": "Which features matter most, on average, across all predictions.",
       "localTitle": "One specific example",
       "localBody": "Why the model answered what it did, for a given example.",
-      "cta": "Set up your request, then hit “Generate explanation”."
+      "cta": "Set up your request, then hit “Generate explanation”.",
+      "novice": "No need to be an expert: we explain everything in plain words, with everyday analogies."
+    },
+    "reading": {
+      "title": "How to read this explanation",
+      "subtitle": "Three reflexes for a first glance, no jargon.",
+      "step1Title": "Look at the score",
+      "step1Body": "The overall score, at the top, tells how much the model can be trusted.",
+      "step2Title": "See what mattered",
+      "step2Body": "The longest bars are the pieces of information that weighed the most.",
+      "step3Title": "Read the plain summary",
+      "step3Body": "A plain-language text translates the numbers — and the copilot answers your questions."
     },
     "generating": {
       "title": "The AI is generating your explanation…",
@@ -1572,5 +1611,1259 @@
     "disparityNone": "No major disparity",
     "caveat": "A measured disparity signals unequal treatment between groups; on its own it does not prove discrimination — always cross-check with the data context.",
     "errorGeneric": "Analysis unavailable for this variable — try a categorical variable with few values, such as sex."
+  },
+  "formation": {
+    "home": {
+      "title": "Learn AI",
+      "subtitle": "Understand artificial intelligence — the real thing, not just ChatGPT — and learn to use it, from the very first concept to your own trained model.",
+      "pitchLabel": "The promise",
+      "pitch": "You may arrive thinking AI means ChatGPT. You'll leave having trained, evaluated and explained your own model — and able to say why it decides.",
+      "globalProgress": "{done} / {total} lessons",
+      "moreSoon": "The Practitioner and Analyst tracks are coming soon.",
+      "recommendedAfter": "Up next",
+      "lessonCount": "{count, plural, one {# lesson} other {# lessons}}",
+      "cursusDone": "Completed",
+      "resume": "Resume",
+      "startCursus": "Start",
+      "moduleLabel": "Module {index}",
+      "practiceTag": "Practice",
+      "lessonPosition": "Lesson {index} / {total}",
+      "notFound": "This content doesn't exist (anymore).",
+      "backToAcademy": "Back to the Academy"
+    },
+    "blocks": {
+      "mythLabel": "Common myth",
+      "realityLabel": "In reality",
+      "notionLabel": "Concept card",
+      "notionExample": "Example:",
+      "quizLabel": "Quick quiz",
+      "quizCorrect": "Nailed it!",
+      "quizRetry": "Not quite — try again.",
+      "practiceLabel": "Hands-on",
+      "practiceCta": "Go hands-on",
+      "practiceTarget": "Challenge: {challenge}",
+      "readyToFinish": "You can complete the lesson.",
+      "answerToFinish": "Answer the quiz to complete the lesson.",
+      "finishLesson": "Complete the lesson",
+      "caseLabel": "Case study",
+      "caseTakeaway": "Takeaway"
+    },
+    "grades": {
+      "curieux": "Curious",
+      "eveille": "Awakened",
+      "apprenti": "Apprentice",
+      "praticien": "Practitioner",
+      "analyste": "Analyst"
+    },
+    "cursus": {
+      "eveil": {
+        "title": "Awakening",
+        "tagline": "Finally understand what artificial intelligence really is.",
+        "subtitle": "A gentle first step, with no math and no jargon. You'll discover that AI is far more than ChatGPT, and above all how predictive AI works — the kind you'll learn to build in IBIS-X."
+      },
+      "fondations": {
+        "title": "Foundations",
+        "tagline": "The concrete basics of Machine Learning",
+        "subtitle": "The essential vocabulary and moves, all the way to your first real hands-on: training a model on the Titanic dataset."
+      },
+      "praticien": {
+        "title": "Practitioner",
+        "tagline": "Build a model, and evaluate it without kidding yourself.",
+        "subtitle": "Prepare the data, pick an algorithm, honestly measure what your model is worth — and finally understand why it decides."
+      },
+      "analyste": {
+        "title": "Analyst",
+        "tagline": "The researcher level: rigor, ethics and honesty.",
+        "subtitle": "Measure uncertainty, hunt for bias, tell correlation from causation, and turn a model into a defensible result."
+      }
+    },
+    "modules": {
+      "ia-pas-que-chatgpt": {
+        "title": "AI is not just ChatGPT",
+        "tagline": "Tell the AI that chats apart from the crowd of quiet AIs predicting in the background."
+      },
+      "comment-une-machine-apprend": {
+        "title": "How a machine learns",
+        "tagline": "Examples, data, a learned recipe: the mechanism behind prediction."
+      },
+      "a-quoi-ca-sert": {
+        "title": "What it's actually for",
+        "tagline": "Where predictive AI already acts in your life — and where it gets things wrong."
+      },
+      "le-vocabulaire-du-ml": {
+        "title": "The vocabulary of ML",
+        "tagline": "Rows, columns, features, target: the basic words."
+      },
+      "le-jeu-de-donnees": {
+        "title": "The dataset",
+        "tagline": "Where data comes from, and how to prepare it honestly."
+      },
+      "entrainer-un-premier-modele": {
+        "title": "Training a first model",
+        "tagline": "What \"training\" means, the decision tree, and your first investigation."
+      },
+      "preparer-les-donnees": {
+        "title": "Preparing the data",
+        "tagline": "Before training a model, you clean and shape the data. Empty cells, categories, scales: the moves that make all the difference."
+      },
+      "les-algorithmes": {
+        "title": "The algorithms",
+        "tagline": "Tree, forest, coefficients: discover the models that learn to predict, and how to pick the right one."
+      },
+      "evaluer-honnetement": {
+        "title": "Evaluate a model honestly",
+        "tagline": "A good score proves nothing on its own. Learn to judge a model without getting fooled."
+      },
+      "comprendre-pourquoi": {
+        "title": "Understand why it decides",
+        "tagline": "Open the box: see what the model uses to decide, and where the limits are."
+      },
+      "mesurer-lincertitude": {
+        "title": "Measuring uncertainty",
+        "tagline": "A number alone isn't enough: learn to say how sure you really are of it."
+      },
+      "ethique-et-equite": {
+        "title": "Ethics and fairness",
+        "tagline": "Where bias comes from, how to audit it, and why it's your problem."
+      },
+      "correlation-et-causalite": {
+        "title": "Correlation and causation",
+        "tagline": "Moving together isn't causing each other: tell predicting, explaining and acting apart."
+      },
+      "du-resultat-au-livrable": {
+        "title": "From result to deliverable",
+        "tagline": "Trace, document, own it: turn a model into a result you can cite."
+      }
+    },
+    "lessons": {
+      "le-grand-malentendu": {
+        "title": "The big misunderstanding",
+        "summary": "No, AI is not just ChatGPT. Let's start by telling apart two worlds that couldn't be more different: AI that generates and AI that predicts.",
+        "myth": {
+          "myth": "Artificial intelligence is ChatGPT: an AI you talk to and that talks back.",
+          "reality": "ChatGPT is just one AI among thousands. Most AIs don't chat at all: they predict, sort, detect, recommend — often without you ever seeing them."
+        },
+        "visual": {
+          "title": "Two great families",
+          "body": "On one side, generative AI makes brand-new content: text (ChatGPT), images, code. On the other, predictive AI answers a precise question from data: is this email spam? is this patient at risk? In IBIS-X, it's this second family that you'll learn to build yourself.",
+          "caption": "Generating content ≠ predicting an answer. Two different jobs."
+        },
+        "quiz": {
+          "question": "Which of these tasks belongs to predictive AI?",
+          "options": [
+            "Writing the summary of a long article",
+            "Estimating whether a customer will cancel their subscription",
+            "Generating an image from a sentence"
+          ],
+          "explanation": "Estimating an outcome (will cancel / won't cancel) from data is prediction. Writing a summary and generating an image, by contrast, are generative tasks."
+        }
+      },
+      "chatgpt-demystifie": {
+        "title": "ChatGPT demystified",
+        "summary": "Behind the conversation, ChatGPT does one very simple thing to grasp: guessing the next word, over and over.",
+        "myth": {
+          "myth": "ChatGPT understands my questions and knows things, like a very well-read person.",
+          "reality": "ChatGPT doesn't \"know\" anything. It has read enormous amounts of text and learned to predict which word is likely to come after the previous ones. It strings together plausible words, without understanding their meaning."
+        },
+        "visual": {
+          "title": "A next-word guesser",
+          "body": "Picture a game: I give you the start of a sentence, you offer the next word. \"The sky is…\" → \"blue\". ChatGPT plays this game at a huge scale, trained on billions of sentences. Each time it picks a likely word, then starts again with that new word. It's this repeated mechanism that gives the illusion of a conversation.",
+          "caption": "It doesn't think about the answer: it computes the most likely word."
+        },
+        "quiz": {
+          "question": "How does ChatGPT produce an answer?",
+          "options": [
+            "It looks up the truth in a database of verified facts",
+            "It feels the meaning of your question and thinks it over",
+            "It predicts, word after word, what is most likely to come next"
+          ],
+          "explanation": "ChatGPT is a text predictor: at each step it picks the most plausible word based on what it has read. It doesn't consult a database of truths and doesn't \"feel\" anything."
+        }
+      },
+      "lia-predictive": {
+        "title": "Predictive AI, the kind we build here",
+        "summary": "This is the heart of IBIS-X: teaching a machine to predict a category or a number from data.",
+        "visual": {
+          "title": "A question, some data, an answer",
+          "body": "Predictive AI starts from data you already have and answers a precise question. Two forms come up all the time. Predicting a category: is this email spam or not? Predicting a number: how much will this apartment cost? You provide past examples, the machine learns the link, then it answers on new cases.",
+          "caption": "Category or number: in both cases, we predict from the past."
+        },
+        "quiz": {
+          "question": "What do all predictive AIs have in common?",
+          "options": [
+            "They estimate an answer from past data",
+            "They invent brand-new text or images",
+            "They need to chat with a human to work"
+          ],
+          "explanation": "A predictive AI learns from past examples to estimate an answer on new cases. Creating content or holding a conversation is not its job."
+        }
+      },
+      "la-carte-des-ia": {
+        "title": "The map of AIs",
+        "summary": "Generative, predictive, but also recommendation and vision: a small map to put each AI in its place.",
+        "visual": {
+          "title": "Where does each AI belong?",
+          "body": "Think of a map with several continents. Generative makes new things: ChatGPT lives there. Predictive estimates an answer: your mailbox's spam filter is there. Other regions exist too, like recommendation (Netflix guessing the film you'll enjoy) or vision (recognizing a face in a photo). Many tools combine several regions.",
+          "caption": "One map, several continents: every AI has its address."
+        },
+        "quiz": {
+          "question": "Netflix suggesting a film mostly belongs to which family?",
+          "options": [
+            "Generative AI, because it creates a film for you",
+            "Recommendation, a cousin of predictive AI",
+            "None: these are just choices made by humans"
+          ],
+          "explanation": "Suggesting content based on your tastes is recommendation: a close relative of predictive AI. Netflix doesn't make the film and doesn't choose by hand for each subscriber."
+        }
+      },
+      "apprendre-par-lexemple": {
+        "title": "Learning by example",
+        "summary": "The secret isn't magic: we show the machine thousands of already-labeled examples, and it works out a rule.",
+        "visual": {
+          "title": "Thousands of labeled examples",
+          "body": "To learn to sort spam, we don't program rules by hand. We show the machine thousands of emails already marked \"spam\" or \"normal\". It gradually spots what tells the two apart, then applies what it has learned to an email it has never seen. It's like a child shown many cats until they can recognize an unfamiliar one.",
+          "caption": "Many corrected examples → a rule learned all on its own."
+        },
+        "quiz": {
+          "question": "What does the machine need in order to learn by example?",
+          "options": [
+            "A long list of rules written by an expert",
+            "Nothing: it figures it out on its own without data",
+            "Past examples already labeled with the right answer"
+          ],
+          "explanation": "Learning by example relies on past cases whose answer is already known. The machine derives the rule itself, without anyone writing it out."
+        }
+      },
+      "les-donnees-carburant": {
+        "title": "Data, the fuel",
+        "summary": "No data, no AI. But be careful: it's not quantity that matters most, it's quality.",
+        "myth": {
+          "myth": "To get a good AI, you just need to pile up as much data as possible.",
+          "reality": "More data doesn't mean a better AI. Data that is wrong, messy or unrepresentative can make results worse. A clean, well-chosen dataset beats a mountain of dubious data."
+        },
+        "visual": {
+          "title": "The machine's fuel",
+          "body": "Data is to AI what fuel is to a car: without it, nothing moves. But bad fuel damages the engine. Incomplete, biased or mislabeled data produces an AI that gets things wrong with confidence. So before training anything, we first check whether the data is clean and reliable.",
+          "caption": "Bad fuel, bad journey: quality comes before quantity."
+        },
+        "quiz": {
+          "question": "What matters most for training an AI well?",
+          "options": [
+            "The quality and reliability of the data",
+            "The largest possible volume of data, no exceptions",
+            "The speed of the computer doing the calculations"
+          ],
+          "explanation": "Clean, reliable, representative data matters more than raw quantity. A mountain of dubious data mostly leads to an AI that gets things wrong."
+        }
+      },
+      "un-modele-cest-quoi": {
+        "title": "What is a model?",
+        "summary": "The famous \"model\" is not a brain. It's a learned recipe, one you can inspect and reuse.",
+        "visual": {
+          "title": "A learned recipe, not a brain",
+          "body": "After training, everything the machine has learned is stored in one object: the model. See it as a cooking recipe drawn from thousands of trials. You give it ingredients (the data of a new case), it hands you a dish (the prediction). This model is a concrete file: you can download it, share it, reuse it and even inspect it to understand its choices.",
+          "caption": "A model = a learned recipe, stored in a file."
+        },
+        "quiz": {
+          "question": "What is an AI model, deep down?",
+          "options": [
+            "An electronic brain that is aware of what it does",
+            "A recipe learned from data, stored in a file",
+            "Just a copy of all the training data"
+          ],
+          "explanation": "A model is the outcome of learning: a recipe that turns inputs into a prediction. It's neither a conscious brain nor a mere copy of the data."
+        }
+      },
+      "lia-au-quotidien": {
+        "title": "AI in everyday life",
+        "summary": "Without realizing it, you cross paths with predictive AI several times a day. A quick tour.",
+        "visual": {
+          "title": "Already all around you",
+          "body": "Predictive AI works quietly throughout your day. Your mailbox filters out spam. Your bank blocks a payment that looks like fraud. A hospital flags the patients to watch first. A factory foresees that a machine is about to fail before it breaks. None of these AIs chat: they predict, silently, to help you.",
+          "caption": "The most useful AI is often the one you never see."
+        },
+        "quiz": {
+          "question": "Among these uses, which one relies on predictive AI?",
+          "options": [
+            "Software that writes a poem on request",
+            "A tool that generates an illustration for your presentation",
+            "A bank that blocks a suspicious payment in real time"
+          ],
+          "explanation": "Spotting a suspicious payment means estimating a risk from past data: that's prediction. Writing a poem or generating an illustration is generative work."
+        }
+      },
+      "ce-que-lia-ne-sait-pas": {
+        "title": "What AI doesn't know",
+        "summary": "AI is impressive, but it has real limits: no common sense, and mistakes as soon as you step outside what it has seen.",
+        "myth": {
+          "myth": "AI is neutral and infallible: if the machine says so, it must be true.",
+          "reality": "AI makes mistakes, sometimes with confidence. It has no common sense and generalizes poorly to situations too different from its examples. It also reflects the flaws in the data it learned from."
+        },
+        "visual": {
+          "title": "Solid in its lane, lost outside of it",
+          "body": "An AI trained on cases very close to reality can be excellent… as long as you stay in its lane. Take it out of what it has seen, and it still answers, often off the mark, never saying \"I don't know\". It has no common sense and no perspective: it applies a recipe. That's why a human must keep control over important decisions.",
+          "caption": "An AI doesn't doubt itself: it's up to you to keep a critical eye."
+        },
+        "quiz": {
+          "question": "What should you keep in mind when facing an AI's answer?",
+          "options": [
+            "It can be wrong, even when it sounds very sure",
+            "It is neutral and objective by nature",
+            "It always recognizes when it doesn't know the answer"
+          ],
+          "explanation": "An AI can be confident and wrong at the same time: it has no common sense and doesn't flag its own limits. A human eye remains essential."
+        }
+      },
+      "quand-lia-se-trompe": {
+        "title": "When AI gets it wrong",
+        "summary": "Its mistakes are not harmless: when an AI inherits the biases of its data, it can hurt real people.",
+        "visual": {
+          "title": "When data biases turn into injustices",
+          "body": "An AI learns from data produced by humans, with all their imbalances. A résumé-screening tool trained on an unbalanced past can unfairly reject certain profiles. A tool assisting in justice can reproduce the inequalities of past decisions. The AI then amplifies, at scale, biases that were already there. This is the starting point for thinking about ethics.",
+          "caption": "An AI doesn't invent its biases: it inherits them from the data."
+        },
+        "quiz": {
+          "question": "Where do an AI's biases most often come from?",
+          "options": [
+            "From the machine's own desire to do harm",
+            "From the unbalanced or unfair data it learned from",
+            "From a rare, purely technical calculation error"
+          ],
+          "explanation": "An AI reproduces the imbalances present in its training data. It has no will of its own: its biases reflect the past it was shown."
+        }
+      },
+      "lignes-et-colonnes": {
+        "title": "Rows and columns",
+        "summary": "A dataset is a table. Each row is an individual, each column a characteristic.",
+        "visual": {
+          "title": "The table, the basic building block",
+          "body": "Picture the passenger list of a ship. Each row describes one person: that's an observation. Each column describes the same characteristic for everyone: age, ticket class, sex. A dataset is nothing more than this table.",
+          "caption": "Rows = who / Columns = what."
+        },
+        "quiz": {
+          "question": "In a table of passengers, what does a row represent?",
+          "options": [
+            "A characteristic measured on everyone, such as age.",
+            "One passenger, with all of their characteristics.",
+            "The total number of passengers in the table."
+          ],
+          "explanation": "A row is one individual: an observation. Characteristics, on the other hand, are read down the columns."
+        }
+      },
+      "features-et-cible": {
+        "title": "Features and the target",
+        "summary": "Among the columns, some act as clues (the features) and one is the answer to guess (the target).",
+        "visual": {
+          "title": "The clues and the answer",
+          "body": "Back to the passenger table. Columns like age, class or sex are clues: we call them features. The column \"survived?\" is the answer we want to guess: that's the target. The model learns to link the clues to the answer.",
+          "caption": "Features = the clues / Target = the answer."
+        },
+        "quiz": {
+          "question": "We want to predict whether a passenger survived. Which column is the target?",
+          "options": [
+            "The \"survived?\" column, the answer to guess.",
+            "The \"age\" column, one clue among others.",
+            "All the columns at once, without distinction."
+          ],
+          "explanation": "The target is what we try to predict: here, survival. The other columns are the features that serve as clues."
+        }
+      },
+      "classification-vs-regression": {
+        "title": "Sort or measure?",
+        "summary": "Guessing a category (survives or not) is classification. Guessing a number (a price, a grade) is regression.",
+        "visual": {
+          "title": "Two ways to predict",
+          "body": "Sometimes we want to sort into boxes: did this passenger survive, yes or no? That answer is a category, and we call it classification. Other times we want a precise number: a ticket price, a student's grade. That's regression. The question you ask decides the type.",
+          "caption": "Category = sort / Number = measure."
+        },
+        "quiz": {
+          "question": "Predicting a student's exact grade out of 20, what kind of problem is that?",
+          "options": [
+            "Classification, because we're sorting students.",
+            "Neither one: a grade can't be predicted.",
+            "Regression, because the answer is a number."
+          ],
+          "explanation": "A grade out of 20 is a number: that's regression. If the answer were \"pass / fail\", it would be classification."
+        }
+      },
+      "dou-viennent-les-donnees": {
+        "title": "Where does data come from?",
+        "summary": "Before training anything, IBIS-X checks where the data comes from and scores it against ethical criteria.",
+        "visual": {
+          "title": "No data without a source",
+          "body": "Data doesn't fall from the sky: it comes from surveys, sensors, records. Before using it, IBIS-X gives it an ethics score. It looks at whether the sample truly represents the people concerned, whether consent was obtained, and whether biases exist. Poorly collected data yields an unfair model.",
+          "caption": "Judge the source before training."
+        },
+        "quiz": {
+          "question": "Why does IBIS-X score data against ethical criteria before using it?",
+          "options": [
+            "To make training faster.",
+            "Because biased or non-consented data leads to an unfair model.",
+            "Because it's required in order to open a file."
+          ],
+          "explanation": "The ethical quality of the source rubs off on the model: bias, representativeness and consent matter as much as the numbers."
+        }
+      },
+      "train-test": {
+        "title": "Training and testing",
+        "summary": "We hide part of the data to test the model on it, like an exam whose questions you haven't seen.",
+        "visual": {
+          "title": "The exam analogy",
+          "body": "We split the table in two. The larger part is used to train the model: that's its revision. The other part, which it has never seen, is used to test it: that's exam day. If we quizzed it on its revision, it would score full marks while proving nothing. Hiding a part is the only way to measure honestly.",
+          "caption": "You don't revise on the exam paper itself."
+        },
+        "quiz": {
+          "question": "Why keep test data that the model has never seen?",
+          "options": [
+            "To honestly check whether it can generalize to something new.",
+            "So it learns twice and remembers better.",
+            "Because a table is always too big to process fully."
+          ],
+          "explanation": "Testing on unseen data is like an exam: it measures what the model truly understood, not what it memorized."
+        }
+      },
+      "la-qualite-des-donnees": {
+        "title": "Data quality",
+        "summary": "Gaps, omissions, a badly chosen sample: the quality of the data decides everything.",
+        "myth": {
+          "myth": "Data is objective: it's numbers, so it's neutral.",
+          "reality": "No. Data reflects who collected it and about whom. A badly chosen sample or missing values introduce very real biases."
+        },
+        "visual": {
+          "title": "Data is never perfect",
+          "body": "In a real table, some cells are empty: an unrecorded age, a missing grade. These are called missing values. And if only some of the people were surveyed, the sample leans to one side. A model fed with shaky data learns, in turn, in a skewed way.",
+          "caption": "Shaky data, shaky model."
+        },
+        "quiz": {
+          "question": "A dataset contains only first-class passengers. What is the risk?",
+          "options": [
+            "None: the more alike the data, the better.",
+            "The model will just be slower to train.",
+            "The sample is biased: the model will generalize poorly to other classes."
+          ],
+          "explanation": "A sample that represents only part of the population biases the model. Quantity never replaces representativeness."
+        }
+      },
+      "quest-ce-quentrainer": {
+        "title": "What does training mean?",
+        "summary": "Training a model means gradually adjusting a recipe so it fits the examples, without cheating.",
+        "visual": {
+          "title": "Adjusting a recipe",
+          "body": "Training isn't magic. We show the model examples whose answers we know. With every mistake, it adjusts its recipe a little to be wrong less often next time. Bit by bit, the recipe fits the examples better. The goal isn't to memorize, but to draw out a rule that will work on new cases.",
+          "caption": "Be wrong less, example after example."
+        },
+        "quiz": {
+          "question": "What does a model do during training?",
+          "options": [
+            "It copies the table to find it again later.",
+            "It adjusts its recipe to reduce its errors on the examples.",
+            "It invents new columns on its own."
+          ],
+          "explanation": "Training means gradually correcting the recipe to be wrong less and less, rather than simply memorizing."
+        }
+      },
+      "larbre-de-decision": {
+        "title": "The decision tree",
+        "summary": "The decision tree is the most readable model: a simple series of yes/no questions. It's a real IBIS-X algorithm.",
+        "visual": {
+          "title": "A series of yes/no questions",
+          "body": "A decision tree asks questions in a cascade. Is this a woman? If yes, one branch; if no, another. Was she travelling in first class? Each answer leads to a new question, until a decision: survives or not. It's readable, you can follow the path with your finger. And it's no toy: IBIS-X trains real trees.",
+          "caption": "Follow the branches down to the answer."
+        },
+        "quiz": {
+          "question": "Why is the decision tree called a readable model?",
+          "options": [
+            "You can follow the series of yes/no questions leading to its decision.",
+            "Because it only ever uses a single column.",
+            "Because it always gives the right answer."
+          ],
+          "explanation": "A tree traces a path of simple questions you can reread step by step. That's what makes it transparent, unlike other models."
+        }
+      },
+      "ta-premiere-enquete": {
+        "title": "Your first investigation",
+        "summary": "You have the landmarks. It's time to train a real model on a real dataset.",
+        "visual": {
+          "title": "Your last landmarks",
+          "body": "Let's recap. A dataset is a table: rows (the individuals) and columns (the characteristics). Among them, the features are the clues and the target is the answer. We separate training and testing to stay honest. And the decision tree, readable, learns a series of questions. You have everything you need to get started.",
+          "caption": "Landmarks in hand, on to practice."
+        },
+        "practice": {
+          "title": "Run the Titanic investigation",
+          "body": "Move to practice with the Titanic challenge. From 891 real passengers, you'll train a real decision tree, get a real result, and discover what weighed most on survival. No simulation: the model is real, the training reproducible. Ready to run your first investigation?"
+        }
+      },
+      "valeurs-manquantes": {
+        "title": "Missing values",
+        "summary": "In real life, some cells stay empty. Two choices: drop the row, or fill it in smartly.",
+        "visual": {
+          "title": "Empty cells in the table",
+          "body": "Picture a file of medical records: for some patients, age or weight was never recorded. The model doesn't know what to do with an empty cell. You have two options. Drop the rows with holes — simple, but you lose examples. Or impute: fill the gap with a reasonable value, using the mean, the median, or finer methods like KNN and MICE. IBIS-X can do all of this for real.",
+          "caption": "An empty cell: drop it, or fill it in smartly."
+        },
+        "quiz": {
+          "question": "Some patients have no age recorded. What can you do in IBIS-X?",
+          "options": [
+            "Nothing: the model ignores empty cells on its own, no action needed.",
+            "Impute the missing value, for instance with the median of the known ages.",
+            "Replace every empty cell with a zero — it's always the best solution."
+          ],
+          "explanation": "Imputing means filling the gap with a reasonable value (mean, median, KNN, MICE). The model doesn't handle empty cells by itself, and dropping in a zero often distorts the result."
+        }
+      },
+      "encoder-les-categories": {
+        "title": "Encoding categories",
+        "summary": "A model only understands numbers. Words like “red” or “female” have to become figures.",
+        "visual": {
+          "title": "From text to numbers",
+          "body": "A model only eats numbers: it can't read “red”, “green” or “blue”. So you have to translate these categories into figures. Two ways to do it. One-hot creates one column per category (is it red? yes/no), ideal when there's no order. Ordinal encoding places the categories on a scale (small < medium < large), when order makes sense. IBIS-X really applies both of these encodings.",
+          "caption": "“red”, “green”, “blue” → columns of numbers."
+        },
+        "quiz": {
+          "question": "Why must you encode a “color” column that contains “red”, “green”, “blue”?",
+          "options": [
+            "Because a model only handles numbers, not text.",
+            "Because colors take up too much memory.",
+            "Because a column must always be reduced to a single value."
+          ],
+          "explanation": "A model can only compute with numbers. So you turn “red/green/blue” into figures, via one-hot (one column per category) or ordinal encoding (when an order exists)."
+        }
+      },
+      "mettre-a-lechelle": {
+        "title": "Scaling",
+        "summary": "A salary runs into the thousands, an age up to a hundred. Without care, the big column crushes the small one.",
+        "visual": {
+          "title": "Everyone on the same scale",
+          "body": "Picture two columns: age (0 to 100) and salary (0 to 5000). For some models, the column with big numbers automatically weighs more — salary crushes age, just because its figures are larger. Scaling means bringing every column into a comparable range, so none dominates because of its unit. IBIS-X offers several real recipes: standard, minmax and robust.",
+          "caption": "Big column, small column: back on equal footing."
+        },
+        "quiz": {
+          "question": "Why scale age and salary before training?",
+          "options": [
+            "To remove the missing values from these columns.",
+            "To turn these numbers into readable categories.",
+            "To keep the column with big numbers from crushing the others."
+          ],
+          "explanation": "Without scaling, a column with big numbers (salary) weighs more than a small one (age), purely because of its unit. Standard, minmax or robust bring them into a comparable range."
+        }
+      },
+      "la-fuite-de-donnees": {
+        "title": "Data leakage",
+        "summary": "A near-perfect score isn't always good news. Sometimes a column “cheats” without you noticing.",
+        "myth": {
+          "myth": "My model gets 99% right: it must be an excellent model.",
+          "reality": "A score that's too good sometimes hides cheating. If a column holds a clue that wouldn't be available at the moment of the real prediction, the model “sees the answer” ahead of time. Its score is inflated, but it will collapse in real life."
+        },
+        "visual": {
+          "title": "When a column gives the answer",
+          "body": "Data leakage is when information that shouldn't be there slips into training. Example: to predict whether a patient is ill, a “prescribed treatment” column is already filled in. The model learns “treatment filled = ill” and gets a huge score — but in real life, at prediction time, that treatment doesn't exist yet. To prevent this, IBIS-X fits its preparations (imputation, encoding, scaling) only on the training data, never on the test data.",
+          "caption": "A clue that won't be there for real: the score lies."
+        },
+        "quiz": {
+          "question": "How does IBIS-X limit data leakage?",
+          "options": [
+            "By fitting the preparations only on the training data, never on the test set.",
+            "By always picking the model that gets the highest score.",
+            "By removing every numeric column from the dataset."
+          ],
+          "explanation": "Leakage happens when information from the test set “leaks” into training. IBIS-X computes its transformations only on the training data, then applies them to the test set: the test stays an honest exam."
+        }
+      },
+      "de-larbre-a-la-foret": {
+        "title": "From tree to forest",
+        "summary": "A single decision tree can be wrong. Hundreds of trees voting together are wrong less often.",
+        "visual": {
+          "title": "The wisdom of the crowd",
+          "body": "A decision tree asks a series of questions (“is age above 50?”) to reach a prediction. Simple, but a single tree is fragile: it can be tripped up by one detail. A random forest trains hundreds of slightly different trees, then has them vote. The majority answer is more stable and more robust — like a jury beats a single judge. Decision tree and random forest are two real IBIS-X models.",
+          "caption": "Many trees voting: sturdier than one alone."
+        },
+        "quiz": {
+          "question": "What is a random forest?",
+          "options": [
+            "A single decision tree, only much bigger.",
+            "Many slightly different trees that vote for a shared answer.",
+            "A method for filling in the dataset's missing values."
+          ],
+          "explanation": "A random forest gathers hundreds of trees and has their predictions vote. This “wisdom of the crowd” makes it more robust than a single tree."
+        }
+      },
+      "la-regression-logistique": {
+        "title": "Logistic regression",
+        "summary": "A model that gives a numeric weight to each variable — the researchers' language for reading how much each factor matters.",
+        "visual": {
+          "title": "A weight for each variable",
+          "body": "Logistic regression gives each variable a weight, called a coefficient. Its sign tells the direction (this factor raises or lowers the risk) and its size tells the importance. It's researchers' favourite language, because it reads and explains easily. Honesty: this coefficient-based model isn't available yet in the IBIS-X pipeline — it's coming. We explain it here to help you understand, without pretending you can run it right away.",
+          "caption": "Each variable gets a coefficient: direction and importance."
+        },
+        "quiz": {
+          "question": "What does a variable's coefficient tell you in a logistic regression?",
+          "options": [
+            "It automatically fills in the variable's missing values.",
+            "It turns the variable into an image the model can read.",
+            "It shows the direction and importance of that variable in the prediction."
+          ],
+          "explanation": "The coefficient gives the direction (through its sign) and the weight (through its size) of a variable. That's what makes logistic regression so readable. Note: this model isn't available in IBIS-X yet, it's coming."
+        }
+      },
+      "comment-choisir-un-algo": {
+        "title": "How to choose an algorithm",
+        "summary": "There's no perfect algorithm for everything. The right choice depends on your data and what you're after.",
+        "myth": {
+          "myth": "There's a single best algorithm overall, one to use every time.",
+          "reality": "No model wins every time. A very high-performing algorithm can be unreadable; a very clear one can be less accurate. The right choice depends on your data, on your priority (understanding or performing), and is settled by comparing."
+        },
+        "visual": {
+          "title": "A trade-off, not a champion",
+          "body": "Choosing an algorithm means weighing three things. Readability: can you explain its decisions? Performance: is it often wrong? Data: do you have enough, and in what shape? A single tree is very readable but sometimes less accurate; a random forest often performs better but explains itself less. The right method: try several models on your data and compare their results — which is exactly what IBIS-X lets you do.",
+          "caption": "Readability, performance, data: weigh, try, compare."
+        },
+        "quiz": {
+          "question": "How do you choose the right algorithm for a problem?",
+          "options": [
+            "By trying several models on your data and comparing the results.",
+            "By always taking the same algorithm, reputed to be best everywhere.",
+            "By picking the one with the most recent name."
+          ],
+          "explanation": "No algorithm is best in the absolute: it's all a trade-off between readability, performance and data. You try several models and compare their results on your own dataset."
+        }
+      },
+      "laccuracy-et-son-piege": {
+        "title": "Accuracy and its trap",
+        "summary": "99% correct can hide a useless model. See why accuracy, on its own, can lie.",
+        "myth": {
+          "myth": "99% correct answers has to mean an excellent model.",
+          "reality": "Not always. Picture a rare disease: 99 people out of 100 are healthy. A model that answers \"healthy\" to everyone has 99% accuracy… and misses 100% of the sick. The score shines, but the model is useless."
+        },
+        "visual": {
+          "title": "Accuracy can lie",
+          "body": "Accuracy simply counts the share of correct answers. When one class is far rarer than the other, that number becomes misleading. A lazy model that always predicts the common case earns a huge score without ever spotting what really matters.",
+          "caption": "A high score is only reassuring when the classes are balanced."
+        },
+        "quiz": {
+          "question": "Out of 1,000 people, 10 of whom are sick, a model says \"healthy\" to everyone. What is its accuracy, and its problem?",
+          "options": [
+            "Low accuracy, so the model is bad and easy to spot.",
+            "Accuracy of 99%, but it detects no sick person: the score hides the failure.",
+            "Accuracy of 50%, because there are two possible classes."
+          ],
+          "explanation": "It is right about the 990 healthy people, so 99% accuracy. But it misses all 10 sick people. With imbalanced classes, accuracy alone is never enough to judge a model."
+        }
+      },
+      "precision-rappel-f1": {
+        "title": "Precision, recall, F1",
+        "summary": "Two questions accuracy never asks: when the model says “yes,” is it right? and does it catch every real case?",
+        "visual": {
+          "title": "Precision and recall: two different questions",
+          "body": "Precision asks: when the model says \"positive\", is it right? Recall asks: out of all the true positives, how many does it catch? A screening test can raise the alarm often (good recall) but be wrong a lot (low precision), or the reverse. The F1 combines the two into a single number to summarize them.",
+          "caption": "Precision = am I right when I alert? Recall = am I missing cases? F1 = the balance of the two."
+        },
+        "quiz": {
+          "question": "A screening test wants above all to miss no sick person, even at the cost of a few false alarms. Which metric should it favor?",
+          "options": [
+            "Precision, so it only alerts when it is certain.",
+            "Accuracy, since it sums up everything on its own.",
+            "Recall, to catch as many true sick people as possible."
+          ],
+          "explanation": "Missing no sick person means maximizing recall: catching all the true positives. You then accept a few false alarms (lower precision). The F1 helps you see whether the balance stays reasonable."
+        }
+      },
+      "la-matrice-de-confusion": {
+        "title": "The confusion matrix",
+        "summary": "A four-cell table that shows not just how often the model is wrong, but how. Yours to play with.",
+        "visual": {
+          "title": "The four cells of truth",
+          "body": "The confusion matrix sorts every prediction into a four-cell table: true positives, false positives, true negatives, false negatives. At a glance you see not only how often the model is wrong, but above all how it is wrong. Try it yourself just below: move the decision threshold and watch the four cells fill and empty in real time.",
+          "caption": "The four cells tell you the type of error, not just how many."
+        },
+        "quiz": {
+          "question": "In a confusion matrix, what does a \"false negative\" represent?",
+          "options": [
+            "A true positive case the model wrongly labeled \"negative\": it missed it.",
+            "A negative case correctly labeled \"negative\".",
+            "A false alarm: a healthy case labeled \"positive\"."
+          ],
+          "explanation": "A false negative is a true positive that the model let slip by calling it \"negative\". In screening, these are the missed sick people: often the most serious error to watch."
+        }
+      },
+      "le-surapprentissage": {
+        "title": "Overfitting",
+        "summary": "A model that memorizes its data can fail on anything new. Watch the gap widen live.",
+        "myth": {
+          "myth": "My model is perfect on my data, so it is perfect.",
+          "reality": "A model can learn your examples by heart, details and randomness included, instead of learning the general rule. It shines on what it already knows and collapses on anything new. That is overfitting: a student who recites the answer key but freezes on the slightest unfamiliar exercise."
+        },
+        "visual": {
+          "title": "Learn the rule, don't recite it",
+          "body": "A good model captures the underlying trend; an overfit model clings to every point, noise included. The real question is never \"is it good on the training data?\" but \"does it hold up on data it has never seen?\". Try it yourself just below: increase the model's depth and watch it move from a reasonable curve to a line that contorts itself to memorize everything.",
+          "caption": "The more a model hugs every detail, the more it risks having learned by heart."
+        },
+        "quiz": {
+          "question": "A model gets 100% right on the training data but 60% on new data. What is probably happening?",
+          "options": [
+            "It is excellent: 100% proves it understood everything.",
+            "It is overfitting: it memorized the training set instead of learning the general rule.",
+            "The new data must be faulty."
+          ],
+          "explanation": "A huge gap between training and new data is the signature of overfitting. The model memorized the examples by heart; it cannot generalize. Only the score on never-seen data truly counts."
+        }
+      },
+      "la-boite-noire": {
+        "title": "The black box",
+        "summary": "Some models decide without showing why. Why that's a problem — and what we can do about it.",
+        "visual": {
+          "title": "Deciding without showing why",
+          "body": "Some models are a black box: they give an answer, but without letting you see the reasoning that leads to it. As long as everything goes well, we live with it. But as soon as you need to trust it, justify a decision before the law, or fix a mistake, not understanding the \"why\" becomes a real problem.",
+          "caption": "An answer without an explanation is hard to check, to defend, and to repair."
+        },
+        "quiz": {
+          "question": "Why is a \"black box\" decision a problem in a sensitive context, for instance to deny a loan?",
+          "options": [
+            "Because a black box is always less accurate than a simple model.",
+            "Because you can neither justify the decision, nor contest it, nor spot an error or a bias.",
+            "Because a black-box model can never be wrong."
+          ],
+          "explanation": "The issue is not accuracy but opacity. Without seeing the why, you cannot justify the decision to the person, contest it fairly, or detect a bias. Hence the need to open the box."
+        }
+      },
+      "importance-et-shap": {
+        "title": "Feature importance and SHAP",
+        "summary": "Which variables weighed most on a decision? IBIS-X can measure it and show you.",
+        "visual": {
+          "title": "Seeing what tipped the scales",
+          "body": "To open the box, we measure which variables weighed most on a decision. Variable importance ranks the factors from most to least influential. SHAP goes further: for a specific case, it shows what pushed the decision toward \"yes\" and what pulled it toward \"no\". IBIS-X really computes these values on your model.",
+          "caption": "Importance = which factors matter most. SHAP = how each one pushed a specific decision."
+        },
+        "quiz": {
+          "question": "What does SHAP give you that global variable importance does not?",
+          "options": [
+            "It explains, case by case, what pushed the decision toward one outcome or the other.",
+            "It guarantees the model is never wrong about this case.",
+            "It proves which variable is the real cause of the outcome."
+          ],
+          "explanation": "Global importance gives an overall ranking. SHAP drops down to an individual case and shows each variable's contribution to that particular decision. Beware: it shows influence, not cause."
+        }
+      },
+      "importance-nest-pas-cause": {
+        "title": "Importance is not cause",
+        "summary": "The most important guardrail of the track: what a model uses is not what causes the outcome.",
+        "myth": {
+          "myth": "SHAP tells me what CAUSES the outcome.",
+          "reality": "No. SHAP shows what the model USES to decide, not what actually causes things in the world. If the model relies on a variable that is merely correlated with the outcome, SHAP will highlight it without it being the cause. Correlation is not causation: the honesty guardrail never to forget."
+        },
+        "visual": {
+          "title": "What the model uses ≠ what causes",
+          "body": "A model can lean heavily on a variable that accompanies the outcome without causing it. Example: ice-cream sales rise at the same time as drownings, because it is hot; ice cream does not cause drowning. SHAP would say \"ice cream weighs a lot\" without it being the cause. Always read explainability as \"what the model looks at\", never as proof of cause and effect.",
+          "caption": "SHAP lights up the model's reasoning, not the real world's laws of cause and effect."
+        },
+        "quiz": {
+          "question": "SHAP shows that the variable \"number of absences\" weighs heavily in the prediction of school dropout. What can you conclude?",
+          "options": [
+            "That reducing absences will automatically lower dropout.",
+            "That absences are the proven cause of dropout.",
+            "That the model relies heavily on this variable, without that proving any cause-and-effect link."
+          ],
+          "explanation": "SHAP reveals what the model uses, not what causes what. Absences may be a sign accompanying other real difficulties. Concluding a cause would require an entirely different study. Correlation is not causation."
+        }
+      },
+      "ta-deuxieme-enquete": {
+        "title": "Your second investigation",
+        "summary": "You can prepare, evaluate and explain. Put it all to work on real student data.",
+        "visual": {
+          "title": "Ready for a real investigation",
+          "body": "You now know how to read a model without being fooled: spot the accuracy trap, weigh precision and recall, read the confusion matrix, flush out overfitting, then open the box with importance and SHAP, without confusing influence with cause. It is time to move from theory to a real investigation on real data.",
+          "caption": "You have the tools to judge a model honestly and understand its decisions."
+        },
+        "practice": {
+          "title": "Run the \"school dropout\" investigation",
+          "body": "Launch the \"school dropout\" Challenge: you will work on real student data, train a real model, evaluate it honestly (accuracy, precision, recall, F1, confusion matrix) and read why it decides thanks to variable importance and SHAP. No simulation: the model is real and the result reproducible. It is up to you to run the investigation from start to finish."
+        }
+      },
+      "un-seul-split-est-fragile": {
+        "title": "A single split is fragile",
+        "summary": "Testing on one sample is a coin toss. Cross-validation replays several splits.",
+        "visual": {
+          "title": "A single split, a shaky result",
+          "body": "When you cut your data once into \"training\" and \"test\", the score depends heavily on the luck of that cut. Land on an easy test set and your model shines; land on a hard one and it disappoints. Cross-validation (k-fold) replays several different splits and averages them. You get a more stable result, less at the mercy of chance.",
+          "caption": "A single split is a snapshot; cross-validation is a film."
+        },
+        "quiz": {
+          "question": "Why does cross-validation give a more reliable result than a single split?",
+          "options": [
+            "Because it uses a more powerful model",
+            "Because it replays several splits and averages the scores",
+            "Because it removes the difficult data"
+          ],
+          "explanation": "Cross-validation doesn't improve the model: it tests on several splits and averages them, which reduces the effect of a single split's luck. Note: it isn't in the IBIS-X pipeline yet, it's on the roadmap. We explain it here to understand the logic."
+        }
+      },
+      "intervalles-de-confiance": {
+        "title": "Confidence intervals",
+        "summary": "“82%” means little without a margin. Meet the “± how much” that makes a number serious.",
+        "visual": {
+          "title": "\"82%\", sure, but give or take how much?",
+          "body": "Claiming \"my model reaches 82%\" with no margin promises a precision you don't actually know. The confidence interval adds the range: \"82% ± 3%\" honestly says where the true value lies. The smaller the sample, the wider the range. An interval that overlaps another model's means you can't tell them apart.",
+          "caption": "A bare number hides its uncertainty; the interval reveals it."
+        },
+        "quiz": {
+          "question": "What does a confidence interval tell you that the number \"82%\" alone does not?",
+          "options": [
+            "The size of the uncertainty around that number",
+            "The name of the algorithm used",
+            "The model's training time"
+          ],
+          "explanation": "The confidence interval quantifies the margin of error around the score: \"82% ± how much\". That's what lets you say whether two models really differ. Honesty: this calculation isn't part of the IBIS-X pipeline yet, it's coming."
+        }
+      },
+      "la-reproductibilite": {
+        "title": "Reproducibility",
+        "summary": "Same data, same seed, same result: what makes an analysis verifiable — and it's native in IBIS-X.",
+        "visual": {
+          "title": "Same seeds, same fruit",
+          "body": "Many algorithms contain randomness: data order, initialization, random draws. Without control, two training runs give two slightly different results. By fixing the random seed (random_state=42), you force the randomness to repeat identically. In IBIS-X this is real and native: same data + same seed → exactly the same result, every time.",
+          "caption": "The seed pins down the randomness: the result becomes replayable."
+        },
+        "quiz": {
+          "question": "What does a fixed random seed (random_state=42) guarantee in IBIS-X?",
+          "options": [
+            "That the model will necessarily be more accurate",
+            "That training will run faster",
+            "That the same training run reproduces exactly the same result"
+          ],
+          "explanation": "Fixing the seed makes randomness reproducible: same data and same seed produce the same result, neither more accurate nor faster. This is real and native in IBIS-X, the foundation of any defensible result."
+        }
+      },
+      "dou-viennent-les-biais": {
+        "title": "Where bias comes from",
+        "summary": "A model doesn't invent its prejudices: it inherits them from data and society. Let's see how.",
+        "visual": {
+          "title": "The model learns the world as it is, injustices included",
+          "body": "A model doesn't invent its biases: it inherits them. Historical data shaped by past discrimination teaches it to reproduce them. A non-representative sample (an under-represented group) makes it blind to that group. And a feedback loop — the model shapes the future data it then re-learns from — amplifies the whole thing.",
+          "caption": "Unfair data in, unfair decisions out."
+        },
+        "quiz": {
+          "question": "What is a major source of a model's bias?",
+          "options": [
+            "The programming language used",
+            "Historical data that reflects past injustices",
+            "Having fixed a random seed"
+          ],
+          "explanation": "Bias comes mainly from data and society: unfair history, non-representative samples, feedback loops. Neither the language nor the seed is the cause — the seed only makes the result reproducible."
+        }
+      },
+      "auditer-lequite": {
+        "title": "Auditing fairness",
+        "summary": "A good overall score can hide unfairness toward a group. Learn to measure it.",
+        "visual": {
+          "title": "Does it treat everyone fairly?",
+          "body": "Auditing fairness means checking that a model doesn't systematically disadvantage a group. Two key ideas: parity (comparable decision rates across groups) and equality of opportunity (in equal situations, equal chances of a good outcome). In IBIS-X it's concrete: the Fairness Challenges have you audit bias via XAI (SHAP, importance) on real datasets.",
+          "caption": "Auditing isn't taking the model at its word: it's measuring it."
+        },
+        "quiz": {
+          "question": "What does auditing a model's fairness mean?",
+          "options": [
+            "Measuring whether it treats the different groups fairly",
+            "Checking that it runs fast enough",
+            "Making sure it uses every available column"
+          ],
+          "explanation": "Auditing fairness means measuring how groups are treated (parity, equality of opportunity), not speed or column count. In IBIS-X this audit is done for real via XAI in the Fairness Challenges."
+        }
+      },
+      "anatomie-dun-fiasco": {
+        "title": "Anatomy of a fiasco",
+        "summary": "A real case where an algorithm harmed people — and what it teaches us.",
+        "case": {
+          "title": "COMPAS: a recidivism score with racial bias",
+          "context": "In the United States, the COMPAS tool assigns defendants a \"risk score\" for reoffending, used to inform judicial decisions (bail, sentencing). In 2016, ProPublica's investigation analyzed thousands of scores in Florida and compared them to actual reoffending.",
+          "problem": "The investigation showed that, at equal future behavior, Black defendants were far more often wrongly labeled \"high risk\", while white defendants were more often wrongly labeled \"low risk\". The model had learned from the historical data of an already unequal justice system, and it reproduced that inequality under the guise of numerical neutrality.",
+          "takeaway": "A score isn't neutral just because it's a number. Without a per-group fairness audit, a model can launder discrimination by presenting it as objective. Always confront the model's errors with the affected groups, not just overall accuracy."
+        },
+        "quiz": {
+          "question": "What was the central problem ProPublica revealed about COMPAS in 2016?",
+          "options": [
+            "The model was too slow to be used in court",
+            "The model completely ignored past reoffending",
+            "The model wrongly labeled Black defendants \"high risk\" far more often"
+          ],
+          "explanation": "ProPublica showed a racial bias: at comparable future behavior, Black defendants were more often wrongly tagged \"high risk\". The problem wasn't speed or ignoring reoffending, but unequal treatment inherited from unfair historical data."
+        }
+      },
+      "ta-troisieme-enquete": {
+        "title": "Your third investigation",
+        "summary": "You can measure and doubt. Put it to the test: audit the bias of a real model.",
+        "visual": {
+          "title": "From theory to a real bias audit",
+          "body": "You've seen where bias comes from and how to name it. Time to practice on real data. The Adult Census (income) dataset is used to predict whether a person earns above a certain threshold. You'll train a real, reproducible model, then inspect what it relies on to decide.",
+          "caption": "Move from concept to proof: a real model, a measurable bias."
+        },
+        "practice": {
+          "title": "Challenge: audit fairness on income (Adult Census)",
+          "body": "Launch the Fairness Audit Challenge: train a real model on Adult Census (reproducible result, random_state=42), then open the XAI (SHAP, importance) to see which variables drive the decision. Spot whether sensitive attributes — gender, origin — carry unusual weight. Compare treatment across groups and state your bias finding, with evidence. It's all real: the model, the numbers, the downloadable .joblib."
+        }
+      },
+      "correlation-nest-pas-causalite": {
+        "title": "Correlation is not causation",
+        "summary": "Two curves rising together prove nothing. The costliest mistake in analysis.",
+        "myth": {
+          "myth": "If two things move together, one necessarily causes the other.",
+          "reality": "Two variables can rise and fall together with no direct link: often a hidden third cause pulls both. Correlation is a clue, never proof of causation."
+        },
+        "visual": {
+          "title": "Ice cream doesn't cause drownings",
+          "body": "In summer, ice cream sales go up. In summer, drownings go up too. The two curves track each other almost perfectly: strong correlation. Yet no one drowns because of a cone. The real cause, hidden behind both, is the heat: it drives people to eat ice cream AND to go swimming. This is called a spurious correlation.",
+          "caption": "A hidden variable (summer) can create a link that isn't there."
+        },
+        "quiz": {
+          "question": "Ice cream sales and drownings rise together. What can we conclude?",
+          "options": [
+            "A hidden common cause (summer heat) explains both",
+            "Ice cream makes swimming dangerous",
+            "Cutting ice cream sales would lower drownings"
+          ],
+          "explanation": "This is a spurious correlation: a third variable, summer heat, drives both. Neither causes the other, and acting on ice cream would do nothing to drownings."
+        }
+      },
+      "les-trois-registres": {
+        "title": "Predict, explain, act",
+        "summary": "Three questions people constantly confuse — and what IBIS-X can, or can't, answer.",
+        "visual": {
+          "title": "Three questions we too often confuse",
+          "body": "Predicting asks \"what will happen?\" — the model just needs to hit the target. Explaining/inferring asks \"what effect does X really have?\" — we're after understanding. Acting/causing asks \"if I change X, does Y move?\" — the most demanding question. IBIS-X is solid on prediction and explainability (SHAP, importance); causal inference (difference-in-differences, instrumental variables) isn't there yet. Know where the boundary lies.",
+          "caption": "Predict ≠ explain ≠ cause: three questions, three demands."
+        },
+        "quiz": {
+          "question": "Which register answers \"if I change X, does Y change?\"",
+          "options": [
+            "Prediction",
+            "Action / causation",
+            "Reproducibility"
+          ],
+          "explanation": "\"If I change X, does Y move?\" is the causal question (acting). Predicting only aims to anticipate, and reproducibility isn't a type of question. IBIS-X covers prediction and explainability, but not causal inference yet."
+        }
+      },
+      "lempreinte-de-reproductibilite": {
+        "title": "The reproducibility fingerprint",
+        "summary": "Data, versions, seed: the trail that makes your result defensible.",
+        "visual": {
+          "title": "The fingerprint that makes a result defensible",
+          "body": "A credible result can be replayed by someone else. For that, you must trace three things: the exact data used, the versions of the tools, and the random seed. That's the reproducibility fingerprint. In IBIS-X you can already download the trained model as a reproducible .joblib file: a concrete building block of that fingerprint.",
+          "caption": "Data + versions + seed = a result you can replay."
+        },
+        "quiz": {
+          "question": "What must you trace for a result to be reproducible?",
+          "options": [
+            "Only the final score obtained",
+            "The name of the person who ran the model",
+            "The data, the versions of the tools and the random seed"
+          ],
+          "explanation": "The reproducibility fingerprint is data + versions + seed — not just the score or the author. IBIS-X already contributes to it by letting you download the reproducible .joblib model."
+        }
+      },
+      "vers-un-resultat-citable": {
+        "title": "Toward a citable result",
+        "summary": "From a model to a result you can publish: method, limits, honesty.",
+        "visual": {
+          "title": "From a model to a result you can cite",
+          "body": "A model that runs isn't yet a citable result. For it to be referenced, you need the method (what you did, with which data), the limits (what the model can't do) and honesty about the uncertainties. In IBIS-X, the reproducible model and the XAI audit already give you material; the full exportable report, though, is still on the roadmap.",
+          "caption": "Method + limits + honesty = a result you can publish."
+        },
+        "quiz": {
+          "question": "What sets a citable result apart from a model that merely runs?",
+          "options": [
+            "A documented method, stated limits and honesty about uncertainty",
+            "Having obtained the highest possible score",
+            "Having used the newest algorithm"
+          ],
+          "explanation": "A citable result rests on a traceable method, owned limits and honesty — not the highest score or the newest algorithm. In IBIS-X, the full exportable report is still to come: better to say so plainly."
+        }
+      }
+    },
+    "notions": {
+      "ia-generative-vs-predictive": {
+        "term": "Generative AI vs predictive AI",
+        "definition": "Generative AI creates brand-new content (text, image, sound). Predictive AI estimates a value or a category from past examples.",
+        "example": "ChatGPT writes a poem (generative); your bank blocks a suspicious payment (predictive)."
+      },
+      "llm-predicteur": {
+        "term": "Language model (LLM)",
+        "definition": "A language model is an AI trained on huge amounts of text to predict the most likely word after the previous ones. It strings together plausible words without understanding their meaning.",
+        "example": "ChatGPT completes \"The sky is…\" with \"blue\" because that word is the most likely, not because it sees the sky."
+      },
+      "ia-predictive": {
+        "term": "Predictive AI",
+        "definition": "An AI that learns from past examples to estimate a category or a number on new cases. It's the family at the heart of IBIS-X.",
+        "example": "From past property listings, predicting the price of an apartment put up for sale today."
+      },
+      "familles-ia": {
+        "term": "Families of AI",
+        "definition": "The broad categories of AI based on what they do: generative (create), predictive (estimate), recommendation (suggest), vision (recognize images), and others still.",
+        "example": "ChatGPT is generative, the spam filter is predictive, Netflix's suggestions are recommendation."
+      },
+      "apprentissage-supervise": {
+        "term": "Learning by example",
+        "definition": "A way of training an AI by showing it many examples already labeled with the right answer. The machine works out a rule it can apply to new cases.",
+        "example": "Showing thousands of emails marked \"spam\" or \"normal\" so it learns to sort an unknown email."
+      },
+      "donnees-carburant": {
+        "term": "Data",
+        "definition": "The past examples used to train an AI. Without them no learning is possible; their quality matters more than their quantity.",
+        "example": "Several years of temperature readings used to predict tomorrow's weather."
+      },
+      "modele": {
+        "term": "Model",
+        "definition": "The concrete result of training: a learned recipe that turns a case's data into a prediction. It can be downloaded, shared and inspected.",
+        "example": "The spam-filter model file that, given an email, answers \"spam\" or \"normal\"."
+      },
+      "ia-quotidien": {
+        "term": "AI in everyday life",
+        "definition": "The concrete and often invisible uses of predictive AI in daily life: mailboxes, banking, health, industry.",
+        "example": "Your bank blocking, in real time, an unusual payment that looks like fraud."
+      },
+      "limites-ia": {
+        "term": "Limits of AI",
+        "definition": "What AI cannot do: it has no common sense, generalizes poorly outside its examples, and doesn't recognize its own mistakes.",
+        "example": "An AI very reliable on its training cases that answers nonsense, confidently, on a brand-new situation."
+      },
+      "biais-introduction": {
+        "term": "Bias",
+        "definition": "An unfair imbalance inherited from the training data, which the AI reproduces and then amplifies at scale. The starting point for ethical reflection.",
+        "example": "A résumé-screening tool trained on an unbalanced past that systematically rejects certain profiles."
+      },
+      "observations-variables": {
+        "term": "Observations and variables",
+        "definition": "In a tabular dataset, the observations are the rows (the individuals) and the variables are the columns (their characteristics).",
+        "example": "891 Titanic passengers (observations) described by their age, sex and class (variables)."
+      },
+      "features-cible": {
+        "term": "Features and target",
+        "definition": "The features are the columns that serve as clues for the model; the target is the column we try to predict.",
+        "example": "Age and class (features) to guess whether the passenger survived (target)."
+      },
+      "classification-vs-regression": {
+        "term": "Classification and regression",
+        "definition": "Classification predicts a category; regression predicts a number.",
+        "example": "\"Survives or not\" (classification); \"grade out of 20\" (regression)."
+      },
+      "catalogue-ethique": {
+        "term": "Catalogue ethics score",
+        "definition": "Before any use, IBIS-X scores a dataset against ethical criteria: representativeness, consent, bias.",
+        "example": "A dataset that represents only one social class gets a lower score."
+      },
+      "train-test": {
+        "term": "Training and testing",
+        "definition": "We split the data into one part to train the model and one part, never seen, to test it honestly.",
+        "example": "80% of the passengers to revise, 20% kept for the exam."
+      },
+      "qualite-donnees": {
+        "term": "Data quality",
+        "definition": "The real state of the data: missing values, errors, sample bias. It determines how reliable the model is.",
+        "example": "Unrecorded ages or an unrepresentative sample distort the predictions."
+      },
+      "entrainer": {
+        "term": "Training a model",
+        "definition": "Gradually adjusting the model's recipe on known examples to reduce its errors, rather than simply memorizing.",
+        "example": "Showing passengers whose survival is known, until the model predicts well."
+      },
+      "arbre-decision": {
+        "term": "Decision tree",
+        "definition": "A readable model that chains yes/no questions up to a decision. It's a real IBIS-X algorithm.",
+        "example": "\"Woman? In first class?\" then a survival prediction."
+      },
+      "valeurs-manquantes": {
+        "term": "Missing values",
+        "definition": "Empty cells in the data, when a piece of information wasn't recorded. You can drop the affected rows or impute them (fill them in smartly, by mean, median, KNN or MICE).",
+        "example": "Weight left blank for some patients in a medical file."
+      },
+      "encodage": {
+        "term": "Encoding",
+        "definition": "Turning categories into numbers so a model can process them. Either one-hot (one column per category) or ordinal (categories placed in an order).",
+        "example": "The “sex” column (“M”/“F”) turned into 0 and 1."
+      },
+      "mise-a-lechelle": {
+        "term": "Scaling",
+        "definition": "Bringing numeric columns into a comparable range so none dominates because of its unit. IBIS-X offers the standard, minmax and robust recipes.",
+        "example": "Bringing age (0-100) and salary (0-5000) onto the same scale before training."
+      },
+      "fuite-de-donnees": {
+        "term": "Data leakage",
+        "definition": "When information unavailable at the moment of the real prediction slips into training and artificially inflates the score. You avoid it by fitting the preparations only on the training data.",
+        "example": "A “prescribed treatment” column that already reveals the patient is ill."
+      },
+      "foret-aleatoire": {
+        "term": "Random forest",
+        "definition": "A model that trains many slightly different decision trees and has their predictions vote. The majority vote is more stable than a lone tree. It's a real IBIS-X model.",
+        "example": "A hundred trees each voting “survives” or “doesn't survive”; the majority wins."
+      },
+      "regression-logistique": {
+        "term": "Logistic regression",
+        "definition": "A model that assigns a coefficient (a weight) to each variable to predict a category; the sign gives the direction, the size the importance. Very readable, it isn't available in IBIS-X yet (it's coming).",
+        "example": "A positive coefficient for “age” means the risk rises with age."
+      },
+      "choix-algorithme": {
+        "term": "Choosing an algorithm",
+        "definition": "The decision, specific to each problem, of which model to use. It balances readability, performance and available data, and is settled by comparing several models.",
+        "example": "Preferring a readable tree to explain a decision, or a higher-performing forest when accuracy matters most."
+      },
+      "accuracy-piege": {
+        "term": "The accuracy trap",
+        "definition": "Accuracy is the share of correct answers. It becomes misleading when one class is far rarer than the other: a model can post a very high score while completely missing the rare class.",
+        "example": "Out of 1,000 files, 10 of them fraud, a model that says \"no fraud\" everywhere reaches 99% accuracy and detects no fraud at all."
+      },
+      "precision-rappel-f1": {
+        "term": "Precision, recall and F1",
+        "definition": "Precision measures: when the model says \"positive\", is it right? Recall measures: out of all the true positives, how many does it catch? The F1 sums up both in a single number to judge their balance.",
+        "example": "A very cautious spam filter produces few false positives (good precision) but lets some spam through (lower recall); the F1 tells you whether the trade-off holds."
+      },
+      "matrice-de-confusion": {
+        "term": "The confusion matrix",
+        "definition": "A four-cell table that crosses truth and prediction: true positives, false positives, true negatives, false negatives. It shows not only how many errors, but what type of errors the model makes.",
+        "example": "In screening, it clearly separates missed sick people (false negatives) from false alarms (false positives), two errors with very different consequences."
+      },
+      "surapprentissage": {
+        "term": "Overfitting",
+        "definition": "A model overfits when it memorizes the training examples, noise included, instead of learning the general rule. The result: excellent on its own data, poor on new data.",
+        "example": "A model with 100% success on training but 60% on new data recited by heart instead of understanding; only the score on never-seen data counts."
+      },
+      "boite-noire": {
+        "term": "The black box",
+        "definition": "A \"black box\" model gives an answer without letting you see the reasoning behind it. This becomes a problem as soon as you need to trust it, justify a decision, or fix a mistake.",
+        "example": "A model that denies a loan without explanation is hard to contest and control: you can neither justify the decision nor spot a possible bias."
+      },
+      "importance-shap": {
+        "term": "Variable importance and SHAP",
+        "definition": "Variable importance ranks factors by their overall influence on the model. SHAP drops down to the individual case and shows how each variable pushed a specific decision toward an outcome. IBIS-X computes them for real.",
+        "example": "For a given student, SHAP can show that their absences pushed the prediction toward \"dropout\" while their good grades pulled it toward \"no dropout\"."
+      },
+      "correlation-causalite": {
+        "term": "Correlation is not causation",
+        "definition": "SHAP and importance show what the model uses to decide, not what actually causes the outcome. A variable can weigh heavily simply because it accompanies the outcome, without being its cause.",
+        "example": "Ice-cream sales and drownings rise together because it is hot; ice cream does not cause drowning, even though a model would gladly lean on it."
+      },
+      "validation-croisee": {
+        "term": "Cross-validation (k-fold)",
+        "definition": "A method that splits the data into several parts, trains and tests on each in turn, then averages the scores for a more stable result.",
+        "example": "In 5-fold, you train 5 times, each time changing which part serves as the test set, then average the 5 scores. (Not in the IBIS-X pipeline yet: on the roadmap.)"
+      },
+      "intervalle-confiance": {
+        "term": "Confidence interval",
+        "definition": "A range around an estimated number indicating where the true value probably lies: it expresses the uncertainty of the measurement.",
+        "example": "\"Accuracy 82% ± 3%\": the true accuracy likely sits between 79% and 85%. (Calculation not yet built into IBIS-X: coming.)"
+      },
+      "reproductibilite": {
+        "term": "Reproducibility",
+        "definition": "The property of a result you can obtain identically by starting again from the same data and the same settings, including the random seed.",
+        "example": "With random_state=42, re-running training on the same data yields exactly the same model. (Real and native in IBIS-X.)"
+      },
+      "biais-sources": {
+        "term": "Sources of bias",
+        "definition": "The origins of a model's injustices: historical data marked by discrimination, non-representative samples, feedback loops.",
+        "example": "A CV-screening model trained on mostly male past hires learns to disadvantage female applications."
+      },
+      "equite-fairness": {
+        "term": "Fairness",
+        "definition": "A set of criteria checking that a model treats groups comparably: parity of decision rates, equality of opportunity in equal situations.",
+        "example": "Checking that the loan approval rate is comparable between two groups with equivalent financial profiles. (Audited via XAI in the IBIS-X Fairness Challenges.)"
+      },
+      "correlations-fallacieuses": {
+        "term": "Spurious correlation",
+        "definition": "A statistical link between two variables that move together without one causing the other, often because of a hidden third variable.",
+        "example": "Ice cream sales and drownings rise together in summer, not because they cause each other, but because of the shared heat."
+      },
+      "prediction-inference-causalite": {
+        "term": "Prediction, inference, causation",
+        "definition": "Three distinct registers: predicting what will happen, explaining a variable's effect, or establishing that acting on X truly changes Y.",
+        "example": "Predicting tomorrow's sales, estimating the effect of price on sales, or testing whether lowering the price really sells more. (IBIS-X: prediction and explainability yes, causal inference not yet.)"
+      },
+      "empreinte-repro": {
+        "term": "Reproducibility fingerprint",
+        "definition": "The set of information to keep in order to replay a result: exact data, versions of the tools and the random seed.",
+        "example": "Archiving the dataset, the library versions and random_state=42 lets a colleague recover the same model. (IBIS-X: downloadable reproducible .joblib.)"
+      },
+      "resultat-citable": {
+        "term": "Citable result",
+        "definition": "A result documented enough (method, limits, uncertainties) to be referenced or published in a defensible way.",
+        "example": "A report stating the data, the method, the margin of error and the model's limits can be cited in a research work. (Full exportable report: on the IBIS-X roadmap.)"
+      }
+    },
+    "playgrounds": {
+      "illustration": "Teaching example",
+      "confusion": {
+        "title": "Sandbox: the confusion matrix",
+        "intro": "Drag the decision threshold and watch the four cells — and the metrics — move in real time.",
+        "thresholdLabel": "Decision threshold",
+        "legendPos": "Actually positive cases",
+        "legendNeg": "Actually negative cases",
+        "predictedPositive": "Predicted positive",
+        "predPos": "Predicted positive",
+        "predNeg": "Predicted negative",
+        "actualPos": "Actual positive",
+        "actualNeg": "Actual negative",
+        "tp": "True positives",
+        "fp": "False positives",
+        "fn": "False negatives",
+        "tn": "True negatives",
+        "precision": "Precision",
+        "recall": "Recall",
+        "accuracy": "Accuracy",
+        "caption": "A low threshold catches every positive but raises many false alarms; a high threshold does the opposite. The right setting depends on what costs more: missing a case, or bothering someone for nothing."
+      },
+      "overfitting": {
+        "title": "Sandbox: overfitting",
+        "intro": "Increase the tree depth and watch the gap between training and test widen.",
+        "depthLabel": "Tree depth",
+        "train": "Training",
+        "test": "Test",
+        "gap": "Gap",
+        "caption": "The deeper the tree, the better it recites its training data — but past a point it learns the noise and fails on fresh data. That widening gap is overfitting."
+      }
+    },
+    "glossary": {
+      "navLabel": "Glossary",
+      "title": "Glossary",
+      "subtitle": "Every term in the Academy, one click away. Wherever you see a dotted-underlined word, hover it for the definition.",
+      "searchPlaceholder": "Search for a term…",
+      "count": "{count, plural, one {# term} other {# terms}}",
+      "empty": "No term matches your search.",
+      "learnMore": "Open the lesson"
+    },
+    "badges": {
+      "premier-modele": {
+        "title": "First model",
+        "description": "You trained your very first model on real data."
+      },
+      "lire-matrice": {
+        "title": "Matrix reader",
+        "description": "You can read a confusion matrix."
+      },
+      "reperer-surapprentissage": {
+        "title": "Overfitting radar",
+        "description": "You can spot a model that memorizes."
+      },
+      "importance-vs-cause": {
+        "title": "Critical mind",
+        "description": "You tell what a model uses apart from what truly causes."
+      },
+      "resultat-reproductible": {
+        "title": "Reproducible",
+        "description": "You know why and how a result reproduces."
+      },
+      "auditer-equite": {
+        "title": "Fairness auditor",
+        "description": "You audited the bias of a real model."
+      }
+    },
+    "passport": {
+      "navLabel": "Passport",
+      "certLabel": "AI Passport",
+      "title": "IBIS-X Academy",
+      "certifiedLead": "This passport certifies your journey through the IBIS-X Academy. You have what it takes to train, evaluate and explain a model.",
+      "progressLead": "Keep going through the tracks to unlock your certificate and new badges.",
+      "lessonsStat": "{done} / {total} lessons",
+      "notionsStat": "{count, plural, one {# notion} other {# notions}} collected",
+      "badgesStat": "{count} / {total} badges",
+      "fingerprint": "Fingerprint:",
+      "print": "Print / PDF",
+      "cursusTitle": "Tracks",
+      "badgesTitle": "Competence badges"
+    }
   }
 }

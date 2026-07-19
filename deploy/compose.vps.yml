@@ -1,0 +1,41 @@
+# deploy/compose.vps.yml — surcouche PRODUCTION pour VPS MUTUALISÉ (derrière un nginx existant).
+#
+# S'applique PAR-DESSUS compose.prod.yml :
+#   docker compose -f compose.prod.yml -f deploy/compose.vps.yml up -d --build
+#
+# Ce qui change vs compose.prod.yml (machine dédiée) :
+#  1. Caddy n'écoute QUE sur 127.0.0.1:3200 (HTTP interne). Il ne touche PAS aux ports 80/443
+#     publics — ceux-ci restent à TON nginx (onboarding / school / manage / work / l2sorbonne).
+#     La TLS Let's Encrypt est faite par nginx+Certbot, comme pour tes autres sites.
+#     (Même montage que ton conteneur `plane-proxy` sur 127.0.0.1:8090 → work.zelian.fr.)
+#  2. `mem_limit` sur TOUS les conteneurs : IBIS-X ne peut jamais affamer Plane ni tes apps.
+#  3. Worker ML bridé (-c 1, 2 Go) : l'entraînement / SHAP ne fait pas tomber la machine.
+#
+# `name: ibisx` fige le nom de projet → volumes stables (ibisx_pg-data, ibisx_ibis-data, …)
+# quel que soit le dossier d'où on lance la commande. NE PAS le changer (sinon volumes orphelins).
+name: ibisx
+
+services:
+  caddy:
+    ports: !override
+      - "127.0.0.1:3200:80"        # <- accessible seulement depuis la machine, jamais d'Internet direct
+    environment:
+      - IBIS_DOMAIN=:80            # site en :80 → Caddy sert du HTTP pur, aucun ACME/TLS (c'est nginx qui gère)
+    mem_limit: 96m
+
+  web:
+    mem_limit: 512m
+
+  api:
+    mem_limit: 1g
+
+  worker:
+    # -c 1 : une seule tâche lourde (entraînement/SHAP) à la fois. 2 Go plafond au lieu de 4.
+    command: celery -A ibis.workers.celery_app:celery_app worker -Q training,xai,llm,maintenance -c 1 -B --max-tasks-per-child=10
+    mem_limit: 2g
+
+  postgres:
+    mem_limit: 384m
+
+  redis:
+    mem_limit: 128m

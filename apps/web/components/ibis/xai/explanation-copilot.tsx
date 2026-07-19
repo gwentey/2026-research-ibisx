@@ -19,7 +19,12 @@ import {
   getSuggestedQuestions,
   listChatMessages
 } from "@/lib/api/generated";
-import type { ChatMessageRead, ChatSessionRead, ExplanationResults } from "@/lib/api/generated";
+import type {
+  ChatMessageRead,
+  ChatSessionRead,
+  ExplanationResults,
+  XaiAudience
+} from "@/lib/api/generated";
 import { useAuthStore } from "@/lib/auth/store";
 import { getBlocks } from "@/lib/xai/blocks";
 import { cn } from "@/lib/utils";
@@ -90,17 +95,19 @@ export function ExplanationCopilot({ explanation }: { explanation: ExplanationRe
     }
   }, [explanation.id]);
 
-  // Suggestions contextuelles (déterministes, pas de LLM).
+  // Suggestions contextuelles (déterministes, pas de LLM), au NIVEAU de l'explication commentée
+  // (adaptatif §5.2) : le novice se voit proposer des questions en langage courant.
+  const audienceLevel = explanation.audience_level as XaiAudience;
   useEffect(() => {
     getSuggestedQuestions({
       path: { experiment_id: explanation.experiment_id },
-      query: { language: locale as "fr" | "en" },
+      query: { language: locale as "fr" | "en", audience: audienceLevel },
       throwOnError: false
     }).then(({ data }) => setSuggestions(data ?? []));
     return () => {
       if (pollRef.current) clearInterval(pollRef.current);
     };
-  }, [explanation.experiment_id, locale]);
+  }, [explanation.experiment_id, locale, audienceLevel]);
 
   const refreshMessages = useCallback(async (sessionId: string) => {
     const { data } = await listChatMessages({
