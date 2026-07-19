@@ -45,8 +45,11 @@ export default function ChallengeBriefingPage({ params }: { params: Promise<{ sl
     }
     start(challenge.slug); // active la quête AVANT de naviguer (le traceur suivra)
     if (challenge.entryMode === "project_direct") {
+      // Nom de projet pré-rempli (= titre de l'enquête) : sinon le bouton « Créer et lancer »
+      // reste désactivé (champ nom requis), et le novice se retrouve bloqué.
+      const projectName = encodeURIComponent(t(`items.${challenge.slug}.title`));
       router.push(
-        `/projects/new?datasetId=${id}&datasetName=${challenge.datasetSlug}&challenge=${challenge.slug}`
+        `/projects/new?datasetId=${id}&datasetName=${challenge.datasetSlug}&name=${projectName}&challenge=${challenge.slug}`
       );
     } else {
       router.push(`/datasets/${id}?challenge=${challenge.slug}`);

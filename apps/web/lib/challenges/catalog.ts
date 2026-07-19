@@ -17,7 +17,13 @@ export const CHALLENGES: Challenge[] = [
     taskType: "classification",
     entryMode: "dataset",
     order: 1,
-    objectives: ["open_dataset", "create_project", "launch_training", "read_results"]
+    objectives: [
+      "open_dataset",
+      "create_project",
+      "launch_training",
+      "read_results",
+      "generate_explanation"
+    ]
   },
   {
     slug: "penguins-antarctique",
@@ -27,7 +33,13 @@ export const CHALLENGES: Challenge[] = [
     taskType: "classification",
     entryMode: "dataset",
     order: 2,
-    objectives: ["open_dataset", "create_project", "launch_training", "read_results"]
+    objectives: [
+      "open_dataset",
+      "create_project",
+      "launch_training",
+      "read_results",
+      "generate_explanation"
+    ]
   },
   {
     slug: "eleves-decrochage",

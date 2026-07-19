@@ -19,3 +19,17 @@ export function pathnameToObjectives(pathname: string): ObjectiveId[] {
 
   return [];
 }
+
+// Emplacement dans le parcours, déduit de l'URL — pour un coaching indexé sur OÙ l'utilisateur
+// se trouve (le bon geste sur la page courante), pas sur l'objectif « suivant » (qui peut couvrir
+// deux pages : la fiche dataset PUIS la création de projet mènent toutes deux à « créer le projet »).
+export type CoachLocation = "at_dataset" | "at_project" | "at_wizard" | "at_results";
+
+export function coachLocation(pathname: string): CoachLocation | null {
+  const dataset = pathname.match(/^\/datasets\/([^/]+)$/);
+  if (dataset && !NON_DATASET_SEGMENTS.has(dataset[1])) return "at_dataset";
+  if (pathname === "/projects/new") return "at_project";
+  if (pathname === "/wizard" || pathname.startsWith("/wizard/")) return "at_wizard";
+  if (/^\/experiments\/[^/]+$/.test(pathname)) return "at_results";
+  return null;
+}

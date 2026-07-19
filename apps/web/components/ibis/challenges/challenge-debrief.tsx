@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { ArrowRightIcon, DownloadIcon, TrophyIcon } from "lucide-react";
+import { ArrowRightIcon, DownloadIcon, SparklesIcon, TrophyIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { CHALLENGES, getChallenge } from "@/lib/challenges/catalog";
@@ -96,6 +96,7 @@ export function ChallengeDebrief({
   if (!show || !challenge) return null;
 
   const remaining = nextObjective(challenge.objectives, done);
+  const explanationObjective = challenge.objectives.includes("generate_explanation");
   const nextChallenge = CHALLENGES.find(
     (candidate) => candidate.slug !== challenge.slug && !completed.includes(candidate.slug)
   );
@@ -111,10 +112,23 @@ export function ChallengeDebrief({
             {t("debriefLead", { title: t(`items.${challenge.slug}.title`) })}
           </p>
           <p className="text-sm">{t("debriefMetric", { metric: metricText })}</p>
+          <p className="text-muted-foreground text-sm">{t("debriefScoreHint")}</p>
           <p className="text-muted-foreground text-sm">{t(`debriefPont.${challenge.level}`)}</p>
-          {remaining ? (
+
+          {/* L'explication est L'étape à ne pas manquer pour un novice : encart IA proéminent. */}
+          {remaining === "generate_explanation" ? (
+            <div className="border-ai/40 from-ai-violet/10 via-ai/5 to-ai-blue/10 mt-1 flex items-start gap-2.5 rounded-lg border border-dashed bg-gradient-to-br p-3">
+              <SparklesIcon className="text-ai mt-0.5 size-4 shrink-0" />
+              <p className="text-sm">{t("debriefExplainCta")}</p>
+            </div>
+          ) : remaining ? (
             <p className="text-ai text-sm font-medium">
               {t("debriefRemaining", { objective: t(`objectives.${remaining}`) })}
+            </p>
+          ) : explanationObjective ? (
+            <p className="text-ai flex items-start gap-1.5 text-sm">
+              <SparklesIcon className="mt-0.5 size-4 shrink-0" />
+              {t("debriefExplainDone")}
             </p>
           ) : null}
           {challenge.level === "confirme" ? (

@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 
-import { pathnameToObjectives } from "@/lib/challenges/objective-map";
+import { pathnameToObjectives, coachLocation } from "@/lib/challenges/objective-map";
 
 describe("pathnameToObjectives", () => {
   it("une fiche dataset → open_dataset", () => {
@@ -27,5 +27,21 @@ describe("pathnameToObjectives", () => {
 
   it("une route quelconque → aucun objectif", () => {
     expect(pathnameToObjectives("/dashboard")).toEqual([]);
+  });
+});
+
+describe("coachLocation", () => {
+  it("mappe chaque page-clé du parcours à son emplacement", () => {
+    expect(coachLocation("/datasets/abc-123")).toBe("at_dataset");
+    expect(coachLocation("/projects/new")).toBe("at_project");
+    expect(coachLocation("/wizard")).toBe("at_wizard");
+    expect(coachLocation("/experiments/xyz-9")).toBe("at_results");
+  });
+
+  it("ignore les pages hors parcours", () => {
+    expect(coachLocation("/datasets")).toBeNull();
+    expect(coachLocation("/datasets/upload")).toBeNull();
+    expect(coachLocation("/projects")).toBeNull();
+    expect(coachLocation("/dashboard")).toBeNull();
   });
 });

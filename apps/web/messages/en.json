@@ -183,6 +183,9 @@
     "debriefTitle": "Investigation complete",
     "debriefLead": "Well done — investigation «{title}» complete.",
     "debriefMetric": "A real model, trained on real data: {metric}.",
+    "debriefScoreHint": "This score runs from 0 to 1: the closer to 1, the better the model sees. No need to be an expert — what matters is understanding WHY it decides, in the next step.",
+    "debriefExplainCta": "One last, most enlightening step: understanding WHY. Open the \"Explainability\" tab just below and click \"Generate explanation\" — the AI will show you, in plain words, which information weighed most on the predictions.",
+    "debriefExplainDone": "You generated the explanation: no more black box — you understand what the model relies on. That's explainable AI.",
     "debriefPont": {
       "novice": "You just watched a full ML pipeline succeed, end to end.",
       "debutant": "The most decisive factor is actionable — the kind of conclusion a researcher publishes.",
@@ -205,10 +208,10 @@
         "stakes": "Behind the accuracy lies a social question: did a passenger's fate depend first on their class and their sex?",
         "reward": "You'll leave with your first trained model — and an explanation of what mattered most.",
         "coach": {
-          "open_dataset": "Open the Titanic page to explore the data.",
-          "create_project": "Click \"Use in a project\" to start from this dataset.",
-          "launch_training": "Apply the AI recommendation at each step, then launch training.",
-          "read_results": "Check your score and metrics, then head to the Explainability tab."
+          "at_dataset": "Click \"Use in a project\" to start from this dataset.",
+          "at_project": "Name your project, then click \"Create and launch training\".",
+          "at_wizard": "Apply the AI recommendation at each step, then launch training.",
+          "at_results": "Open the \"Explainability\" tab (below) and click \"Generate explanation\": the AI will tell you, in plain words, what mattered."
         }
       },
       "penguins-antarctique": {
@@ -218,10 +221,10 @@
         "stakes": "A good classifier means faster, reproducible wildlife surveys in the field.",
         "reward": "You'll leave with a 3-class classifier and a confusion matrix showing where it hesitates.",
         "coach": {
-          "open_dataset": "Open the Penguins page to see the recorded measurements.",
-          "create_project": "Click \"Use in a project\" to start from this dataset.",
-          "launch_training": "Let the AI recommendation guide you at each step, then launch.",
-          "read_results": "Look at the confusion matrix: where does the model confuse species?"
+          "at_dataset": "Click \"Use in a project\" to start from this dataset.",
+          "at_project": "Name your project, then click \"Create and launch training\".",
+          "at_wizard": "Let the AI recommendation guide you at each step, then launch.",
+          "at_results": "Look at the confusion matrix, then open the \"Explainability\" tab and click \"Generate explanation\"."
         }
       },
       "eleves-decrochage": {

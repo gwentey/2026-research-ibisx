@@ -2,12 +2,13 @@
 
 import { Suspense, useEffect } from "react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { CheckCircle2Icon, SparklesIcon, SwordsIcon, XIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { getChallenge } from "@/lib/challenges/catalog";
+import { coachLocation } from "@/lib/challenges/objective-map";
 import { nextObjective, progressPercent } from "@/lib/challenges/progress";
 import { useQuestStore } from "@/lib/challenges/store";
 import { useObjectiveTracking } from "@/components/ibis/challenges/use-objective-tracking";
@@ -19,6 +20,7 @@ import { cn } from "@/lib/utils";
 function QuestTrackerInner() {
   const t = useTranslations("challenges");
   const searchParams = useSearchParams();
+  const pathname = usePathname();
   const activeSlug = useQuestStore((state) => state.activeSlug);
   const done = useQuestStore((state) => state.done);
   const start = useQuestStore((state) => state.start);
@@ -42,8 +44,11 @@ function QuestTrackerInner() {
   const total = challenge.objectives.length;
   const doneCount = challenge.objectives.filter((objective) => done.includes(objective)).length;
 
-  const coachKey = `items.${slug}.coach.${upcoming}` as const;
-  const showCoach = challenge.level === "novice" && upcoming !== null && t.has(coachKey);
+  // Coach indexé sur la PAGE courante (pas l'objectif) : le bon geste, là où l'utilisateur est.
+  const location = coachLocation(pathname);
+  const coachKey = location ? (`items.${slug}.coach.${location}` as const) : null;
+  const showCoach =
+    challenge.level === "novice" && upcoming !== null && coachKey !== null && t.has(coachKey);
 
   return (
     <>
@@ -71,7 +76,7 @@ function QuestTrackerInner() {
                 {t("debriefTitle")}
               </p>
             )}
-            {showCoach ? (
+            {showCoach && coachKey ? (
               <p className="text-ai flex items-center gap-1.5 text-xs">
                 <SparklesIcon className="size-3.5 shrink-0" />
                 {t(coachKey)}

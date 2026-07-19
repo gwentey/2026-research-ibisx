@@ -183,6 +183,9 @@
     "debriefTitle": "Enquête bouclée",
     "debriefLead": "Bravo — enquête « {title} » bouclée.",
     "debriefMetric": "Un vrai modèle, entraîné sur de vraies données : {metric}.",
+    "debriefScoreHint": "Ce score va de 0 à 1 : plus il est proche de 1, plus le modèle voit juste. Pas besoin d'être expert — l'essentiel est de comprendre POURQUOI il décide, à l'étape suivante.",
+    "debriefExplainCta": "Dernière étape, la plus éclairante : comprendre POURQUOI. Ouvre l'onglet « Explicabilité » juste en dessous et clique « Générer l'explication » — l'IA te montrera, en langage clair, quelles informations ont le plus pesé sur les prédictions.",
+    "debriefExplainDone": "Tu as généré l'explication : tu ne subis plus une boîte noire, tu comprends sur quoi le modèle s'appuie. C'est ça, l'IA explicable.",
     "debriefPont": {
       "novice": "Tu viens de voir un pipeline de ML complet réussir, de bout en bout.",
       "debutant": "Le facteur le plus déterminant est actionnable — le type de conclusion qu'un chercheur publie.",
@@ -205,10 +208,10 @@
         "stakes": "Derrière la performance se cache une question de société : le sort d'un passager dépendait-il d'abord de sa classe et de son sexe ?",
         "reward": "À la clé : ton premier modèle entraîné, et l'explication de ce qui a le plus pesé.",
         "coach": {
-          "open_dataset": "Ouvre la fiche Titanic pour découvrir les données.",
-          "create_project": "Clique « Utiliser dans un projet » pour partir sur ce jeu de données.",
-          "launch_training": "Applique la recommandation IA à chaque étape, puis lance l'entraînement.",
-          "read_results": "Observe ton score et tes métriques, puis file à l'onglet Explicabilité."
+          "at_dataset": "Clique « Utiliser dans un projet » pour partir sur ce jeu de données.",
+          "at_project": "Nomme ton projet, puis clique « Créer et lancer l'entraînement ».",
+          "at_wizard": "Applique la recommandation IA à chaque étape, puis lance l'entraînement.",
+          "at_results": "Va dans l'onglet « Explicabilité » (plus bas) et clique « Générer l'explication » : l'IA t'expliquera, en clair, ce qui a compté."
         }
       },
       "penguins-antarctique": {
@@ -218,10 +221,10 @@
         "stakes": "Un bon classifieur, c'est un inventaire de la faune plus rapide et reproductible sur le terrain.",
         "reward": "À la clé : un classifieur à 3 classes et une matrice de confusion qui montre où il hésite.",
         "coach": {
-          "open_dataset": "Ouvre la fiche Penguins pour voir les mesures relevées.",
-          "create_project": "Clique « Utiliser dans un projet » pour partir sur ce jeu de données.",
-          "launch_training": "Laisse-toi guider par la recommandation IA à chaque étape, puis lance.",
-          "read_results": "Regarde la matrice de confusion : où le modèle confond-il les espèces ?"
+          "at_dataset": "Clique « Utiliser dans un projet » pour partir sur ce jeu de données.",
+          "at_project": "Nomme ton projet, puis clique « Créer et lancer l'entraînement ».",
+          "at_wizard": "Laisse-toi guider par la recommandation IA à chaque étape, puis lance.",
+          "at_results": "Regarde la matrice de confusion, puis ouvre l'onglet « Explicabilité » et clique « Générer l'explication »."
         }
       },
       "eleves-decrochage": {
