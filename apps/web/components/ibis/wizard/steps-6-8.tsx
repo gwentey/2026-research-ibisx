@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 import {
   BrainCircuitIcon,
   CheckCircle2Icon,
+  ClipboardCheckIcon,
   CoinsIcon,
   DatabaseIcon,
   EraserIcon,
@@ -460,14 +461,16 @@ export function Step8Launch({
       {state === "idle" || state === "starting" ? (
         <>
           <div className="space-y-4">
-            <div className="flex items-start gap-3">
-              <div className="bg-primary/10 text-primary flex size-9 shrink-0 items-center justify-center rounded-lg">
-                <RocketIcon className="size-5" />
-              </div>
-              <div className="space-y-0.5">
-                <h2 className="font-semibold">{t("recap")}</h2>
-                <p className="text-muted-foreground text-sm">{t("recapHint")}</p>
-              </div>
+            {/* Libellé de section léger : le titre/​sous-titre de l'étape est déjà porté par la
+                coquille (« Entraînement / Relisez, confirmez… ») — pas de second gros en-tête. */}
+            <div className="flex flex-wrap items-center justify-between gap-2 border-b pb-3">
+              <span className="flex items-center gap-2 text-sm font-semibold">
+                <ClipboardCheckIcon className="text-primary size-4" />
+                {t("recap")}
+              </span>
+              <span className="text-muted-foreground text-xs">
+                {t("recapCount", { count: recap.length })}
+              </span>
             </div>
 
             <div className="grid gap-2 sm:grid-cols-2">

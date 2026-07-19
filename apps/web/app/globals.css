@@ -220,6 +220,64 @@
     }
   }
 
+  /* Révélation « générée par l'IA » : chaque bloc du résultat d'explication apparaît en
+     émergeant d'un flou (net → lisible), légèrement soulevé. Appliqué en cascade (delay
+     inline) pour que le résultat se « construise » sous les yeux, pas un simple fondu. */
+  @keyframes ai-reveal {
+    from {
+      opacity: 0;
+      transform: translateY(14px) scale(0.985);
+      filter: blur(7px);
+    }
+    55% {
+      filter: blur(0);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      filter: blur(0);
+    }
+  }
+
+  /* Balayage lumineux qui traverse UNE fois le bandeau de résultat fraîchement généré
+     (reflet « IA »). Porté par un overlay en surimpression, masqué ensuite. */
+  @keyframes ai-sheen {
+    from {
+      transform: translateX(-140%) skewX(-12deg);
+    }
+    to {
+      transform: translateX(140%) skewX(-12deg);
+    }
+  }
+
+  /* Ligne de scan de l'état « génération en cours » : descend le long du panneau squelette. */
+  @keyframes ai-scanline {
+    0% {
+      top: 4%;
+      opacity: 0;
+    }
+    12% {
+      opacity: 1;
+    }
+    88% {
+      opacity: 1;
+    }
+    100% {
+      top: 96%;
+      opacity: 0;
+    }
+  }
+
+  /* Miroitement des barres squelette pendant la génération. */
+  @keyframes ai-shimmer {
+    from {
+      background-position: -180% 0;
+    }
+    to {
+      background-position: 180% 0;
+    }
+  }
+
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -307,11 +365,80 @@
     animation: ai-pop-in 0.28s cubic-bezier(0.22, 1, 0.36, 1) both;
   }
 
+  /* Révélation IA du résultat d'explication (cascade via --ai-delay inline). */
+  .ai-reveal {
+    animation: ai-reveal 0.62s cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation-delay: var(--ai-delay, 0ms);
+    will-change: transform, opacity, filter;
+  }
+
+  /* Reflet qui traverse le bandeau de résultat, une seule fois. */
+  .ai-sheen {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    border-radius: inherit;
+  }
+  .ai-sheen::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    width: 45%;
+    background: linear-gradient(
+      100deg,
+      transparent 0%,
+      color-mix(in oklab, var(--ai) 22%, transparent) 50%,
+      transparent 100%
+    );
+    animation: ai-sheen 1.15s cubic-bezier(0.4, 0, 0.2, 1) 0.15s 1 both;
+  }
+
+  /* Barres squelette miroitantes de l'état génération. */
+  .ai-skeleton {
+    background: linear-gradient(
+      90deg,
+      var(--muted) 0%,
+      color-mix(in oklab, var(--ai) 14%, var(--muted)) 50%,
+      var(--muted) 100%
+    );
+    background-size: 200% 100%;
+    animation: ai-shimmer 1.4s ease-in-out infinite;
+  }
+
+  /* Ligne de scan qui balaie le panneau « génération en cours ». */
+  .ai-scanline {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      color-mix(in oklab, var(--ai) 70%, transparent),
+      transparent
+    );
+    box-shadow: 0 0 12px 1px color-mix(in oklab, var(--ai) 45%, transparent);
+    animation: ai-scanline 2.1s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .ai-burst,
     .ai-shard,
-    .ai-pop-in {
+    .ai-pop-in,
+    .ai-reveal,
+    .ai-sheen::after,
+    .ai-skeleton,
+    .ai-scanline {
       animation: none !important;
+    }
+    .ai-reveal {
+      opacity: 1;
+      filter: none;
+      transform: none;
+    }
+    .ai-sheen::after {
+      display: none;
     }
   }
 

@@ -1,7 +1,8 @@
 "use client";
 
+import type { CSSProperties } from "react";
 import { useTranslations } from "next-intl";
-import { BookOpenIcon } from "lucide-react";
+import { BookOpenIcon, LayersIcon, TargetIcon } from "lucide-react";
 import { Bar, BarChart, CartesianGrid, Cell, XAxis, YAxis } from "recharts";
 
 import { Badge } from "@/components/ui/badge";
@@ -144,7 +145,18 @@ function KpiBoard({ kpis }: { kpis: Record<string, never> }) {
 
 const chartConfig = { serie: { label: "", color: "var(--chart-1)" } };
 
-export function ExplanationView({ explanation }: { explanation: ExplanationResults }) {
+// Décalage (ms) entre deux blocs pendant la révélation « générée par l'IA ».
+const REVEAL_STAGGER = 90;
+
+export function ExplanationView({
+  explanation,
+  reveal = false
+}: {
+  explanation: ExplanationResults;
+  // reveal : jouer la révélation IA échelonnée (uniquement après une génération fraîche,
+  // pas quand on rouvre une explication de l'historique).
+  reveal?: boolean;
+}) {
   const t = useTranslations("xai");
   const viz = (explanation.viz_data ?? {}) as Record<string, never>;
   const values = (explanation.values ?? {}) as Record<string, never>;
@@ -158,51 +170,106 @@ export function ExplanationView({ explanation }: { explanation: ExplanationResul
     | { shap: { feature: string; value: number }[]; lime: { feature: string; value: number }[] }
     | undefined;
 
+  // Contexte « QUEL exemple » (explication locale) — répond à « de quel élément parle-t-on ? ».
+  const isLocal = explanation.type === "local";
+  const instanceIndex = (explanation.instance_ref as { index?: number } | null)?.index;
+  const predictedLabel = values["predicted_label"] as string | null | undefined;
+  const predictionRaw = values["prediction"];
+  const predictionText =
+    predictedLabel != null && String(predictedLabel) !== ""
+      ? String(predictedLabel)
+      : predictionRaw !== undefined && predictionRaw !== null
+        ? String(predictionRaw)
+        : null;
+
+  // Révélation en cascade : chaque bloc émerge d'un flou, décalé — le résultat se
+  // « construit » sous les yeux (effet IA), pas un simple fondu. `both` → joue une fois.
+  let order = 0;
+  const step = (): { className: string; style?: CSSProperties } =>
+    reveal
+      ? {
+          className: "ai-reveal",
+          style: { "--ai-delay": `${order++ * REVEAL_STAGGER}ms` } as CSSProperties
+        }
+      : { className: "" };
+
   return (
     <div className="space-y-6">
-      <div className="bg-muted/30 space-y-2 rounded-lg border px-4 py-3">
-        <div className="flex flex-wrap items-center justify-between gap-2">
-          <h3 className="text-sm font-semibold">{t("result.title")}</h3>
-          <div className="flex flex-wrap items-center gap-1.5">
-            <Badge variant="outline">
-              {t("text.method", { method: explanation.method_used ?? "" })}
-            </Badge>
-            {explanation.is_fallback ? (
-              <Badge variant="secondary">{t("text.fallbackBadge")}</Badge>
-            ) : (
-              <Badge variant="outline" className="border-ai/40 text-ai">
-                {t("text.modelBadge", { model: explanation.model_used ?? "" })}
+      {/* Bandeau résultat — dit clairement CE QUI est expliqué, et POUR QUEL exemple en local. */}
+      <div {...step()}>
+        <div className="from-ai-violet/8 via-ai/4 to-ai-blue/8 relative overflow-hidden rounded-xl border bg-gradient-to-br px-4 py-3.5">
+          {reveal ? <span className="ai-sheen" aria-hidden /> : null}
+          <div className="relative flex flex-wrap items-start justify-between gap-3">
+            <div className="min-w-0 space-y-1.5">
+              <div className="flex items-center gap-2">
+                <span className="bg-ai/12 text-ai flex size-7 shrink-0 items-center justify-center rounded-lg">
+                  {isLocal ? <TargetIcon className="size-4" /> : <LayersIcon className="size-4" />}
+                </span>
+                <h3 className="text-sm font-semibold">
+                  {isLocal ? t("result.localTitle") : t("result.globalTitle")}
+                </h3>
+              </div>
+              {isLocal ? (
+                <p className="text-muted-foreground text-sm leading-relaxed">
+                  {t("result.localFor", { index: instanceIndex ?? 0 })}{" "}
+                  {predictionText ? (
+                    <span className="text-foreground font-semibold">{predictionText}</span>
+                  ) : null}
+                  {t("result.localWhy")}
+                </p>
+              ) : (
+                <p className="text-muted-foreground text-sm leading-relaxed">
+                  {t("result.globalSubtitle")}
+                </p>
+              )}
+            </div>
+            <div className="flex flex-wrap items-center gap-1.5">
+              <Badge variant="outline">
+                {t("text.method", { method: explanation.method_used ?? "" })}
               </Badge>
-            )}
-            <Badge variant="outline">
-              {t("text.audience", { level: explanation.audience_level })}
-            </Badge>
+              {explanation.is_fallback ? (
+                <Badge variant="secondary">{t("text.fallbackBadge")}</Badge>
+              ) : (
+                <Badge variant="outline" className="border-ai/40 text-ai">
+                  {t("text.modelBadge", { model: explanation.model_used ?? "" })}
+                </Badge>
+              )}
+            </div>
           </div>
+          {explanation.method_justification ? (
+            <p className="text-muted-foreground relative mt-2 text-xs leading-relaxed">
+              {explanation.method_justification}
+            </p>
+          ) : null}
         </div>
-        {explanation.method_justification ? (
-          <p className="text-muted-foreground text-xs">{explanation.method_justification}</p>
-        ) : null}
       </div>
 
-      <KpiBoard kpis={(explanation.quality_kpis ?? {}) as never} />
+      <div {...step()}>
+        <KpiBoard kpis={(explanation.quality_kpis ?? {}) as never} />
+      </div>
 
-      {/* Colonne principale étroite (écran − sidebar 22rem) : on empile en 1 colonne pour
-          garder des cartes homogènes et sans trou, quel que soit le type d'explication
-          (global : importance ; local : waterfall ; auto : importance + comparaison). */}
-      <div className="grid gap-4">
-        {globalImportance ? (
+      {/* Colonne principale étroite (écran − sidebar) : on empile en 1 colonne pour garder des
+          cartes homogènes et sans trou, quel que soit le type d'explication. */}
+      {globalImportance ? (
+        <div {...step()}>
           <Card>
             <CardHeader>
               <CardTitle className="text-base">
                 {t("charts.importance", { method: explanation.method_used ?? "" })}
               </CardTitle>
+              <p className="text-muted-foreground text-xs leading-relaxed">
+                {t("charts.importanceHint")}
+              </p>
             </CardHeader>
             <CardContent>
               <ChartContainer
                 config={chartConfig}
                 className="w-full"
                 style={{ height: globalImportance.length * 24 + 40 }}>
-                <BarChart data={[...globalImportance].reverse()} layout="vertical" margin={{ left: 40 }}>
+                <BarChart
+                  data={[...globalImportance].reverse()}
+                  layout="vertical"
+                  margin={{ left: 40 }}>
                   <XAxis type="number" hide />
                   <YAxis dataKey="feature" type="category" width={150} tick={{ fontSize: 10 }} />
                   <ChartTooltip content={<ChartTooltipContent />} />
@@ -211,12 +278,17 @@ export function ExplanationView({ explanation }: { explanation: ExplanationResul
               </ChartContainer>
             </CardContent>
           </Card>
-        ) : null}
+        </div>
+      ) : null}
 
-        {waterfall ? (
+      {waterfall ? (
+        <div {...step()}>
           <Card>
             <CardHeader>
               <CardTitle className="text-base">{t("charts.waterfall")}</CardTitle>
+              <p className="text-muted-foreground text-xs leading-relaxed">
+                {t("charts.waterfallHint")}
+              </p>
               <p className="text-muted-foreground text-xs">
                 {values["base_value"] !== undefined
                   ? t("charts.baseValue", { value: String(values["base_value"]) })
@@ -230,6 +302,20 @@ export function ExplanationView({ explanation }: { explanation: ExplanationResul
               </p>
             </CardHeader>
             <CardContent>
+              {/* Légende plein-texte : vert = pousse la prédiction vers le haut, rouge = vers le bas. */}
+              <div className="text-muted-foreground mb-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs">
+                <span className="flex items-center gap-1.5">
+                  <span className="size-2.5 rounded-sm" style={{ background: "var(--score-4)" }} />
+                  {t("charts.pushesUp")}
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <span
+                    className="size-2.5 rounded-sm"
+                    style={{ background: "var(--destructive)" }}
+                  />
+                  {t("charts.pushesDown")}
+                </span>
+              </div>
               <ChartContainer
                 config={chartConfig}
                 className="w-full"
@@ -243,9 +329,7 @@ export function ExplanationView({ explanation }: { explanation: ExplanationResul
                     {[...waterfall].reverse().map((entry, index) => (
                       <Cell
                         key={index}
-                        fill={
-                          entry.contribution >= 0 ? "var(--score-4)" : "var(--destructive)"
-                        }
+                        fill={entry.contribution >= 0 ? "var(--score-4)" : "var(--destructive)"}
                       />
                     ))}
                   </Bar>
@@ -253,12 +337,17 @@ export function ExplanationView({ explanation }: { explanation: ExplanationResul
               </ChartContainer>
             </CardContent>
           </Card>
-        ) : null}
+        </div>
+      ) : null}
 
-        {comparison ? (
+      {comparison ? (
+        <div {...step()}>
           <Card>
             <CardHeader>
               <CardTitle className="text-base">{t("charts.comparison")}</CardTitle>
+              <p className="text-muted-foreground text-xs leading-relaxed">
+                {t("charts.comparisonHint")}
+              </p>
             </CardHeader>
             <CardContent className="grid gap-4 sm:grid-cols-2">
               {(["shap", "lime"] as const).map((method) => (
@@ -281,23 +370,26 @@ export function ExplanationView({ explanation }: { explanation: ExplanationResul
               ))}
             </CardContent>
           </Card>
-        ) : null}
-      </div>
+        </div>
+      ) : null}
 
       {explanation.text_explanation ? (
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-base">
-              <BookOpenIcon className="text-muted-foreground size-4" />
-              {t("text.title")}
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="bg-muted/40 rounded-md border p-4">
-              <Markdown className={PROSE}>{explanation.text_explanation}</Markdown>
-            </div>
-          </CardContent>
-        </Card>
+        <div {...step()}>
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-base">
+                <BookOpenIcon className="text-ai size-4" />
+                {t("text.title")}
+              </CardTitle>
+              <p className="text-muted-foreground text-xs">{t("text.subtitle")}</p>
+            </CardHeader>
+            <CardContent>
+              <div className="bg-muted/40 rounded-md border p-4">
+                <Markdown className={PROSE}>{explanation.text_explanation}</Markdown>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       ) : null}
     </div>
   );

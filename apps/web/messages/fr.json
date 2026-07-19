@@ -182,7 +182,32 @@
       "read_results": "Lire les résultats",
       "generate_explanation": "Générer l'explication"
     },
-    "items": {}
+    "items": {
+      "titanic-1912": {
+        "title": "1912 : qui a survécu, et pourquoi ?",
+        "tagline": "Le naufrage le plus étudié de la data science."
+      },
+      "penguins-antarctique": {
+        "title": "Terrain en Antarctique : quelle espèce ?",
+        "tagline": "Identifier un manchot au mètre-ruban et à la balance."
+      },
+      "eleves-decrochage": {
+        "title": "Été 2026 : qui risque de décrocher ?",
+        "tagline": "Aider un enseignant à repérer tôt les élèves fragiles."
+      },
+      "depistage-diabete": {
+        "title": "Dépister le diabète avant qu'il ne parle",
+        "tagline": "Un signal d'alerte précoce pour une clinique."
+      },
+      "noter-un-vin": {
+        "title": "Noter un vin sans le goûter",
+        "tagline": "Prédire la qualité à partir de la seule chimie."
+      },
+      "iris-hello-world": {
+        "title": "Le hello-world de la data science",
+        "tagline": "Trois iris, quatre mesures — la référence de 1936."
+      }
+    }
   },
   "dashboardHome": {
     "welcome": "Bonjour {name} 👋",

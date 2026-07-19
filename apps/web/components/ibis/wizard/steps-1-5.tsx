@@ -258,6 +258,24 @@ export function Step2Target({
   const meta = targetMeta(dataset, quality, store);
   const target = store.targetColumn;
 
+  // Conseil IA de la CIBLE quand aucune colonne n'est choisie : on évalue la colonne suggérée
+  // (heuristique de noms) pour proposer une cible ET son type de tâche, en un seul « Appliquer ».
+  const suggestedMeta = useMemo(
+    () => (suggested ? targetMeta(dataset, quality, { ...store, targetColumn: suggested }) : null),
+    [suggested, dataset, quality, store]
+  );
+  const suggestedTaskLabel = suggestedMeta
+    ? suggestedMeta.recommendedTask === "classification"
+      ? t("classification")
+      : t("regression")
+    : "";
+  const suggestedReason = suggestedMeta
+    ? t(
+        suggestedMeta.recommendedTask === "classification" ? "reasonCategorical" : "reasonNumeric",
+        { column: suggested ?? "", count: suggestedMeta.uniqueCount }
+      )
+    : "";
+
   // P1 : exemples ancrés sur les VRAIES valeurs observées dans l'aperçu (jamais inventés)
   const observedValues = useMemo(() => {
     if (!target || !preview) return [];
@@ -356,51 +374,78 @@ export function Step2Target({
       <AiAssist
         title={tw("aiTitle")}
         guideLabel={tw("aiGuide")}
-        availableLabel={tw("aiAvailable")}
+        availableLabel={target ? tw("aiAvailable") : t("aiAvailableTarget")}
         applyLabel={tw("aiApply")}
         chooseLabel={tw("aiChoose")}
-        onApply={target ? () => store.set("taskType", meta.recommendedTask) : undefined}>
+        onApply={
+          target
+            ? () => store.set("taskType", meta.recommendedTask)
+            : suggested && suggestedMeta
+              ? () => {
+                  store.set("targetColumn", suggested);
+                  store.set("taskType", suggestedMeta.recommendedTask);
+                }
+              : undefined
+        }>
         <p className="text-sm">
           {t("analysisOf", { name: dataset.display_name })}
           {dataset.objective ? (
             <span className="text-muted-foreground"> — {dataset.objective}</span>
           ) : null}
         </p>
+
         {target ? (
-          <div className="flex flex-wrap gap-x-6 gap-y-1.5 text-sm">
-            <span className="flex items-center gap-1.5">
-              <ListIcon className="text-ai size-3.5" />
-              <span className="text-muted-foreground">{t("targetInfo")} :</span>
-              <span className="font-medium">{target}</span>
-            </span>
-            <span className="flex items-center gap-1.5">
-              <GaugeIcon className="text-ai size-3.5" />
-              <span className="text-muted-foreground">{t("dtypeInfo")} :</span>
-              <span className="font-medium">
-                {meta.isCategorical ? t("dtypeCategorical") : t("dtypeNumeric")}
+          // Cible choisie → on rappelle la cible/type et on recommande la tâche.
+          <>
+            <div className="flex flex-wrap gap-x-6 gap-y-1.5 text-sm">
+              <span className="flex items-center gap-1.5">
+                <ListIcon className="text-ai size-3.5" />
+                <span className="text-muted-foreground">{t("targetInfo")} :</span>
+                <span className="font-medium">{target}</span>
               </span>
-            </span>
-          </div>
+              <span className="flex items-center gap-1.5">
+                <GaugeIcon className="text-ai size-3.5" />
+                <span className="text-muted-foreground">{t("dtypeInfo")} :</span>
+                <span className="font-medium">
+                  {meta.isCategorical ? t("dtypeCategorical") : t("dtypeNumeric")}
+                </span>
+              </span>
+            </div>
+            <Alert className="border-ai/40 bg-background/70">
+              <LightbulbIcon className="text-ai" />
+              <AlertTitle className="text-ai">{t("finalTitle")}</AlertTitle>
+              <AlertDescription>
+                {t("aiReco", {
+                  task: recommendedLabel,
+                  reason: t(
+                    meta.recommendedTask === "classification"
+                      ? "reasonCategorical"
+                      : "reasonNumeric",
+                    { column: target, count: meta.uniqueCount }
+                  )
+                })}
+              </AlertDescription>
+            </Alert>
+          </>
+        ) : suggested && suggestedMeta ? (
+          // Aucune cible choisie mais une colonne « ressemble » à une cible → on la propose,
+          // avec son type de tâche. « Appliquer » pose la cible ET la tâche d'un coup.
+          <>
+            <p className="text-muted-foreground text-sm">{t("suggestTargetIntro")}</p>
+            <Alert className="border-ai/40 bg-background/70">
+              <LightbulbIcon className="text-ai" />
+              <AlertTitle className="text-ai">
+                {t("suggestTargetTitle", { column: suggested })}
+              </AlertTitle>
+              <AlertDescription>
+                {t("suggestTargetBody", { reason: suggestedReason, task: suggestedTaskLabel })}
+              </AlertDescription>
+            </Alert>
+          </>
         ) : (
-          <p className="text-muted-foreground text-sm">{t("targetPlaceholder")}</p>
+          // Aucune cible et aucune suggestion fiable → on explique quoi faire.
+          <p className="text-muted-foreground text-sm">{t("noSuggestionBody")}</p>
         )}
-        {target ? (
-          <Alert className="border-ai/40 bg-background/70">
-            <LightbulbIcon className="text-ai" />
-            <AlertTitle className="text-ai">{t("finalTitle")}</AlertTitle>
-            <AlertDescription>
-              {t("aiReco", {
-                task: recommendedLabel,
-                reason: t(
-                  meta.recommendedTask === "classification"
-                    ? "reasonCategorical"
-                    : "reasonNumeric",
-                  { column: target, count: meta.uniqueCount }
-                )
-              })}
-            </AlertDescription>
-          </Alert>
-        ) : null}
       </AiAssist>
 
       {/* Contrôles — card-free, comme l'étape « Choix de l'algorithme » (cohérence demandée). */}
