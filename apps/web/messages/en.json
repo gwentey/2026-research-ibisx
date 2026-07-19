@@ -189,27 +189,45 @@
     "items": {
       "titanic-1912": {
         "title": "1912: who survived, and why?",
-        "tagline": "Data science's most studied shipwreck."
+        "tagline": "Data science's most studied shipwreck.",
+        "brief": "April 1912 — the Titanic sinks in the North Atlantic. Over a century later, its passenger list is still one of the most studied datasets in the world. From 891 real passengers (class, sex, age, fare…), can a model predict who survived?",
+        "stakes": "Behind the accuracy lies a social question: did a passenger's fate depend first on their class and their sex?",
+        "reward": "You'll leave with your first trained model — and an explanation of what mattered most."
       },
       "penguins-antarctique": {
         "title": "Fieldwork in Antarctica: which species?",
-        "tagline": "Identify a penguin with a tape measure and a scale."
+        "tagline": "Identify a penguin with a tape measure and a scale.",
+        "brief": "Palmer Station, Antarctica. A field biologist jots down a few measurements — bill length, mass, flipper — without always getting a close look at the bird. Are those numbers enough to tell three penguin species apart?",
+        "stakes": "A good classifier means faster, reproducible wildlife surveys in the field.",
+        "reward": "You'll leave with a 3-class classifier and a confusion matrix showing where it hesitates."
       },
       "eleves-decrochage": {
         "title": "Summer 2026: who's at risk of failing?",
-        "tagline": "Help a teacher spot struggling students early."
+        "tagline": "Help a teacher spot struggling students early.",
+        "brief": "Back to school, 2026. A teaching team has real data on 395 students (attendance, family context, mid-term grades…). Can we spot, early in the year, those at risk of failing — so we can support them better?",
+        "stakes": "The stakes here are human: a reliable signal means acting before it's too late, without stigmatising anyone.",
+        "reward": "You'll leave with a model, and the explanation of the single most decisive factor."
       },
       "depistage-diabete": {
         "title": "Catch diabetes before it speaks",
-        "tagline": "An early warning signal for a clinic."
+        "tagline": "An early warning signal for a clinic.",
+        "brief": "A health centre wants an early-warning tool for diabetes from routine clinical measurements (glucose, BMI, age, history…). 768 real patients. Where does the risk hide?",
+        "stakes": "In healthcare, a prediction isn't enough: you must be able to explain WHY, case by case.",
+        "reward": "You'll leave with a model, and a local explanation on a specific case."
       },
       "noter-un-vin": {
         "title": "Rate a wine without tasting it",
-        "tagline": "Predict quality from chemistry alone."
+        "tagline": "Predict quality from chemistry alone.",
+        "brief": "A winery wants to score its reds without a tasting panel, from physico-chemical analysis alone (acidity, sugar, alcohol…). 1,599 real wines rated 0 to 10. Is chemistry enough?",
+        "stakes": "This is a regression problem: you predict a continuous score, not a label — and you measure the real error.",
+        "reward": "You'll leave with a regression model, its R²/MAE metrics, and a downloadable model."
       },
       "iris-hello-world": {
         "title": "Data science's hello world",
-        "tagline": "Three irises, four measurements — the 1936 classic."
+        "tagline": "Three irises, four measurements — the 1936 classic.",
+        "brief": "1936. Botanist Edgar Anderson measures irises; statistician Ronald Fisher turns them into the most famous dataset in history. Four measurements, three species. Your turn to repeat the founding gesture — on your own.",
+        "stakes": "The absolute benchmark: perfect for comparing two algorithms and finding your bearings.",
+        "reward": "You'll leave with a near-perfect classifier and a basis for comparing models."
       }
     }
   },
