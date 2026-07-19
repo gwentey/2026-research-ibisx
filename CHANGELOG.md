@@ -49,6 +49,23 @@ Un jalon = un incrément livrable ; chaque entrée correspond à un commit `feat
   `featureImpact` (anciens messages inclus).
 - **Garde-fou anti-hallucination étendu** : tolérance symétrique ÷100 (contexte « 24 % » →
   « 0,24 » accepté) ; rejets toujours loggués, replis « sans IA » inchangés.
+## Erreurs d'API lisibles à l'écran (20/07/2026)
+
+- **« [object Object] » au lieu du message d'erreur.** Le dialogue d'import Kaggle faisait
+  `String(error.detail)` sur l'enveloppe `{ code, message }` de l'API : l'utilisateur voyait
+  `[object Object]` pendant que le backend produisait une explication précise du refus.
+- **Nouveau `lib/api/errors.ts`** (`apiErrorMessage`, `apiErrorCode`) — lit les DEUX formes
+  d'enveloppe : `{ detail: { code, message } }` pour les erreurs métier, et
+  `{ detail: [ { loc, msg } ] }` pour les erreurs de schéma Pydantic, que FastAPI renvoie
+  **aussi en 422**. Les messages métier sont rédigés pour l'utilisateur final et sont donc
+  affichés tels quels ; les messages Pydantic, techniques, n'annotent qu'un repli. Test de
+  régression sur 11 formes d'enveloppe : aucune ne doit produire « [object ».
+- Appliqué au dialogue d'import **et** à celui de revue éthique, qui avait le même défaut.
+- **Messages de refus en langage humain** : « Ce lien pointe vers « code », pas vers un
+  dataset » devient « Ce lien pointe vers un notebook, pas vers un jeu de données. Ouvre
+  l'onglet « Data » de la page… ». Le segment d'URL brut (`code`, `c`, `kernels`) ne disait
+  rien à personne. Constaté sur un vrai lien collé en production.
+
 ## Import Kaggle ouvert à tout compte connecté (20/07/2026)
 
 - **Le bouton « Importer depuis Kaggle » n'apparaissait pour personne** en dehors des
