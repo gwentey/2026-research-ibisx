@@ -1,5 +1,6 @@
-// Contrat de rendu du chat XAI v2 (CDC copilote §4/§5) — miroir TS du schéma Pydantic
-// backend (`apps/api/ibis/modules/xai/blocks.py`). Logique PURE (testable en node) :
+// Contrat de rendu des réponses IA riches (CDC copilote §4/§5) — miroir TS du schéma Pydantic
+// backend (`apps/api/ibis/modules/xai/blocks.py`). Partagé par le copilote XAI, l'explication
+// commentée et le Guide IA d'un dataset. Logique PURE (testable en node) :
 // typage des blocs, parsing inline (gras/italique/code/surlignage) et mapping des
 // tonalités sémantiques vers les tokens du kit. Aucune couleur en dur ailleurs.
 

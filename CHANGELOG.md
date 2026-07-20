@@ -3,6 +3,27 @@
 Refonte complète from scratch (voir [JALONS.md](JALONS.md) et [docs/refonte/](docs/refonte/)).
 Un jalon = un incrément livrable ; chaque entrée correspond à un commit `feat: jalon N`.
 
+## Guide IA — Blocs riches et intention annoncée (20/07/2026)
+
+- **Le Guide IA d'un dataset a le même design que le copilote** : génération en `BlockDocument`
+  (même contrat `ibis.modules.xai.blocks`, `json_mode` + 2 tentatives + anti-hallucination),
+  stocké dans `ai_guide.blocks` (JSONB déjà libre — aucune migration, aucun changement de
+  contrat OpenAPI). Le front rend `IbisBlocks` (tableau tonal des colonnes cibles, tuiles
+  clé/valeur de la carte d'identité, callout des précautions) et retombe sur le rendu Markdown
+  pour les guides générés avant la v2. Miroir texte `text` conservé (copie, a11y, compat).
+- **Le repli sans IA garde la richesse visuelle** : `fallback_document` construit les mêmes
+  4 sections en blocs à partir des seules métadonnées réelles, badgé « Guide généré sans IA ».
+- **Grammaire de blocs partagée et restreignable** (`xai_text.blocks_grammar`) : le guide exclut
+  `featureImpact` — un dataset n'a aucun poids de variable calculé, le modèle en inventerait et
+  la validation anti-hallucination ignore volontairement les poids.
+- **Garde-fou des séparateurs de milliers** : « 4 177 lignes » n'est plus lu comme les nombres
+  4 et 177 (`normalize_thousands`), qui faisait basculer en repli des guides pourtant exacts.
+- **On sait enfin ce que le bouton va faire** : nouveau bloc `GuideIntro` (motif IA unifié,
+  `AiAssistPanel`) affiché AVANT la génération — les 4 sections produites, le bénéfice concret
+  (« quoi prédire, avec quelle méthode, ce qui risque de fausser vos résultats »), l'honnêteté
+  du procédé et la durée. Replié en une ligne « À quoi sert ce guide ? » une fois le guide
+  généré. Clés FR/EN.
+
 ## Évolution XAI 3 — Explication liée au profil : régénération visible et confirmée (19/07/2026)
 
 - **Bandeau proéminent** sur l'explication quand la vue courante (« Voir en tant que ») diffère
@@ -49,6 +70,7 @@ Un jalon = un incrément livrable ; chaque entrée correspond à un commit `feat
   `featureImpact` (anciens messages inclus).
 - **Garde-fou anti-hallucination étendu** : tolérance symétrique ÷100 (contexte « 24 % » →
   « 0,24 » accepté) ; rejets toujours loggués, replis « sans IA » inchangés.
+
 ## Coller un notebook Kaggle marche aussi (20/07/2026)
 
 - **Le cas réel qui bloquait** : on cherche des données, on tombe sur un notebook (c'est ce que

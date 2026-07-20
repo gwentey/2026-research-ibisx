@@ -258,50 +258,108 @@ def chat_prompt(
 # Grammaire de blocs injectée au modèle. On la garde COURTE et fermée : plus le contrat est
 # explicite, moins le JSON dérive (→ moins de fallback). Le schéma exact est validé en Pydantic
 # côté worker (ibis.modules.xai.blocks) ; ici on décrit l'INTENTION d'usage des tonalités.
-_BLOCKS_GRAMMAR = (
-    'Réponds UNIQUEMENT par un objet JSON : {"schema_version":1,"blocks":[…]}. '
-    "Aucun texte hors du JSON. Types de blocs autorisés :\n"
-    '- {"type":"paragraph","text":"…"}  (markdown inline autorisé : **gras**, *italique*, '
-    "`code`, ==surligné==)\n"
-    '- {"type":"heading","text":"…","level":3}\n'
-    '- {"type":"list","ordered":false,"items":["…"]}\n'
-    '- {"type":"table","columns":["…"],"rows":[[{"text":"…","tone":"neutral"}]]}\n'
-    '- {"type":"callout","tone":"warning","title":"…","text":"…"}\n'
-    '- {"type":"keyValue","items":[{"label":"…","value":"…","tone":"accent"}]}\n'
-    '- {"type":"featureImpact","items":[{"feature":"…","weight":0.4,"direction":"up"}]}\n'
-    "Tonalités (tone) — sémantiques, JAMAIS décoratives : "
-    '"positive" = pousse vers / favorable, "negative" = pousse contre / risque, '
-    '"warning" = limite ou prudence, "accent" = point clé / variable dominante, '
-    '"neutral" = neutre. featureImpact.direction : "up" (favorable) ou "down" (défavorable). '
-    "Limites STRICTES : 16 blocs max ; keyValue ≤ 8 paires ; featureImpact ≤ 10 barres ; "
-    "table ≤ 14 lignes et 5 colonnes ; list ≤ 12 puces."
-)
+#
+# Assemblée par type pour que chaque appelant n'expose QUE les blocs qui ont un sens chez lui :
+# le guide dataset exclut `featureImpact` (aucun poids réel n'existe pour un jeu de données —
+# le modèle en inventerait, et `extract_text` ignore volontairement les poids : la validation
+# anti-hallucination ne les rattraperait pas).
+_GRAMMAR_HEAD = {
+    "fr": (
+        'Réponds UNIQUEMENT par un objet JSON : {"schema_version":1,"blocks":[…]}. '
+        "Aucun texte hors du JSON. Types de blocs autorisés :"
+    ),
+    "en": (
+        'Answer ONLY with a JSON object: {"schema_version":1,"blocks":[…]}. '
+        "No text outside the JSON. Allowed block types:"
+    ),
+}
 
-_BLOCKS_GRAMMAR_EN = (
-    'Answer ONLY with a JSON object: {"schema_version":1,"blocks":[…]}. '
-    "No text outside the JSON. Allowed block types:\n"
-    '- {"type":"paragraph","text":"…"}  (inline markdown allowed: **bold**, *italic*, '
-    "`code`, ==highlight==)\n"
-    '- {"type":"heading","text":"…","level":3}\n'
-    '- {"type":"list","ordered":false,"items":["…"]}\n'
-    '- {"type":"table","columns":["…"],"rows":[[{"text":"…","tone":"neutral"}]]}\n'
-    '- {"type":"callout","tone":"warning","title":"…","text":"…"}\n'
-    '- {"type":"keyValue","items":[{"label":"…","value":"…","tone":"accent"}]}\n'
-    '- {"type":"featureImpact","items":[{"feature":"…","weight":0.4,"direction":"up"}]}\n'
-    "Tones — semantic, NEVER decorative: "
-    '"positive" = pushes toward / favorable, "negative" = pushes against / risk, '
-    '"warning" = limitation or caution, "accent" = key point / dominant feature, '
-    '"neutral" = neutral. featureImpact.direction: "up" (favorable) or "down" (unfavorable). '
-    "STRICT limits: 16 blocks max; keyValue ≤ 8 pairs; featureImpact ≤ 10 bars; "
-    "table ≤ 14 rows and 5 columns; list ≤ 12 bullets."
-)
+_GRAMMAR_TYPES: dict[str, dict[str, str]] = {
+    "paragraph": {
+        "fr": (
+            '- {"type":"paragraph","text":"…"}  (markdown inline autorisé : **gras**, '
+            "*italique*, `code`, ==surligné==)"
+        ),
+        "en": (
+            '- {"type":"paragraph","text":"…"}  (inline markdown allowed: **bold**, '
+            "*italic*, `code`, ==highlight==)"
+        ),
+    },
+    "heading": {
+        "fr": '- {"type":"heading","text":"…","level":3}',
+        "en": '- {"type":"heading","text":"…","level":3}',
+    },
+    "list": {
+        "fr": '- {"type":"list","ordered":false,"items":["…"]}',
+        "en": '- {"type":"list","ordered":false,"items":["…"]}',
+    },
+    "table": {
+        "fr": '- {"type":"table","columns":["…"],"rows":[[{"text":"…","tone":"neutral"}]]}',
+        "en": '- {"type":"table","columns":["…"],"rows":[[{"text":"…","tone":"neutral"}]]}',
+    },
+    "callout": {
+        "fr": '- {"type":"callout","tone":"warning","title":"…","text":"…"}',
+        "en": '- {"type":"callout","tone":"warning","title":"…","text":"…"}',
+    },
+    "keyValue": {
+        "fr": '- {"type":"keyValue","items":[{"label":"…","value":"…","tone":"accent"}]}',
+        "en": '- {"type":"keyValue","items":[{"label":"…","value":"…","tone":"accent"}]}',
+    },
+    "featureImpact": {
+        "fr": '- {"type":"featureImpact","items":[{"feature":"…","weight":0.4,"direction":"up"}]}',
+        "en": '- {"type":"featureImpact","items":[{"feature":"…","weight":0.4,"direction":"up"}]}',
+    },
+}
+
+# Ordre canonique d'exposition (le plus utile en premier — le modèle suit l'ordre de la liste).
+_GRAMMAR_ORDER = ("paragraph", "heading", "list", "table", "callout", "keyValue", "featureImpact")
+
+_GRAMMAR_TONES = {
+    "fr": (
+        "Tonalités (tone) — sémantiques, JAMAIS décoratives : "
+        '"positive" = pousse vers / favorable, "negative" = pousse contre / risque, '
+        '"warning" = limite ou prudence, "accent" = point clé / variable dominante, '
+        '"neutral" = neutre.'
+    ),
+    "en": (
+        "Tones — semantic, NEVER decorative: "
+        '"positive" = pushes toward / favorable, "negative" = pushes against / risk, '
+        '"warning" = limitation or caution, "accent" = key point / dominant feature, '
+        '"neutral" = neutral.'
+    ),
+}
+
+_GRAMMAR_DIRECTION = {
+    "fr": ' featureImpact.direction : "up" (favorable) ou "down" (défavorable).',
+    "en": ' featureImpact.direction: "up" (favorable) or "down" (unfavorable).',
+}
+
+# Limites par type — n'annoncer que celles des blocs réellement proposés.
+_GRAMMAR_LIMITS: dict[str, dict[str, str]] = {
+    "keyValue": {"fr": "keyValue ≤ 8 paires", "en": "keyValue ≤ 8 pairs"},
+    "featureImpact": {"fr": "featureImpact ≤ 10 barres", "en": "featureImpact ≤ 10 bars"},
+    "table": {"fr": "table ≤ 14 lignes et 5 colonnes", "en": "table ≤ 14 rows and 5 columns"},
+    "list": {"fr": "list ≤ 12 puces", "en": "list ≤ 12 bullets"},
+}
+
+
+def blocks_grammar(language: str, *, exclude: tuple[str, ...] = ()) -> str:
+    """Contrat de blocs à injecter dans un system prompt, restreint aux types pertinents."""
+    lang = "en" if language == "en" else "fr"
+    allowed = [t for t in _GRAMMAR_ORDER if t not in exclude]
+    lines = [_GRAMMAR_HEAD[lang], *(_GRAMMAR_TYPES[t][lang] for t in allowed)]
+    tones = _GRAMMAR_TONES[lang]
+    if "featureImpact" in allowed:
+        tones += _GRAMMAR_DIRECTION[lang]
+    limits = [_GRAMMAR_LIMITS[t][lang] for t in allowed if t in _GRAMMAR_LIMITS]
+    head = "Limites STRICTES : 16 blocs max" if lang == "fr" else "STRICT limits: 16 blocks max"
+    return "\n".join(lines) + "\n" + tones + " " + "; ".join([head, *limits]) + "."
 
 
 def chat_system_v2(language: str, audience: str = "intermediate") -> str:
     """Système chat v2 = honnêteté anti-hallucination + niveau (§5.2) + contrat de blocs."""
     lang = "en" if language == "en" else "fr"
-    grammar = _BLOCKS_GRAMMAR_EN if lang == "en" else _BLOCKS_GRAMMAR
-    return SYSTEM[lang] + "\n\n" + _audience_tone(audience, lang) + "\n\n" + grammar
+    return SYSTEM[lang] + "\n\n" + _audience_tone(audience, lang) + "\n\n" + blocks_grammar(lang)
 
 
 # ------------------------------ Explication v2 : blocs riches (CDC évolutions §2) -------------
@@ -312,8 +370,7 @@ def explanation_system_v2(language: str) -> str:
     chat). Le NIVEAU est porté par le prompt utilisateur ; le contrat de blocs et
     l'anti-hallucination restent constants quel que soit le niveau."""
     lang = "en" if language == "en" else "fr"
-    grammar = _BLOCKS_GRAMMAR_EN if lang == "en" else _BLOCKS_GRAMMAR
-    return SYSTEM[lang] + "\n\n" + grammar
+    return SYSTEM[lang] + "\n\n" + blocks_grammar(lang)
 
 
 def explanation_prompt_v2(*, audience: str, language: str, context: str) -> str:

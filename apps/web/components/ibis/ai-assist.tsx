@@ -161,8 +161,10 @@ export function AiAssist({
 }
 
 // --------------------------------------------------------------------------------------------
-// Primitives conservées (compat) : utilisées par datasets/guide-tab.tsx. Le nouveau motif
-// unifié ci-dessus (AiAssist) est à préférer pour toute nouvelle assistance.
+// Primitives conservées : `AiAssistPanel` habille les blocs d'assistance qui ne portent pas
+// le geste appliquer/décliner du motif complet (ex. datasets/guide-intro.tsx, purement
+// explicatif). Le motif unifié ci-dessus (AiAssist) reste à préférer dès qu'il y a une
+// recommandation à appliquer.
 
 /** Déclencheur « Guide-moi avec l'IA » — à poser dans le coin haut-droite d'une carte. */
 export function AiAssistButton({
