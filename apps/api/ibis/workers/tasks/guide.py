@@ -9,9 +9,39 @@ from ibis.modules.jobs import service as jobs_service
 from ibis.modules.jobs.models import JobStatus
 from ibis.modules.llm import client as llm_client
 from ibis.modules.llm import guides
+from ibis.modules.xai import blocks as rich
 from ibis.workers.celery_app import celery_app
 
 logger = get_logger(__name__)
+
+
+def _generate_blocks(*, system: str, user: str, context: str, language: str) -> dict | None:
+    """Guide v2 en blocs riches : jusqu'à 2 tentatives, sortie JSON validée (schéma ET
+    anti-hallucination). None si aucune sortie exploitable → l'appelant bascule en repli.
+
+    Même contrat que l'explication XAI (`workers/tasks/explain.py`) : c'est ce qui garantit
+    un rendu visuel identique (tableaux, tuiles, callouts) entre le copilote et le guide.
+    """
+    for attempt in range(2):
+        generated = llm_client.complete(system=system, user=user, max_tokens=1400, json_mode=True)
+        try:
+            doc = rich.parse_document(generated.text)
+        except Exception as exc:  # JSON / schéma invalide → on retente
+            logger.info("guide.invalid_blocks", attempt=attempt, reason=str(exc)[:200])
+            continue
+        if not guides.numbers_are_grounded(doc, context):
+            logger.info("guide.hallucinated_number", attempt=attempt)
+            continue
+        return guides.guide_payload(
+            text=rich.to_plain_text(doc),
+            blocks=doc.model_dump(mode="json"),
+            model_used=generated.model_used,
+            is_fallback=False,
+            language=language,
+            tokens_used=generated.tokens_used,
+        )
+    logger.info("guide.fallback", reason="no_valid_answer")
+    return None
 
 
 @celery_app.task(name="ibis.workers.tasks.guide.generate_dataset_guide", bind=True)
@@ -26,20 +56,20 @@ def generate_dataset_guide(self: object, job_id: str, dataset_id: str, language:
 
         jobs_service.update_progress(db, jid, progress=40, log_line="Génération du guide")
         system, user = guides.build_prompt(dataset, language)
+        context = guides.dataset_context(dataset)
+        payload: dict | None = None
         try:
-            result = llm_client.complete(system=system, user=user)
-            payload = guides.guide_payload(
-                text=result.text,
-                model_used=result.model_used,
-                is_fallback=False,
-                language=language,
-                tokens_used=result.tokens_used,
-            )
+            payload = _generate_blocks(system=system, user=user, context=context, language=language)
         except llm_client.LLMUnavailable as exc:
-            # Fallback déterministe HONNÊTE (P2) — jamais de texte inventé présenté comme IA
-            logger.info("guide.fallback", dataset_id=dataset_id, reason=str(exc))
+            logger.info("guide.unavailable", dataset_id=dataset_id, reason=str(exc)[:200])
+
+        if payload is None:
+            # Fallback déterministe HONNÊTE (P2) — jamais de texte inventé présenté comme IA.
+            # Même document de blocs : le repli garde la richesse visuelle, badgé « sans IA ».
+            doc = guides.fallback_document(dataset, language)
             payload = guides.guide_payload(
-                text=guides.fallback_guide(dataset, language),
+                text=rich.to_plain_text(doc),
+                blocks=doc.model_dump(mode="json"),
                 model_used="fallback",
                 is_fallback=True,
                 language=language,

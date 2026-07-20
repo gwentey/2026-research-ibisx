@@ -71,7 +71,7 @@ schemas.py         → Schémas Pydantic I/O (StrictModel extra="forbid" sur tou
 | `representativity_level` | VARCHAR(20) | `high` / `medium` / `low` |
 | `representativity_description`, `sample_balance_level`, `sample_balance_description` | TEXT / VARCHAR(30) | |
 | `informed_consent`, `transparency`, `user_control`, `equity_non_discrimination`, `security_measures_in_place`, `data_quality_documented`, `anonymization_applied`, `record_keeping_policy_exists`, `purpose_limitation_respected`, `accountability_defined` | BOOLEAN (nullable) | 10 critères éthiques tristate |
-| `ai_guide` | JSONB | `{text, model_used, is_fallback, language, generated_at}` |
+| `ai_guide` | JSONB | `{text, blocks, model_used, is_fallback, language, tokens_used, generated_at}` — `blocks` est un `BlockDocument` sérialisé (absent sur les guides antérieurs à la v2 ; le front retombe alors sur le rendu Markdown de `text`). Aucune migration SQL : le champ était déjà JSONB libre. |
 | `created_by` | UUID FK → users.id ON DELETE SET NULL | NULL = import système |
 | `created_at`, `updated_at` | TIMESTAMP | via mixin Timestamped |
 
@@ -222,7 +222,7 @@ schemas.py         → Schémas Pydantic I/O (StrictModel extra="forbid" sur tou
 
 | Fichier | Ce qu'il teste | Statut |
 |---------|---------------|--------|
-| `apps/api/tests/integration/test_datasets.py` | Endpoints CRUD, upload, preview, filtres, similaires, completion | Existant (~335 lignes) |
+| `apps/api/tests/integration/test_datasets.py` | Endpoints CRUD, upload, preview, filtres, similaires, completion ; `test_guide_fallback_is_honest` mis à jour (titres du miroir texte passent de `##` à `###`) | Existant (~335 lignes) |
 | `apps/api/tests/unit/test_profiling.py` | `read_dataframe`, `profile_dataframe`, `sanitize_json`, suggestions | Existant (~89 lignes) |
 | Tests `ethics.py` | Calcul `ethical_score()` | Absent (couverture manquante) |
 | Tests `importer.py` | Import YAML/Kaggle | Absent (couverture manquante) |

@@ -326,10 +326,18 @@ def test_guide_fallback_is_honest(
 
     detail = create_dataset(client, contributor)
     dataset = ds_service.get_dataset(db_session, uuid.UUID(detail["id"]))
+    doc = guides.fallback_document(dataset, "fr")
     text = guides.fallback_guide(dataset, "fr")
-    assert "## À quoi sert ce dataset" in text
+    # v2 : le repli est un document de BLOCS (titres rendus « ### » dans le miroir texte).
+    assert "### À quoi sert ce dataset" in text
     assert "student_email" in text  # colonnes PII réellement listées en précaution
     payload = guides.guide_payload(
-        text=text, model_used="fallback", is_fallback=True, language="fr", tokens_used=0
+        text=text,
+        blocks=doc.model_dump(mode="json"),
+        model_used="fallback",
+        is_fallback=True,
+        language="fr",
+        tokens_used=0,
     )
     assert payload["is_fallback"] is True
+    assert payload["blocks"]["blocks"], "le repli doit rester rendu en blocs riches"
